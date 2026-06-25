@@ -330,6 +330,7 @@ def lint_image_manifest(
     *,
     asset_root: str | Path = DEFAULT_ASSET_ROOT,
     require_offline_transport: bool = False,
+    verify_fallback_files: bool = False,
 ) -> dict[str, Any]:
     manifest = Path(manifest_path)
     asset_root_path = Path(asset_root)
@@ -341,12 +342,27 @@ def lint_image_manifest(
         "required_with_digest_ref": 0,
         "required_with_fallback_sha": 0,
         "required_without_offline_transport": 0,
+        "fallback_tar_verified": 0,
+        "fallback_tar_missing": 0,
+        "fallback_tar_mismatch": 0,
     }
     results: list[dict[str, Any]] = []
     for entry in entries:
         required = bool(entry["required"])
         has_digest_ref = any(_is_internal_digest_ref(ref) for ref in entry["image_refs"])
         has_fallback_sha = bool(entry.get("fallback_tar_sha256") or entry.get("fallback_tar_sha256_path"))
+        fallback_status = "not_checked"
+        has_verified_fallback = has_fallback_sha
+        if verify_fallback_files and has_fallback_sha:
+            fallback = _fallback_status(entry, manifest, asset_root_path)
+            fallback_status = str(fallback["sha256_status"])
+            has_verified_fallback = fallback_status == "match"
+            if fallback_status == "match":
+                counts["fallback_tar_verified"] += 1
+            elif fallback_status == "mismatch":
+                counts["fallback_tar_mismatch"] += 1
+            elif fallback_status == "tar_missing":
+                counts["fallback_tar_missing"] += 1
         if required:
             counts["required_images"] += 1
         else:
@@ -356,11 +372,18 @@ def lint_image_manifest(
         if required and has_fallback_sha:
             counts["required_with_fallback_sha"] += 1
 
+        fallback_lint_status = ""
+        if verify_fallback_files and has_fallback_sha and not has_verified_fallback:
+            fallback_lint_status = "fallback_tar_mismatch" if fallback_status == "mismatch" else "fallback_tar_missing"
+        has_offline_transport = has_digest_ref or (has_verified_fallback if verify_fallback_files else has_fallback_sha)
         lint_status = "ok"
         if not required:
             lint_status = "optional_not_required"
-        elif require_offline_transport and not (has_digest_ref or has_fallback_sha):
+        elif fallback_lint_status:
+            lint_status = fallback_lint_status
+        elif require_offline_transport and not has_offline_transport:
             lint_status = "missing_offline_transport"
+        if required and require_offline_transport and not has_offline_transport:
             counts["required_without_offline_transport"] += 1
 
         results.append(
@@ -373,6 +396,7 @@ def lint_image_manifest(
                 "fallback_tars": entry["fallback_tars"],
                 "has_internal_digest_ref": has_digest_ref,
                 "has_fallback_sha": has_fallback_sha,
+                "fallback_sha256_status": fallback_status,
                 "lint_status": lint_status,
             }
         )
@@ -381,7 +405,7 @@ def lint_image_manifest(
         "manifest": str(manifest),
         "bench_id": bench_id,
         "asset_root": str(asset_root_path),
-        "mode": {"require_offline_transport": require_offline_transport},
+        "mode": {"require_offline_transport": require_offline_transport, "verify_fallback_files": verify_fallback_files},
         "counts": counts,
         "images": results,
     }
@@ -692,6 +716,7 @@ def lint_registry_manifests(
     *,
     asset_root: str | Path = DEFAULT_ASSET_ROOT,
     require_offline_transport: bool = False,
+    verify_fallback_files: bool = False,
     policies: list[str] | None = None,
     manifest_ids: list[str] | None = None,
 ) -> dict[str, Any]:
@@ -718,6 +743,9 @@ def lint_registry_manifests(
         "required_with_digest_ref": 0,
         "required_with_fallback_sha": 0,
         "required_without_offline_transport": 0,
+        "fallback_tar_verified": 0,
+        "fallback_tar_missing": 0,
+        "fallback_tar_mismatch": 0,
     }
     manifests: list[dict[str, Any]] = []
     for entry in selected_entries:
@@ -739,6 +767,7 @@ def lint_registry_manifests(
             resolved_path,
             asset_root=asset_root_path,
             require_offline_transport=require_offline_transport,
+            verify_fallback_files=verify_fallback_files,
         )
         lint_counts = lint_summary["counts"]
         counts["manifests"] += 1
@@ -748,8 +777,17 @@ def lint_registry_manifests(
         counts["required_with_digest_ref"] += lint_counts["required_with_digest_ref"]
         counts["required_with_fallback_sha"] += lint_counts["required_with_fallback_sha"]
         counts["required_without_offline_transport"] += lint_counts["required_without_offline_transport"]
+        counts["fallback_tar_verified"] += lint_counts.get("fallback_tar_verified", 0)
+        counts["fallback_tar_missing"] += lint_counts.get("fallback_tar_missing", 0)
+        counts["fallback_tar_mismatch"] += lint_counts.get("fallback_tar_mismatch", 0)
         lint_status = "ok"
-        if lint_counts["required_without_offline_transport"]:
+        if lint_counts.get("fallback_tar_mismatch", 0):
+            lint_status = "fallback_tar_mismatch"
+            counts["manifests_with_issues"] += 1
+        elif lint_counts.get("fallback_tar_missing", 0):
+            lint_status = "fallback_tar_missing"
+            counts["manifests_with_issues"] += 1
+        elif lint_counts["required_without_offline_transport"]:
             lint_status = "missing_offline_transport"
             counts["manifests_with_issues"] += 1
         manifest_result.update(
@@ -771,7 +809,7 @@ def lint_registry_manifests(
             "policies": _csv_filter_values(policies),
             "manifest_ids": _csv_filter_values(manifest_ids),
         },
-        "mode": {"require_offline_transport": require_offline_transport},
+        "mode": {"require_offline_transport": require_offline_transport, "verify_fallback_files": verify_fallback_files},
         "counts": counts,
         "manifests": manifests,
     }
@@ -833,7 +871,9 @@ def _print_lint(summary: dict[str, Any]) -> None:
         "Summary: "
         f"images={counts['images']} "
         f"required={counts['required_images']} "
-        f"missing_offline_transport={counts['required_without_offline_transport']}"
+        f"missing_offline_transport={counts['required_without_offline_transport']} "
+        f"fallback_missing={counts.get('fallback_tar_missing', 0)} "
+        f"fallback_mismatch={counts.get('fallback_tar_mismatch', 0)}"
     )
     for image in summary["images"]:
         if image["lint_status"] != "ok":
@@ -877,12 +917,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     lint_registry.add_argument("--policy", action="append", dest="policies", default=[], help="registry policy to include; repeatable or comma-separated")
     lint_registry.add_argument("--manifest-id", action="append", dest="manifest_ids", default=[], help="registry image manifest id to include; repeatable or comma-separated")
     lint_registry.add_argument("--require-offline-transport", action="store_true", help="fail required rows without an internal digest ref or fallback sha")
+    lint_registry.add_argument("--verify-fallback-files", action="store_true", help="verify configured fallback tar files and sha256 values during lint")
     lint_registry.add_argument("--json", action="store_true")
 
     lint = subparsers.add_parser("lint", help="statically lint a bench image manifest transport contract")
     lint.add_argument("--image-manifest", type=Path, required=True)
     lint.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
     lint.add_argument("--require-offline-transport", action="store_true", help="fail required rows without an internal digest ref or fallback sha")
+    lint.add_argument("--verify-fallback-files", action="store_true", help="verify configured fallback tar files and sha256 values during lint")
     lint.add_argument("--json", action="store_true")
 
     check = subparsers.add_parser("check", help="check a bench image manifest against local Docker cache")
@@ -922,13 +964,14 @@ def main(argv: list[str] | None = None) -> int:
                 policies=args.policies,
                 manifest_ids=args.manifest_ids,
                 require_offline_transport=args.require_offline_transport,
+                verify_fallback_files=args.verify_fallback_files,
             )
             if args.json:
                 print(json.dumps(summary, indent=2, sort_keys=True))
             else:
                 _print_registry_lint(summary)
             counts = summary["counts"]
-            if counts["missing_manifests"] or counts["required_without_offline_transport"]:
+            if counts["missing_manifests"] or counts["required_without_offline_transport"] or counts.get("fallback_tar_missing", 0) or counts.get("fallback_tar_mismatch", 0):
                 return 1
             return 0
         if args.command == "inventory-cache":
@@ -950,12 +993,14 @@ def main(argv: list[str] | None = None) -> int:
                 args.image_manifest,
                 asset_root=args.asset_root,
                 require_offline_transport=args.require_offline_transport,
+                verify_fallback_files=args.verify_fallback_files,
             )
             if args.json:
                 print(json.dumps(summary, indent=2, sort_keys=True))
             else:
                 _print_lint(summary)
-            return 1 if summary["counts"].get("required_without_offline_transport", 0) else 0
+            counts = summary["counts"]
+            return 1 if counts.get("required_without_offline_transport", 0) or counts.get("fallback_tar_missing", 0) or counts.get("fallback_tar_mismatch", 0) else 0
         summary = check_image_manifest(
             args.image_manifest,
             asset_root=args.asset_root,

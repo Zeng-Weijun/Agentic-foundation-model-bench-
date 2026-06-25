@@ -1015,3 +1015,96 @@ Implementation notes for the next code lane:
 - Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
 - `git diff --stat --` and `git diff --numstat --` for this ledger after the Round 10 append: rc 0, `80 insertions` before this validation block.
 - Post-validation final status note: a later `git status --short --untracked-files=all` returned rc 0 and showed concurrent/unowned `manifests/images/swebench_verified_django10097.yaml` modified outside this lane; this lane did not touch it.
+
+## Round 11 registry lint and fallback-load provenance review
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Active branch/head observed: `feat/image-warmup-policy` / `abac24d Record SWE transport follow-up dispatch`; history includes `bacbde3 Materialize SWE django fallback transport` and `ce2adf2 Add registry image lint gate`.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker, benchmark execution, or model requests.
+- Focus: adversarial result/provenance review for registry lint plus worker fallback-load/image-smoke path.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: the structured-result gap is a #12 provenance comment, with #1 impact when image preflight blocks adapter execution. The static-lint fallback-tar weakness is a #6 comment, not a new issue, because the worker runtime `check --load-fallback --run-smoke` path still catches tar missing/mismatch, identity mismatch, and smoke failure. The SWE image identity part is #11 context. No #8-specific new finding, except that worker/rootless readiness is still a runtime input. No #10 secret-redaction issue was found in the image-check JSON itself; result parsers should still treat logs as source artifacts and apply the existing #10 sanitizer if any log excerpts are copied.
+
+Root-cause evidence:
+
+- `scripts/agentic_bench_images.py:488-619` returns rich `agentic_bench.image_check.v1` JSON with `counts.tar_verified`, `counts.loaded`, `counts.smoke_passed`, `counts.identity_mismatch`, and per-image `fallback`, `inspect_attempts`, `load_status`, `present_ref`, and `smoke_status` fields.
+- `scripts/agentic_bench_images.py:978-982` makes the CLI fail on `errors`, `tar_mismatch`, `identity_mismatch`, `missing`, or `tar_missing`, so the checker itself does not fake-green smoke failure, identity mismatch, or missing fallback tar.
+- `scripts/agentic_bench_suite.py:1062-1140` runs image preflight commands and records only coarse `status`, `exit_code`, `fatal`, timestamps, and `log_path`; it does not parse the checker JSON from stdout.
+- `scripts/agentic_bench_suite.py:1198-1208` writes `agentic_bench.image_preflight_summary.v1` with counts by pass/fail and result rows, but those rows do not include checker counts or per-image fallback/load/smoke/identity details.
+- `scripts/agentic_bench_suite.py:1281-1300` writes `agentic_bench.result.v1` without any `source`, `image_preflight`, `image_preflight_summary_path`, image manifest id/path, checker JSON digest, or per-image fallback provenance. Execute `summary.json` only carries the enriched execution row from `_attach_benchmark_result()` (`scripts/agentic_bench_suite.py:1333-1341`).
+
+COMMENT-READY for #12/#6/#11: structured suite summaries and normalized results should preserve image-check evidence, not only a log pointer
+
+severity: HIGH
+
+dedup: comment-on-#12 for normalized result provenance and result artifact self-containment; comment-on-#6 because fallback-load/run-smoke evidence is the worker warmup proof; comment-on-#11 because identity mismatch/remediation for SWE django10097 must be auditable. Not a new issue because checker JSON already contains the raw evidence and #12 already covers missing normalized/source provenance.
+
+location: `scripts/agentic_bench_images.py:488-619`, `scripts/agentic_bench_images.py:978-982`, `scripts/agentic_bench_suite.py:1062-1140`, `scripts/agentic_bench_suite.py:1198-1208`, `scripts/agentic_bench_suite.py:1281-1300`, `scripts/agentic_bench_suite.py:1333-1341`, `manifests/images/swebench_verified_django10097.yaml:16-43`, `manifests/bench_registry.yaml:51-59`
+
+static_repro:
+
+- Existing verification `image_preflight_summary.json` files for RepoZero and TB2.1 have top-level keys `counts`, `fail_on_optional`, `include_optional`, `results`, `schema_version`, `status`, and `suite_id`; their first result row keys are only `bench_id`, `ended_at`, `exit_code`, `fatal`, `log_path`, `policy`, `required`, `started_at`, and `status`. They have no `image_check`, `image_check_summary`, `loaded`, `load_status`, `smoke_passed`, `identity_mismatch`, or `fallback` fields.
+- The corresponding preflight logs do contain the checker JSON payload markers: `schema_version`, `agentic_bench.image_check.v1`, `loaded`, `smoke_status`, and `fallback` were present in the sampled logs. This means evidence exists only as parseable log stdout, not as structured suite summary or normalized result provenance.
+- Synthetic checker probe with stale/wrong initial image identity, verified fallback tar, successful `docker load`, and passing smoke returned `counts.present=1`, `counts.tar_verified=1`, `counts.loaded=1`, `counts.smoke_passed=1`, `counts.identity_mismatch=0`, per-image `status=present`, `load_status=loaded`, `smoke_status=passed`, `present_ref=example/runtime:latest`, and `inspect_identity_statuses=['mismatch','match']`. The checker preserves enough evidence to know fallback replaced a wrong alias, but the suite summary would currently collapse that to `status=pass` plus a log path.
+- Synthetic smoke-failure probe returned `counts.errors=1`, per-image `status=present`, and `smoke_status=failed`; the CLI would return rc 2 via `counts.errors`, so the checker does not fake-green image smoke. A downstream consumer reading only per-image `status=present` would need `smoke_status`/`counts.errors`, which are not promoted into suite result rows today.
+- Current `lint-registry` for `required_for_swebench_django10097_promotion_smoke` returns rc 0 with `required_images=2`, `required_with_fallback_sha=2`, and `required_without_offline_transport=0`; both SWE rows have fallback sha and no internal digest ref. Combined TB2+SWE promotion lint currently returns rc 1 with `required_images=91`, `required_with_digest_ref=1`, `required_with_fallback_sha=53`, and `required_without_offline_transport=38`; the remaining failures are TB2.
+
+Impact:
+
+- After a worker run such as the SWE django10097 fallback proof, a human can recover the important facts by opening the preflight log, but a dashboard, aggregator, issue closer, or normalized `agentic_bench.result.v1` consumer cannot tell from structured artifacts that the worker first saw an identity mismatch, loaded the verified fallback tar, re-inspected to the expected identity, and then passed smoke.
+- If an adapter runs after image preflight succeeds, the normalized benchmark result has no first-class pointer to the image-preflight summary/log or image manifest. If the adapter is blocked by image preflight, #1 currently reports a process-level failure but not a structured image-preflight cause with per-image evidence.
+- This weakens reproducibility comments for #6/#11: `pass` in `image_preflight_summary.json` means only that the checker process returned 0, not which image rows were loaded, verified, pulled, smoked, or repaired from identity mismatch.
+
+Exact missing structured fields to add under #12:
+
+- In `image_preflight_summary.results[]`: add `image_check_schema_version`, `image_check_manifest`, `image_check_bench_id`, `image_check_counts`, and an allowlisted `image_check_images[]` list with `id`, `role`, `required`, `status`, `present_ref`, `load_status`, `pull_status`, `smoke_status`, `fallback.sha256_status`, `fallback.tar_paths` or safe path basenames, `fallback.sha256`, and `inspect_attempts[].ref/returncode/identity_status/actual_image_id/expected_image_ids`.
+- In `agentic_bench.result.v1`: add `source.image_preflight_summary_path`, `source.image_preflight_log_path`, `source.image_manifest_paths[]`, `source.image_check_artifacts[]`, and an `image_preflight` object with `status`, `exit_code`, `policy`, `required`, `counts`, and the same per-image allowlist when available.
+- In execute `summary.json` rows: add `image_preflight_status`, `image_preflight_log_path`, `image_check_counts`, and `image_check_result_path` or `image_check_json_pointer`. Do not rely on `status=pass` and `log_path` alone.
+- For blocked adapters, map benchmark failure category to `image_preflight_failed` or `image_preflight_blocked` rather than the generic `adapter_crash` from `_benchmark_result_for_run()`.
+
+COMMENT-READY for #6: `lint-registry` is presence-of-transport metadata, not proof that fallback tar exists or hashes at lint time
+
+severity: MEDIUM
+
+dedup: comment-on-#6. Not a new issue because runtime `check --load-fallback` still verifies actual tar presence and sha before load, and returns nonzero on `tar_missing`/`tar_mismatch`. This is a static promotion-gate caveat.
+
+location: `scripts/agentic_bench_images.py:328-384`, `scripts/agentic_bench_images.py:690-777`, `scripts/agentic_bench_images.py:918-933`
+
+static_repro: A synthetic manifest with `required: true`, `fallback_tar: missing/runtime.tar`, and a `fallback_tar_sha256` field returns `lint_status=ok`, `required_with_fallback_sha=1`, and `required_without_offline_transport=0` under `lint_image_manifest(..., require_offline_transport=True)`. The lint path checks for an internal digest ref or configured fallback checksum, not whether the tar exists or whether its hash matches. The runtime checker path does compute `_fallback_status()` and would fail later with `tar_missing` or `tar_mismatch`.
+
+impact: As a static registry gate, `lint-registry` can mark a manifest transport-ready when the manifest contains a checksum field but the referenced tar is absent or stale. That does not fake-green worker fallback load or smoke, but it can produce a misleading promotion-stage green before runtime check. Current SWE django10097 has real fallback paths and the handoff records worker smoke evidence; the caveat matters for future TB2/SWE promotion rows.
+
+fix: Keep `lint-registry` as the cheap metadata gate, but either rename/report it as `configured_offline_transport` or add an optional `--verify-fallback-files` mode that resolves fallback tar paths, checks presence, and verifies sha256 without Docker. Promotion should require both static configured transport and a worker `check --load-fallback --run-smoke --json` artifact before calling rows ready.
+
+Cross-lane runtime/images check:
+
+- Runtime lane Round 10/11 focuses on making TB2/SWE transport concrete. It does not contradict this runner/results finding. The runtime ledger proves the transport path can be made real; this lane says the result/provenance layer must preserve the resulting checker JSON structurally.
+- Current handoff says SWE django10097 worker smoke ended with `present=2`, `tar_verified=2`, `loaded=1`, `smoke_passed=2`, and `identity_mismatch=0`. Those exact fields should become machine-readable in suite summary/result artifacts instead of living only in handoff text and checker logs.
+
+### Round 11 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first, display truncated by tool.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Remote worktree status/head/history check: rc 0; branch `feat/image-warmup-policy`, head `abac24d`, history includes `bacbde3` and `ce2adf2`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read current runner and runtime lane ledger tails: rc 0.
+- Grep/nl reads for `scripts/agentic_bench_images.py`, `scripts/agentic_bench_suite.py`, `manifests/images/swebench_verified_django10097.yaml`, `manifests/bench_registry.yaml`, and focused tests: rc 0.
+- Bounded probes over existing `image_preflight_summary.json` and preflight logs: rc 0; printed only keys, counts, booleans, and paths.
+- Initial JSON pipe probes for lint-registry had quoting/pipe issues and exited rc 1; rerun with temp files succeeded. SWE-only lint returned `LINT_RC=0`; TB2+SWE lint returned `LINT_RC=1` with counts quoted above.
+- Synthetic checker probe for identity mismatch repaired by fallback load and smoke pass: rc 0; counts and statuses quoted above.
+- Synthetic smoke-failure probe: rc 0; counts and statuses quoted above.
+- Synthetic static lint missing-tar-with-sha probe: rc 0; `lint_status=ok` despite absent tar path, proving the static lint caveat.
+
+Next runner/results subdomain: specify the exact JSON parser for image-check stdout in preflight logs and the allowlisted result fields to persist in `image_preflight_summary.json` and `agentic_bench.result.v1`, without copying raw Docker stderr or full command output.
+
+## Round 11 validation evidence
+
+- `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; concurrent/unowned changes were present in `_coordination/20260625_harbor_bench/HANDOFF.md`, `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`, `manifests/images/README.md`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_protein_assembly_20260626.tsv`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
+- `git diff --stat --` and `git diff --numstat --` for this ledger after the Round 11 append: rc 0, `85 insertions` before this validation block.

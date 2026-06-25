@@ -123,10 +123,11 @@ python3 scripts/agentic_bench_images.py lint-registry \
   --policy required_for_registry_health \
   --policy required_for_repozero_smoke \
   --require-offline-transport \
+  --verify-fallback-files \
   --json
 ```
 
-`lint-registry` accepts repeated or comma-separated `--policy` and `--manifest-id` filters. With no filters it lints every image manifest listed in `bench_registry.yaml`. Use this as the promotion gate for worker-ready selections: all required rows in the selected registry slice must have either an internal digest-pinned `image_ref` or a fallback tar checksum before large offline worker runs are enabled.
+`lint-registry` accepts repeated or comma-separated `--policy` and `--manifest-id` filters. With no filters it lints every image manifest listed in `bench_registry.yaml`. Use this as the promotion gate for worker-ready selections: all required rows in the selected registry slice must have either an internal digest-pinned `image_ref` or a fallback tar checksum before large offline worker runs are enabled. Add `--verify-fallback-files` for promotion gates that should also resolve fallback tar paths and verify sha256 values without using Docker.
 
 Run only suite image preflights, without launching benchmark adapters:
 

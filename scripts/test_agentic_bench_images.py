@@ -500,6 +500,111 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
 
 
+    def test_lint_manifest_can_verify_fallback_file_hashes(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            tar_path = root / "images" / "runtime.tar"
+            tar_path.parent.mkdir(parents=True)
+            tar_path.write_bytes(b"runtime bytes")
+            digest = hashlib.sha256(tar_path.read_bytes()).hexdigest()
+            manifest = root / "image.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    f"""
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: verify_fallback_probe
+                    images:
+                      - id: valid_fallback
+                        required: true
+                        fallback_tar: images/runtime.tar
+                        fallback_tar_sha256: {digest}
+                      - id: missing_fallback
+                        required: true
+                        fallback_tar: images/missing.tar
+                        fallback_tar_sha256: {digest}
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            summary = module.lint_image_manifest(
+                manifest,
+                asset_root=root,
+                require_offline_transport=True,
+                verify_fallback_files=True,
+            )
+
+        self.assertEqual(summary["counts"]["fallback_tar_verified"], 1)
+        self.assertEqual(summary["counts"]["fallback_tar_missing"], 1)
+        self.assertEqual(summary["counts"]["fallback_tar_mismatch"], 0)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["images"][0]["lint_status"], "ok")
+        self.assertEqual(summary["images"][1]["lint_status"], "fallback_tar_missing")
+
+
+    def test_cli_lint_registry_can_verify_fallback_files(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            image_dir = root / "images"
+            image_dir.mkdir()
+            (image_dir / "selected.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: selected_bench
+                    images:
+                      - id: missing_tar_but_sha
+                        required: true
+                        fallback_tar: images/missing.tar
+                        fallback_tar_sha256: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            registry = root / "registry.yaml"
+            registry.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.registry.v1
+                    registry:
+                      domain: 100.97.118.137:8555
+                    image_manifests:
+                      - id: selected
+                        path: images/selected.yaml
+                        policy: required_for_smoke
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    "lint-registry",
+                    "--registry",
+                    str(registry),
+                    "--asset-root",
+                    str(root),
+                    "--policy",
+                    "required_for_smoke",
+                    "--require-offline-transport",
+                    "--verify-fallback-files",
+                    "--json",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        summary = json.loads(proc.stdout)
+        self.assertEqual(summary["counts"]["fallback_tar_missing"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["manifests"][0]["lint_status"], "fallback_tar_missing")
+
+
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

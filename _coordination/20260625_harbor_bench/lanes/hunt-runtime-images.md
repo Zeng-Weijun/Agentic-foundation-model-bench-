@@ -809,3 +809,128 @@ Commands/evidence:
 - Pre-append `git diff --check`/status: rc 0; clean before append.
 
 Next runtime/image subdomain: after these transports are created and manifests updated by the implementation lane, re-run `lint-registry` for the same two policies, then run worker runtime `check` with identity verification and fallback load/smoke on a small representative set before attempting all 91 required rows.
+
+## Round 11 - TB2 first transport batch audit (2026-06-26)
+
+Scope held: runtime/images lane only. Worked on `swe_dev` in the active worktree. No production code/manifest/test edits. No Docker save/push/load/run. Evidence is from static manifests, saved swe_dev cache identity inventory, filesystem metadata, and lint output. The only write in this loop is this ledger append.
+
+COMMENT-READY for #6/#8: first practical TB2 transport batch should be small generic fallback tar+sha exports; do not start with P0-only or large/special-runtime rows
+
+dedup: comment-on-#6 for transport population and warmup gating. comment-on-#8 only for the warning that worker-j9jjd must not rely on P0-only transport until digest pull+smoke is proven. Not #11: SWE django10097 is now lint-clean with fallback sha while preserving identity fields, and this loop is TB2-only. No new ISSUE-READY block.
+
+Current state:
+- Current branch includes `bacbde3 Materialize SWE django fallback transport`; observed head was `abac24d`.
+- `lint-registry --policy audit_manifest_for_tb2_full_image_warmup --policy required_for_swebench_django10097_promotion_smoke --require-offline-transport` still returns rc 1, but now only because TB2 has 39 missing transports. SWE django10097 is `ok` with `required_with_fallback_sha=2`.
+- TB2 remaining gap: `count=39`, `identity_match=39`, `tar_exists=0`, `repo_digests=0`, approximate virtual size total `76.01GB`.
+- Shared TB2 fallback tree has enough overall storage headroom (`kataShared` showed `14T` available), but large tars are still expensive to write/hash and should not be first.
+
+### 39-row risk categories
+
+| category | count | rows | first-action guidance |
+|---|---:|---|---|
+| low-risk generic | 23 | `protein-assembly(180MB)`, `schemelike-metacircular-eval(180MB)`, `regex-chess(197MB)`, `openssl-selfsigned-cert(229MB)`, `sqlite-db-truncate(229MB)`, `regex-log(298MB)`, `sparql-university(303MB)`, `sqlite-with-gcov(311MB)`, `password-recovery(396MB)`, `path-tracing-reverse(453MB)`, `query-optimize(454MB)`, `sanitize-git-repo(466MB)`, `tune-mjcf(529MB)`, `overfull-hbox(531MB)`, `polyglot-c-py(560MB)`, `portfolio-optimization(613MB)`, `winning-avg-corewars(736MB)`, `polyglot-rust-c(995MB)`, `write-compressor(996MB)`, `path-tracing(1.1GB)`, `prove-plus-comm(1.46GB)`, `install-windows-3.11(1.63GB)`, `reshard-c4-data(2.52GB)` | Export fallback tar+sha first. P0 digest optional after fallback smoke. |
+| service or secret-sensitive task | 3 | `nginx-request-logging(269MB)`, `pypi-server(321MB)`, `vulnerable-secret(478MB)` | Docker save/tag are fine, but do not use as the first runtime smoke batch. Avoid printing task logs for `vulnerable-secret`. |
+| special/domain runtime | 12 | `rstan-to-pystan(206MB)`, `raman-fitting(229MB)`, `video-processing(793MB)`, `train-fasttext(874MB)`, `sam-cell-seg(1.13GB)`, `qemu-alpine-ssh(1.96GB)`, `qemu-startup(1.96GB)`, `mteb-retrieve(2.12GB)`, `pytorch-model-cli(2.6GB)`, `torch-tensor-parallelism(11GB)`, `torch-pipeline-parallelism(11.3GB)`, `pytorch-model-recovery(19.2GB)` | Export later; qemu/torch rows should be smoke-tested separately and not mixed into the first batch. |
+| large shared-write risk | 4 | `multi-source-data-merger(6.2GB)`, `torch-tensor-parallelism(11GB)`, `torch-pipeline-parallelism(11.3GB)`, `pytorch-model-recovery(19.2GB)` | Prefer P0 digest for scale, but keep fallback tar until #8 worker registry readiness is stable. Do not include in first export batch. |
+
+### Exact first batch
+
+Recommended first implementation batch: five lowest-risk generic rows, total virtual size about `1.015GB`, no service/secret/qemu/torch/domain-runtime flags.
+
+| order | slug | ref | expected image id | size |
+|---:|---|---|---|---:|
+| 1 | `protein-assembly` | `tb2-offline/protein-assembly:20260425` | `sha256:c517a0dd99f0991faa3f68ae50943b49a55ca7604abbac6b7d824ed4a71bcd6f` | 180MB |
+| 2 | `schemelike-metacircular-eval` | `tb2-offline/schemelike-metacircular-eval:20260425` | `sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec` | 180MB |
+| 3 | `regex-chess` | `tb2-offline/regex-chess:20260425` | `sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d` | 197MB |
+| 4 | `openssl-selfsigned-cert` | `tb2-offline/openssl-selfsigned-cert:20260425` | `sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570` | 229MB |
+| 5 | `sqlite-db-truncate` | `tb2-offline/sqlite-db-truncate:20260425` | `sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749` | 229MB |
+
+Rationale: this batch is large enough to validate the manifest-update/export loop across multiple rows, but small enough to avoid wasting shared-storage time if command wiring or manifest insertion is wrong. If the implementation lane wants an absolute one-row canary before the five-row batch, use only `protein-assembly` with the same commands.
+
+### Fallback tar+sha commands for first batch
+
+Run on `swe_dev` in an implementation lane, not in this bug-hunt lane:
+
+```bash
+set -euo pipefail
+TB_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425
+mkdir -p "$TB_ROOT"
+cat >/tmp/tb2_round11_first_batch.tsv <<'EOF'
+protein-assembly tb2-offline/protein-assembly:20260425 sha256:c517a0dd99f0991faa3f68ae50943b49a55ca7604abbac6b7d824ed4a71bcd6f
+schemelike-metacircular-eval tb2-offline/schemelike-metacircular-eval:20260425 sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec
+regex-chess tb2-offline/regex-chess:20260425 sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d
+openssl-selfsigned-cert tb2-offline/openssl-selfsigned-cert:20260425 sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570
+sqlite-db-truncate tb2-offline/sqlite-db-truncate:20260425 sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749
+EOF
+while read -r slug ref expected_id; do
+  out="$TB_ROOT/${slug}.tar"
+  tmp="$out.tmp.$$"
+  actual_id=$(docker image inspect --format '{{.Id}}' "$ref")
+  test "$actual_id" = "$expected_id"
+  test ! -e "$out"
+  docker save -o "$tmp" "$ref"
+  sha256sum "$tmp" > "$tmp.sha256"
+  mv "$tmp" "$out"
+  mv "$tmp.sha256" "$out.sha256"
+done </tmp/tb2_round11_first_batch.tsv
+```
+
+After this, update only the five corresponding manifest rows with `fallback_tar` and `fallback_tar_sha256`, keep `source_image_id` unchanged, and run:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py lint-registry \
+  --registry manifests/bench_registry.yaml \
+  --policy audit_manifest_for_tb2_full_image_warmup \
+  --policy required_for_swebench_django10097_promotion_smoke \
+  --require-offline-transport
+```
+
+Expected after only this batch: `required_without_offline_transport` should drop from `39` to `34`, not to zero.
+
+### P0 digest publication commands for first batch
+
+Use only after fallback artifacts exist and after confirming registry CA/health. Keep fallback tar rows even if P0 digest succeeds because #8/rootless registry pull readiness is still the worker risk.
+
+```bash
+set -euo pipefail
+REG=100.97.118.137:8555
+CERT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/swe-data-harness/registry/certs/domain.crt
+mkdir -p /etc/docker/certs.d/$REG
+cp "$CERT" /etc/docker/certs.d/$REG/ca.crt
+: >/tmp/tb2_round11_first_batch_p0_digests.tsv
+while read -r slug ref expected_id; do
+  actual_id=$(docker image inspect --format '{{.Id}}' "$ref")
+  test "$actual_id" = "$expected_id"
+  tag="$REG/swe-data-harness/tb2-${slug}:20260425"
+  docker tag "$ref" "$tag"
+  docker push "$tag"
+  digest_ref=$(docker inspect --format='{{index .RepoDigests 0}}' "$tag")
+  printf '%s\t%s\t%s\n' "$slug" "$tag" "$digest_ref" >>/tmp/tb2_round11_first_batch_p0_digests.tsv
+done </tmp/tb2_round11_first_batch.tsv
+```
+
+If implementation follows the workflow preference to push from `swe_dev2`, use the fallback tar as the handoff artifact, load/tag/push there, then still keep the original fallback tar+sha in the manifest until worker-j9jjd consumer pull+smoke is proven.
+
+### Rows to defer or isolate
+
+- Defer large writes/pushes: `pytorch-model-recovery(19.2GB)`, `torch-pipeline-parallelism(11.3GB)`, `torch-tensor-parallelism(11GB)`, `multi-source-data-merger(6.2GB)`.
+- Isolate qemu runtime smoke: `qemu-alpine-ssh`, `qemu-startup`; Docker save/tag should be metadata-safe, but runtime smoke may exercise virtualization assumptions.
+- Isolate torch/runtime-heavy smoke: `pytorch-model-cli`, `pytorch-model-recovery`, `torch-pipeline-parallelism`, `torch-tensor-parallelism`.
+- Avoid first runtime smoke/log review on `vulnerable-secret`; export/tag is okay, but do not print benchmark task logs in this lane.
+- Service rows `nginx-request-logging` and `pypi-server` should not be in the first runtime smoke batch because task-level execution may bind services or require network-like assumptions even though image export is safe.
+
+Cross-lane check:
+- Runner-results has no contradictory transport-population finding. Its TB2 notes remain parser/result-classification follow-ups and are compatible with keeping full TB2 enablement gated behind #6 image transport and #8 worker readiness.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Memory quick search for TB2/lint-registry/django/image-warmup terms: rc 0, no relevant hits used.
+- Remote status/head/file check on `swe_dev`: rc 0; observed head `abac24d`, with `bacbde3` in history.
+- Post-SWE-fix `lint-registry` JSON probe: outer rc 0, inner `LINT_RC=1`, `PY_RC=0`; SWE manifest is `ok`, TB2 has 39 missing transports.
+- First risk categorization script had a quoting error and exited rc 1 before useful table output; rerun succeeded rc 0 and produced the counts/categories/first batch above.
+- Manifest line/dedup grep: rc 0; confirms the 39 `fallback_status: missing_shared_tar` rows and existing #6/#8/#11 dedup context.
+- Storage metadata command: rc 0; shared filesystem showed `14T` available and current TB2 fallback tree size `40G`.
+- SWE django10097 post-fix manifest sanity check: rc 0; both SWE rows now have fallback sha.
+
+Next runtime/image subdomain: after the first five TB2 fallback artifacts are materialized and manifest rows updated by the implementation lane, audit that lint-registry drops from 39 to 34 and then select the next low-risk generic batch before touching service/qemu/torch/large rows.
