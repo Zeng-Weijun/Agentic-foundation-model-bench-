@@ -85,6 +85,16 @@ def _string_list(*values: Any) -> list[str]:
     return list(dict.fromkeys(result))
 
 
+def _csv_filter_values(values: list[str] | None) -> list[str]:
+    result: list[str] = []
+    for value in values or []:
+        for item in str(value).split(","):
+            text = item.strip()
+            if text:
+                result.append(text)
+    return list(dict.fromkeys(result))
+
+
 def _bool(value: Any, default: bool = False) -> bool:
     if value is None:
         return default
@@ -619,7 +629,15 @@ def registry_manifest_entries(config: Any) -> tuple[dict[str, Any], list[dict[st
         path = raw_map.get("path")
         if not path:
             raise ImageManifestError(f"image_manifests[{index}] requires path")
-        entries.append({"id": str(raw_map.get("id") or f"manifest_{index}"), "path": str(path), "raw": raw_map})
+        entries.append(
+            {
+                "id": str(raw_map.get("id") or f"manifest_{index}"),
+                "path": str(path),
+                "policy": str(raw_map.get("policy") or ""),
+                "status": str(raw_map.get("status") or ""),
+                "raw": raw_map,
+            }
+        )
     return registry, entries
 
 
@@ -664,6 +682,96 @@ def validate_registry(registry_path: str | Path, *, asset_root: str | Path = DEF
         "registry": registry,
         "registry_manifest": str(registry_manifest),
         "asset_root": str(asset_root_path),
+        "counts": counts,
+        "manifests": manifests,
+    }
+
+
+def lint_registry_manifests(
+    registry_path: str | Path,
+    *,
+    asset_root: str | Path = DEFAULT_ASSET_ROOT,
+    require_offline_transport: bool = False,
+    policies: list[str] | None = None,
+    manifest_ids: list[str] | None = None,
+) -> dict[str, Any]:
+    registry_manifest = Path(registry_path)
+    asset_root_path = Path(asset_root)
+    registry, entries = registry_manifest_entries(_load(registry_manifest))
+    selected_policies = set(_csv_filter_values(policies))
+    selected_manifest_ids = set(_csv_filter_values(manifest_ids))
+    selected_entries = [
+        entry
+        for entry in entries
+        if (not selected_policies or entry["policy"] in selected_policies)
+        and (not selected_manifest_ids or entry["id"] in selected_manifest_ids)
+    ]
+    counts = {
+        "registry_entries": len(entries),
+        "selected_manifests": len(selected_entries),
+        "manifests": 0,
+        "missing_manifests": 0,
+        "manifests_with_issues": 0,
+        "images": 0,
+        "required_images": 0,
+        "optional_images": 0,
+        "required_with_digest_ref": 0,
+        "required_with_fallback_sha": 0,
+        "required_without_offline_transport": 0,
+    }
+    manifests: list[dict[str, Any]] = []
+    for entry in selected_entries:
+        resolved_path = _resolve_manifest_path(entry["path"], registry_manifest, asset_root_path)
+        manifest_result: dict[str, Any] = {
+            "id": entry["id"],
+            "policy": entry["policy"],
+            "registry_status": entry["status"],
+            "path": str(resolved_path),
+        }
+        if not resolved_path.is_file():
+            counts["missing_manifests"] += 1
+            counts["manifests_with_issues"] += 1
+            manifest_result["lint_status"] = "missing_manifest"
+            manifests.append(manifest_result)
+            continue
+
+        lint_summary = lint_image_manifest(
+            resolved_path,
+            asset_root=asset_root_path,
+            require_offline_transport=require_offline_transport,
+        )
+        lint_counts = lint_summary["counts"]
+        counts["manifests"] += 1
+        counts["images"] += lint_counts["images"]
+        counts["required_images"] += lint_counts["required_images"]
+        counts["optional_images"] += lint_counts["optional_images"]
+        counts["required_with_digest_ref"] += lint_counts["required_with_digest_ref"]
+        counts["required_with_fallback_sha"] += lint_counts["required_with_fallback_sha"]
+        counts["required_without_offline_transport"] += lint_counts["required_without_offline_transport"]
+        lint_status = "ok"
+        if lint_counts["required_without_offline_transport"]:
+            lint_status = "missing_offline_transport"
+            counts["manifests_with_issues"] += 1
+        manifest_result.update(
+            {
+                "lint_status": lint_status,
+                "bench_id": lint_summary["bench_id"],
+                "counts": lint_counts,
+                "images": lint_summary["images"],
+            }
+        )
+        manifests.append(manifest_result)
+
+    return {
+        "schema_version": "agentic_bench.registry_lint.v1",
+        "registry": registry,
+        "registry_manifest": str(registry_manifest),
+        "asset_root": str(asset_root_path),
+        "filters": {
+            "policies": _csv_filter_values(policies),
+            "manifest_ids": _csv_filter_values(manifest_ids),
+        },
+        "mode": {"require_offline_transport": require_offline_transport},
         "counts": counts,
         "manifests": manifests,
     }
@@ -732,6 +840,23 @@ def _print_lint(summary: dict[str, Any]) -> None:
             print(f"- {image['id']}: {image['lint_status']}")
 
 
+def _print_registry_lint(summary: dict[str, Any]) -> None:
+    counts = summary["counts"]
+    print(f"Registry manifest: {summary['registry_manifest']}")
+    print(f"Registry: {summary['registry'].get('domain', summary['registry'].get('url', ''))}")
+    print(
+        "Summary: "
+        f"selected_manifests={counts['selected_manifests']} "
+        f"manifests={counts['manifests']} "
+        f"images={counts['images']} "
+        f"missing_manifests={counts['missing_manifests']} "
+        f"missing_offline_transport={counts['required_without_offline_transport']}"
+    )
+    for manifest in summary["manifests"]:
+        if manifest["lint_status"] != "ok":
+            print(f"- {manifest['id']}: {manifest['lint_status']} {manifest['path']}")
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -745,6 +870,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     list_cmd.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     list_cmd.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
     list_cmd.add_argument("--json", action="store_true")
+
+    lint_registry = subparsers.add_parser("lint-registry", help="statically lint selected registry image manifests")
+    lint_registry.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
+    lint_registry.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
+    lint_registry.add_argument("--policy", action="append", dest="policies", default=[], help="registry policy to include; repeatable or comma-separated")
+    lint_registry.add_argument("--manifest-id", action="append", dest="manifest_ids", default=[], help="registry image manifest id to include; repeatable or comma-separated")
+    lint_registry.add_argument("--require-offline-transport", action="store_true", help="fail required rows without an internal digest ref or fallback sha")
+    lint_registry.add_argument("--json", action="store_true")
 
     lint = subparsers.add_parser("lint", help="statically lint a bench image manifest transport contract")
     lint.add_argument("--image-manifest", type=Path, required=True)
@@ -782,6 +915,22 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 _print_registry(summary)
             return 1 if summary["counts"]["missing_manifests"] else 0
+        if args.command == "lint-registry":
+            summary = lint_registry_manifests(
+                args.registry,
+                asset_root=args.asset_root,
+                policies=args.policies,
+                manifest_ids=args.manifest_ids,
+                require_offline_transport=args.require_offline_transport,
+            )
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                _print_registry_lint(summary)
+            counts = summary["counts"]
+            if counts["missing_manifests"] or counts["required_without_offline_transport"]:
+                return 1
+            return 0
         if args.command == "inventory-cache":
             summary = docker_cache_inventory(
                 prefixes=args.prefixes,

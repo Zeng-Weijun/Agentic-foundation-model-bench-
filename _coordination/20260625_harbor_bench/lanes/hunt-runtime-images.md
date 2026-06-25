@@ -591,3 +591,72 @@ commands/evidence:
 - Cross-lane dedup grep over runtime and runner ledgers: rc 0.
 
 Next runtime/image subdomain: after the promotion workflow consumes this lint gate, re-check whether a registry-level lint wrapper is needed for selected bench-registry policies, then return to concrete P0 digest population for the 39 TB2 missing-shared-tar rows and the two django10097 SWE rows.
+
+## Round 9 - Registry-level static lint gate audit (2026-06-26)
+
+Scope held: runtime/images lane only. No Docker push/pull/load/run, no benchmark/model execution, no production code/manifest/test edits. Read current `bench_registry.yaml`, image CLI semantics, suite image-preflight behavior, and runner-results dedup evidence.
+
+COMMENT-READY for #6/#11: add a registry-selected static lint gate to the promotion workflow; do not rely on `validate`, `list`, or suite `image_policy: required` for transport completeness
+
+dedup: comment-on-#6 for offline image transport gating and generated-manifest promotion readiness. comment-on-#11 for preserving runtime identity checks after transport lint passes. Not a new ISSUE-READY bug because Round 8 already established the core static lint versus runtime preflight split; this loop narrows the registry-level wrapper/promotion command. Not #8 except that worker Docker health remains a later runtime preflight input.
+
+location: `scripts/agentic_bench_images.py:318-377`, `scripts/agentic_bench_images.py:626-669`, `scripts/agentic_bench_images.py:739-753`, `scripts/agentic_bench_images.py:778-809`, `scripts/agentic_bench_suite.py:602-700`, `scripts/agentic_bench_suite.py:1062-1210`, `manifests/bench_registry.yaml:34-79`, `manifests/images/README.md:24-29`, `manifests/suite.example.yaml:271-289`.
+
+static_repro:
+- `python3 scripts/agentic_bench_images.py validate --registry manifests/bench_registry.yaml --json` and `python3 scripts/agentic_bench_images.py list --registry manifests/bench_registry.yaml --json` both returned rc 0 and identical `agentic_bench.registry_validation.v1` payloads with `manifests=9`, `images=104`, `required_images=94`, and `missing_manifests=0`. They prove structural reachability only.
+- `python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --json --only terminal_bench_2_1_image_smoke` returned rc 0; its required `image_preflight.check_argv` is `python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/terminal_bench_2_1.yaml --asset-root ... --docker-host unix:///tmp/rl/run/docker.sock --load-fallback --run-smoke --json`, with no `lint` token. Suite required preflight can therefore verify worker runtime state while still skipping the static transport-contract gate.
+- A static registry-selection probe over policies starting `required_for_` or `audit_manifest_for_` selected `p0_registry_smoke`, `repozero_py2js`, `terminal_bench_2_1_swe_dev_cache`, and `swebench_verified_django10097_identity_probe`. Per-manifest lint passed the first two and failed TB2 (`missing_offline_transport=39`) plus SWE django10097 (`missing_offline_transport=2`), yielding `STATIC_GATE_RC=1`.
+
+impact: If the orchestrator treats registry `validate`, `list`, or suite `--image-preflight-only` as the promotion gate, a warm worker can still pass runtime `check` for cached images without proving that the manifest is reproducible from a digest-pinned P0 ref or verified fallback tar. The current per-manifest lint prevents that only when explicitly composed over the registry rows selected for promotion/audit.
+
+fix: Keep `validate`/`list` structural and keep suite image preflight as runtime worker verification. Add either a tiny registry-level CLI wrapper or a documented CI/orchestrator gate that runs per-manifest lint over selected registry policies before any manifest is renamed P0-ready or wired into required suite execution. Exact current promotion-gate command:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 - <<'PY'
+from pathlib import Path
+import subprocess
+import sys
+import yaml
+registry = Path("manifests/bench_registry.yaml")
+config = yaml.safe_load(registry.read_text())
+selected_prefixes = ("required_for_", "audit_manifest_for_")
+selected = [row for row in config["image_manifests"] if str(row.get("policy", "")).startswith(selected_prefixes)]
+failed = []
+for row in selected:
+    manifest = registry.parent / row["path"]
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/agentic_bench_images.py",
+            "lint",
+            "--image-manifest",
+            str(manifest),
+            "--require-offline-transport",
+        ],
+        check=False,
+    )
+    if proc.returncode:
+        failed.append(row["id"])
+if failed:
+    print("image manifest promotion gate failed:", ", ".join(failed), file=sys.stderr)
+    sys.exit(1)
+PY
+```
+
+If promoted into the CLI, the equivalent should be a registry-level command such as `python3 scripts/agentic_bench_images.py lint-registry --registry manifests/bench_registry.yaml --policy-prefix required_for_ --policy-prefix audit_manifest_for_ --require-offline-transport`, returning nonzero when any selected manifest has required rows without internal digest refs or fallback sha.
+
+cross-lane check: `hunt-runner-results.md` has no contradictory registry-level lint finding. Its current image-preflight comments focus on runner result normalization and image-preflight failure classification, so this remains a #6/#11 runtime-image promotion-gate comment rather than a runner/parser issue.
+
+commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` skill instructions: rc 0.
+- Memory quick search for registry-level lint, bench-registry lint, `require-offline-transport`, and generated manifest names: rc 0, no relevant hits used.
+- Remote status/file inventory: rc 0; branch `feat/image-warmup-policy`, observed head `ccf74ac`, ledger length 593 before append.
+- Read current `agentic_bench_images.py`, `agentic_bench_suite.py`, registry/readme/suite excerpts, and grep for lint/preflight symbols: rc 0.
+- Registry `validate`/`list` JSON comparison: rc 0; payloads identical and structural-only.
+- First static selected-policy probe had a quoting bug in a diagnostic f-string and printed `STATIC_GATE_RC=1`; rerun with `.format()` succeeded as a probe and printed inner `STATIC_GATE_RC=1` with the selected failing manifests.
+- Suite dry-run probe for `terminal_bench_2_1_image_smoke`: rc 0; `contains_lint=False` in required preflight `check_argv`.
+- Registry policy bucket table: rc 0; selected promotion/audit rows are `p0_registry_smoke`, `repozero_py2js`, `terminal_bench_2_1_swe_dev_cache`, and `swebench_verified_django10097_identity_probe`.
+- Cross-lane grep and `_execute_image_preflights()` source read: rc 0.
+
+Next runtime/image subdomain: after registry-selected lint is wired into orchestration, re-check the concrete missing transports: publish/record P0 digests or verified fallback shas for the 39 TB2 rows and the two django10097 SWE rows, then run worker runtime `check` only after the static gate is green.

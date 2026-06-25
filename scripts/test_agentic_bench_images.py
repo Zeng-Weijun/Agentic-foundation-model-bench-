@@ -371,6 +371,135 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
 
 
+    def test_lint_registry_filters_policy_and_aggregates_manifest_lint(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            image_dir = root / "images"
+            image_dir.mkdir()
+            (image_dir / "ready.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: ready_bench
+                    images:
+                      - id: ready_runtime
+                        required: true
+                        image_ref: 100.97.118.137:8555/swe-data-harness/ready@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            (image_dir / "audit.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: audit_bench
+                    images:
+                      - id: audit_runtime
+                        required: true
+                        local_ref: tb2-offline/audit:20260425
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            registry = root / "bench_registry.yaml"
+            registry.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.registry.v1
+                    registry:
+                      domain: 100.97.118.137:8555
+                    image_manifests:
+                      - id: ready
+                        path: images/ready.yaml
+                        policy: required_for_registry_health
+                      - id: audit
+                        path: images/audit.yaml
+                        policy: audit_manifest_for_tb2_full_image_warmup
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            summary = module.lint_registry_manifests(
+                registry,
+                asset_root=root,
+                policies=["audit_manifest_for_tb2_full_image_warmup"],
+                require_offline_transport=True,
+            )
+
+        self.assertEqual(summary["schema_version"], "agentic_bench.registry_lint.v1")
+        self.assertEqual(summary["filters"]["policies"], ["audit_manifest_for_tb2_full_image_warmup"])
+        self.assertEqual(summary["counts"]["selected_manifests"], 1)
+        self.assertEqual(summary["counts"]["manifests"], 1)
+        self.assertEqual(summary["counts"]["images"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["counts"]["manifests_with_issues"], 1)
+        self.assertEqual(summary["manifests"][0]["id"], "audit")
+        self.assertEqual(summary["manifests"][0]["policy"], "audit_manifest_for_tb2_full_image_warmup")
+        self.assertEqual(summary["manifests"][0]["lint_status"], "missing_offline_transport")
+
+
+    def test_cli_lint_registry_reports_selected_policy_transport_gaps(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            image_dir = root / "images"
+            image_dir.mkdir()
+            (image_dir / "selected.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: selected_bench
+                    images:
+                      - id: missing_transport
+                        required: true
+                        local_ref: example/missing:latest
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            registry = root / "registry.yaml"
+            registry.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.registry.v1
+                    registry:
+                      domain: 100.97.118.137:8555
+                    image_manifests:
+                      - id: selected
+                        path: images/selected.yaml
+                        policy: required_for_smoke
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    "lint-registry",
+                    "--registry",
+                    str(registry),
+                    "--asset-root",
+                    str(root),
+                    "--policy",
+                    "required_for_smoke",
+                    "--require-offline-transport",
+                    "--json",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        summary = json.loads(proc.stdout)
+        self.assertEqual(summary["counts"]["selected_manifests"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+
+
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

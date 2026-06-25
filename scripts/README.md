@@ -114,6 +114,20 @@ python3 scripts/agentic_bench_images.py lint \
 
 `lint --require-offline-transport` does not inspect Docker or read tar bytes. It fails required rows unless they have either a digest-pinned internal `image_ref` or a configured fallback tar sha. Use it to keep audit manifests from being mistaken for worker-ready transport manifests.
 
+Run the same static transport gate across selected registry policies before promoting a one-command worker suite:
+
+```bash
+python3 scripts/agentic_bench_images.py lint-registry \
+  --registry manifests/bench_registry.yaml \
+  --asset-root manifests \
+  --policy required_for_registry_health \
+  --policy required_for_repozero_smoke \
+  --require-offline-transport \
+  --json
+```
+
+`lint-registry` accepts repeated or comma-separated `--policy` and `--manifest-id` filters. With no filters it lints every image manifest listed in `bench_registry.yaml`. Use this as the promotion gate for worker-ready selections: all required rows in the selected registry slice must have either an internal digest-pinned `image_ref` or a fallback tar checksum before large offline worker runs are enabled.
+
 Run only suite image preflights, without launching benchmark adapters:
 
 ```bash

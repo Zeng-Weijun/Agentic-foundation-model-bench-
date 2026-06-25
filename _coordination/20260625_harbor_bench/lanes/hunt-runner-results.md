@@ -805,3 +805,124 @@ Next loop should inspect parser provenance for actual adapter families: for Repo
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
 - Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
 - Tail final ledger for sanity: rc 0.
+
+## Round 9 source.native_artifacts roles/status map for #12 provenance and #10 redaction
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then `_coordination/20260625_harbor_bench/HANDOFF.md`.
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, observed head `ccf74ac` during this loop.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker execution, benchmark execution, or model requests.
+- Target benches: RepoZero, tau3, SWE-bench, Terminal-Bench 2.1, and DeepSWE.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: this is COMMENT-READY implementation detail for #12 and #10. It is related to #1 because parsers must keep benchmark status independent of process status, and related to #2 because invocation-unique run dirs must populate these pointers, but it is not a distinct root-cause issue. Static evidence shows the current suite writes no `source.native_artifacts` object at all in `agentic_bench.result.v1`, while the wrapper artifacts already have enough per-bench pointer material to define safe roles.
+
+COMMENT-READY for #12/#10: define typed `source.native_artifacts[]` records per adapter, with pointer-first provenance and explicit unsafe exclusions
+
+severity: HIGH
+
+dedup: comment-on-#12 for normalized-result provenance. comment-on-#10 for the source allowlist/redaction boundary. comment-on-#1 only where parser discovery must run even when adapter exit is nonzero. Not #2 except that future invocation ids and unique run dirs should be persisted as parent identity fields.
+
+location: `reports/next_result_parser_contract_20260625.md:662-670`, `scripts/agentic_bench_suite.py:1220-1248`, `scripts/agentic_bench_suite.py:1251-1278`, `scripts/agentic_bench_suite.py:1281-1300`, `/data/nips/bench/lib/bench_common.sh:223-227`, `/data/nips/bench/run_repozero_py2js.sh:96-100`, `/data/nips/bench/run_tau3_bench.sh:30-39`, `/data/nips/bench/run_tau3_bench.sh:55-57`, `/data/nips/bench/run_tau3_bench.sh:75-94`, `/data/nips/bench/run_deepswe.sh:147-159`, `/data/nips/bench/run_deepswe.sh:218-245`, `/data/nips/bench/run_deepswe.sh:247-289`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified.sh:168-186`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified_mini_swe_agent.sh:116-135`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified_openhands.sh:427-446`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh:111-141`, `scripts/run_terminal_bench_2_1_smoke.sh:200-253`
+
+static_repro:
+
+- The contract report already proposes `source.native_artifacts[]` pointer records with `role`, `path`, and `status`, but production result writing currently serializes only top-level suite/run/bench/adapter and `execution` plus `benchmark_result`; no `source`, parser identity, native-artifact status, model profile, worker, or run-dir provenance is emitted.
+- Current production parser coverage is RepoZero-only: `_repozero_benchmark_result()` parses score lines from text, `_benchmark_result_for_run()` returns `not_run/infra_error` immediately on nonzero adapter exit, then falls back to `no_parser/unknown` for non-RepoZero adapters. That means Terminal-Bench/DeepSWE nonzero executions can have usable manifests but still lose benchmark-native evidence.
+- `bench_finish` emits only `artifact=<path>` and `done: <path>`. Several wrappers also write richer `artifact_manifest.json` files; those are safer parser entry points than recursively copying `BENCH_RUN_DIR` or native run directories.
+
+Minimal shared record contract:
+
+- Required fields per record: `role`, `path`, `status`, `required`, and `read_policy`.
+- Useful optional fields: `exists`, `size_bytes`, `sha256`, `parser_action`, `status_reason`, and a parser-specific `summary` object containing only allowlisted scalar counts/ids.
+- Safe status vocabulary: `parsed`, `parsed_summary`, `parsed_excerpt`, `referenced_not_read`, `missing`, `not_emitted`, `not_run`, `setup_only`, `infra_blocked`, `parse_error`, `unsafe_excluded`, and `redacted_excluded`.
+- Safe read policies: `allowlist_json`, `allowlist_text_regex`, `pointer_only`, `metadata_only`, and `exclude_secret_or_transcript`.
+- Prohibited behavior for #10: no raw serialization of env files, command sidecars, configs, model transcripts, generated patches, tool logs, or arbitrary native directories. It is acceptable to name an unsafe path and mark it `redacted_excluded` or `unsafe_excluded`; do not inline its contents.
+
+RepoZero minimal records:
+
+- `repozero_run_env_summary`: `path=$BENCH_RUN_DIR/run.env.summary`, `status=parsed_summary`, `read_policy=allowlist_text_regex`; parse only `artifact=` and `done:` pointer lines.
+- `repozero_native_artifact_root`: path from `artifact=` or `bench_finish`, `status=referenced_not_read` when present; the generated output tree can contain code and test material, so the normalized result should store the pointer and cheap metadata only.
+- `repozero_score_log`: `path=$BENCH_RUN_DIR/repozero_py2js.log` or controller log path, `status=parsed_excerpt`, `read_policy=allowlist_text_regex`; extract only `ALL_PASS_CASES`, `TESTS`, and a bounded `fail_example` string with redaction.
+- `repozero_command`: `path=$BENCH_RUN_DIR/command.sh`, `status=unsafe_excluded`, `read_policy=exclude_secret_or_transcript`; this is useful as a pointer but should not be copied.
+- Impact/fix: this keeps the current RepoZero parser behavior but gives #12 enough provenance to distinguish parsed score lines from unparsed native output roots.
+
+tau3 minimal records:
+
+- `tau3_run_env_summary`: `path=$BENCH_RUN_DIR/run.env.summary`, `status=parsed_summary`, `read_policy=allowlist_text_regex`; parse `tau3_mode`, `tau3_dataset_dir`, `tau3_limit`, `tau3_n_concurrent`, `tau3_jobs_dir`, `tau3_task_count`, `tau3_harbor_run`, and `artifact=`.
+- `tau3_tasks_list`: `path=$BENCH_RUN_DIR/tasks.list`, `status=parsed_summary`, `read_policy=metadata_only`; record count and optionally task-directory basenames, not dataset file contents.
+- `tau3_dataset_root`: path from `tau3_dataset_dir` or skipped `artifact=`, `status=setup_only` when `tau3_harbor_run=skipped`; this is not a benchmark score artifact.
+- `tau3_jobs_root`: path from `tau3_jobs_dir` or success `artifact=`, `status=referenced_not_read` until a Harbor-native score file is identified; `status=missing` when Harbor was expected to run but no job root exists.
+- `tau3_harbor_log`: `path=$BENCH_RUN_DIR/tau3_harbor.log`, `status=parsed_excerpt`, `read_policy=allowlist_text_regex`; extract bounded infra/error/summary lines only.
+- `tau3_command`: `path=$BENCH_RUN_DIR/command.sh`, `status=unsafe_excluded` despite wrapper redaction; command sidecars should remain pointers under #10.
+- Impact/fix: prevents a dry-run or `TAU3_RUN_HARBOR=0` dataset pointer from being reported as a parsed benchmark result. It also gives #1 a way to represent `not_run/setup_only` separately from `unknown`.
+
+SWE-bench minimal records:
+
+- `swebench_artifact_manifest`: `path=$BENCH_RUN_DIR/artifact_manifest.json`, `status=parsed`, `read_policy=allowlist_json`; supported manifest shapes are SWE-agent, mini-swe-agent, and OpenHands.
+- `swebench_predictions` or `swebench_output_jsonl`: path from manifest key `predictions` or `output_jsonl`, `status=parsed_summary`, `read_policy=allowlist_json`; record instance ids/counts and whether predictions exist, but do not inline patches, model messages, or full outputs.
+- `swebench_eval_log`: path from manifest key `swebench_eval_log` or `eval_log`, `status=parsed_excerpt`, `read_policy=allowlist_text_regex`; extract resolved/failed/error totals if present and bounded failure categories.
+- `swebench_agent_trace_root`: path from manifest key `agent_trace_root`, `status=referenced_not_read`, `read_policy=pointer_only`; traces may contain model transcripts and tool outputs.
+- `swebench_eval_logs_root`: path from mini-swe-agent manifest, `status=referenced_not_read` or `parsed_summary` only when a specific official report file is allowlisted.
+- `swebench_exit_status`: path from SWE-agent manifest key `sweagent_exit_status` when present, `status=parsed_summary`, `read_policy=allowlist_text_regex`.
+- `swebench_config_snapshot`, `source_config`, `command`, and `eval_command`: `status=unsafe_excluded` or `redacted_excluded`; OpenHands config and command/config sidecars can carry model routing and credential-adjacent state, so normalized output should not copy them.
+- Impact/fix: all three SWE-bench scaffolds already expose manifests and predictions/eval-log pointers. The parser should summarize official outputs while treating traces/configs/patch content as pointer-only or excluded.
+
+Terminal-Bench 2.1 minimal records:
+
+- `terminal_bench_artifact_manifest`: `path=$BENCH_RUN_DIR/artifact_manifest.json`, `status=parsed`, `read_policy=allowlist_json`; this file is created before the wrapper exits nonzero on `tb_rc`, so parser discovery must not depend on `bench_finish`.
+- `terminal_bench_exit_status`: path from manifest key `exit_status`, `status=parsed_summary`, `read_policy=allowlist_text_regex`; parse only numeric `tb_rc`.
+- `terminal_bench_results_json`: path from manifest key `results`, `status=parsed_summary` if present, `status=missing` if absent; parse only task ids/pass counts/scores/error categories from a future allowlist.
+- `terminal_bench_run_metadata`: path from manifest key `run_metadata`, `status=parsed_summary` if present; parse only stable run/task metadata, not agent transcripts.
+- `terminal_bench_artifact_root`: path from manifest key `artifact`, `status=referenced_not_read`, `read_policy=pointer_only`.
+- `terminal_bench_log`: path from manifest key `terminal_bench_log`, `status=parsed_excerpt`, `read_policy=allowlist_text_regex`; extract bounded infra/error lines only.
+- `terminal_bench_command`: path from manifest key `command`, `status=unsafe_excluded`.
+- `terminal_bench_smoke_env_exports`: the repo smoke wrapper prints env exports and the runner path in dry-run; those are suite/controller evidence, not native artifacts. Do not copy env values into normalized native artifacts.
+- Impact/fix: this is the clearest #1/#12 interaction. A failed TB2 adapter can still leave `artifact_manifest.json`, `tb.exit_status`, and partial native output, but current `_benchmark_result_for_run()` returns `not_run` before looking. The parser must read allowlisted pointers from `BENCH_RUN_DIR` even when execution status is fail.
+
+DeepSWE minimal records:
+
+- `deepswe_artifact_manifest`: `path=$BENCH_RUN_DIR/artifact_manifest.json`, `status=parsed` when present, `read_policy=allowlist_json`; this manifest contains `result_json`, `pier_job_dir`, `pier_job_symlink`, `pier_log`, `command`, `env_summary`, and a safe wrapper-computed summary.
+- `deepswe_result_json`: path from manifest key `result_json`, `status=parsed_summary`, `read_policy=allowlist_json`; parse only `n_total_trials`, `n_trial_results`, stats, task ids, and high-level verifier status. Do not inline trajectories, prompts, tool transcripts, or generated patch content.
+- `deepswe_pier_job_dir` and `deepswe_pier_job_symlink`: paths from manifest, `status=referenced_not_read`, `read_policy=pointer_only`.
+- `deepswe_pier_log`: path from manifest key `pier_log`, `status=parsed_excerpt`, `read_policy=allowlist_text_regex`; bounded infra/error excerpts only.
+- `deepswe_env_summary`: path from manifest key `env_summary` or `$BENCH_RUN_DIR/run.env.summary`, `status=parsed_summary`, `read_policy=allowlist_text_regex`; record non-secret run shape such as agent, mode, task count, concurrency, job dir, and whether relay/proxy fields were set, not raw credential-bearing env.
+- `deepswe_command`: path from manifest key `command`, `status=unsafe_excluded`.
+- `deepswe_pier_env`: `path=$BENCH_RUN_DIR/pier.env`, `status=redacted_excluded`, `read_policy=exclude_secret_or_transcript`; wrapper writes `OPENAI_API_KEY` and optionally `MSWEA_API_KEY`, so normalized output may record presence/path only and must never copy values.
+- Impact/fix: when `result.json` exists, DeepSWE already writes a compact safe summary into `artifact_manifest.json`. When Pier fails before manifest creation, the parser should still report `pier.log` and `pier.env` statuses from `BENCH_RUN_DIR` without reading the secret env file.
+
+Cross-lane runtime/images check:
+
+- Read the current runtime lane. Its latest Round 8 is about static image-manifest lint and promotion gates for TB2.1/SWE image transport. That does not conflict with this parser map. Parser output should optionally point to `image_preflight_summary_path` at the top-level `source` object, but image manifest rows are not `source.native_artifacts` for benchmark scoring.
+- Runtime image-preflight failures should map into benchmark status as `infra_blocked` or `not_run` with image-preflight source pointers; native artifacts should still be discovered if an adapter started and wrote them before failure.
+
+Implementation map for normalized output:
+
+- Add parent `identity` or `run` fields per #12: `suite_id`, `run_id`, future `invocation_id`, `bench_id`, `adapter`, `model_profile_id`, `model_name`, worker/execution host, controller `run_dir`, and remote `BENCH_RUN_DIR`.
+- Add `parser`: `id`, `version`, `status`, `parsed_at`, `warnings`, and `redactions` with key paths only.
+- Add `source`: `run_manifest_path`, `controller_summary_path`, `controller_log_path`, optional `image_preflight_summary_path`, and `native_artifacts[]` records from the bench-specific role map above.
+- Let `execution.status` remain process-level. Let `benchmark_result.status` be `pass`, `fail`, `infra_error`, `infra_blocked`, `not_run`, `parse_error`, or `unknown`, based on parsed native evidence and explicit missing/unsafe statuses.
+- Tests should assert both positive pointer parsing and negative redaction: no `Authorization`, API key, bearer token, raw `pier.env`, raw OpenHands config, raw command files, model transcript text, or patch body appears in normalized output.
+
+### Round 9 command evidence
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions after locating the active cached skill path: rc 0.
+- Active worktree status: rc 0; branch `feat/image-warmup-policy`, observed head `ccf74ac`; status later showed unowned untracked `scripts/__pycache__/check_offline_images_manifest.cpython-310.pyc`, left untouched.
+- Read existing result contract, runner ledger Round 8, and parser/source grep evidence: rc 0.
+- Read `bench_common.sh`, RepoZero, tau3, DeepSWE, SWE-agent, mini-swe-agent, OpenHands, Terminal-Bench shared runner, and repo TB2 smoke wrapper line ranges listed above: rc 0.
+- Read current suite parser/result writer line ranges and runtime-images lane tail for cross-lane dedup: rc 0.
+- First ledger append attempt had a local shell quoting failure and exited rc 127 before writing; tail check confirmed Round 9 had not been appended. Retried append via remote Python stdin: rc 0.
+
+Next runner/results subdomain: fixture-ready parser expectations for these role maps. Start with a synthetic `source.native_artifacts[]` expected-output fixture for Terminal-Bench nonzero-with-manifest and DeepSWE failure-before-result, because those exercise #1, #10, and #12 together without running benchmarks.
+
+## Round 9 validation evidence
+
+- `git status --short --untracked-files=all`: rc 0. Status showed this lane's modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` plus concurrent/unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` and `scripts/test_agentic_bench_images.py`; those files were not touched by this lane.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- First `rg` token-pattern scanner had shell quoting damage in the regex and printed a shell error despite outer rc 0, so it was ignored. Corrected remote Python scanner: rc 0, `secret_pattern_scan=no_matches`.
+- `git diff --stat --` and `git diff --numstat --` for this ledger after Round 9 append: rc 0, `113 insertions` before this validation block.

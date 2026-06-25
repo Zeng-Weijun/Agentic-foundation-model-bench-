@@ -27,3 +27,16 @@ Two generated audit manifests currently materialize swe_dev cache state with ima
 - `swebench_verified_django10097.yaml`: two required rows for the SWE-bench `django__django-10097` promotion probe: the official eval base and the exact `swerex-prebuilt` wrapper. This manifest is expected to pass on swe_dev and fail with `identity_mismatch` on the current worker until the official base is staged correctly.
 
 Generated cache manifests are audit/promotion inputs. Do not treat them as P0-ready until every required row either has a digest-pinned registry ref or a verified fallback tar sha256.
+
+Use the registry-level static gate when checking a worker-ready policy set:
+
+```bash
+python3 scripts/agentic_bench_images.py lint-registry \
+  --registry manifests/bench_registry.yaml \
+  --asset-root manifests \
+  --policy audit_manifest_for_tb2_full_image_warmup \
+  --policy required_for_swebench_django10097_promotion_smoke \
+  --require-offline-transport
+```
+
+As of the current audit, that TB2 + SWE promotion selection is expected to fail closed because 39 TB2 rows and 2 SWE django rows still lack P0 digest refs or verified fallback checksums.
