@@ -1063,3 +1063,121 @@ Commands/evidence:
 - Stale ID grep for old draft commands and fresh `sparql-university`/`sqlite-with-gcov` identities: rc 0.
 
 Next runtime/image subdomain: after batch2 artifacts and manifest rows are materialized by the implementation lane, audit the verified lint drop from 38 to 30 and then pick the next batch from `sqlite-with-gcov`, `password-recovery`, `path-tracing-reverse`, `query-optimize`, and `sanitize-git-repo`, before service/qemu/torch/large rows.
+
+## Round 13 - TB2 remaining 34 audit after batch2 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed. Read-only Docker `image inspect`, manifest/lint reads, grep/find, and fallback tar hash reads only.
+
+COMMENT-READY for #6/#8/#12: batch2 is correct, but worker-j9jjd still needs fallback-first TB2 promotion; next implementation should wire the already-created batch3 fallback artifacts before exporting more images
+
+dedup: comment-on-#6 for TB2 transport population and static promotion gating. comment-on-#8 because direct P0 pull is still rootless-daemon network-unreachable on worker-j9jjd. comment-on-#12 because the worker batch2 checker JSON is the reproducibility proof that result/provenance should preserve. Not #11: all inspected remaining TB2 local tags match their manifest `source_image_id`; no SWE/image-lineage mismatch was found. No new ISSUE-READY block.
+
+Current state:
+- Observed branch/head: `feat/image-warmup-policy` at `eb552a3 Materialize TB2 low-risk transport batch`.
+- Worktree had an untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch3_20260626.tsv`; it changed during this read from 4 rows to 5 rows. Treat it as concurrent staging evidence, not committed manifest truth.
+- TB2-only verified lint command returned rc 1 with `images=89`, `required_with_digest_ref=5`, `required_with_fallback_sha=55`, `fallback_tar_verified=55`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=34`.
+- The handoff's combined TB2+SWE count `fallback_tar_verified=57` is consistent: TB2 has 55 verified fallback rows, and SWE django10097 contributes 2.
+- Batch2 implemented 4 of the Round 12 candidates in the manifest: `schemelike-metacircular-eval`, `regex-chess`, `openssl-selfsigned-cert`, and `sqlite-db-truncate`.
+- Round 12's remaining recommended rows are still manifest-missing: `rstan-to-pystan`, `raman-fitting`, `regex-log`, and `sparql-university`. The untracked batch3 TSV now stages those four plus `sqlite-with-gcov`.
+
+Worker transport implication:
+- Batch2 worker fallback-load/run-smoke passed: `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch2_worker_check_20260626.json` reports `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `identity_mismatch=0`, `errors=0`.
+- The direct P0 pull probe is still not a reliable worker readiness signal. `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch2_worker_p0_pull_20260626.txt` shows host `curl` to `/v2/` succeeded, but rootless Docker pull failed with `dial tcp 100.97.118.137:8555: connect: network is unreachable`.
+- Therefore, do not make remaining TB2 rows P0-only. Every promoted row should keep `fallback_tar` plus `fallback_tar_sha256`, and worker-ready status should require `check --load-fallback --run-smoke` until #8/rootless registry networking is fixed.
+
+### Recommended next implementation batch
+
+Use the already-created untracked batch3 artifacts first. This avoids more `docker save` work and should be the lowest-risk next change: update the five manifest rows with the TSV's P0 digest refs and fallback tar+sha fields, then run verified static lint and a worker fallback-load/run-smoke subset check.
+
+Expected static gate movement after only these five rows are manifest-wired:
+- TB2-only `required_without_offline_transport`: `34 -> 29`.
+- TB2-only `fallback_tar_verified`: `55 -> 60`.
+- TB2-only `required_with_fallback_sha`: `55 -> 60`.
+- TB2-only `required_with_digest_ref`: `5 -> 10`, if the P0 digest refs from the TSV are also added.
+- Combined TB2+SWE verified fallback count should move from `57 -> 62`.
+
+| row | manifest line | current risk category | local ref | exact source image ID | inspect size bytes | staged fallback tar size | staged fallback sha |
+| --- | ---: | --- | --- | --- | ---: | ---: | --- |
+| `rstan-to-pystan` | 965 | low-size, already artifacted | `tb2-offline/rstan-to-pystan:20260425` | `sha256:83b98640ec92a139654122401f56d4f7471d0282ebf006154c406f38ea468eeb` | 205657034 | 211495936 | `bc64a7b493db935b75d827cc2daeedaf167ac29b984d2a2b26e0f2483f304bc4` |
+| `raman-fitting` | 914 | low-size, already artifacted | `tb2-offline/raman-fitting:20260425` | `sha256:3ed67c59f865f29e6c9693cf36912da16e978c101e611face59fba70f0afe0a4` | 229209193 | 236170752 | `4e5c6c7774ad151bb9f9691fec9346308dcba6d7ec897248824a6859436aec02` |
+| `regex-log` | 941 | low-size, already artifacted | `tb2-offline/regex-log:20260425` | `sha256:5d9eae30a8a3d2a2853c023bd1f976528c4d7f7a825d926206648aa52d60606e` | 298200058 | 307172352 | `7e68a41e7976324352fdb717738f457c0204347841aa375a27afc6458a4d6a31` |
+| `sparql-university` | 1016 | low-size, already artifacted | `tb2-offline/sparql-university:20260425` | `sha256:b7c23a59ae22a6ba1f724cdd69b5572d850ba3220f662bed4674bd7a23fafec8` | 303417565 | 312662016 | `26848e0a361609db40ede648a7b1768d49902f272d55f45469daee875bf29e7e` |
+| `sqlite-with-gcov` | 1043 | low-size, already artifacted | `tb2-offline/sqlite-with-gcov:20260425` | `sha256:3a0432d8b6977202c755a01b0d3050ef8908f4d6a0c4337c8a13e2925b76d9fa` | 310840758 | 319819264 | `ea2d0f9ea92cbea470d750f4c5b44edc21f8e407a699e46689f7e64a381a1292` |
+
+Use the untracked TSV as input only after re-reading it and confirming no concurrent edit changed it:
+
+```bash
+sha256sum _coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch3_20260626.tsv
+python3 - <<'PY'
+import csv, hashlib
+from pathlib import Path
+p = Path("_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch3_20260626.tsv")
+for r in csv.DictReader(p.open(), delimiter="\t"):
+    tar = Path(r["fallback_tar"])
+    h = hashlib.sha256()
+    with tar.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    assert h.hexdigest() == r["fallback_tar_sha256"], r["slug"]
+    print(r["slug"], "sha-ok", tar)
+PY
+```
+
+Then update only those five manifest rows and run:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py lint-registry \
+  --registry manifests/bench_registry.yaml \
+  --asset-root manifests \
+  --policy audit_manifest_for_tb2_full_image_warmup \
+  --require-offline-transport \
+  --verify-fallback-files \
+  --json
+```
+
+Do not treat the P0 digest refs as worker-ready yet. The implementation acceptance should also include a worker fallback subset check equivalent to the batch2 proof, with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `--load-fallback`, and `--run-smoke`; a direct `docker pull` failure must fall back to the verified tar, not fail the batch.
+
+### Remaining rows after batch3
+
+If batch3 is manifest-wired, the remaining gap should be 29 rows. Next export candidates after batch3 should stay with low-size generic rows before touching service, qemu, torch, large, or data-heavy rows:
+
+| suggested order | row | current risk category | source image ID | inspect size bytes |
+| --- | --- | --- | --- | ---: |
+| 1 | `password-recovery` | low-size | `sha256:8a4a2ba55bfa8edd5dece054d844969a60d1f237ae2e18cf4ce6842fbd1c3465` | 396013238 |
+| 2 | `path-tracing-reverse` | low-size | `sha256:d0aed029cc004bed222ed1cd39dea1a8a149cd66bb2616354a75e9cb762e6718` | 452873228 |
+| 3 | `query-optimize` | low-size | `sha256:b7888e243c321aa0c7fa3076325057b9e1d85637f5e9443a7a80cb1494cf152c` | 453788685 |
+| 4 | `sanitize-git-repo` | low-size | `sha256:6fb3909be2d3e41fdba90e7aac02bb6e68e2b31485c426f7b9a21cdd6e53e187` | 466395053 |
+| 5 | `tune-mjcf` | low-size | `sha256:77711f5e2763702941189d7959b99ab7edb1d1a0c9c095fd33c669f6b4fca41e` | 529319551 |
+| 6 | `overfull-hbox` | low-size | `sha256:a58256eef1e4e2fb761e753180d216e3edbd0fb79dc3e4b65a7b8c1a16ebb168` | 531075314 |
+| 7 | `polyglot-c-py` | low-size | `sha256:34f1e78e9e23c8c9cc5954a4c235d9b5eb432db89c8c1322c36b13aefa3b4222` | 559936028 |
+| 8 | `winning-avg-corewars` | low-size | `sha256:3cb6bfd6a3a6db04aa52a00b5eeb2eab71ba1fc4a83c69802126411324ecd892` | 735891766 |
+
+Rows to isolate or defer:
+- Service smoke isolation: `nginx-request-logging`, `pypi-server`.
+- Secret/log isolation: `vulnerable-secret`.
+- Data or ML runtime caution: `portfolio-optimization`, `video-processing`, `train-fasttext`, `sam-cell-seg`, `mteb-retrieve`, `reshard-c4-data`, `multi-source-data-merger`.
+- QEMU isolation: `qemu-startup`, `qemu-alpine-ssh`.
+- Torch/pytorch heavy rows: `pytorch-model-cli`, `pytorch-model-recovery`, `torch-pipeline-parallelism`, `torch-tensor-parallelism`.
+- Large write/push risk: `multi-source-data-merger(6203486893 bytes)`, `torch-tensor-parallelism(11026213679)`, `torch-pipeline-parallelism(11315069350)`, `pytorch-model-recovery(19201784321)`.
+
+Cross-lane check:
+- `hunt-runner-results.md` Round 13 confirms the batch2 checker JSON should become a #12 provenance fixture and explicitly says the P0 pull failure remains #8/runtime readiness. No contradiction with this runtime transport recommendation.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Memory quick search for TB2/lint-registry/image-warmup terms: rc 0, no relevant hits used.
+- Read WORKFLOW continuous bug-hunt section: rc 0.
+- Remote head/status and lint evidence command: rc 0; branch/head `feat/image-warmup-policy` / `eb552a3`, untracked batch3 TSV observed.
+- TB2 verified lint command: outer rc 0, inner `LINT_RC=1`, parse rc 0; counts quoted above.
+- Batch2 evidence file listing: rc 0.
+- Batch2 TSV, worker P0 pull failure, and worker checker summary read: rc 0.
+- Untracked batch3 TSV first hash probe: rc 0; initially observed 4 rows.
+- Manifest line read around batch2/Round12 rows: rc 0.
+- Remaining-34 Docker inspect derivation: rc 0; all inspected IDs matched manifest source IDs.
+- Re-read untracked batch3 TSV with line numbers: rc 0; observed 5 rows and sha `fecbcc0b7ea566c3eb82e794072d057b0b368f8e49b71d1a7917139e7db14324`.
+- Batch3 fallback tar hash verification for all 5 current rows: rc 0.
+- Cross-lane grep over `hunt-runner-results.md` and current runtime ledger tail: rc 0.
+
+Next runtime/image subdomain: after batch3 manifest wiring and worker fallback smoke, audit that TB2 verified lint drops from 34 to 29 and that no manifest row is P0-only. Then pick the next low-size generic export batch before service/qemu/torch/large rows.

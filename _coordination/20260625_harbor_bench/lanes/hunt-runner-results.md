@@ -1467,3 +1467,139 @@ Cross-lane runtime/images check:
 - `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
+
+## Round 13 batch2 image-check provenance red-test map
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` before code/evidence inspection.
+- Active branch/head observed: `feat/image-warmup-policy` / `eb552a3 Materialize TB2 low-risk transport batch`.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker, benchmark execution, model requests, commits, or pushes.
+- Focus: cross-check Round 12 image-check provenance contract against current scripts/tests and the new batch2 worker evidence JSON, then reduce it to the minimal red tests an implementation agent should add.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: all findings remain covered by existing issues. Summary/result provenance is #12, image warmup proof is #6, image identity evidence is #11, redaction is #10, and required preflight failure classification is #1. The current head adds real batch2 evidence but does not introduce a separate root cause. It gives a better fixture for the already-known #12/#6/#11 gap.
+
+Current batch2 evidence shape:
+
+- Evidence file: `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch2_worker_check_20260626.json`.
+- It is already a native checker payload: `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_lowrisk_batch2_worker_smoke`.
+- Counts: `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, `missing=0`, `pulled=0`.
+- Images: four required `terminal_bench_task_runtime` rows for `tb2_openssl_selfsigned_cert`, `tb2_regex_chess`, `tb2_schemelike_metacircular_eval`, and `tb2_sqlite_db_truncate`.
+- Each image has `status=present`, `load_status=loaded`, `smoke_status=passed`, `fallback.sha256_status=match`, and inspect attempts ending in `identity_status=match`.
+- No image in this evidence file has stderr fields, so it is the right happy-path provenance fixture. Redaction still needs a synthetic smoke-failure fixture with `smoke_stderr`.
+
+Static current-code cross-check:
+
+- `scripts/agentic_bench_images.py:600-613` can include raw `smoke_stderr` on smoke failure, so any normalizer must use an allowlist and redaction rather than copying checker JSON wholesale.
+- `scripts/agentic_bench_images.py:628-643` returns all fields needed for the provenance contract in `agentic_bench.image_check.v1`.
+- `scripts/agentic_bench_images.py:1018-1029` returns nonzero for smoke errors, tar/identity mismatch, missing images, or requested optional-missing failure. The checker does not fake-green the image smoke.
+- `scripts/agentic_bench_suite.py:1027-1057` caches only preflight return codes. The owner log receives checker stdout; cached waiters write only `[image_preflight_cached] ... rc=N`. If implementation parses only per-run logs, identical preflight commands can lose provenance for cached rows.
+- `scripts/agentic_bench_suite.py:1079-1139` stores only coarse preflight row fields: `bench_id`, `required`, `policy`, `status`, `exit_code`, `fatal`, timestamps, and `log_path`.
+- `scripts/agentic_bench_suite.py:1198-1209` writes `agentic_bench.image_preflight_summary.v1`, but does not parse/promote checker JSON into `image_check_counts`, `image_checks`, or source pointers.
+- `scripts/agentic_bench_suite.py:1251-1262` classifies any nonzero execution as `benchmark_result.status=infra_error` and `failure_category=adapter_crash`, including `fail:image_preflight:2`.
+- `scripts/agentic_bench_suite.py:1281-1300` writes `agentic_bench.result.v1` without `source`, `image_preflight`, `image_preflight_summary_path`, or `image_check_artifacts`.
+- Existing tests cover adapter blocking, RepoZero benchmark-vs-execution split, preflight-only coarse summary, preflight concurrency/dedupe, and fallback-file lint. They do not assert checker JSON promotion, normalized result image-preflight provenance, `image_preflight_failed` classification, or positive redaction while preserving parsed smoke-failure status.
+
+Synthetic current-behavior probe:
+
+- Feeding the batch2 worker JSON through `_execute_image_preflights()` as a preflight command stdout returns rc 0 and writes a log containing `agentic_bench.image_check.v1`, but the summary row keys remain only `bench_id`, `ended_at`, `exit_code`, `fatal`, `log_path`, `policy`, `required`, `started_at`, and `status`.
+- In that successful probe, `image_check_counts in row == False` and `image_checks in row == False`.
+- A synthetic `_attach_benchmark_result()` call with `status=fail:image_preflight:2` and `exit_code=2` still writes `benchmark_result.status=infra_error`, `failure_category=adapter_crash`, with no `source` and no `image_preflight` object.
+- This probe confirms the Round 12 contract is still red against current head, and the red tests below should fail before implementation.
+
+### Minimal red tests for the implementation agent
+
+1. `test_image_preflight_summary_promotes_batch2_checker_json_from_log`
+
+- Fixture input: copy or distill `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch2_worker_check_20260626.json` into a stable test fixture such as `scripts/fixtures/image_preflight/tb2_lowrisk_batch2_worker_check.json`.
+- Test shape: run `_execute_image_preflights()` with a temp command that prints this JSON and exits 0. Do not invoke Docker or the real checker.
+- Expected current failure: summary row lacks `image_check_counts` and `image_checks`.
+- Required assertions after implementation:
+  - `rc == 0`, `summary.status == 0`, `summary.results[0].status == "pass"`.
+  - `summary.results[0].image_check_parse_status == "parsed"`.
+  - `summary.results[0].image_check_counts.tar_verified == 4`, `loaded == 4`, `present == 4`, `smoke_passed == 4`, `identity_mismatch == 0`, `errors == 0`.
+  - `len(summary.results[0].image_checks[0].images) == 4`.
+  - Every promoted image has `required is True`, `role == "terminal_bench_task_runtime"`, `status == "present"`, `load_status == "loaded"`, `smoke_status == "passed"`, `fallback.sha256_status == "match"`, and final inspect identity status `match`.
+  - Promoted fallback paths are either safe basenames or approved pointer fields; raw stdout/stderr bodies are absent.
+
+2. `test_result_artifact_includes_image_preflight_provenance_on_pass`
+
+- Fixture input: same batch2 checker JSON and the image-preflight summary produced by test 1, plus a synthetic passing adapter execution.
+- Expected current failure: `agentic_bench.result.v1` has no `source` object and no `image_preflight` object.
+- Required assertions after implementation:
+  - `result.execution.status == "pass"` and normal benchmark parser semantics remain unchanged.
+  - `result.source.image_preflight_summary_path` points at `controller/image_preflight_summary.json`.
+  - `result.source.image_preflight_log_path` points at the preflight log.
+  - `result.source.image_manifest_paths` contains the checker manifest path.
+  - `result.source.image_check_artifacts[0]` has `role=image_check_stdout_json`, `status=parsed`, `read_policy=allowlist_json`, and a stable `json_pointer` into the summary.
+  - `result.image_preflight.status == "pass"`, `parse_status == "parsed"`, and `result.image_preflight.counts.loaded == 4`, `tar_verified == 4`, `smoke_passed == 4`.
+
+3. `test_required_image_preflight_failure_is_infra_blocked_not_adapter_crash`
+
+- Fixture input: synthetic execution result with `status=fail:image_preflight:2`, `exit_code=2`, and a parsed image-check failure summary. A tiny synthetic checker JSON with `counts.errors=1`, `smoke_passed=0`, and one `smoke_status=failed` image is enough.
+- Expected current failure: `_attach_benchmark_result()` writes `benchmark_result.status=infra_error` and `failure_category=adapter_crash`.
+- Required assertions after implementation:
+  - `result.execution.status == "fail"` and `result.execution.adapter_status == "fail:image_preflight:2"`.
+  - `result.benchmark_result.parser_status == "not_run"`.
+  - `result.benchmark_result.status == "infra_blocked"`.
+  - `result.benchmark_result.metric == "image_preflight"`.
+  - `result.benchmark_result.score_claim_valid is False`.
+  - `result.benchmark_result.failure_category == "image_preflight_failed"`.
+  - Parsed `image_preflight` evidence is still present under `result.image_preflight` and `source.image_check_artifacts[]`.
+
+4. `test_image_check_parser_redacts_smoke_stderr_but_preserves_failure_status`
+
+- Fixture input: synthetic `agentic_bench.image_check.v1` with one required image, `status=present`, `smoke_status=failed`, `counts.errors=1`, and raw `smoke_stderr` containing a sentinel such as `AUTH_SENTINEL_SHOULD_NOT_APPEAR`.
+- Expected current failure: there is no positive parsed/redacted image-check field at all. A test that asserts only sentinel absence would falsely pass today, so it must also assert parsed failure status.
+- Required assertions after implementation:
+  - `image_check_parse_status == "parsed"`.
+  - The promoted image has `smoke_status == "failed"` and `smoke_stderr_redacted is True`.
+  - `redactions[]` includes a key-path-only entry such as `images[0].smoke_stderr`.
+  - Serialized `image_preflight_summary.json`, `summary.json`, and `agentic_bench.result.v1` do not contain the sentinel, raw `smoke_stderr` value, raw Docker stdout/stderr, raw command lines, env values, or model/adapter transcript text.
+
+5. Cache-path guard if the implementation parses through `_execute_image_preflights()`
+
+- This is not a separate issue, but it is a cheap regression guard for the existing command-cache path at `scripts/agentic_bench_suite.py:1027-1057`.
+- Test shape: two runs share the exact same preflight command that prints the batch2 checker JSON and exits 0, with `image_preflight_concurrency > 1`.
+- Required assertions after implementation:
+  - `summary.image_preflight_unique_commands == 1` remains true.
+  - Both result rows have `image_check_parse_status == "parsed"` and identical allowlisted `image_check_counts`, even though only one subprocess executed.
+  - Cached rows must not be limited to a bare `[image_preflight_cached] ... rc=0` log pointer with no structured image-check evidence.
+
+Implementation notes for red-test authors:
+
+- Keep batch2 as the happy-path real fixture because it exercises `tar_verified`, `loaded`, `smoke_passed`, fallback sha match, and worker rootless fallback load without needing Docker in unit tests.
+- Keep redaction as a synthetic failure fixture because the batch2 evidence intentionally has no stderr fields.
+- Do not make test fixtures depend on mutable `_coordination/` paths at runtime. Copy a distilled JSON fixture under a test fixture directory or generate it inline from a small allowlisted dict.
+- Assertions should inspect serialized JSON strings as well as Python objects, because #10 is about what gets written to disk.
+- Do not make the normalized result copy the whole checker JSON. Preserve an allowlisted subset and safe source pointers.
+
+Cross-lane runtime/images check:
+
+- Runtime-images Round 12 confirms batch2 materialized four low-risk TB2 transports and warns that worker direct P0 pull still fails under the rootless daemon while fallback load/run-smoke passes.
+- This runner/results lane has no contradiction with #6/#8 runtime notes. The batch2 JSON proves the fallback-load path is valid; this lane says suite summaries and normalized results need to retain that proof structurally.
+- The P0 pull failure remains #8/runtime readiness, not a runner/result parser issue.
+
+### Round 13 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first, output truncated by tool.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Remote handoff/head/status command: rc 0; read `_coordination/20260625_harbor_bench/HANDOFF.md`, observed branch `feat/image-warmup-policy`, head `eb552a3 Materialize TB2 low-risk transport batch`, and no status output at that moment.
+- Read current runner ledger Round 12 tail: rc 0.
+- Read current runtime-images lane tail: rc 0.
+- Bounded Python inspection of `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch2_worker_check_20260626.json`: rc 0; printed only schema, counts, image ids/roles/statuses, key names, fallback sha statuses, inspect identity statuses, and stderr-field presence.
+- Grep for image-check provenance/result fields across scripts/reports/ledger: rc 0, with harmless `grep: tests: No such file or directory` because this repo keeps tests under `scripts/test_*.py`.
+- `nl`/`sed` reads for `scripts/agentic_bench_suite.py`, `scripts/agentic_bench_images.py`, `scripts/test_agentic_bench_suite.py`, and `scripts/test_agentic_bench_images.py`: rc 0.
+- Listed batch2 evidence files in `_coordination/20260625_harbor_bench/inventory`: rc 0.
+- First synthetic probe had outer rc 0 but generated preflight subprocess rc 1 due a one-liner quoting mistake; it was ignored and rerun.
+- Corrected synthetic probe with a temp helper script: rc 0. It confirmed `_execute_image_preflights()` returns summary status pass while omitting `image_check_counts`/`image_checks`, and `_attach_benchmark_result()` maps `fail:image_preflight:2` to `infra_error`/`adapter_crash` with no `source` or `image_preflight` object.
+
+## Round 13 validation evidence
+
+- `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; concurrent/unowned `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch3_worker_check_20260626.json`, and `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch3_20260626.tsv` were present and left untouched.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
