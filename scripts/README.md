@@ -101,6 +101,19 @@ python3 scripts/agentic_bench_images.py inventory-cache \
 
 `--inspect-identities` performs a read-only `docker image inspect` for each selected ref and records full `Id` plus `RepoDigests`. Use it before generating identity-enforced manifests for SWE-bench or Terminal-Bench caches; the default inventory path remains fast and only records `docker image ls` fields.
 
+
+Statically lint a generated image manifest before using it as a full offline transport contract:
+
+```bash
+python3 scripts/agentic_bench_images.py lint \
+  --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml \
+  --asset-root manifests \
+  --require-offline-transport \
+  --json
+```
+
+`lint --require-offline-transport` does not inspect Docker or read tar bytes. It fails required rows unless they have either a digest-pinned internal `image_ref` or a configured fallback tar sha. Use it to keep audit manifests from being mistaken for worker-ready transport manifests.
+
 Run only suite image preflights, without launching benchmark adapters:
 
 ```bash

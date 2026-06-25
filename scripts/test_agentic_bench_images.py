@@ -289,6 +289,88 @@ class AgenticBenchImagesTest(unittest.TestCase):
         )
 
 
+
+    def test_lint_manifest_reports_required_rows_without_offline_transport(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "images.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: lint_probe
+                    images:
+                      - id: digest_ready
+                        required: true
+                        image_ref: 100.97.118.137:8555/swe-data-harness/example@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                      - id: tar_ready
+                        required: true
+                        fallback_tar: images/example.tar
+                        fallback_tar_sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+                      - id: required_missing_transport
+                        required: true
+                        local_ref: example/missing:latest
+                      - id: optional_missing_transport
+                        required: false
+                        local_ref: example/optional:latest
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            summary = module.lint_image_manifest(manifest, require_offline_transport=True)
+
+        self.assertEqual(summary["counts"]["images"], 4)
+        self.assertEqual(summary["counts"]["required_images"], 3)
+        self.assertEqual(summary["counts"]["required_with_digest_ref"], 1)
+        self.assertEqual(summary["counts"]["required_with_fallback_sha"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["images"][2]["lint_status"], "missing_offline_transport")
+        self.assertEqual(summary["images"][3]["lint_status"], "optional_not_required")
+
+
+
+    def test_cli_lint_reports_missing_offline_transport(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "image.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: cli_lint_probe
+                    images:
+                      - id: missing_transport
+                        required: true
+                        local_ref: example/missing:latest
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    "lint",
+                    "--image-manifest",
+                    str(manifest),
+                    "--asset-root",
+                    str(root),
+                    "--require-offline-transport",
+                    "--json",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 1, proc.stderr)
+        summary = json.loads(proc.stdout)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+
+
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

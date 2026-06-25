@@ -311,6 +311,72 @@ def _is_internal_ref(ref: str) -> bool:
     return ref.startswith(INTERNAL_REGISTRY_PREFIXES)
 
 
+def _is_internal_digest_ref(ref: str) -> bool:
+    return _is_internal_ref(ref) and "@sha256:" in ref
+
+
+def lint_image_manifest(
+    manifest_path: str | Path,
+    *,
+    asset_root: str | Path = DEFAULT_ASSET_ROOT,
+    require_offline_transport: bool = False,
+) -> dict[str, Any]:
+    manifest = Path(manifest_path)
+    asset_root_path = Path(asset_root)
+    bench_id, entries = image_entries(_load(manifest))
+    counts = {
+        "images": len(entries),
+        "required_images": 0,
+        "optional_images": 0,
+        "required_with_digest_ref": 0,
+        "required_with_fallback_sha": 0,
+        "required_without_offline_transport": 0,
+    }
+    results: list[dict[str, Any]] = []
+    for entry in entries:
+        required = bool(entry["required"])
+        has_digest_ref = any(_is_internal_digest_ref(ref) for ref in entry["image_refs"])
+        has_fallback_sha = bool(entry.get("fallback_tar_sha256") or entry.get("fallback_tar_sha256_path"))
+        if required:
+            counts["required_images"] += 1
+        else:
+            counts["optional_images"] += 1
+        if required and has_digest_ref:
+            counts["required_with_digest_ref"] += 1
+        if required and has_fallback_sha:
+            counts["required_with_fallback_sha"] += 1
+
+        lint_status = "ok"
+        if not required:
+            lint_status = "optional_not_required"
+        elif require_offline_transport and not (has_digest_ref or has_fallback_sha):
+            lint_status = "missing_offline_transport"
+            counts["required_without_offline_transport"] += 1
+
+        results.append(
+            {
+                "id": entry["id"],
+                "role": entry["role"],
+                "required": required,
+                "local_refs": entry["local_refs"],
+                "image_refs": entry["image_refs"],
+                "fallback_tars": entry["fallback_tars"],
+                "has_internal_digest_ref": has_digest_ref,
+                "has_fallback_sha": has_fallback_sha,
+                "lint_status": lint_status,
+            }
+        )
+    return {
+        "schema_version": "agentic_bench.image_lint.v1",
+        "manifest": str(manifest),
+        "bench_id": bench_id,
+        "asset_root": str(asset_root_path),
+        "mode": {"require_offline_transport": require_offline_transport},
+        "counts": counts,
+        "images": results,
+    }
+
+
 def _docker_load(tar_path: str, env: dict[str, str], runner: Runner) -> CommandResult:
     return runner(["docker", "load", "-i", tar_path], env)
 
@@ -651,6 +717,21 @@ def _print_inventory(summary: dict[str, Any]) -> None:
         print(f"- {image['ref']}{size}")
 
 
+def _print_lint(summary: dict[str, Any]) -> None:
+    counts = summary["counts"]
+    print(f"Manifest: {summary['manifest']}")
+    print(f"Bench: {summary['bench_id']}")
+    print(
+        "Summary: "
+        f"images={counts['images']} "
+        f"required={counts['required_images']} "
+        f"missing_offline_transport={counts['required_without_offline_transport']}"
+    )
+    for image in summary["images"]:
+        if image["lint_status"] != "ok":
+            print(f"- {image['id']}: {image['lint_status']}")
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -664,6 +745,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     list_cmd.add_argument("--registry", type=Path, default=DEFAULT_REGISTRY)
     list_cmd.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
     list_cmd.add_argument("--json", action="store_true")
+
+    lint = subparsers.add_parser("lint", help="statically lint a bench image manifest transport contract")
+    lint.add_argument("--image-manifest", type=Path, required=True)
+    lint.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
+    lint.add_argument("--require-offline-transport", action="store_true", help="fail required rows without an internal digest ref or fallback sha")
+    lint.add_argument("--json", action="store_true")
 
     check = subparsers.add_parser("check", help="check a bench image manifest against local Docker cache")
     check.add_argument("--image-manifest", type=Path, required=True)
@@ -709,6 +796,17 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 _print_inventory(summary)
             return 0
+        if args.command == "lint":
+            summary = lint_image_manifest(
+                args.image_manifest,
+                asset_root=args.asset_root,
+                require_offline_transport=args.require_offline_transport,
+            )
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                _print_lint(summary)
+            return 1 if summary["counts"].get("required_without_offline_transport", 0) else 0
         summary = check_image_manifest(
             args.image_manifest,
             asset_root=args.asset_root,
