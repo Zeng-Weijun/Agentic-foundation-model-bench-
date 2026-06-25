@@ -1,10 +1,12 @@
 schema_version: agentic_bench.offline_images.v1
-generated_at: "2026-06-25T21:45:00+08:00"
+generated_at: "2026-06-25T22:42:00+08:00"
 scope:
   check_mode: repozero_exact_image_tar
   controller_host: dev
   source_image: ghcr.io/jessezzzzz/repoarena-new:latest
-  source_digest_status: unavailable_ghcr_denied_from_dev_as_of_2026_06_25
+  source_digest_status: available_after_ghcr_token_on_dev_as_of_2026_06_25
+  source_manifest_digest: sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+  source_image_id: sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c
   staging_policy:
     - stage_from_internet_enabled_host_with_ghcr_access
     - place_tar_under_shared_asset_root
@@ -28,13 +30,20 @@ images:
       - images/repozero/repoarena-new_latest.docker-inspect.json
       - images/repozero/repoarena-new_latest.manifest.json
     preload_method:
-      - run scripts/stage_repozero_image.sh --execute on dev after GHCR auth is fixed or on another internet-enabled staging host with GHCR access
+      - staged on dev with scripts/stage_repozero_image.sh --execute after GHCR token was configured
       - verify sha256sum -c images/repozero/repoarena-new_latest.tar.sha256
       - load on worker with DOCKER_HOST=unix:///tmp/rl/run/docker.sock docker load -i images/repozero/repoarena-new_latest.tar
       - verify docker image inspect ghcr.io/jessezzzzz/repoarena-new:latest on worker
     staging_status:
-      status: blocked_not_staged
-      reason: dev_docker_can_reach_ghcr_but_current_credentials_are_denied_for_exact_tag
+      status: staged_loaded_worker_present
+      reason: ghcr_token_configured_on_dev_then_shared_tar_loaded_on_worker
       dev_tooling: docker_available_skopeo_podman_buildah_missing
-      tar_status: missing
-      worker_image_status: missing
+      stage_log: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/logs/repozero_stage_20260625_2158.log
+      worker_load_log: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/logs/repozero_worker_load_20260625_2231.log
+      source_manifest_digest: sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+      image_id: sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c
+      tar_status: present_sha256_ok_on_dev_and_worker
+      worker_load_status: loaded_once_daemon_dropped_after_load
+      worker_image_status: present_after_rootless_guard_restart
+      worker_loader_check: present=1_missing=0_loaded=0_skipped=1
+      rootless_caveat: docker_info_ps_images_work_but_docker_version_and_python_sdk_version_still_fail_on_version_endpoint

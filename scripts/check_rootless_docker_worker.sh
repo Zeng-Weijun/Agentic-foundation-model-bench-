@@ -86,6 +86,7 @@ start_daemon_if_safe() {
     --copy-up=/run \
     --propagation=rslave \
     dockerd \
+      --config-file=/dev/null \
       --host=unix:///tmp/rl/run/docker.sock \
       --data-root=/tmp/rl/data \
       --exec-root=/tmp/rl/exec \

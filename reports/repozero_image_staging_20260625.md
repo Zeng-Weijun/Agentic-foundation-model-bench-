@@ -11,18 +11,29 @@
 - Worker public internet: not used.
 - RepoZero benchmark: not run.
 
-## Executive Result
+## Current Result
 
-`dev` has an approved Docker-based staging path in principle: Docker 26.1.3 is installed, the Docker daemon is reachable, and the shared target root exists.
+`dev` now has GHCR access for the exact image after the token follow-up, and the RepoZero Docker image has been staged into the shared offline asset root:
 
-Staging is not feasible in the current `dev` state because GHCR denies access to the exact tag:
+```text
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar.sha256
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.docker-inspect.json
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.manifest.json
+```
+
+The worker loaded the image from the shared tar. The rootless Docker daemon dropped after the `docker load` step, but the image persisted under `/tmp/rl/data`; after `scripts/check_rootless_docker_worker.sh --restart-if-down`, `docker image inspect ghcr.io/jessezzzzz/repoarena-new:latest` succeeds on worker.
+
+The rootless caveat remains: `docker info`, `docker ps`, `docker images`, and this loader path work, but the Docker `/version` endpoint still fails, so Python Docker SDK version negotiation remains broken.
+
+The original pre-token blocker was:
 
 ```text
 ghcr.io/jessezzzzz/repoarena-new:latest
 Head "https://ghcr.io/v2/jessezzzzz/repoarena-new/manifests/latest": denied: denied
 ```
 
-The worker still does not have the image in rootless Docker, and the shared RepoZero target directory is empty. No tar was staged in this lane.
+That blocker is no longer the current state for this image.
 
 ## Fixed Offline Contract
 
@@ -41,9 +52,132 @@ Expected staged files, once an authorized internet-enabled staging host pulls th
 /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.manifest.json
 ```
 
-The manifest intentionally uses the tag `ghcr.io/jessezzzzz/repoarena-new:latest`, not a digest, because the registry manifest could not be read with current `dev` credentials.
+The manifest now records both the tag and observed registry/image identifiers:
+
+```text
+registry manifest digest: sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+docker image id:          sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c
+```
 
 ## Evidence
+
+### GHCR token follow-up and staging on `dev`
+
+The token value is intentionally not recorded here. It is stored on `dev` in a `chmod 600` env file and was used only for `docker login ghcr.io`.
+
+Staging log:
+
+```text
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/logs/repozero_stage_20260625_2158.log
+```
+
+Observed in the staging log:
+
+```text
+started=2026-06-25T22:27:15+08:00
+host=zwj2
+repo_head=570c5f5
+mode:        execute
+Digest: sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+Status: Downloaded newer image for ghcr.io/jessezzzzz/repoarena-new:latest
+Staged RepoZero image tar:
+  /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar
+  /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar.sha256
+finished=2026-06-25T22:28:47+08:00
+```
+
+Shared directory after staging:
+
+```text
+repoarena-new_latest.docker-inspect.json  2.5K
+repoarena-new_latest.manifest.json        667
+repoarena-new_latest.tar                  1.2G
+repoarena-new_latest.tar.sha256           91
+```
+
+Checksum on `dev`:
+
+```text
+repoarena-new_latest.tar: OK
+```
+
+Metadata check:
+
+```text
+repoarena-new_latest.manifest.json keys: config,layers,mediaType,schemaVersion
+repoarena-new_latest.docker-inspect.json Id: sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c
+repoarena-new_latest.docker-inspect.json RepoTags: ghcr.io/jessezzzzz/repoarena-new:latest
+```
+
+### Worker load and post-load persistence
+
+Worker load log:
+
+```text
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/logs/repozero_worker_load_20260625_2231.log
+```
+
+Observed in the worker load log:
+
+```text
+started=2026-06-25T22:30:52+08:00
+host=zwj2-64rlk-3469265-worker-0
+repo_head=570c5f5
+repoarena-new_latest.tar: OK
+Mode: load
+Summary: present=0 missing=0 loaded=1 skipped=0 tar_missing=0 errors=0
+- repozero_py2js_repoarena_runtime: loaded
+Cannot connect to the Docker daemon at unix:///tmp/rl/run/docker.sock. Is the docker daemon running?
+```
+
+Interpretation: the loader completed the `docker load`, but the rootless daemon dropped before the trailing `docker image inspect` in the surrounding smoke command.
+
+After running:
+
+```bash
+WORKER_SSH='ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn' \
+  scripts/check_rootless_docker_worker.sh --restart-if-down
+```
+
+Observed guard summary:
+
+```text
+restart_skipped=docker_info_ok
+docker_info_rc=0
+docker_version_rc=1
+raw_version_rc=52
+docker_ps_rc=0
+docker_images_rc=0
+compose_version_rc=0
+compose_ps_rc=0
+python_docker_version_rc=1
+```
+
+Worker image inspect after guard:
+
+```text
+info_ok server=26.1.3 images=240 root=/tmp/rl/data
+worker_repozero_present id=sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c size=1202432176 repo_tags=["ghcr.io/jessezzzzz/repoarena-new:latest"]
+ghcr.io/jessezzzzz/repoarena-new:latest e01d5505ea76 1.2GB
+```
+
+Offline loader check on worker:
+
+```bash
+scripts/load_offline_images.sh \
+  --manifest manifests/offline_images.repozero.yaml \
+  --asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench \
+  --check
+```
+
+Exit code: `0`.
+
+Observed:
+
+```text
+Summary: present=1 missing=0 loaded=0 skipped=1 tar_missing=0 errors=0
+- repozero_py2js_repoarena_runtime: present
+```
 
 ### Tooling on `dev`
 
@@ -85,7 +219,7 @@ server=26.1.3 root=/mnt/docker_root_swebench_800g storage=overlay2 cgroup=cgroup
 
 Interpretation: Docker is the only practical staging tool currently available on `dev`.
 
-### `dev` image and registry check
+### Pre-token `dev` image and registry check
 
 Command:
 
@@ -129,9 +263,9 @@ manifest_access=no rc=1
 Get "https://ghcr.io/v2/jessezzzzz/repoarena-new/manifests/latest": denied: denied
 ```
 
-Interpretation: storage is adequate for a normal image tar, but the exact GHCR tag is neither cached locally nor readable with current credentials.
+Interpretation at the time of this pre-token probe: storage was adequate for a normal image tar, but the exact GHCR tag was neither cached locally nor readable with the then-current credentials.
 
-### GHCR auth and pull probe on `dev`
+### Pre-token GHCR auth and pull probe on `dev`
 
 Command:
 
@@ -179,9 +313,9 @@ pull_probe=failed rc=1
 Error response from daemon: Head "https://ghcr.io/v2/jessezzzzz/repoarena-new/manifests/latest": denied: denied
 ```
 
-Interpretation: GHCR is reachable from `dev`; the blocker is authorization for this package/tag, not basic network or Docker-daemon availability.
+Interpretation at the time of this pre-token probe: GHCR was reachable from `dev`; the blocker was authorization for this package/tag, not basic network or Docker-daemon availability.
 
-### Shared tar search
+### Pre-token shared tar search
 
 Command:
 
@@ -199,9 +333,9 @@ Exit code: `0`.
 
 Observed: no output.
 
-Interpretation: no matching shared RepoZero image tar/checksum is currently available in the checked roots.
+Interpretation at the time of this pre-token probe: no matching shared RepoZero image tar/checksum was available in the checked roots.
 
-### Worker rootless check
+### Pre-token worker rootless check
 
 Command:
 
@@ -233,7 +367,7 @@ drwxr-xr-x 3 root root 1024 Jun 25 21:38 ..
 worker_image_present=no
 ```
 
-Interpretation: the worker remains blocked until a tar is staged and loaded through the rootless Docker socket.
+Interpretation at the time of this pre-token probe: the worker was blocked until a tar was staged and loaded through the rootless Docker socket.
 
 ## Staging Commands For An Authorized Host
 
@@ -299,8 +433,10 @@ DOCKER_HOST=unix:///tmp/rl/run/docker.sock scripts/load_offline_images.sh \
 ## Decision
 
 - `dev` Docker path: available.
-- `dev` GHCR access for the exact tag: blocked by authorization.
-- Shared tar/checksum: absent.
-- Worker rootless image: absent.
+- `dev` GHCR access for the exact tag: available after token follow-up.
+- Shared tar/checksum: present and sha256 verified on `dev` and worker.
+- Worker rootless image: present after `docker load` and daemon health guard.
+- Worker offline loader check: `present=1 missing=0 loaded=0 skipped=1`.
+- Remaining Docker blocker: `/version` endpoint still fails, so Python Docker SDK based harnesses remain unsafe until the rootless daemon build/config is fixed or the runner avoids SDK version negotiation.
 - RepoZero benchmark: not run.
-- Next required action: provide GHCR credentials authorized for `ghcr.io/jessezzzzz/repoarena-new:latest`, or stage the tar from another internet-enabled host and place it at the fixed target paths above.
+- Next required action: run a small RepoZero harness smoke against the preloaded image without pulling from worker public internet, and keep a daemon preflight/restart guard before each high-concurrency worker batch.
