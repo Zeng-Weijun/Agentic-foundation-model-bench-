@@ -18,7 +18,6 @@ Key reports:
 - `reports/deployment_plan_20260625.md` - GitHub/shared-disk deployment plan.
 - `reports/yaml_suite_launcher_plan_20260625.md` - dry-run-first `sh + yaml` suite launcher draft.
 - `reports/worker_j9jjd_preflight_20260625.md` - live worker/rootless/API preflight.
-- `reports/tau2_proxy_smoke_20260625.md` - first worker tau2 smoke through the `dev` relay proxy.
 - `reports/offline_image_loader_20260625.md` - offline/rootless Docker image check/load helper.
 - `manifests/offline_images.tb21_fix_git.yaml` - exact one-task Terminal-Bench 2.1 `fix-git` image manifest.
 - `reports/cocoabench_prepare_smoke_20260625.md` - CoCoA worker prepare-only smoke and env blocker.
@@ -27,6 +26,8 @@ Key reports:
 - `reports/terminal_bench_2_1_smoke_plan_20260625.md` - Terminal-Bench 2.1 one-task smoke wrapper plan.
 - `reports/terminal_bench_2_1_image_load_debug_20260625.md` - Terminal-Bench 2.1 `fix-git` image load root-cause analysis.
 - `reports/vitabench_repozero_worker_preflight_20260625.md` - VitaBench executable smoke and RepoZero image blocker.
+- `reports/tau3_harbor_adapter_inventory_20260626.md` - tau3 adapter/dataset/runner state and offline image blockers.
+- `reports/swe_terminal_image_inventory_20260626.md` - swe-dev/shared/worker image-cache gap for SWE-bench Verified and TerminalBench2.1.
 - `reports/trace_manifest_template.yaml` - per-task trace manifest template.
 
 First runnable suite entrypoint:
@@ -42,12 +43,12 @@ Current executable smoke:
 ```bash
 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml \
   --execute \
-  --only tau2_paper_core \
+  --only repozero_py2js_smoke \
   --model-profile dev_proxy_gpt54mini_8130 \
   --max-concurrency 1
 ```
 
-This uses worker -> `dev` proxy -> 8.130 relay for model traffic. The 2026-06-25 run completed the tau2 harness and wrote artifacts; sampled task reward was `0.0`, so treat it as infrastructure proof only.
+This uses worker -> `dev` proxy -> 8.130 relay for model traffic. RepoZero is the current verified executable smoke while tau3-bench is being wired through the Harbor adapter and offline image path. The example suite is staged for 8.130 relay concurrency 40 with a documented ceiling of 50.
 
 Executable runs now separate adapter/process status from parsed benchmark status
 when a parser is available. The first normalized parser covers RepoZero Py2JS and
@@ -75,12 +76,29 @@ python3 scripts/agentic_bench_images.py check \
   --docker-host unix:///tmp/rl/run/docker.sock
 ```
 
+Inventory `swe_dev` Docker cache before promoting SWE-bench or Terminal-Bench images to P0/shared tars:
+
+```bash
+python3 scripts/agentic_bench_images.py inventory-cache \
+  --docker-host unix:///var/run/docker.sock \
+  --prefix tb2-offline/ \
+  --prefix swebench/ \
+  --prefix swerex-prebuilt \
+  --prefix ghcr.io/all-hands-ai/runtime \
+  --output reports/swe_dev_docker_cache_inventory_20260626.json \
+  --json >/tmp/agentic_bench_cache_inventory_stdout.json
+```
+
 `manifests/bench_registry.yaml` is the lightweight Harbor/P0 contract for the
 workspace registry at `100.97.118.137:8555`. Per-bench files under
 `manifests/images/` record digest refs when available, fallback tar paths,
 checksums, and smoke commands. The suite dry-run now emits `image_preflight`
 commands for Docker-backed benches; required preflights run before adapters in
-`--execute` mode.
+`--execute` mode. `manifests/suite.example.yaml` resolves `project_root: ..`
+relative to the suite file, so image checks follow the active checkout/worktree,
+and it enables shared-tar `--load-fallback` plus container `--run-smoke` by
+default. Registry `--pull` stays opt-in until a manifest has digest-pinned P0
+refs.
 
 Run image checks without starting benchmark adapters:
 
@@ -97,15 +115,26 @@ This writes `run_manifest.json`, `image_preflight_summary.json`, and per-bench
 logs under the controller output directory. Optional image preflights are skipped
 unless `--include-optional-image-preflight` is set; add
 `--fail-on-optional-image-preflight` when optional audit failures should fail the
-controller command.
+controller command. If an explicit `--only`/filter selects zero image-preflight
+runs, the command exits 2 unless `--allow-empty-plan` is set.
 
 Terminal-Bench 2.1 one-task dry-run wrapper:
 
 ```bash
-scripts/run_terminal_bench_2_1_smoke.sh --dry-run
+scripts/run_terminal_bench_2_1_smoke.sh --dry-run --task-id gcode-to-text
 ```
 
-Execution is fail-closed until the worker has a usable Terminal-Bench Python 3.13 environment and the selected `tb2-offline/fix-git:20260425` image is loaded into rootless Docker.
+The suite also has an enabled image-only preflight row for the load-smoked `gcode-to-text` image:
+
+```bash
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
+  --image-preflight-only \
+  --only terminal_bench_2_1_image_smoke \
+  --model-profile dev_proxy_gpt54mini_8130 \
+  --output-dir /tmp/agentic_tb21_image_smoke
+```
+
+Full Terminal-Bench execution remains fail-closed until the worker has a usable Terminal-Bench Python 3.13 environment and the adapter result path is wired. The previous `fix-git` tar is kept as optional known-bad evidence and is not the required smoke image.
 
 Current local Qwen score anchor:
 
@@ -181,9 +210,9 @@ cp model.env.example model.env
 也可以不改 `model.env`，直接用内置 profile：
 
 ```bash
-BENCH_MODEL_PROFILE=gpt54mini_8130 ./run_tau2.sh
-BENCH_MODEL_PROFILE=gpt54_8130 ./run_tau2.sh
-BENCH_MODEL_PROFILE=qwen_sglang ./run_tau2.sh
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run --model-profile dev_proxy_gpt54mini_8130
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run --model-profile gpt54_8130
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run --model-profile qwen3_coder_30b_a3b_sglang_future
 ```
 
 8.130 中转模型示例：
@@ -218,11 +247,7 @@ bench/.env
 
 ## 单独跑
 
-τ²-Bench smoke：
-
-```bash
-NUM_TASKS=1 NUM_TRIALS=1 MAX_CONCURRENCY=1 ./run_tau2.sh
-```
+tau3-bench smoke is routed through the shared suite once `run_tau3_bench.sh` is present under `/data/nips/bench`; the old customer-service smoke path is removed from the active suite.
 
 VitaBench smoke：
 
@@ -285,7 +310,7 @@ REPOZERO_MODE=full REPOZERO_WORKERS=4 REPOZERO_CODEX_ATTEMPTS=3 ./run_repozero_p
 指定子集：
 
 ```bash
-BENCHES="tau2 vitabench terminal_bench" ./run_all_smoke.sh
+BENCHES="vitabench terminal_bench repozero_py2js" ./run_all_smoke.sh
 ```
 
 ## 并发 smoke suite
@@ -305,13 +330,13 @@ SUITE_CONCURRENCY=3 ./run_qwen_smoke_suite.sh
 指定 benchmark 子集：
 
 ```bash
-SUITE_BENCHES="tau2 vitabench terminal_bench cocoabench" ./run_gpt54mini_smoke_suite.sh
+SUITE_BENCHES="vitabench terminal_bench cocoabench repozero_py2js" ./run_gpt54mini_smoke_suite.sh
 ```
 
 默认 suite 会跑：
 
 ```bash
-tau2 vitabench terminal_bench cocoabench repozero_py2js swebench_verified
+vitabench terminal_bench cocoabench repozero_py2js swebench_verified tau3_bench
 ```
 
 为了控制额度和时间，suite 里每个 benchmark 都会压到最小 smoke：单任务、单 trial、单 worker；suite 层用 `SUITE_CONCURRENCY` 控制同时启动几个 benchmark。
@@ -335,14 +360,13 @@ runs/<bench>/<model>_<timestamp>/
 
 各 benchmark 自己的原生结果仍保留在原项目目录，例如：
 
-- τ²: `tau2-bench/data/simulations/<save_to>/results.json`
 - VitaBench: `VitaBench/data/simulations/<save_to>`
 - SWE-bench: `SWE-agent/trajectories/*__<suffix>/preds.json`
 - CoCoA: `runs/.../results`
 
 ## 当前确认程度
 
-- `tau2`：`.venv/bin/tau2` 已验证可启动，已有 gpt-5.4 smoke 结果。
+- `tau3-bench`：Harbor adapter 已存在，1-task dataset 生成路径已验证；worker 离线运行还需要预构建 runtime 镜像/共享 tar。
 - `vitabench`：`.venv/bin/vita` 已验证可启动，已有 gpt-5.4 smoke 结果。
 - `terminal_bench`：`.venv/bin/tb --help` 已验证可启动，历史有 89 task full run。
 - `swebench_verified`：镜像和历史 eval report 足够；脚本依赖 `/data/swe/SWE-agent` 和 conda env。
@@ -374,7 +398,6 @@ The YAML controls the model profile, suite concurrency, per-benchmark worker
 budgets, and the selected benchmark list. The current selection is:
 
 ```text
-tau2_paper_core
 vitabench_full
 swebench_verified
 terminal_bench_2_0
@@ -389,8 +412,7 @@ rather than the 241-task `original-tasks` directory. The converter defaults to
 local prebuilt images named `tb2-offline/<task>:20260425`; for offline rootless
 workers these images must be preloaded from `dev` or shared storage before a
 task starts. Set `TB2_USE_PREBUILT_IMAGES=0` only on an internet/build-capable
-host. `tau2_paper_core` runs
-only airline, retail, and telecom `base` with 4 trials. `cocoabench` points to
+host. `cocoabench` points to
 `cocoabench-head`; the wrapper auto-enables encrypted-task loading and filters to
 the 148 `task.yaml.enc` tasks supported by the current `parallel_inference.py`
 runner. The remaining 27 head tasks use the separate

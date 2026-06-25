@@ -117,6 +117,74 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][0]["fallback"]["sha256_status"], "match")
         self.assertEqual(docker_calls, [["docker", "image", "inspect", "ghcr.io/jessezzzzz/repoarena-new:latest"]])
 
+    def test_optional_missing_can_be_fatal_for_optional_audit(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "optional.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: optional_runtime
+                    images:
+                      - id: optional_placeholder
+                        required: false
+                        image_transport: todo
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            def runner(argv, env):
+                return module.CommandResult(1, "", "missing")
+
+            summary = module.check_image_manifest(
+                manifest,
+                asset_root=root,
+                runner=runner,
+                fail_on_optional_missing=True,
+            )
+
+        self.assertEqual(summary["counts"]["optional_missing"], 1)
+        self.assertTrue(summary["mode"]["fail_on_optional_missing"])
+
+    def test_inventory_cache_filters_prefixes_and_sets_docker_host(self):
+        module = load_module()
+        calls = []
+
+        def fake_runner(argv, env):
+            calls.append((argv, env.get("DOCKER_HOST")))
+            self.assertEqual(argv, ["docker", "image", "ls", "--format", "{{json .}}"] )
+            return module.CommandResult(
+                0,
+                "\n".join(
+                    [
+                        json.dumps({"Repository": "tb2-offline/headless-terminal", "Tag": "20260425", "ID": "sha256:aaa", "Digest": "<none>", "Size": "185MB"}),
+                        json.dumps({"Repository": "swebench/sweb.eval.x86_64.django_1776_django-13810", "Tag": "latest", "ID": "sha256:bbb", "Digest": "<none>", "Size": "1.2GB"}),
+                        json.dumps({"Repository": "unrelated/image", "Tag": "latest", "ID": "sha256:ccc", "Digest": "<none>", "Size": "10MB"}),
+                    ]
+                ) + "\n",
+                "",
+            )
+
+        summary = module.docker_cache_inventory(
+            prefixes=["tb2-offline/", "swebench/"],
+            docker_host="unix:///tmp/test-docker.sock",
+            runner=fake_runner,
+        )
+
+        self.assertEqual(calls, [(["docker", "image", "ls", "--format", "{{json .}}"], "unix:///tmp/test-docker.sock")])
+        self.assertEqual(summary["schema_version"], "agentic_bench.docker_cache_inventory.v1")
+        self.assertEqual(summary["counts"], {"images": 2, "prefixes": 2})
+        self.assertEqual(
+            [image["ref"] for image in summary["images"]],
+            [
+                "swebench/sweb.eval.x86_64.django_1776_django-13810:latest",
+                "tb2-offline/headless-terminal:20260425",
+            ],
+        )
+
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

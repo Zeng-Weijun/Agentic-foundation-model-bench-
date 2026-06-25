@@ -85,6 +85,19 @@ python3 scripts/agentic_bench_images.py check \
   --docker-host unix:///tmp/rl/run/docker.sock
 ```
 
+Inventory a Docker-heavy host cache before staging missing images into P0/shared tars:
+
+```bash
+python3 scripts/agentic_bench_images.py inventory-cache \
+  --docker-host unix:///var/run/docker.sock \
+  --prefix tb2-offline/ \
+  --prefix swebench/ \
+  --prefix swerex-prebuilt \
+  --prefix ghcr.io/all-hands-ai/runtime \
+  --output reports/swe_dev_docker_cache_inventory_20260626.json \
+  --json >/tmp/agentic_bench_cache_inventory_stdout.json
+```
+
 Run only suite image preflights, without launching benchmark adapters:
 
 ```bash
@@ -100,21 +113,35 @@ The preflight-only command writes `run_manifest.json`,
 `image_preflight_summary.json`, and `logs/<bench>.image_preflight.log`. Optional
 preflights are skipped by default; include them with
 `--include-optional-image-preflight`, and make optional failures fatal with
-`--fail-on-optional-image-preflight`.
+`--fail-on-optional-image-preflight`. If a filter selects zero runs, the command
+exits 2 unless `--allow-empty-plan` is set.
 
-Add `--pull` only for digest-pinned images in the internal P0 registry. Add
-`--load-fallback` only after the fallback tar checksum is expected to match.
+Suite `image_preflight` can forward `pull`, `load_fallback`, and `run_smoke` to
+the checker. Use `pull` only for digest-pinned images in the internal P0
+registry. Use `load_fallback` only after the fallback tar checksum is expected to
+match; pair it with `run_smoke` when the manifest contains a container smoke
+command.
 
 Dry-run the current Terminal-Bench 2.1 one-task smoke wrapper:
 
 ```bash
-scripts/run_terminal_bench_2_1_smoke.sh --dry-run
+scripts/run_terminal_bench_2_1_smoke.sh --dry-run --task-id gcode-to-text
+```
+
+Run the enabled image-only suite preflight for the verified TB2.1 smoke image:
+
+```bash
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
+  --image-preflight-only \
+  --only terminal_bench_2_1_image_smoke \
+  --model-profile dev_proxy_gpt54mini_8130 \
+  --output-dir /tmp/agentic_tb21_image_smoke
 ```
 
 Run a narrow executable legacy smoke:
 
 ```bash
-./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --execute --only tau2_paper_core --output-dir /tmp/agentic_bench_tau2_smoke
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --execute --only repozero_py2js_smoke --output-dir /tmp/agentic_bench_repozero_smoke
 ```
 
 `--execute` writes process-level adapter status plus a normalized result artifact
@@ -127,7 +154,7 @@ RepoZero Py2JS has the first parser, based on native `ALL_PASS_CASES` and
 
 This command should be run from `dev` after `dev` can SSH to `worker-j9jjd`. At the time of the preflight, local Mac -> worker SSH works, but `dev` -> worker SSH returns `Permission denied (publickey)`.
 
-Use `--only tau2_paper_core,repozero_py2js` for a narrow smoke and `--max-concurrency N` to override suite-level benchmark concurrency. Per-benchmark worker counts remain in YAML so large runs can be reviewed before execution.
+Use `--only repozero_py2js_smoke,vitabench_delivery_one_task_smoke` for a narrow smoke and `--max-concurrency N` to override suite-level benchmark concurrency. Per-benchmark worker counts remain in YAML so large runs can be reviewed before execution. The 8.130 relay profile is staged for suite-level concurrency 40 and should stay at or below 50 unless the relay capacity changes.
 
 Pending adapters are present but disabled in `manifests/suite.example.yaml`:
 

@@ -556,6 +556,27 @@ def _image_manifest_values(value: Any) -> list[str]:
     return [str(value)]
 
 
+def _default_project_root_for_suite(suite_path: str | Path) -> Path:
+    parent = Path(suite_path).expanduser().resolve().parent
+    if parent.name == "manifests":
+        return parent.parent
+    return parent
+
+
+def _resolve_suite_relative_path(value: Any, *, suite_path: str | Path, default: Path) -> str:
+    if value is None or value == "":
+        path = default
+    else:
+        path = Path(str(value)).expanduser()
+    if not path.is_absolute():
+        path = Path(suite_path).expanduser().resolve().parent / path
+    return str(path.resolve())
+
+
+def _image_preflight_bool(bench_map: dict[str, Any], image_config: dict[str, Any], bench_key: str, config_key: str) -> bool:
+    return _bool(bench_map.get(bench_key, image_config.get(config_key)), default=False)
+
+
 def _image_preflight_for_bench(
     *,
     bench_map: dict[str, Any],
@@ -565,12 +586,18 @@ def _image_preflight_for_bench(
     worker_host: str,
     ssh_options: list[Any],
     execution_kind: str,
+    suite_path: str | Path,
 ) -> dict[str, Any] | None:
     manifests = _image_manifest_values(bench_map.get("image_manifest") or bench_map.get("image_manifests"))
     if not manifests:
         return None
     policy = str(bench_map.get("image_policy", image_config.get("default_policy", "required")))
-    project_root = str(image_config.get("project_root", bench_map.get("image_project_root", bench_root)))
+    required = policy not in {"optional", "none", "disabled", "skip"}
+    project_root = _resolve_suite_relative_path(
+        bench_map.get("image_project_root", image_config.get("project_root")),
+        suite_path=suite_path,
+        default=_default_project_root_for_suite(suite_path),
+    )
     asset_root = str(
         bench_map.get(
             "image_asset_root",
@@ -581,6 +608,13 @@ def _image_preflight_for_bench(
         )
     )
     docker_host = str(bench_map.get("docker_host", image_config.get("docker_host", worker.get("docker_host", ""))))
+    allow_pull = _image_preflight_bool(bench_map, image_config, "image_pull", "pull")
+    load_fallback = _image_preflight_bool(bench_map, image_config, "image_load_fallback", "load_fallback")
+    run_smoke = _image_preflight_bool(bench_map, image_config, "image_run_smoke", "run_smoke")
+    fail_on_optional_missing = _bool(
+        bench_map.get("image_fail_on_optional_missing", image_config.get("fail_on_optional_missing")),
+        default=not required,
+    )
     commands: list[dict[str, Any]] = []
     for manifest in manifests:
         check_argv = [
@@ -594,6 +628,14 @@ def _image_preflight_for_bench(
         ]
         if docker_host:
             check_argv.extend(["--docker-host", docker_host])
+        if allow_pull:
+            check_argv.append("--pull")
+        if load_fallback:
+            check_argv.append("--load-fallback")
+        if run_smoke:
+            check_argv.append("--run-smoke")
+        if fail_on_optional_missing and not required:
+            check_argv.append("--fail-on-optional-missing")
         if _bool(image_config.get("json"), default=True):
             check_argv.append("--json")
         remote_body = "\n".join(
@@ -618,7 +660,6 @@ def _image_preflight_for_bench(
                 "command": _render_command(command_argv),
             }
         )
-    required = policy not in {"optional", "none", "disabled", "skip"}
     return {
         "schema_version": "agentic_bench.image_preflight.v1",
         "policy": policy,
@@ -626,6 +667,10 @@ def _image_preflight_for_bench(
         "project_root": project_root,
         "asset_root": asset_root,
         "docker_host": docker_host,
+        "allow_pull": allow_pull,
+        "load_fallback": load_fallback,
+        "run_smoke": run_smoke,
+        "fail_on_optional_missing": fail_on_optional_missing,
         "manifest": manifests[0],
         "manifests": manifests,
         "command_argv": commands[0]["command_argv"],
@@ -784,6 +829,7 @@ def build_run_plan(
             worker_host=worker_host,
             ssh_options=ssh_options,
             execution_kind=execution_kind,
+            suite_path=suite_path,
         )
         if image_preflight and image_preflight["required"]:
             notes.append("image preflight required before adapter execution")
@@ -1238,6 +1284,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--image-preflight-only", action="store_true", help="run image preflight commands only; never launch adapters")
     parser.add_argument("--include-optional-image-preflight", action="store_true", help="include optional image preflights in --image-preflight-only")
     parser.add_argument("--fail-on-optional-image-preflight", action="store_true", help="make optional image preflight failures fatal when included")
+    parser.add_argument("--allow-empty-plan", action="store_true", help="allow filters that select zero runs")
     return parser.parse_args(argv)
 
 
@@ -1257,6 +1304,10 @@ def main(argv: list[str] | None = None) -> int:
         )
     except ConfigError as exc:
         print(f"config error: {exc}", file=sys.stderr)
+        return 2
+
+    if args.image_preflight_only and not plan["runs"] and not args.allow_empty_plan:
+        print("no runs selected for image preflight", file=sys.stderr)
         return 2
 
     if args.emit_plan:

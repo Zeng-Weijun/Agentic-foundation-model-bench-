@@ -5,6 +5,8 @@ status: partial_worker_cache_not_full_manifest
 evidence:
   p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
   offline_gap_report: reports/all_bench_offline_gap_matrix_20260625.md
+  swe_terminal_image_inventory_report: reports/swe_terminal_image_inventory_20260626.md
+  swe_dev_cache_inventory_json: reports/swe_dev_docker_cache_inventory_20260626.json
 known_blockers:
   - exact_task_to_image_digest_map_not_frozen
   - full_500_verified_image_coverage_not_proven

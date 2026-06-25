@@ -51,7 +51,7 @@ python3 -m unittest scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_
 python3 -m unittest scripts.test_agentic_bench_images scripts.test_agentic_bench_suite scripts.test_offline_images_manifest
 python3 -m py_compile scripts/agentic_bench_images.py scripts/agentic_bench_suite.py scripts/check_offline_images_manifest.py scripts/test_agentic_bench_images.py scripts/test_agentic_bench_suite.py scripts/test_offline_images_manifest.py
 git diff --check
-python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --image-preflight-only --only tau2_paper_core --output-dir /tmp/no_image_preflight_check
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --image-preflight-only --only repozero_py2js_smoke --output-dir /tmp/repozero_image_preflight_check
 ```
 
 Worker smoke runs through the worker SSH endpoint and rootless Docker:

@@ -42,7 +42,7 @@ docker_host="$2"
 export DOCKER_HOST="$docker_host"
 
 engine_comm_re='^(dockerd|rootlesskit|containerd|containerd-shim|containerd-shim-runc-v2|runc|docker-proxy|slirp4netns|vpnkit)$'
-bench_re='cocoa|terminal-bench|terminal_bench|repozero|vita|tau2|agentic|benchmark'
+bench_re='cocoa|terminal-bench|terminal_bench|repozero|vita|tau3|agentic|benchmark'
 
 print_engine_processes() {
   ps -eo pid,ppid,stat,etime,comm,args |

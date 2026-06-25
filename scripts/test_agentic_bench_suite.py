@@ -49,16 +49,17 @@ SUITE_YAML = textwrap.dedent(
         base_url_env: SGLANG_OPENAI_BASE_URL
         api_key_policy: empty_allowed
     benches:
-      - id: tau2_smoke
-        benchmark: tau2
-        adapter: tau2
-        adapter_status: todo
+      - id: tau3_bench_smoke
+        benchmark: tau3-bench
+        adapter: tau3_bench
+        adapter_script: run_tau3_bench.sh
+        adapter_status: pending_adapter
         model_profile: gpt54mini_8130
         worker_host: worker
         concurrency: 1
         params:
-          num_tasks: 1
-          num_trials: 1
+          TAU3_LIMIT: 1
+          TAU3_DOMAINS: airline
     """
 ).strip()
 
@@ -99,16 +100,6 @@ WORKER_STYLE_YAML = textwrap.dedent(
         OPENAI_API_KEY: env:OPENAI_API_KEY
         BENCH_MODEL_PROFILE: gpt54mini_8130
     benchmarks:
-      - id: tau2_paper_core
-        script: run_tau2_paper_core.sh
-        adapter_status: existing_legacy
-        modes: [smoke, full]
-        env_by_mode:
-          smoke:
-            NUM_TASKS: "1"
-            NUM_TRIALS: "1"
-          full:
-            NUM_TASKS: all
       - id: repozero_py2js
         script: run_repozero_py2js.sh
         adapter_status: existing_legacy
@@ -173,7 +164,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr)
         plan = json.loads(proc.stdout)
         self.assertEqual(plan["runs"][0]["status"], "planned")
-        self.assertEqual(plan["runs"][0]["adapter_status"], "todo")
+        self.assertEqual(plan["runs"][0]["adapter_status"], "pending_adapter")
         self.assertIn("not wired", plan["runs"][0]["notes"][0])
 
     def test_cli_supports_worker_style_suite_with_filters(self):
@@ -188,7 +179,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
                     "--dry-run",
                     "--json",
                     "--only",
-                    "tau2_paper_core",
+                    "repozero_py2js",
                     "--model-profile",
                     "relay_gpt54mini_8130",
                     "--max-concurrency",
@@ -204,10 +195,10 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(plan["suite_id"], "worker_gpt54mini_smoke")
         self.assertEqual(plan["suite_concurrency"], 1)
         self.assertEqual(len(plan["runs"]), 1)
-        self.assertEqual(plan["runs"][0]["bench_id"], "tau2_paper_core")
+        self.assertEqual(plan["runs"][0]["bench_id"], "repozero_py2js")
         self.assertEqual(plan["runs"][0]["worker_host"], "worker")
         self.assertEqual(plan["runs"][0]["model"]["profile_id"], "relay_gpt54mini_8130")
-        self.assertEqual(plan["runs"][0]["params"]["NUM_TASKS"], "1")
+        self.assertEqual(plan["runs"][0]["params"]["REPOZERO_MODE"], "smoke")
         self.assertIn("bash -c ", plan["runs"][0]["command"])
         self.assertNotIn("bash -lc ", plan["runs"][0]["command"])
         self.assertIn("OPENAI_API_KEY", json.dumps(plan, sort_keys=True))
@@ -223,7 +214,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
                 suite_path=suite_path,
                 dry_run=True,
                 model_profile_override="dev_proxy_gpt54mini_8130",
-                only={"tau2_paper_core"},
+                only={"repozero_py2js"},
             )
         run = plan["runs"][0]
         self.assertEqual(run["model"]["profile_id"], "dev_proxy_gpt54mini_8130")
@@ -262,6 +253,153 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("--docker-host unix:///tmp/rl/run/docker.sock", run["image_preflight"]["command"])
         self.assertIn("--asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench", run["image_preflight"]["command"])
         self.assertIn("image preflight required before adapter execution", run["notes"])
+
+    def test_image_preflight_warmup_flags_are_forwarded_to_checker(self):
+        module = load_module()
+        suite_yaml = SUITE_YAML + textwrap.dedent(
+            """
+
+            image_preflight:
+              project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+              asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+              default_policy: required
+              pull: true
+              load_fallback: true
+              run_smoke: true
+            worker:
+              docker_host: unix:///tmp/rl/run/docker.sock
+            """
+        )
+        suite_yaml = suite_yaml.replace(
+            "    concurrency: 1\n    params:",
+            "    image_manifest: manifests/images/repozero.yaml\n"
+            "    concurrency: 1\n    params:",
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True)
+
+        check_argv = plan["runs"][0]["image_preflight"]["commands"][0]["check_argv"]
+        self.assertIn("--pull", check_argv)
+        self.assertIn("--load-fallback", check_argv)
+        self.assertIn("--run-smoke", check_argv)
+
+    def test_optional_image_preflight_marks_optional_missing_fatal_in_checker_command(self):
+        module = load_module()
+        suite_yaml = SUITE_YAML + textwrap.dedent(
+            """
+
+            image_preflight:
+              project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+              asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+              default_policy: optional
+            worker:
+              docker_host: unix:///tmp/rl/run/docker.sock
+            """
+        )
+        suite_yaml = suite_yaml.replace(
+            "    concurrency: 1\n    params:",
+            "    image_manifest: manifests/images/deepswe.yaml\n"
+            "    image_policy: optional\n"
+            "    concurrency: 1\n    params:",
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True)
+
+        check_argv = plan["runs"][0]["image_preflight"]["commands"][0]["check_argv"]
+        self.assertIn("--fail-on-optional-missing", check_argv)
+
+    def test_image_preflight_project_root_can_be_relative_to_suite_file(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo_root = Path(tmpdir) / "repo"
+            manifests_dir = repo_root / "manifests"
+            manifests_dir.mkdir(parents=True)
+            suite_path = manifests_dir / "suite.yaml"
+            suite_yaml = SUITE_YAML + textwrap.dedent(
+                """
+
+                image_preflight:
+                  project_root: ..
+                  asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+                  default_policy: required
+                worker:
+                  docker_host: unix:///tmp/rl/run/docker.sock
+                """
+            )
+            suite_yaml = suite_yaml.replace(
+                "    concurrency: 1\n    params:",
+                "    image_manifest: manifests/images/repozero.yaml\n"
+                "    concurrency: 1\n    params:",
+            )
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True)
+
+        preflight = plan["runs"][0]["image_preflight"]
+        self.assertEqual(Path(preflight["project_root"]), repo_root)
+        self.assertIn(str(repo_root), preflight["command"])
+
+    def test_image_preflight_only_fails_when_filter_selects_no_runs(self):
+        suite_yaml = textwrap.dedent(
+            """
+            schema_version: agentic_bench.suite.v1
+            suite:
+              id_prefix: empty_plan_smoke
+              mode: smoke
+              output_root: /tmp/agentic-foundation-model-bench/runs
+            execution:
+              kind: local
+            worker:
+              id: worker-j9jjd
+              host: worker
+              docker_host: unix:///tmp/rl/run/docker.sock
+            active_model: dev_proxy_gpt54mini_8130
+            model_profiles:
+              dev_proxy_gpt54mini_8130:
+                MODEL_NAME: gpt-5.4-mini
+                OPENAI_BASE_URL: http://100.96.1.101:18540/v1
+                OPENAI_API_KEY: env:OPENAI_API_KEY
+            image_preflight:
+              project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+              asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+              default_policy: required
+            benchmarks:
+              - id: disabled_image_bench
+                script: run_disabled.sh
+                adapter_status: pending_adapter
+                enabled: false
+                image_manifest: manifests/images/terminal_bench_2_1.yaml
+                image_policy: required
+            """
+        ).strip()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--image-preflight-only",
+                    "--only",
+                    "disabled_image_bench",
+                    "--output-dir",
+                    str(Path(tmpdir) / "out"),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("no runs selected", proc.stderr)
 
     def test_execute_run_blocks_adapter_when_required_image_preflight_fails(self):
         module = load_module()
@@ -460,6 +598,44 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertTrue(audited_marker_exists)
         self.assertEqual(audited_summary["counts"]["optional_fail"], 1)
         self.assertEqual(audited_summary["results"][0]["status"], "optional_fail:5")
+
+    def test_example_suite_has_no_active_tau2_bench(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        active_tau2 = []
+        for bench in config["benches"]:
+            haystack = " ".join(str(bench.get(key, "")) for key in ("id", "benchmark", "adapter", "adapter_script"))
+            if "tau2" in haystack.lower() and bench.get("enabled", True):
+                active_tau2.append(bench["id"])
+
+        self.assertEqual(active_tau2, [])
+
+    def test_example_manifest_tau3_uses_specific_manifest_but_stays_disabled_until_images(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
+
+        self.assertEqual(tau3["image_manifest"], "manifests/images/tau3_bench.yaml")
+        self.assertEqual(tau3["adapter_status"], "pending_offline_image")
+        self.assertFalse(tau3.get("enabled", True))
+
+    def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tb_smoke = next(bench for bench in config["benches"] if bench["id"] == "terminal_bench_2_1_image_smoke")
+
+        self.assertTrue(tb_smoke.get("enabled", True))
+        self.assertEqual(tb_smoke["image_manifest"], "manifests/images/terminal_bench_2_1.yaml")
+        self.assertEqual(tb_smoke["image_policy"], "required")
+        self.assertEqual(tb_smoke["params"]["TB_TASK_IDS"], "gcode-to-text")
+
+        manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1.yaml").read_text(encoding="utf-8"))
+        required_ids = [image["id"] for image in manifest["images"] if image.get("required", True)]
+        self.assertIn("terminal_bench_2_1_gcode_to_text", required_ids)
+        self.assertNotIn("terminal_bench_2_1_fix_git", required_ids)
 
     def test_example_manifest_vitabench_one_task_smoke_uses_verified_runner(self):
         module = load_module()

@@ -222,6 +222,58 @@ def _docker_pull(ref: str, env: dict[str, str], runner: Runner) -> CommandResult
     return runner(["docker", "pull", ref], env)
 
 
+def docker_cache_inventory(
+    *,
+    prefixes: list[str] | None = None,
+    docker_host: str = DEFAULT_DOCKER_HOST,
+    runner: Runner = _run,
+    base_env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    env = dict(base_env or os.environ)
+    env["DOCKER_HOST"] = docker_host
+    selected_prefixes = [prefix for prefix in (prefixes or []) if prefix]
+    result = runner(["docker", "image", "ls", "--format", "{{json .}}"], env)
+    if result.returncode != 0:
+        raise ImageManifestError(result.stderr.strip() or "docker image ls failed")
+
+    images: list[dict[str, str]] = []
+    for line_number, line in enumerate(result.stdout.splitlines(), start=1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ImageManifestError(f"docker image ls returned invalid json on line {line_number}: {exc}") from exc
+        repository = str(row.get("Repository") or "").strip()
+        tag = str(row.get("Tag") or "").strip()
+        if not repository or repository == "<none>" or tag == "<none>":
+            continue
+        ref = f"{repository}:{tag}" if tag else repository
+        if selected_prefixes and not any(repository.startswith(prefix) or ref.startswith(prefix) for prefix in selected_prefixes):
+            continue
+        digest = str(row.get("Digest") or "").strip()
+        images.append(
+            {
+                "repository": repository,
+                "tag": tag,
+                "ref": ref,
+                "image_id": str(row.get("ID") or "").strip(),
+                "digest": "" if digest == "<none>" else digest,
+                "size": str(row.get("Size") or "").strip(),
+            }
+        )
+
+    images.sort(key=lambda image: image["ref"])
+    return {
+        "schema_version": "agentic_bench.docker_cache_inventory.v1",
+        "docker_host": docker_host,
+        "prefixes": selected_prefixes,
+        "counts": {"images": len(images), "prefixes": len(selected_prefixes)},
+        "images": images,
+    }
+
+
 def _smoke_command(entry: dict[str, Any], image_ref: str) -> list[str] | None:
     smoke = entry.get("smoke") or {}
     if not isinstance(smoke, dict):
@@ -247,6 +299,7 @@ def check_image_manifest(
     allow_pull: bool = False,
     load_fallback: bool = False,
     run_smoke: bool = False,
+    fail_on_optional_missing: bool = False,
     base_env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     manifest = Path(manifest_path)
@@ -265,6 +318,7 @@ def check_image_manifest(
         "loaded": 0,
         "pulled": 0,
         "smoke_passed": 0,
+        "optional_missing": 0,
     }
     results: list[dict[str, Any]] = []
 
@@ -341,6 +395,7 @@ def check_image_manifest(
             result["status"] = "missing"
         else:
             counts["unchecked"] += 1
+            counts["optional_missing"] += 1
             result["status"] = "optional_missing"
         results.append(result)
 
@@ -355,6 +410,7 @@ def check_image_manifest(
             "allow_pull": allow_pull,
             "load_fallback": load_fallback,
             "run_smoke": run_smoke,
+            "fail_on_optional_missing": fail_on_optional_missing,
         },
         "counts": counts,
         "images": results,
@@ -456,6 +512,16 @@ def _print_registry(summary: dict[str, Any]) -> None:
         print(f"- {manifest['id']}: {manifest['status']} {manifest['path']}")
 
 
+def _print_inventory(summary: dict[str, Any]) -> None:
+    counts = summary["counts"]
+    print(f"Docker host: {summary['docker_host']}")
+    print(f"Prefixes: {', '.join(summary['prefixes']) if summary['prefixes'] else '(all)'}")
+    print(f"Summary: images={counts['images']}")
+    for image in summary["images"]:
+        size = f" {image['size']}" if image.get("size") else ""
+        print(f"- {image['ref']}{size}")
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -478,7 +544,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     check.add_argument("--pull", action="store_true", help="pull internal registry digest refs when missing")
     check.add_argument("--load-fallback", action="store_true", help="docker load verified fallback tar when missing")
     check.add_argument("--run-smoke", action="store_true", help="run image smoke commands after image is present")
+    check.add_argument("--fail-on-optional-missing", action="store_true", help="return nonzero when optional image rows have no available refs/cache")
     check.add_argument("--json", action="store_true")
+
+    inventory = subparsers.add_parser("inventory-cache", help="inventory local Docker cache images by repository/tag prefix")
+    inventory.add_argument("--prefix", action="append", dest="prefixes", default=[], help="repository/tag prefix to include; repeatable")
+    inventory.add_argument("--docker-host", default=os.environ.get("DOCKER_HOST", DEFAULT_DOCKER_HOST))
+    inventory.add_argument("--output", type=Path, help="write inventory JSON to this path")
+    inventory.add_argument("--json", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -492,6 +565,16 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 _print_registry(summary)
             return 1 if summary["counts"]["missing_manifests"] else 0
+        if args.command == "inventory-cache":
+            summary = docker_cache_inventory(prefixes=args.prefixes, docker_host=args.docker_host)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                _print_inventory(summary)
+            return 0
         summary = check_image_manifest(
             args.image_manifest,
             asset_root=args.asset_root,
@@ -500,6 +583,7 @@ def main(argv: list[str] | None = None) -> int:
             allow_pull=args.pull,
             load_fallback=args.load_fallback,
             run_smoke=args.run_smoke,
+            fail_on_optional_missing=args.fail_on_optional_missing,
         )
     except ImageManifestError as exc:
         print(f"error: {exc}", file=sys.stderr)
@@ -513,6 +597,8 @@ def main(argv: list[str] | None = None) -> int:
     if counts["errors"] or counts["tar_mismatch"]:
         return 2
     if counts["missing"] or counts["tar_missing"]:
+        return 1
+    if args.fail_on_optional_missing and counts.get("optional_missing", 0):
         return 1
     return 0
 

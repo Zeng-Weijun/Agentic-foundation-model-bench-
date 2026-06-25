@@ -1,0 +1,35 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tau3_bench
+generated_at: "2026-06-26"
+status: dataset_ready_offline_images_pending
+evidence:
+  harbor_adapter: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/tau3-bench
+  full_dataset: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench
+  smoke_dataset: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke
+  shared_runner: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh
+  task_count_total: 375
+  task_counts_by_domain:
+    airline: 50
+    retail: 114
+    telecom: 114
+    banking_knowledge: 97
+  blocker: generated task Dockerfiles clone the tau2/tau3 source during build; worker offline execution requires prebuilt images or rewritten Dockerfiles.
+
+images:
+  - id: tau3_harbor_main_runtime
+    role: harbor_task_main_runtime
+    bench: tau3-bench
+    required: false
+    image_transport: todo_prebuild
+    registry_status: pending_p0_push_or_shared_tar
+    source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/Dockerfile
+    offline_blocker: Dockerfile currently uses apt-get and git clone during build.
+
+  - id: tau3_harbor_mcp_runtime
+    role: tau3_runtime_mcp_sidecar
+    bench: tau3-bench
+    required: false
+    image_transport: todo_prebuild
+    registry_status: pending_p0_push_or_shared_tar
+    source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/runtime-server/Dockerfile
+    offline_blocker: Dockerfile currently uses apt-get, git clone, and pip install during build.

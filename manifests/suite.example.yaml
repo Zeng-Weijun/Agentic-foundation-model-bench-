@@ -7,7 +7,8 @@ suite:
   execution_kind: ssh_worker
   bench_root: /data/nips/bench
   default_worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
-  concurrency: 2
+  concurrency: 40
+  proxy_concurrency_ceiling: 50
   run_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs
   source_env_files:
     - ~/.bashrc
@@ -50,9 +51,11 @@ worker:
     no_proxy: "127.0.0.1,localhost,100.96.1.101,100.96.0.0/12,.pjlab.org.cn"
 
 image_preflight:
-  project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+  project_root: ..
   asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
   default_policy: optional
+  load_fallback: true
+  run_smoke: true
   json: true
 
 model_profiles:
@@ -106,20 +109,6 @@ model_profiles:
     max_input_tokens: "128000"
 
 benches:
-  - id: tau2_paper_core
-    benchmark: tau2
-    adapter: tau2
-    adapter_script: run_tau2_paper_core.sh
-    adapter_status: wired_legacy
-    model_profile: gpt54mini_8130
-    concurrency: 1
-    params:
-      NUM_TASKS: 1
-      NUM_TRIALS: 1
-      MAX_CONCURRENCY: 1
-      TAU2_TASK_SPLIT_NAME: base
-      TAU2_MAX_STEPS: 60
-
   - id: vitabench_full
     benchmark: vitabench
     adapter: vitabench_full
@@ -288,6 +277,23 @@ benches:
     model_profile: gpt54mini_8130
     enabled: false
 
+  - id: terminal_bench_2_1_image_smoke
+    benchmark: terminal_bench_2_1
+    adapter: terminal_bench_2_1
+    adapter_script: run_terminal_bench_2_1_smoke.sh
+    adapter_status: pending_adapter
+    image_manifest: manifests/images/terminal_bench_2_1.yaml
+    image_policy: required
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      TB_TASK_IDS: gcode-to-text
+      TB21_IMAGE_TAG: tb2-offline/gcode-to-text:20260425
+      TB21_IMAGE_ARCHIVE: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/gcode-to-text.tar
+      MAX_CONCURRENCY: 1
+      TB_N_CONCURRENT: 1
+    enabled: true
+
   - id: mcp_atlas
     benchmark: MCP-Atlas
     adapter: mcp_atlas
@@ -312,10 +318,16 @@ benches:
     benchmark: tau3-bench
     adapter: tau3_bench
     adapter_script: run_tau3_bench.sh
-    adapter_status: pending_adapter
-    image_manifest: manifests/images/pending_benches.yaml
+    adapter_status: pending_offline_image
+    image_manifest: manifests/images/tau3_bench.yaml
     image_policy: optional
     model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      TAU3_MODE: smoke
+      TAU3_LIMIT: 1
+      TAU3_N_CONCURRENT: 1
+      MAX_CONCURRENCY: 1
     enabled: false
 
   - id: programbench

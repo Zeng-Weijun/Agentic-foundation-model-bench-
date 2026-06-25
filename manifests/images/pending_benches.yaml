@@ -21,13 +21,6 @@ images:
     image_transport: todo
     registry_status: missing_checkout_dataset_image_contract
 
-  - id: tau3_bench_images_todo
-    role: placeholder
-    bench: tau3-bench
-    required: false
-    image_transport: todo
-    registry_status: adapter_exists_dataset_and_sidecar_image_manifest_missing
-
   - id: programbench_images_todo
     role: placeholder
     bench: ProgramBench
