@@ -559,3 +559,35 @@ Next runtime/image subdomain: audit the static-lint gap for generated image mani
 ### Orchestrator reconciliation after `588006f`
 
 After this Round 7 audit was written, the orchestrator computed and committed `fallback_tar_sha256` for all 50 shared TB2.1 tar rows in `588006f Verify terminal bench fallback shas`. The Round 7 `no_sha=50` observation is therefore superseded for current head. The remaining #6/#8 transport blocker is the 39 required TB2 rows with no P0 digest and no shared fallback tar, plus the need to publish/verify registry digests before worker full preflight.
+
+## Round 8 - Static image-manifest lint gate audit (2026-06-26)
+
+Scope held: runtime/images lane only. No Docker push/pull/load/run, no benchmark/model execution, no production code/manifest/test edits. Read current generated TB2/SWE manifests, current `agentic_bench_images.py` semantics, suite `image_policy` behavior, and runner-results dedup evidence. Existing modified production files in the worktree were treated as unowned read-only state.
+
+COMMENT-READY for #6/#11: static offline-transport lint now exists and fails the generated audit manifests closed; use it as the promotion gate before enabling required worker preflight
+
+dedup: comment-on-#6 for offline transport/P0-or-tar gating. comment-on-#11 only for keeping identity verification in runtime preflight after transport lint passes. Not a new ISSUE-READY bug because the current worktree already has a dedicated `lint --require-offline-transport` mode and it returns nonzero on the current TB2/SWE promotion manifests. Not #8 except that worker daemon/rootless readiness remains a separate runtime check.
+
+location: `scripts/agentic_bench_images.py:318-377`, `scripts/agentic_bench_images.py:749-753`, `scripts/agentic_bench_images.py:799-809`, `scripts/agentic_bench_suite.py:602-700`, `scripts/agentic_bench_suite.py:988-1000`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:499`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:680-1124`, `manifests/images/swebench_verified_django10097.yaml:18-42`, `manifests/bench_registry.yaml:51-59`, `manifests/images/README.md:105-115`, `manifests/suite.example.yaml:271-289`.
+
+static_repro:
+- `python3 scripts/agentic_bench_images.py validate --registry manifests/bench_registry.yaml` is structural only: it returned rc 0 with `manifests=9 images=104 required_images=94 missing_manifests=0`, even though generated promotion manifests still lack complete offline transport.
+- `python3 scripts/agentic_bench_images.py lint --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml --require-offline-transport` returned rc 1 with `images=89 required=89 missing_offline_transport=39`. The failing rows are the 39 `fallback_status: missing_shared_tar` TB2 cache rows, for example `tb2_install_windows_3_11` at line 499 and the contiguous missing-shared-tar block from `tb2_mteb_retrieve` through `tb2_write_compressor` at lines 680-1124.
+- `python3 scripts/agentic_bench_images.py lint --image-manifest manifests/images/swebench_verified_django10097.yaml --require-offline-transport` returned rc 1 with `images=2 required=2 missing_offline_transport=2`: both `swebench_django10097_eval_base` and `swebench_django10097_swerex_wrapper` still lack either a digest-pinned internal registry ref or configured fallback sha.
+- `scripts/agentic_bench_suite.py` builds runtime `check` commands from `image_policy` and executes them only when policy is required. That path checks worker Docker cache/pull/load/identity/smoke, not static transport completeness. This is the right separation: lint should block promotion; runtime preflight should verify the selected worker state.
+
+impact: A warm worker can still pass runtime image presence/identity for rows that are not reproducible from P0 digest or verified fallback tar, so promotion should not rely on `validate` or worker cache checks alone. The current static lint closes that class when invoked explicitly, but it is not the same as suite `image_policy: required`. Before wiring generated TB2/SWE audit manifests into a required suite row, the orchestrator/CI must run lint and require zero `missing_offline_transport`.
+
+fix: Add the static gate to the promotion workflow: for every generated manifest that might be marked P0-ready or suite-required, run `python3 scripts/agentic_bench_images.py lint --image-manifest <manifest> --require-offline-transport` and require rc 0. Keep suite worker preflight on `check` so it can still verify local Docker presence, expected image IDs/repo digests, optional pull/load-fallback, and smoke. If this needs to be one command, add a registry-level lint wrapper that iterates selected `bench_registry.yaml` rows and applies the same per-manifest lint contract; do not overload `validate`, because it is currently useful as a structural manifest inventory check.
+
+cross-lane check: grep over `hunt-runner-results.md` for #6/#8/#11/static-lint terms returned rc 0. Runner-results confirms image-preflight failures are currently normalized on the runner side, but it does not contradict this runtime/image conclusion. This loop adds a promotion-gate comment, not a parser/runner issue.
+
+commands/evidence:
+- Memory quick search for `static image-manifest lint`, generated manifest names, `fallback_tar_sha256`, and `agentic_bench_images.py`: rc 0, no relevant hits used.
+- Remote status/read command in the active worktree: rc 0; branch `feat/image-warmup-policy`, head `25820b4`, with unowned modified `scripts/agentic_bench_images.py`, `scripts/test_agentic_bench_images.py`, and untracked `scripts/__pycache__/`.
+- Static manifest parser: rc 0; current generated manifests are 89 TB2 rows and 2 SWE rows; TB2 has 50 fallback sha rows and 39 required rows without digest/sha transport; SWE has 2 required rows without digest/sha transport.
+- Source reads for `agentic_bench_images.py`, `agentic_bench_suite.py`, `manifests/bench_registry.yaml`, `manifests/images/README.md`, `manifests/suite.example.yaml`, and tests: rc 0.
+- `validate`/`lint` combined command: outer rc 0; inner `VALIDATE_RC=0`, `TB_LINT_RC=1`, `SWE_LINT_RC=1`.
+- Cross-lane dedup grep over runtime and runner ledgers: rc 0.
+
+Next runtime/image subdomain: after the promotion workflow consumes this lint gate, re-check whether a registry-level lint wrapper is needed for selected bench-registry policies, then return to concrete P0 digest population for the 39 TB2 missing-shared-tar rows and the two django10097 SWE rows.
