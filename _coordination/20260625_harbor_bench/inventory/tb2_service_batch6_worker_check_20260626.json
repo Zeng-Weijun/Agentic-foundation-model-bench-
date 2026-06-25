@@ -1,0 +1,128 @@
+{
+  "asset_root": "manifests",
+  "bench_id": "tb2_service_batch6_worker_smoke",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 2,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 2,
+    "pulled": 0,
+    "smoke_passed": 2,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 2,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/nginx-request-logging.tar"
+        ],
+        "sha256": "c391f5d189739059f65647736c885ebe69d7105b896b84d10f3e9277e11f7486",
+        "sha256_actual": "c391f5d189739059f65647736c885ebe69d7105b896b84d10f3e9277e11f7486",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/nginx-request-logging.tar"
+        ]
+      },
+      "id": "tb2_nginx_request_logging",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-nginx-request-logging@sha256:d4509a957929e8e9be7779bf0a114b374bb7d6685f972e1da172a16d8f627a08"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/nginx-request-logging:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/nginx-request-logging:20260425"
+        },
+        {
+          "actual_image_id": "sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/nginx-request-logging:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/nginx-request-logging:20260425"
+      ],
+      "present_ref": "tb2-offline/nginx-request-logging:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pypi-server.tar"
+        ],
+        "sha256": "443ac588e1a0e54c5f30fcca6e70949173f094e3e4b367587c884fe6887757c1",
+        "sha256_actual": "443ac588e1a0e54c5f30fcca6e70949173f094e3e4b367587c884fe6887757c1",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pypi-server.tar"
+        ]
+      },
+      "id": "tb2_pypi_server",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pypi-server@sha256:18aaa082c92c40a5188fabe4637f2384e4d2d8b94a2d64874d12faea08aab38e"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/pypi-server:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/pypi-server:20260425"
+        },
+        {
+          "actual_image_id": "sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/pypi-server:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/pypi-server:20260425"
+      ],
+      "present_ref": "tb2-offline/pypi-server:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/tmp/tb2_service_batch6_worker_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

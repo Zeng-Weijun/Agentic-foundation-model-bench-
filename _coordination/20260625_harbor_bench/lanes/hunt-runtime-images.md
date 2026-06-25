@@ -1379,3 +1379,80 @@ Next runtime/image subdomain: after batch5 is committed or handed off, audit the
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Final `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and untracked batch5 inventory JSON/TSV were present and left untouched.
 - Final `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0; ledger diff was 96 inserted lines.
+
+## Round 16 - TB2 service-isolated pair audit after batch5 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, registry `HEAD`/manifest probes, manifest/lint reads, fallback tar hash reads, task-definition reads, and worker-check JSON reads only.
+
+COMMENT-READY for #6/#8/#12: the `nginx-request-logging` and `pypi-server` service rows are safe as an isolated transport batch and are now fallback-ready on worker-j9jjd; they still should not be used as proof that direct P0 pull is healthy
+
+dedup: comment-on-#6 for TB2 transport population and worker fallback warmup. comment-on-#8 because the worker proof used fallback load with `allow_pull=false` and `pulled=0`, so it does not close rootless direct-registry readiness. comment-on-#12 because the service batch worker JSON is another structured image-check artifact that runner/results should preserve. Not #11: both local image IDs matched `source_image_id`, and no lineage mismatch was found. No new ISSUE-READY block.
+
+Current state and concurrency notes:
+- Observed branch/head: `feat/image-warmup-policy` at `7f48601 Record TB2 batch5 handoff`.
+- Initial Round 16 TB2 verified lint returned rc 1 with `fallback_tar_verified=70`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=19`.
+- During this audit, another lane staged `_coordination/20260625_harbor_bench/inventory/tb2_p0_service_batch6_20260626.tsv`, modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and created `_coordination/20260625_harbor_bench/inventory/tb2_service_batch6_worker_check_20260626.json`. This runtime lane did not edit those files.
+- After the concurrent service-row wiring, verified lint returned rc 1 with `fallback_tar_verified=72`, `required_with_fallback_sha=72`, `required_with_digest_ref=22`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=17`.
+- `check --skip-docker` over the current dirty TB2 manifest returned rc 0 with `tar_verified=72`, `tar_missing=0`, `tar_mismatch=0`, and `unchecked=89`.
+
+### Service pair evidence
+
+| row | manifest line | task runtime risk | source image ID | inspect size bytes | fallback tar sha | P0 digest ref |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| `nginx-request-logging` | 704 | service task, localhost:8080 during real benchmark | `sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff` | 268733645 | `c391f5d189739059f65647736c885ebe69d7105b896b84d10f3e9277e11f7486` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-nginx-request-logging@sha256:d4509a957929e8e9be7779bf0a114b374bb7d6685f972e1da172a16d8f627a08` |
+| `pypi-server` | 857 | service task, localhost:8080 during real benchmark | `sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8` | 320922060 | `443ac588e1a0e54c5f30fcca6e70949173f094e3e4b367587c884fe6887757c1` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pypi-server@sha256:18aaa082c92c40a5188fabe4637f2384e4d2d8b94a2d64874d12faea08aab38e` |
+
+Transport checks:
+- The service batch TSV has exactly these two rows and sha `7f670ff57dc3887c357827d0addad24a470e744bbf62ce25ed33eeaed2905e3b`.
+- Both fallback tars exist under `images/terminalbench2.1/20260425_missing_batch1/`; read-only hashing matched the TSV values. Tar sizes are `276667904` bytes for `nginx-request-logging` and `331606016` bytes for `pypi-server`.
+- Read-only Docker inspect on `swe_dev` shows both local refs and P0 tags resolve to the expected source image IDs. Both image configs have `Entrypoint=null`, `Cmd=["python3"]`, no exposed ports, working dir `/app`, and no configured user.
+- P0 registry manifest `HEAD` with the digest refs returned HTTP 200 for both rows and `Docker-Content-Digest` matched the TSV digest.
+- Worker service batch check reports `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_service_batch6_worker_smoke`, `tar_verified=2`, `loaded=2`, `present=2`, `smoke_passed=2`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, and `pulled=0`.
+
+Smoke/network assessment:
+- The manifest smoke for both rows is still the generic image-readiness smoke: `python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok` with `network: none`.
+- That smoke is safe for transport readiness because both images have no entrypoint and default `Cmd=["python3"]`; overriding the command with `/bin/sh -lc ...` should not accidentally start Nginx or a PyPI server.
+- It is intentionally not a task-level service proof. The task definitions require localhost port 8080 during actual benchmark execution: `nginx-request-logging` configures Nginx on port 8080, and `pypi-server` must serve `pip install --index-url http://localhost:8080/simple ...`.
+- Therefore, the batch6 worker check proves fallback-load, identity, and non-network image smoke only. Keep service behavior verification inside the real TB2 adapter/verifier path, not image warmup. Do not use these rows to broaden image smoke into service startup, curl, or pip-install probes.
+
+Worker #8 implication:
+- The service batch should be accepted as worker fallback-ready because the checker used `load_fallback=true`, `run_smoke=true`, `allow_pull=false`, and ended with `loaded=2`, `pulled=0`.
+- It should not be called worker P0-pull-ready. The prior #8 rootless Docker pull/network issue remains open, and this batch does not exercise `docker pull` from worker rootless Docker.
+- Keep fallback tar+sha in the manifest even after P0 digest refs are present. Do not schedule P0-only service rows until a separate direct worker pull+run-smoke proof passes.
+
+Rows remaining after service batch:
+- Static transport gap is now 17 rows: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `path-tracing`, `portfolio-optimization`, `prove-plus-comm`, `pytorch-model-cli`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `reshard-c4-data`, `sam-cell-seg`, `torch-pipeline-parallelism`, `torch-tensor-parallelism`, `train-fasttext`, `video-processing`, and `vulnerable-secret`.
+- Recommended next split: keep `vulnerable-secret` isolated from log-inspection smoke; keep QEMU rows together but separate; keep torch/pytorch and the four largest rows separate; consider a medium generic/data batch only after explicitly deciding whether `path-tracing`, `portfolio-optimization`, `train-fasttext`, and `video-processing` should share smoke expectations.
+
+Cross-lane check:
+- `hunt-runner-results.md` Round 16 independently records the batch5 provenance gap and notes that service-row isolation should remain runtime scope. It later observed the same service batch6 TSV/worker-check files as concurrent/unowned artifacts. No contradiction found.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions and WORKFLOW continuous bug-hunt section: rc 0.
+- Memory quick search for Round16/TB2/service-row terms: rc 0, no relevant hits used.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md` and current runtime ledger: rc 0.
+- Remote branch/head/status command: rc 0; branch/head `feat/image-warmup-policy` / `7f48601`.
+- Current manifest row plus read-only Docker inspect for both service refs: rc 0; IDs, config, source IDs, smoke command, and missing transport state quoted above.
+- Initial P0 tag inspect probe before concurrent tag metadata settled: rc 0 wrapper with two `docker image inspect` failures; rerun via manifest-row inspect showed both P0 tags/RepoDigests attached.
+- Initial shared tar `find` for the two service tars: rc 0 with no output; after concurrent batch6 staging, TSV and tar hash verification found both fallback tars. This is coordination timing, not a new issue.
+- P0 registry digest `HEAD` probes for both service rows: rc 0; HTTP 200 and digest headers matched.
+- Service batch6 TSV listing and hash: rc 0; TSV sha `7f670ff57dc3887c357827d0addad24a470e744bbf62ce25ed33eeaed2905e3b`.
+- Service fallback tar sha verification: rc 0; both fallback sha values matched.
+- Initial TB2 verified lint before batch6 manifest wiring: outer rc 0, inner `LINT_RC=1`; counts `fallback_tar_verified=70`, `required_without_offline_transport=19`.
+- Post-batch6 verified lint after concurrent manifest wiring: outer rc 0, inner `LINT_RC=1`; counts `fallback_tar_verified=72`, `required_without_offline_transport=17`, and no fallback missing/mismatch.
+- `check --skip-docker` over current dirty TB2 manifest: rc 0; `tar_verified=72`, `tar_missing=0`, `tar_mismatch=0`.
+- Bounded reads of the TB2 task definitions, Dockerfiles, tests, and solutions for `nginx-request-logging` and `pypi-server`: rc 0.
+- Batch6 worker-check JSON summary read: rc 0; `tar_verified=2`, `loaded=2`, `present=2`, `smoke_passed=2`, `identity_mismatch=0`, `errors=0`, `pulled=0`.
+- Cross-lane grep/read of `hunt-runner-results.md`: rc 0; no contradiction found.
+
+Next runtime/image subdomain: audit `vulnerable-secret` separately next, because it is small enough for the next transport row but should not be grouped with service or generic batches that might inspect task logs.
+
+### Round 16 validation evidence
+
+- Remote hash guard before ledger copy-back: rc 0; pre-edit and remote hashes both matched `4400e124bfdfc094b862aa0d0f2e976d004cd0ca2168aad3ae0ec2e3981d6040`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_hits=none`.
+- Final `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, untracked service batch6 TSV/worker-check JSON, and untracked `scripts/__pycache__/*.pyc` files were present and left untouched.
+- Final `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
