@@ -289,6 +289,136 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(result["status"], "fail:image_preflight:7")
         self.assertFalse(adapter_marker.exists())
 
+    def test_execute_plan_writes_summary_results_in_manifest_order(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            plan = {
+                "suite_id": "unit_execute_order",
+                "suite_concurrency": 2,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "bench_id": "slow_first",
+                        "adapter_status": "wired_legacy",
+                        "command": "slow command",
+                        "command_argv": ["bash", "-c", "sleep 0.2"],
+                    },
+                    {
+                        "bench_id": "fast_second",
+                        "adapter_status": "wired_legacy",
+                        "command": "fast command",
+                        "command_argv": ["bash", "-c", "true"],
+                    },
+                ],
+            }
+
+            rc = module._execute_plan(plan, str(root / "controller"))
+            summary = json.loads((root / "controller" / "summary.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual([item["bench_id"] for item in summary["results"]], ["slow_first", "fast_second"])
+
+    def test_image_preflight_only_runs_required_preflight_without_adapter(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            preflight_marker = root / "preflight-ran"
+            adapter_marker = root / "adapter-ran"
+            plan = {
+                "suite_id": "unit_preflight",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "bench_id": "repozero_py2js_smoke",
+                        "command": "adapter command",
+                        "command_argv": ["bash", "-c", f"touch {adapter_marker}"],
+                        "image_preflight": {
+                            "required": True,
+                            "policy": "required",
+                            "commands": [
+                                {
+                                    "command": "preflight command",
+                                    "command_argv": ["bash", "-c", f"touch {preflight_marker}"],
+                                }
+                            ],
+                        },
+                    }
+                ],
+            }
+
+            rc = module._execute_image_preflights(
+                plan,
+                str(root / "controller"),
+                include_optional=False,
+                fail_on_optional=False,
+            )
+            summary = json.loads((root / "controller" / "image_preflight_summary.json").read_text(encoding="utf-8"))
+            preflight_marker_exists = preflight_marker.exists()
+            adapter_marker_exists = adapter_marker.exists()
+
+        self.assertEqual(rc, 0)
+        self.assertTrue(preflight_marker_exists)
+        self.assertFalse(adapter_marker_exists)
+        self.assertEqual(summary["status"], 0)
+        self.assertEqual(summary["counts"]["pass"], 1)
+        self.assertEqual(summary["results"][0]["status"], "pass")
+
+    def test_image_preflight_only_skips_optional_by_default_and_can_audit_nonfatal(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            optional_marker = root / "optional-ran"
+            plan = {
+                "suite_id": "unit_preflight_optional",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "bench_id": "swebench_optional",
+                        "command": "adapter command",
+                        "command_argv": ["bash", "-c", "exit 99"],
+                        "image_preflight": {
+                            "required": False,
+                            "policy": "optional",
+                            "commands": [
+                                {
+                                    "command": "optional preflight command",
+                                    "command_argv": ["bash", "-c", f"touch {optional_marker}; exit 5"],
+                                }
+                            ],
+                        },
+                    }
+                ],
+            }
+
+            skipped_rc = module._execute_image_preflights(
+                plan,
+                str(root / "skipped"),
+                include_optional=False,
+                fail_on_optional=False,
+            )
+            skipped_summary = json.loads((root / "skipped" / "image_preflight_summary.json").read_text(encoding="utf-8"))
+            skipped_marker_exists = optional_marker.exists()
+            audited_rc = module._execute_image_preflights(
+                plan,
+                str(root / "audited"),
+                include_optional=True,
+                fail_on_optional=False,
+            )
+            audited_summary = json.loads((root / "audited" / "image_preflight_summary.json").read_text(encoding="utf-8"))
+            audited_marker_exists = optional_marker.exists()
+
+        self.assertEqual(skipped_rc, 0)
+        self.assertFalse(skipped_marker_exists)
+        self.assertEqual(skipped_summary["counts"]["skipped_optional"], 1)
+        self.assertEqual(skipped_summary["results"][0]["status"], "skipped_optional")
+        self.assertEqual(audited_rc, 0)
+        self.assertTrue(audited_marker_exists)
+        self.assertEqual(audited_summary["counts"]["optional_fail"], 1)
+        self.assertEqual(audited_summary["results"][0]["status"], "optional_fail:5")
+
     def test_example_manifest_vitabench_one_task_smoke_uses_verified_runner(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

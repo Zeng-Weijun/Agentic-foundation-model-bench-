@@ -77,6 +77,23 @@ checksums, and smoke commands. The suite dry-run now emits `image_preflight`
 commands for Docker-backed benches; required preflights run before adapters in
 `--execute` mode.
 
+Run image checks without starting benchmark adapters:
+
+```bash
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
+  --image-preflight-only \
+  --only repozero_py2js_smoke \
+  --model-profile dev_proxy_gpt54mini_8130 \
+  --max-concurrency 1 \
+  --output-dir /tmp/agentic_repozero_preflight
+```
+
+This writes `run_manifest.json`, `image_preflight_summary.json`, and per-bench
+logs under the controller output directory. Optional image preflights are skipped
+unless `--include-optional-image-preflight` is set; add
+`--fail-on-optional-image-preflight` when optional audit failures should fail the
+controller command.
+
 Terminal-Bench 2.1 one-task dry-run wrapper:
 
 ```bash

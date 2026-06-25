@@ -85,6 +85,23 @@ python3 scripts/agentic_bench_images.py check \
   --docker-host unix:///tmp/rl/run/docker.sock
 ```
 
+Run only suite image preflights, without launching benchmark adapters:
+
+```bash
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
+  --image-preflight-only \
+  --only repozero_py2js_smoke \
+  --model-profile dev_proxy_gpt54mini_8130 \
+  --max-concurrency 1 \
+  --output-dir /tmp/agentic_repozero_preflight
+```
+
+The preflight-only command writes `run_manifest.json`,
+`image_preflight_summary.json`, and `logs/<bench>.image_preflight.log`. Optional
+preflights are skipped by default; include them with
+`--include-optional-image-preflight`, and make optional failures fatal with
+`--fail-on-optional-image-preflight`.
+
 Add `--pull` only for digest-pinned images in the internal P0 registry. Add
 `--load-fallback` only after the fallback tar checksum is expected to match.
 

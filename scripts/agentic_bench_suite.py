@@ -952,6 +952,143 @@ def _run_one(run: dict[str, Any], output_root: Path) -> dict[str, Any]:
     }
 
 
+def _run_image_preflight_one(
+    run: dict[str, Any],
+    output_root: Path,
+    *,
+    include_optional: bool,
+    fail_on_optional: bool,
+) -> dict[str, Any]:
+    bench_id = str(run["bench_id"])
+    preflight = run.get("image_preflight")
+    log_path = output_root / "logs" / f"{bench_id}.image_preflight.log"
+    status_path = output_root / "status" / f"{bench_id}.image_preflight.status"
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    status_path.parent.mkdir(parents=True, exist_ok=True)
+    started_at = _utc_now()
+
+    result: dict[str, Any] = {
+        "bench_id": bench_id,
+        "required": False,
+        "policy": "none",
+        "status": "skipped_no_preflight",
+        "exit_code": 0,
+        "fatal": False,
+        "started_at": started_at,
+        "ended_at": started_at,
+        "log_path": str(log_path),
+    }
+    with log_path.open("w", encoding="utf-8") as handle:
+        handle.write(f"START image_preflight {bench_id} {started_at}\n")
+        if not isinstance(preflight, dict) or not preflight.get("commands"):
+            handle.write("no image_preflight commands configured\n")
+            status_path.write_text(result["status"] + "\n", encoding="utf-8")
+            return result
+
+        required = _bool(preflight.get("required"), default=False)
+        policy = str(preflight.get("policy", "required" if required else "optional"))
+        result["required"] = required
+        result["policy"] = policy
+        if not required and not include_optional:
+            result["status"] = "skipped_optional"
+            ended_at = _utc_now()
+            result["ended_at"] = ended_at
+            handle.write(f"skipped optional image preflight policy={policy}\n")
+            status_path.write_text(result["status"] + "\n", encoding="utf-8")
+            return result
+
+        for command in preflight.get("commands", []):
+            handle.write("[image_preflight] " + str(command.get("command", "")) + "\n")
+            handle.flush()
+            proc = subprocess.run(command["command_argv"], stdout=handle, stderr=subprocess.STDOUT, check=False)
+            if proc.returncode != 0:
+                ended_at = _utc_now()
+                if required:
+                    status = f"fail:{proc.returncode}"
+                    fatal = True
+                else:
+                    status = f"optional_fail:{proc.returncode}"
+                    fatal = fail_on_optional
+                result.update(
+                    {
+                        "status": status,
+                        "exit_code": proc.returncode,
+                        "fatal": fatal,
+                        "ended_at": ended_at,
+                    }
+                )
+                status_path.write_text(status + "\n", encoding="utf-8")
+                return result
+
+    ended_at = _utc_now()
+    result.update({"status": "pass", "exit_code": 0, "fatal": False, "ended_at": ended_at})
+    status_path.write_text("pass\n", encoding="utf-8")
+    return result
+
+
+def _execute_image_preflights(
+    plan: dict[str, Any],
+    output_dir: str | None,
+    *,
+    include_optional: bool = False,
+    fail_on_optional: bool = False,
+) -> int:
+    output_root = _local_output_root(plan, output_dir)
+    output_root.mkdir(parents=True, exist_ok=True)
+    _write_plan(plan, output_root / "run_manifest.json")
+    results: list[dict[str, Any]] = []
+    max_workers = max(1, int(plan.get("suite_concurrency", 1)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
+        future_map = {
+            pool.submit(
+                _run_image_preflight_one,
+                run,
+                output_root,
+                include_optional=include_optional,
+                fail_on_optional=fail_on_optional,
+            ): run
+            for run in plan["runs"]
+        }
+        for future in concurrent.futures.as_completed(future_map):
+            result = future.result()
+            results.append(result)
+            print(f"{result['bench_id']}\t{result['status']}\t{result['log_path']}")
+
+    order = {str(run["bench_id"]): idx for idx, run in enumerate(plan["runs"])}
+    results.sort(key=lambda item: order.get(str(item["bench_id"]), len(order)))
+    counts = {
+        "pass": 0,
+        "fail": 0,
+        "optional_fail": 0,
+        "skipped_optional": 0,
+        "skipped_no_preflight": 0,
+    }
+    for result in results:
+        status = str(result["status"])
+        if status == "pass":
+            counts["pass"] += 1
+        elif status.startswith("optional_fail:"):
+            counts["optional_fail"] += 1
+        elif status.startswith("fail:"):
+            counts["fail"] += 1
+        elif status == "skipped_optional":
+            counts["skipped_optional"] += 1
+        elif status == "skipped_no_preflight":
+            counts["skipped_no_preflight"] += 1
+    status = 1 if any(_bool(result.get("fatal"), default=False) for result in results) else 0
+    summary = {
+        "schema_version": "agentic_bench.image_preflight_summary.v1",
+        "suite_id": plan["suite_id"],
+        "status": status,
+        "include_optional": include_optional,
+        "fail_on_optional": fail_on_optional,
+        "counts": counts,
+        "results": results,
+    }
+    _write_plan(summary, output_root / "image_preflight_summary.json")
+    return status
+
+
 def _execute_plan(plan: dict[str, Any], output_dir: str | None) -> int:
     unwired = [run["bench_id"] for run in plan["runs"] if run["adapter_status"] not in EXECUTABLE_ADAPTER_STATES]
     if unwired:
@@ -971,6 +1108,8 @@ def _execute_plan(plan: dict[str, Any], output_dir: str | None) -> int:
             if result["exit_code"] != 0:
                 status = 1
             print(f"{result['bench_id']}\t{result['status']}\t{result['log_path']}")
+    order = {str(run["bench_id"]): idx for idx, run in enumerate(plan["runs"])}
+    results.sort(key=lambda item: order.get(str(item["bench_id"]), len(order)))
     summary = {"suite_id": plan["suite_id"], "status": status, "results": results}
     _write_plan(summary, output_root / "summary.json")
     return status
@@ -990,6 +1129,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--json", action="store_true", help="print the full JSON plan")
     parser.add_argument("--emit-plan", help="write the JSON plan to this path")
     parser.add_argument("--output-dir", help="local/controller output dir for --execute logs and manifests")
+    parser.add_argument("--image-preflight-only", action="store_true", help="run image preflight commands only; never launch adapters")
+    parser.add_argument("--include-optional-image-preflight", action="store_true", help="include optional image preflights in --image-preflight-only")
+    parser.add_argument("--fail-on-optional-image-preflight", action="store_true", help="make optional image preflight failures fatal when included")
     return parser.parse_args(argv)
 
 
@@ -1001,7 +1143,7 @@ def main(argv: list[str] | None = None) -> int:
         plan = build_run_plan(
             config,
             suite_path=args.suite_yaml,
-            dry_run=args.dry_run,
+            dry_run=args.dry_run and not args.image_preflight_only,
             smoke=args.smoke,
             only=only,
             model_profile_override=args.model_profile,
@@ -1018,6 +1160,13 @@ def main(argv: list[str] | None = None) -> int:
     else:
         _print_human(plan)
 
+    if args.image_preflight_only:
+        return _execute_image_preflights(
+            plan,
+            args.output_dir,
+            include_optional=args.include_optional_image_preflight,
+            fail_on_optional=args.fail_on_optional_image_preflight,
+        )
     if not args.dry_run:
         return _execute_plan(plan, args.output_dir)
     return 0
