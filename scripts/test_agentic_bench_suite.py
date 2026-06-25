@@ -621,6 +621,73 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(summary["image_preflight_concurrency"], 2)
         self.assertLessEqual(observed["max"], 2)
 
+    def test_image_preflight_only_dedupes_identical_transport_commands(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            tracker = root / "count.json"
+            worker = root / "count_preflight.py"
+            worker.write_text(
+                textwrap.dedent(
+                    """
+                    import fcntl
+                    import json
+                    import sys
+                    import time
+                    from pathlib import Path
+
+                    path = Path(sys.argv[1])
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    with path.open("a+", encoding="utf-8") as handle:
+                        fcntl.flock(handle, fcntl.LOCK_EX)
+                        handle.seek(0)
+                        raw = handle.read().strip()
+                        data = json.loads(raw) if raw else {"count": 0}
+                        data["count"] += 1
+                        handle.seek(0)
+                        handle.truncate()
+                        json.dump(data, handle)
+                        fcntl.flock(handle, fcntl.LOCK_UN)
+                    time.sleep(0.1)
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            command = [sys.executable, str(worker), str(tracker)]
+            plan = {
+                "suite_id": "unit_preflight_dedupe",
+                "suite_concurrency": 40,
+                "image_preflight_concurrency": 4,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "bench_id": bench_id,
+                        "command": "adapter command",
+                        "command_argv": ["bash", "-c", "exit 99"],
+                        "image_preflight": {
+                            "required": True,
+                            "policy": "required",
+                            "commands": [{"command": "same transport", "command_argv": command}],
+                        },
+                    }
+                    for bench_id in ["first", "second"]
+                ],
+            }
+
+            rc = module._execute_image_preflights(
+                plan,
+                str(root / "controller"),
+                include_optional=False,
+                fail_on_optional=False,
+            )
+            summary = json.loads((root / "controller" / "image_preflight_summary.json").read_text(encoding="utf-8"))
+            observed = json.loads(tracker.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(summary["counts"]["pass"], 2)
+        self.assertEqual(summary["image_preflight_unique_commands"], 1)
+        self.assertEqual(observed["count"], 1)
+
     def test_image_preflight_only_skips_optional_by_default_and_can_audit_nonfatal(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

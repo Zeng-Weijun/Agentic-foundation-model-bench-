@@ -13,6 +13,7 @@ import re
 import shlex
 import subprocess
 import sys
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -1023,12 +1024,49 @@ def _run_one(run: dict[str, Any], output_root: Path) -> dict[str, Any]:
     }
 
 
+def _cached_preflight_command_returncode(
+    command: dict[str, Any],
+    handle: Any,
+    *,
+    command_cache: dict[tuple[str, ...], concurrent.futures.Future[int]] | None,
+    command_cache_lock: threading.Lock | None,
+) -> int:
+    if command_cache is None or command_cache_lock is None:
+        proc = subprocess.run(command["command_argv"], stdout=handle, stderr=subprocess.STDOUT, check=False)
+        return proc.returncode
+
+    key = tuple(str(part) for part in command["command_argv"])
+    owner = False
+    with command_cache_lock:
+        future = command_cache.get(key)
+        if future is None:
+            future = concurrent.futures.Future()
+            command_cache[key] = future
+            owner = True
+
+    if owner:
+        try:
+            proc = subprocess.run(command["command_argv"], stdout=handle, stderr=subprocess.STDOUT, check=False)
+        except BaseException as exc:  # pragma: no cover - preserves waiter behavior on unexpected launcher errors.
+            future.set_exception(exc)
+            raise
+        future.set_result(proc.returncode)
+        return proc.returncode
+
+    returncode = future.result()
+    handle.write("[image_preflight_cached] " + str(command.get("command", "")) + f" rc={returncode}\n")
+    handle.flush()
+    return returncode
+
+
 def _run_image_preflight_one(
     run: dict[str, Any],
     output_root: Path,
     *,
     include_optional: bool,
     fail_on_optional: bool,
+    command_cache: dict[tuple[str, ...], concurrent.futures.Future[int]] | None = None,
+    command_cache_lock: threading.Lock | None = None,
 ) -> dict[str, Any]:
     bench_id = str(run["bench_id"])
     preflight = run.get("image_preflight")
@@ -1071,19 +1109,24 @@ def _run_image_preflight_one(
         for command in preflight.get("commands", []):
             handle.write("[image_preflight] " + str(command.get("command", "")) + "\n")
             handle.flush()
-            proc = subprocess.run(command["command_argv"], stdout=handle, stderr=subprocess.STDOUT, check=False)
-            if proc.returncode != 0:
+            returncode = _cached_preflight_command_returncode(
+                command,
+                handle,
+                command_cache=command_cache,
+                command_cache_lock=command_cache_lock,
+            )
+            if returncode != 0:
                 ended_at = _utc_now()
                 if required:
-                    status = f"fail:{proc.returncode}"
+                    status = f"fail:{returncode}"
                     fatal = True
                 else:
-                    status = f"optional_fail:{proc.returncode}"
+                    status = f"optional_fail:{returncode}"
                     fatal = fail_on_optional
                 result.update(
                     {
                         "status": status,
-                        "exit_code": proc.returncode,
+                        "exit_code": returncode,
                         "fatal": fatal,
                         "ended_at": ended_at,
                     }
@@ -1110,6 +1153,8 @@ def _execute_image_preflights(
     results: list[dict[str, Any]] = []
     suite_workers = max(1, int(plan.get("suite_concurrency", 1)))
     max_workers = max(1, int(plan.get("image_preflight_concurrency", min(suite_workers, 4))))
+    command_cache: dict[tuple[str, ...], concurrent.futures.Future[int]] = {}
+    command_cache_lock = threading.Lock()
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
         future_map = {
             pool.submit(
@@ -1118,6 +1163,8 @@ def _execute_image_preflights(
                 output_root,
                 include_optional=include_optional,
                 fail_on_optional=fail_on_optional,
+                command_cache=command_cache,
+                command_cache_lock=command_cache_lock,
             ): run
             for run in plan["runs"]
         }
@@ -1155,6 +1202,7 @@ def _execute_image_preflights(
         "include_optional": include_optional,
         "fail_on_optional": fail_on_optional,
         "image_preflight_concurrency": max_workers,
+        "image_preflight_unique_commands": len(command_cache),
         "counts": counts,
         "results": results,
     }

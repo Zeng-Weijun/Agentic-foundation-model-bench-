@@ -122,7 +122,8 @@ registry. Use `load_fallback` only after the fallback tar checksum is expected t
 match; pair it with `run_smoke` when the manifest contains a container smoke
 command. `image_preflight.max_concurrency` caps first-time image transport
 separately from model/benchmark suite concurrency; keep it small, normally 2-4
-per worker.
+per worker. During one controller run, identical preflight `command_argv` values
+are executed once and subsequent rows reuse the cached return code.
 
 Dry-run the current Terminal-Bench 2.1 one-task smoke wrapper:
 

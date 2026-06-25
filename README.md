@@ -99,7 +99,10 @@ relative to the suite file, so image checks follow the active checkout/worktree,
 and it enables shared-tar `--load-fallback` plus container `--run-smoke` by
 default. Image preflight has its own `max_concurrency: 4`; do not use the
 suite's 40-50 model concurrency for first-time image pull/load transport.
-Registry `--pull` stays opt-in until a manifest has digest-pinned P0 refs.
+Identical image preflight commands are deduped within one controller run, so
+multiple suite rows that point at the same manifest/check command share one
+transport result. Registry `--pull` stays opt-in until a manifest has
+digest-pinned P0 refs.
 
 Run image checks without starting benchmark adapters:
 
