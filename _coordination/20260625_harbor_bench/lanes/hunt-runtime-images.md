@@ -1181,3 +1181,105 @@ Commands/evidence:
 - Cross-lane grep over `hunt-runner-results.md` and current runtime ledger tail: rc 0.
 
 Next runtime/image subdomain: after batch3 manifest wiring and worker fallback smoke, audit that TB2 verified lint drops from 34 to 29 and that no manifest row is P0-only. Then pick the next low-size generic export batch before service/qemu/torch/large rows.
+
+## Round 14 - TB2 remaining 29 audit after batch3 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, manifest/lint reads, grep/find, and fallback tar hash reads only.
+
+COMMENT-READY for #6/#8/#12: after batch3, wire and worker-smoke the staged batch4 fallbacks, then export the next low-size generic rows; keep P0 as metadata until worker rootless pull is fixed
+
+dedup: comment-on-#6 for TB2 transport population and static promotion gating. comment-on-#8 because the rootless worker still cannot be treated as P0-pull-ready after the recorded `connect: network is unreachable` failure. comment-on-#12 because each worker fallback check should be preserved as structured image-check provenance. Not #11: every remaining row inspected in this round matched its manifest `source_image_id`; no image identity bug was found. No new ISSUE-READY block.
+
+Current state:
+- Observed branch/head: `feat/image-warmup-policy` at `c7a0eef Materialize TB2 low-risk transport batch 3`.
+- Clean-head/initial Round 14 TB2-only verified lint returned rc 1 with `images=89`, `required_with_digest_ref=10`, `required_with_fallback_sha=60`, `fallback_tar_verified=60`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=29`.
+- During this audit, an implementation lane created and expanded untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch4_20260626.tsv`, then modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` to wire those five rows.
+- Live dirty-worktree verified lint after that concurrent manifest edit returned rc 1 with `required_with_digest_ref=15`, `required_with_fallback_sha=65`, `fallback_tar_verified=65`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=24`.
+- No batch4 worker fallback-check JSON existed at the time of this audit. Before batch4 is called worker-ready, run the same worker `check --load-fallback --run-smoke` proof used for batches 2 and 3.
+
+### Batch4 staging observed
+
+These five rows are already staged in the untracked batch4 TSV and live dirty manifest, with P0 digest refs plus verified fallback tars. This is now a worker-smoke/commit hygiene step, not a Docker-export step.
+
+| row | manifest line before dirty edit | risk label | local ref | exact source image ID | inspect size bytes | fallback tar size | fallback sha |
+| --- | ---: | --- | --- | --- | ---: | ---: | --- |
+| `password-recovery` | 743 | low-size, batch4 staged | `tb2-offline/password-recovery:20260425` | `sha256:8a4a2ba55bfa8edd5dece054d844969a60d1f237ae2e18cf4ce6842fbd1c3465` | 396013238 | 407543296 | `8ffc3246f62792f7a9085bf91cf1f01e2d9fcbb7437cce759f98a01048914d4f` |
+| `path-tracing-reverse` | 755 | low-size, batch4 staged | `tb2-offline/path-tracing-reverse:20260425` | `sha256:d0aed029cc004bed222ed1cd39dea1a8a149cd66bb2616354a75e9cb762e6718` | 452873228 | 460471296 | `f6bb157c283b34956069a6dd5800a712b91cf9dc6de99fca341e62f9ac063f4f` |
+| `query-optimize` | 902 | low-size, batch4 staged | `tb2-offline/query-optimize:20260425` | `sha256:b7888e243c321aa0c7fa3076325057b9e1d85637f5e9443a7a80cb1494cf152c` | 453788685 | 462921728 | `940f201d3d49aff17168b0f686ea90c716379096fb20c9a84497cfe9f37baa44` |
+| `sanitize-git-repo` | 998 | low-size, batch4 staged | `tb2-offline/sanitize-git-repo:20260425` | `sha256:6fb3909be2d3e41fdba90e7aac02bb6e68e2b31485c426f7b9a21cdd6e53e187` | 466395053 | 476883456 | `a7f05aaaa8c493d3d60c581f687901b86632ca2846a4214f8b52fcf6c7090084` |
+| `tune-mjcf` | 1106 | low-size, batch4 staged | `tb2-offline/tune-mjcf:20260425` | `sha256:77711f5e2763702941189d7959b99ab7edb1d1a0c9c095fd33c669f6b4fca41e` | 529319551 | 550133760 | `64c797c13884c38a0089d8e3ebd33907b91a93990ddcb0b1a370b7d1ab3e57dc` |
+
+Expected gate movement:
+- From committed batch3 head: `required_without_offline_transport 29 -> 24` after batch4 manifest wiring, already observed in the dirty worktree.
+- `fallback_tar_verified 60 -> 65`, `required_with_fallback_sha 60 -> 65`, and `required_with_digest_ref 10 -> 15`, already observed in the dirty worktree.
+- Worker readiness is still pending because there is no batch4 worker-check JSON yet.
+
+Worker command recommendation for batch4 implementation lane:
+
+```bash
+# Use the explicit worker-j9jjd endpoint from WORKFLOW.md and rootless Docker socket.
+export DOCKER_HOST=unix:///tmp/rl/run/docker.sock
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py check \
+  --image-manifest <batch4-five-row-temp-or-updated-manifest> \
+  --asset-root manifests \
+  --docker-host "$DOCKER_HOST" \
+  --load-fallback \
+  --run-smoke \
+  --json
+```
+
+The full TB2 manifest will still fail until the remaining 24 rows are populated, so use the same bounded subset proof pattern as batch2/batch3 when proving batch4 worker fallback readiness. Do not rely on direct P0 pull for worker readiness until #8 is resolved.
+
+### Next export/P0/fallback batch after batch4
+
+After batch4 is worker-smoked, the next export batch should avoid service, secret, qemu, torch, large, and data/ML-heavy rows. Pick these five generic rows next:
+
+| order | row | risk label | local ref | exact source image ID | inspect size bytes |
+| --- | --- | --- | --- | --- | ---: |
+| 1 | `overfull-hbox` | low-size, generic | `tb2-offline/overfull-hbox:20260425` | `sha256:a58256eef1e4e2fb761e753180d216e3edbd0fb79dc3e4b65a7b8c1a16ebb168` | 531075314 |
+| 2 | `polyglot-c-py` | low-size, generic | `tb2-offline/polyglot-c-py:20260425` | `sha256:34f1e78e9e23c8c9cc5954a4c235d9b5eb432db89c8c1322c36b13aefa3b4222` | 559936028 |
+| 3 | `winning-avg-corewars` | low-size, generic | `tb2-offline/winning-avg-corewars:20260425` | `sha256:3cb6bfd6a3a6db04aa52a00b5eeb2eab71ba1fc4a83c69802126411324ecd892` | 735891766 |
+| 4 | `polyglot-rust-c` | low-size but near 1GB | `tb2-offline/polyglot-rust-c:20260425` | `sha256:a4b68e06827a2ace4a21b98b63872ed9c31183c213cf19e214bde116250394c3` | 995089093 |
+| 5 | `write-compressor` | low-size but near 1GB | `tb2-offline/write-compressor:20260425` | `sha256:868491de68ebb7000a47f5ef8fb65ab8f34967d07542310311a7c38a8d6a795d` | 995690686 |
+
+Expected gate movement for that next export batch after batch4 is committed:
+- `required_without_offline_transport 24 -> 19`.
+- `fallback_tar_verified 65 -> 70`.
+- `required_with_fallback_sha 65 -> 70`.
+- `required_with_digest_ref 15 -> 20`, if P0 digest refs are also published and manifest-wired.
+
+Rows to isolate or defer:
+- Service rows: `nginx-request-logging`, `pypi-server`; both are small but should have isolated runtime-smoke expectations.
+- Secret/log row: `vulnerable-secret`; export is fine, but do not use as first log-inspection smoke.
+- Data/ML runtime rows: `portfolio-optimization`, `video-processing`, `train-fasttext`, `sam-cell-seg`, `mteb-retrieve`, `reshard-c4-data`, `multi-source-data-merger`.
+- QEMU rows: `qemu-startup`, `qemu-alpine-ssh`.
+- Torch/pytorch rows: `pytorch-model-cli`, `pytorch-model-recovery`, `torch-pipeline-parallelism`, `torch-tensor-parallelism`.
+- Large write/push rows: `multi-source-data-merger(6203486893 bytes)`, `torch-tensor-parallelism(11026213679)`, `torch-pipeline-parallelism(11315069350)`, `pytorch-model-recovery(19201784321)`.
+
+Cross-lane check:
+- `hunt-runner-results.md` Round 14 focuses on preserving batch3 image-check evidence in structured result/provenance. It agrees that P0 pull failures remain #8/runtime readiness and does not contradict this transport-population recommendation.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Memory quick search for TB2/lint-registry/image-warmup terms: rc 0, no relevant hits used.
+- Read WORKFLOW continuous bug-hunt section: rc 0.
+- Remote head/status and batch3 evidence file listing: rc 0; branch/head `feat/image-warmup-policy` / `c7a0eef`.
+- Initial TB2 verified lint command on batch3 head: outer rc 0, inner `LINT_RC=1`, parse rc 0; counts `fallback_tar_verified=60`, `required_without_offline_transport=29`.
+- Remaining-29 Docker inspect derivation: rc 0; every inspected row matched manifest `source_image_id`.
+- First batch4 artifact search: rc 0; observed untracked `tb2_p0_lowrisk_batch4_20260626.tsv`.
+- Batch4 TSV/hash probe after concurrent expansion: rc 0; observed 5 rows and sha `1af963f1b59e1040200d430f1ba74aa5b0650737f6c922ac8bddb6705ded8983`.
+- Batch4 fallback tar hash verification for all 5 current rows: rc 0.
+- Batch4 P0-tag read-only Docker inspect for all 5 rows: rc 0; tag IDs match source IDs and RepoDigests match TSV digest refs.
+- Status/diff check after concurrent batch4 manifest wiring: rc 0; observed modified manifest and untracked batch4 TSV, not changed by this lane.
+- Post-batch4 dirty-worktree verified lint: outer rc 0, inner `LINT_RC=1`, parse rc 0; counts `fallback_tar_verified=65`, `required_without_offline_transport=24`.
+- Batch4 worker-check lookup: rc 0; no batch4 worker-check JSON existed.
+- Cross-lane grep over `hunt-runner-results.md` and current runtime ledger tail: rc 0.
+
+Next runtime/image subdomain: after batch4 worker fallback smoke exists, audit the dirty manifest/TSV pair for commit readiness and then verify the next five generic exports drop TB2 from 24 to 19 without introducing P0-only rows.
+
+
+### Orchestrator follow-up after Round 14
+
+After the runtime-images lane finished its read-only audit, the orchestrator completed the batch4 worker proof. `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json` now exists and reports `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, and `errors=0`. Therefore batch4 is no longer worker-smoke-pending; the next runtime/image subdomain should start from the remaining 24-row gap and the next generic export batch described above.
