@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-batch8 Asia/Shanghai
+Updated: 2026-06-26 post-batch9 Asia/Shanghai
 
 ## Objective
 
@@ -11,7 +11,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Shared repo root: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo`
 - Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
 - Branch: `feat/image-warmup-policy`
-- Latest implementation commit: `147e037 Materialize TB2 medium transport batch 8`; this handoff update follows as a coordination-only commit.
+- Latest implementation commit: `c55bfab Materialize TB2 medium transport batch 9`; this handoff update follows as a coordination-only commit.
 - Original base commit for this workstream: `c42f23c Record runtime image hunt issues`
 - Driver doc: `_coordination/20260625_harbor_bench/DRIVER.md`
 - Remote worker: `worker-j9jjd`
@@ -32,7 +32,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Image inventory: `swe_dev` has substantially more SWE-bench/TB2.1 Docker images than worker; shared TB2.1 tars are partial, so worker full runs need staging from `swe_dev` cache. Current inventory artifacts: `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`, and identity-enriched `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
 - Terminal-Bench 2.1: `terminal_bench_2_1_image_smoke` is enabled for image preflight using `gcode-to-text`; worker rootless check passes via cached/verified fallback image, while full TB execution remains pending adapter/runtime result wiring.
 - Bug-hunt pair: only surface:50 and surface:54 produce `_coordination/20260625_harbor_bench/lanes/*.md`; each must cross-check the other's ledger before the orchestrator files issues.
-- Current Round 18 completed: surface:50 audited `path-tracing`/`prove-plus-comm` as medium-generic batch8 candidates; surface:54 found and filed #13 for raw image-preflight checker output leaking into controller logs. Next dispatch should split the remaining 14 TB2 `missing_shared_tar` rows into data/ML medium, QEMU, torch/pytorch, and largest-data groups. Both hunt lanes stay ledger-only unless explicitly promoted by the orchestrator.
+- Current Round 19 completed: surface:50 audited the remaining 14 TB2 rows and recommended batch9A as `portfolio-optimization`, `sam-cell-seg`, `train-fasttext`, and `video-processing`; surface:54 produced #12/#13 fixture-ready guidance for batch8 image-check provenance. Batch9A is now materialized. Next dispatch should audit the remaining 10 TB2 `missing_shared_tar` rows: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `pytorch-model-cli`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `reshard-c4-data`, `torch-pipeline-parallelism`, and `torch-tensor-parallelism`. Both hunt lanes stay ledger-only unless explicitly promoted by the orchestrator.
 - GitHub issue filing: runner-results lane filed/deduped through REST API:
   - #1 Separate adapter execution status from benchmark result status.
   - #2 Make suite run output directories invocation-unique.
@@ -70,7 +70,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 
 ## Next Wakeup Prompt
 
-Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: publish or record transport for the remaining 14 TB2 cache rows via P0 digest refs plus verified fallback tar sha. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated. SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
+Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: publish or record transport for the remaining 10 TB2 cache rows via P0 digest refs plus verified fallback tar sha. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated. SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
 
 ## Acceptance Snapshot
 
@@ -84,10 +84,10 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Direct `swe_dev -> worker` remains blocked by publickey; local Mac -> worker works.
 - Local `worker` SSH alias was observed pointing at stale `worker-pshjt`; use the explicit `worker-j9jjd` endpoint from `WORKFLOW.md` until aliases are corrected.
 - `swe_dev` `/data/swe/SWE-bench` and `/data/tmp/tb2-prebuild-save` are empty; the useful state is Docker local cache plus shared bench trees. swe_dev cache counts: 500 `swebench/sweb.eval...`, 728 `swerex-prebuilt`, 89 `tb2-offline`, 3 `sweb.*` helper images. Shared Terminal-Bench 2.1 has 50 `.tar` fallbacks plus 1 `.tar.gz`, so TB2 full image readiness is still partial relative to swe_dev cache.
-- Generated image manifests now include `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` (89 TB2 rows from swe_dev cache, 75 with verified fallback/P0 transport; 14 still marked `missing_shared_tar`) and `manifests/images/swebench_verified_django10097.yaml` (official eval base + swerex wrapper identity probe). SWE django10097 now has verified fallback tar sha for both rows; worker-j9jjd `--load-fallback --run-smoke` loaded the official eval base over the prior wrapper alias mismatch and ended with `present=2`, `tar_verified=2`, `loaded=1`, `smoke_passed=2`, `identity_mismatch=0`.
-- Static image manifest lint is available via `python3 scripts/agentic_bench_images.py lint --require-offline-transport`; current TB2 generated cache status is 75 configured fallback tars verified by `check --skip-docker`, with 14 rows still marked `fallback_status: missing_shared_tar` by manifest audit.
-- Registry-selected lint validation after batch8: `validate` rc 0 with `manifests=9/images=104/required_images=94`; full `lint-registry --verify-fallback-files` reports `fallback_tar_verified=79`, `fallback_tar_missing=1`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`. The remaining missing file is the pre-existing RepoZero relative tar path, not a TB2 batch8 artifact.
-- Latest full verification after batch8: `python3 -m unittest scripts.test_agentic_bench_images scripts.test_agentic_bench_suite scripts.test_offline_images_manifest` passed 36 tests; `validate`, `git diff --check`, TB2 static fallback check, registry fallback lint, worker fallback smoke, and bounded secret scan passed. Full registry fallback lint currently reports `fallback_tar_verified=79`, `fallback_tar_missing=1` for the existing RepoZero relative tar path, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`.
+- Generated image manifests now include `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` (89 TB2 rows from swe_dev cache, 79 with verified fallback/P0 transport; 10 still marked `missing_shared_tar`) and `manifests/images/swebench_verified_django10097.yaml` (official eval base + swerex wrapper identity probe). SWE django10097 now has verified fallback tar sha for both rows; worker-j9jjd `--load-fallback --run-smoke` loaded the official eval base over the prior wrapper alias mismatch and ended with `present=2`, `tar_verified=2`, `loaded=1`, `smoke_passed=2`, `identity_mismatch=0`.
+- Static image manifest lint is available via `python3 scripts/agentic_bench_images.py lint --require-offline-transport`; current TB2 generated cache status is 79 configured fallback tars verified by `check --skip-docker`, with 10 rows still marked `fallback_status: missing_shared_tar` by manifest audit.
+- Registry-selected lint validation after batch9: `validate` rc 0 with `manifests=9/images=104/required_images=94`; full `lint-registry --verify-fallback-files` reports `fallback_tar_verified=79`, `fallback_tar_missing=1`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`. The remaining missing file is the pre-existing RepoZero relative tar path, not a TB2 batch8 artifact.
+- Latest full verification after batch9: `python3 -m unittest scripts.test_agentic_bench_images scripts.test_agentic_bench_suite scripts.test_offline_images_manifest` passed 36 tests; `validate`, `git diff --check`, TB2 static fallback check, registry fallback lint, worker fallback smoke, and bounded secret scan passed. Full registry fallback lint currently reports `fallback_tar_verified=83`, `fallback_tar_missing=1` for the existing RepoZero relative tar path, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`.
 - Merge/push/sync shared main checkout: pending for current branch; latest pushed main is `c42f23c` before this warmup-policy commit.
 
 ## 2026-06-26 SWE django10097 fallback evidence
@@ -110,7 +110,7 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 
 - Added `--verify-fallback-files` to `agentic_bench_images.py lint` and `lint-registry`; it verifies configured fallback tar paths and sha256 values during static promotion lint.
 - Regression tests cover direct manifest lint and registry CLI behavior when a row has a sha field but the tar is absent.
-- Initial TB2+SWE promotion gate with `--verify-fallback-files` returned `fallback_tar_verified=53`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=38`; latest batch8 evidence below updates TB2-only check to `tar_verified=75` and leaves 14 TB2 rows marked `missing_shared_tar`.
+- Initial TB2+SWE promotion gate with `--verify-fallback-files` returned `fallback_tar_verified=53`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=38`; latest batch9 evidence below updates TB2-only check to `tar_verified=79` and leaves 10 TB2 rows marked `missing_shared_tar`.
 
 ## 2026-06-26 TB2 low-risk batch2 P0/fallback evidence
 
@@ -179,4 +179,14 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Full registry fallback lint with `--verify-fallback-files` reports `fallback_tar_verified=79`, `fallback_tar_missing=1` for the pre-existing RepoZero relative tar path, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`.
 - GitHub issue #13 was filed from the runner-results Round18 bug-hunt: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13
 - Issue comments posted after batch8: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4803855715`, #8 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4803855848`, #12 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/12#issuecomment-4803856045`, #13 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13#issuecomment-4803856254`.
+- These rows are image-transport ready only. The `--network none` smoke is a generic image smoke that does not execute Terminal-Bench tasks or claim task success; worker-j9jjd readiness remains fallback-tar based until #8 re-proves direct rootless registry pulls.
+
+## 2026-06-26 TB2 medium batch9 P0/fallback evidence
+
+- Added P0 digest plus verified fallback tar transport for four Terminal-Bench 2.1 medium/data-ML rows: `portfolio-optimization`, `sam-cell-seg`, `train-fasttext`, and `video-processing`.
+- Evidence TSV: `_coordination/20260625_harbor_bench/inventory/tb2_p0_medium_batch9_20260626.tsv`.
+- Worker fallback-load/run-smoke evidence JSON: `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch9_worker_check_20260626.json`; result counts `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, and `pulled=0`.
+- P0 digest refs recorded: `portfolio-optimization@sha256:e49c81136737cfcddd8c31b2b6525cd0a42688a91808a1d425a7e103803e76c0`, `sam-cell-seg@sha256:9a84f14ac1bb630fc1d8d1eb0276e4c03432f4bb6735abd9789a369bafbbbab8`, `train-fasttext@sha256:0611d34b94140683d27a859e29e5567080d24d91646137531dae02e14cc4fbd9`, and `video-processing@sha256:dd6c7305b82e6cd9f99a2c862401b5648cd650abd414769bd51251fbf2c589e3`.
+- TB2-only static check now reports `tar_verified=79`, `tar_missing=0`, `tar_mismatch=0`; 10 generated TB2 cache rows still have `fallback_status: missing_shared_tar`.
+- Full registry fallback lint with `--verify-fallback-files` reports `fallback_tar_verified=83`, `fallback_tar_missing=1` for the pre-existing RepoZero relative tar path, `fallback_tar_mismatch=0`, and `required_without_offline_transport=0`.
 - These rows are image-transport ready only. The `--network none` smoke is a generic image smoke that does not execute Terminal-Bench tasks or claim task success; worker-j9jjd readiness remains fallback-tar based until #8 re-proves direct rootless registry pulls.
