@@ -1,0 +1,128 @@
+{
+  "asset_root": "manifests",
+  "bench_id": "tb2_medium_batch10_worker_smoke",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 2,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 2,
+    "pulled": 0,
+    "smoke_passed": 2,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 2,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pytorch-model-cli.tar"
+        ],
+        "sha256": "e6a138890b7ac1d2f0b761a9b1703783f9bc19b2bfc77563cba4c6dae71a8cb3",
+        "sha256_actual": "e6a138890b7ac1d2f0b761a9b1703783f9bc19b2bfc77563cba4c6dae71a8cb3",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pytorch-model-cli.tar"
+        ]
+      },
+      "id": "tb2_pytorch_model_cli",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-cli@sha256:708e27b09487fbfed9176182bbad343ce2c15fba3294dad910a98726851f1aec"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/pytorch-model-cli:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/pytorch-model-cli:20260425"
+        },
+        {
+          "actual_image_id": "sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/pytorch-model-cli:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/pytorch-model-cli:20260425"
+      ],
+      "present_ref": "tb2-offline/pytorch-model-cli:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/reshard-c4-data.tar"
+        ],
+        "sha256": "171980895ba102082ffb7906ea23079254e07446ec452d1df78b15c3a7f73a86",
+        "sha256_actual": "171980895ba102082ffb7906ea23079254e07446ec452d1df78b15c3a7f73a86",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/reshard-c4-data.tar"
+        ]
+      },
+      "id": "tb2_reshard_c4_data",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-reshard-c4-data@sha256:4ab395e621f6fbd1ecf4433ea20f5ad8a7d3d3be989bb14ef4c049428a7eaa59"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/reshard-c4-data:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/reshard-c4-data:20260425"
+        },
+        {
+          "actual_image_id": "sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/reshard-c4-data:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/reshard-c4-data:20260425"
+      ],
+      "present_ref": "tb2-offline/reshard-c4-data:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/tmp/tb2_medium_batch10_worker_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

@@ -2384,3 +2384,114 @@ Cross-lane runtime/images check:
 - Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_scan=no_matches`.
 - `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`.
 - `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; Round19 ledger diff was 98 inserted lines before this validation block.
+
+## Round 20 batch9 image-check provenance and raw-log sink follow-up
+
+### Scope
+
+- Lane: runner/results/provenance ledger-only audit for batch9 worker-check evidence, #13 raw image-preflight log sink, and #12 safe normalized result artifacts.
+- Worktree/head verified: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `d1895a2`.
+- No production code, manifests, tests, Docker, benchmark, or model execution was performed. Only this ledger was edited.
+
+### Dedup judgment
+
+No new ISSUE-READY block in this round. Batch9 gives fresh multirow evidence for the existing #12/#13 contract gaps:
+
+- #13 owns the confirmed root cause that the suite streams checker stdout/stderr into durable `controller/logs/*.image_preflight.log` before parser redaction.
+- #12 owns the missing normalized image-check provenance in `image_preflight_summary.json` and `agentic_bench.result.v1`.
+- #10 remains the downstream allowlist/redaction constraint for raw checker fields and any future Terminal-Bench task/native artifacts.
+- Not #1: this round did not find a new execution-vs-benchmark status ordering bug.
+- Not #2: command-cache owner selection affects provenance, but no new invocation-unique output root bug was found.
+
+### Batch9 worker JSON safe facts
+
+Artifact inspected: `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch9_worker_check_20260626.json`.
+
+- `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_medium_batch9_worker_smoke`.
+- Mode: `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `pulled=0`, `missing=0`, `identity_mismatch=0`, `tar_missing=0`, `tar_mismatch=0`, `optional_missing=0`, `unchecked=0`, `errors=0`.
+- Rows: `tb2_portfolio_optimization`, `tb2_sam_cell_seg`, `tb2_train_fasttext`, and `tb2_video_processing`.
+- Every row has `role=terminal_bench_task_runtime`, `required=true`, `status=present`, `load_status=loaded`, `smoke_status=passed`, fallback `sha256_status=match`, and one present fallback path.
+- Every row has two inspect attempts. The first attempt has `returncode=1` and a nested `stderr` key by path/length only. I did not print raw stderr values.
+- Manifest anchors for these rows are `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:824`, `:1019`, `:1133`, and `:1163`.
+
+Interpretation: batch9 proves fallback-load plus network-none smoke readiness for four medium/data rows. It is not evidence of benchmark task success, direct worker P0 pull readiness, or permission to copy raw checker stderr/log bodies into one-command artifacts.
+
+### Static code and test anchors
+
+- `scripts/agentic_bench_suite.py:1047-1054` still runs the command-cache owner with `stdout=handle` and `stderr=subprocess.STDOUT`, so checker JSON printed to stdout is persisted in one row log.
+- `scripts/agentic_bench_suite.py:1056-1059` still makes cached waiters log only `[image_preflight_cached] ... rc=N`, so cached rows do not own the native checker payload.
+- `scripts/agentic_bench_suite.py:1198-1209` still writes `agentic_bench.image_preflight_summary.v1` with coarse pass/fail counts and per-row process status only; it does not preserve parsed image-check counts, image ids, fallback sha status, redaction metadata, or a shared parsed checker artifact pointer.
+- `scripts/agentic_bench_suite.py:1281-1300` still writes `agentic_bench.result.v1` without `source`, `image_preflight`, image-check artifact pointers, parser version, invocation id, or image-preflight summary pointer.
+- `scripts/agentic_bench_images.py:574-598` can emit raw `inspect_attempts[].stderr`, `pull_stderr`, and `load_stderr`; `scripts/agentic_bench_images.py:600-613` can emit raw `smoke_stderr`; `scripts/agentic_bench_images.py:628-643` returns those fields in native checker JSON.
+- `scripts/test_agentic_bench_suite.py:502-689` covers required preflight-only execution, transport concurrency cap, and dedupe, but still has no red test for #13 raw log redaction or #12 safe parsed image-check provenance.
+
+### Synthetic batch9 controller replay
+
+I used a temp copy of the batch9 checker JSON and inserted an unprinted synthetic marker into nested raw checker `inspect_attempts[0].stderr` fields. Then I ran `_execute_image_preflights()` directly with four runs, `suite_concurrency=50`, `image_preflight_concurrency=4`, and one identical command that emits the temp checker JSON. This was a controller-only synthetic probe: no Docker, benchmark, or model call.
+
+Observed safe booleans and counts:
+
+- `probe_rc=0` and `summary.status=0`.
+- `summary.counts={pass: 4, fail: 0, optional_fail: 0, skipped_no_preflight: 0, skipped_optional: 0}`.
+- `image_preflight_unique_commands=1`.
+- `summary_has_checker_counts=false` and `summary_has_native_pointer=false`.
+- `summary_has_raw_marker=false`.
+- `any_log_has_raw_marker=true`.
+- The four summary result rows contain only `bench_id`, timestamps, `exit_code`, `fatal`, `log_path`, `policy`, `required`, and `status`.
+
+Interpretation: batch9 reproduces the same #13/#12 split as batch8 and batch7. The raw checker payload is durable in the nondeterministic command-owner log, while the summary has neither raw content nor the safe structured counts/pointers needed for provenance.
+
+### COMMENT-READY fixture guidance
+
+1. `test_batch9_medium_image_check_summary_promotes_safe_counts`
+
+- Fixture input: distilled batch9 `agentic_bench.image_check.v1` JSON with the four rows above.
+- Expected summary fields after #12 implementation: `image_check_parse_status="parsed"`, shared parsed artifact pointer/digest, and `image_check_counts.tar_verified == loaded == present == smoke_passed == 4`; `pulled == missing == identity_mismatch == tar_missing == tar_mismatch == errors == 0`.
+- Expected image rows in safe output: id, role, required, status, load status, smoke status, fallback sha status, and present fallback path count or digest. Do not include raw Docker stderr bodies.
+
+2. `test_batch9_preflight_logs_do_not_persist_raw_checker_payload_after_13_fix`
+
+- Fixture input: batch9 checker JSON with synthetic markers inserted into `inspect_attempts[].stderr`, plus variants for `pull_stderr`, `load_stderr`, and `smoke_stderr`.
+- Expected after #13 fix: no default `controller/logs/*.image_preflight.log`, `image_preflight_summary.json`, `summary.json`, or `agentic_bench.result.v1` contains the marker or raw checker JSON body.
+- Positive assertion: logs keep only a sanitized status line, parse status, safe artifact pointer, redaction count, and allowlisted counts.
+
+3. `test_batch9_cached_preflight_rows_share_parsed_checker_artifact`
+
+- Fixture setup: four runs at `suite_concurrency=50` with identical preflight command, matching the synthetic replay above.
+- Expected after implementation: every row has a stable pointer to the same parsed checker artifact even though only one command owner executed the native checker.
+- Required provenance fields: unique preflight command id or digest, parsed artifact path/digest, source manifest path, parser version, worker/docker host identity as a redacted or allowlisted value, and parse status.
+
+4. `test_batch9_result_artifact_carries_safe_image_preflight_source`
+
+- Expected `agentic_bench.result.v1`: add `image_preflight` with status/counts/images, plus `source.image_preflight_summary_path` and `source.image_check_artifacts[]` entries with `role=image_check_artifact_json`, `status=parsed`, `read_policy=allowlist_json`, and a content digest or stable pointer.
+- Redaction assertions: no nested raw stderr, raw Docker stdout/stderr bodies, command environment values, adapter transcripts, model transcripts, task source, task logs, or benchmark run logs in normalized artifacts.
+
+5. `test_batch9_terminal_bench_data_rows_remain_transport_only`
+
+- Purpose: `portfolio-optimization`, `sam-cell-seg`, `train-fasttext`, and `video-processing` are data/ML-like task images. Image-check normalization should not infer Terminal-Bench task success or read task materials just because fallback-load smoke passed.
+- Expected source policy: task files and any future Terminal-Bench native logs remain pointer-only until a Terminal-Bench result parser owns an allowlisted structured result artifact.
+
+### Runtime lane cross-check
+
+Runtime lane notes before batch9 recommended exactly this four-row batch and warned that these are data/ML-like rows, not task-result evidence. Handoff after batch9 says the full registry fallback lint now has `required_without_offline_transport=0` and that 10 TB2 `missing_shared_tar` rows remain. This does not contradict the runner lane: runner artifacts still need safe parsed image-check provenance and raw log redaction before one-command outputs are self-auditing.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- `grep` memory quick pass for this workspace context: rc 0.
+- Skill instruction reads for systematic debugging, using-superpowers, and verification-before-completion: rc 0.
+- Remote handoff/head/ledger read in the active worktree: rc 0; verified branch `feat/image-warmup-policy` and head `d1895a2`.
+- `git status --short --untracked-files=all` plus batch9 file inventory: rc 0; worktree initially had no status output.
+- Bounded Python inspection of batch9 worker JSON: first attempt rc 1 due a local f-string quoting mistake after printing safe counts; corrected inspection rc 0. No raw stderr or secret value was printed.
+- TSV/manifest line reads for batch9 rows: rc 0.
+- Runtime-lane grep for batch9 and #13/#12 context: rc 0.
+- Static code/test line reads for suite/image checker/preflight tests: rc 0.
+- Synthetic batch9 controller replay with an unprinted marker in nested raw checker stderr: rc 0; confirmed raw marker in one preflight log, absent from summary, and missing structured checker counts/pointers.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, no matches.
+- Bounded secret scan on this ledger for key-like values, bearer values, authorization values, and long secretish assignments: rc 0, no matches.
+- `git status --short --untracked-files=all`: rc 0 after removing the temporary `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc` produced by the synthetic import; only this ledger remains modified.

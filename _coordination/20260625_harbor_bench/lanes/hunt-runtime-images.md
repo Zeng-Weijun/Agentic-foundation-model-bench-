@@ -1717,3 +1717,120 @@ Next runtime/image subdomain: after batch9A is materialized, audit TSV/manifest/
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
 - Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.
+## Round 20 remaining TB2 transport split after batch9
+
+Scope: runtime/images ledger-only audit on branch `feat/image-warmup-policy`, expected coordination head `d1895a2` after batch9. I did not edit production code, manifests, tests, or inventory artifacts, and did not run Docker save, push, pull, load, run, benchmarks, or model calls.
+
+### COMMENT-READY: next safe split for the final 10 TB2 missing transports
+
+Dedup judgment: COMMENT-READY for existing #6/#8/#12/#13, with no new ISSUE-READY finding. #6 still owns incomplete TB2 offline transport coverage. #8 still means worker-j9jjd rootless should not depend on direct P0 pull alone. #12 still owns structured image-check provenance. #13 still owns raw image-preflight checker output being written into controller logs before parser redaction. This round found no distinct new root cause.
+
+Current state from the generated manifest and static checker:
+
+- `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` has 89 TB2 rows.
+- 79 rows have verified fallback SHA coverage; exactly 10 rows still have `fallback_transport: none` and `fallback_status: missing_shared_tar`.
+- All 10 are present in swe_dev Docker cache and `docker image inspect` ID matches the manifest `source_image_id`.
+- No exact fallback tar exists in the shared TB2 prebuilt-image tree for the 10 slugs.
+- P0 registry HEAD probes for `bench-runtime/tb2-offline:<slug>` returned HTTP 404 for all 10; local swe_dev Docker also has no matching `100.97.118.137:8555/bench-runtime/tb2-offline:<slug>` tags.
+- Batch9 evidence is consistent with fallback-based worker readiness: `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch9_worker_check_20260626.json` reports `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `pulled=0`, and `errors=0`.
+
+Recommended split after batch9:
+
+| Batch | Rows | Source sizes | Risk label | Expected lint drop | Rationale |
+| --- | --- | ---: | --- | ---: | --- |
+| 10A, recommended next | `mteb-retrieve`, `reshard-c4-data`, `pytorch-model-cli` | 2.12GB + 2.52GB + 2.60GB | medium data/ML, non-QEMU, non-service, non-huge | 79 verified -> 82 verified; remaining missing 10 -> 7 | All have explicit `python3` default command, `needs_network: false`, manifest smoke is network-none Python version check, and image sizes are below the later giant torch rows. Keep fallback tar mandatory and smoke image-only, not task-level retrieval, training, or dataset processing. |
+| 10B, isolated QEMU/supervisord | `install-windows-3.11`, `qemu-alpine-ssh`, `qemu-startup` | 1.63GB + 1.96GB + 1.96GB | QEMU/SSH/supervisord/service-like | 82 -> 85 if done after 10A | These are not large, but they should be isolated because image history markers include `qemu`/`ssh`, and `install-windows-3.11` defaults to `supervisord`. Use only the manifest network-none smoke override; do not run defaults or task harnesses in the image lane. |
+| 10C, solo data/write row | `multi-source-data-merger` | 6.20GB | larger data/write, history marker includes `c4`; marker scan also saw `password` in image history text | 85 -> 86 if done after 10B | Keep solo to reduce blast radius and avoid mixing with QEMU or giant torch rows. Use image-only smoke; do not inspect or copy task logs/data contents. |
+| 10D, giant torch one-by-one | `torch-tensor-parallelism`, `torch-pipeline-parallelism`, `pytorch-model-recovery` | 11.0GB + 11.3GB + 19.2GB | largest torch/model rows | 86 -> 89 one row at a time | These are the storage/time-risk rows. Export/push/load-smoke one at a time with explicit free-space checks and fallback tar required. Do not run GPU, training, tensor parallel, model recovery, or task commands. |
+
+I would start with 10A only. It removes three rows without touching QEMU/service-like defaults or the 11-19GB giant torch images. After 10A is materialized and worker-smoked with `allow_pull=false`, the next dispatch can choose whether to isolate 10B or do `multi-source-data-merger` solo depending on available storage and #13/#12 logging/provenance readiness.
+
+### Per-row evidence
+
+| Row | Manifest line | Local ref | Source image ID | Inspect size bytes | Default command | Transport/risk note |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| `install-windows-3.11` | 503 | `tb2-offline/install-windows-3.11:20260425` | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1629941732 | `supervisord -c /etc/supervisor/supervisord.conf` | Isolate; source/YAML task was absent from old prebuilt manifest, and old report also named it in build failures. Do not run default command. |
+| `mteb-retrieve` | 684 | `tb2-offline/mteb-retrieve:20260425` | `sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a` | 2117496845 | `python3` | Good 10A candidate; old prebuilt manifest row existed but tar was missing. Image history marker scan saw `mteb`/`torch`/`pytorch`/`c4`, so keep smoke image-only. |
+| `multi-source-data-merger` | 696 | `tb2-offline/multi-source-data-merger:20260425` | `sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83` | 6203486893 | `/bin/bash` | Solo after 10A/10B; larger data/write row. Old prebuilt manifest row existed but tar was missing. |
+| `pytorch-model-cli` | 888 | `tb2-offline/pytorch-model-cli:20260425` | `sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305` | 2604034114 | `python3` | Good 10A candidate despite PyTorch marker because size is modest and smoke is Python version only. |
+| `pytorch-model-recovery` | 900 | `tb2-offline/pytorch-model-recovery:20260425` | `sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4` | 19201784321 | `python3` | Defer; largest remaining image. Export/push/load-smoke alone. |
+| `qemu-alpine-ssh` | 912 | `tb2-offline/qemu-alpine-ssh:20260425` | `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573` | 1956628773 | `bash` | Isolate with QEMU rows; image history markers include `qemu` and `ssh`. |
+| `qemu-startup` | 924 | `tb2-offline/qemu-startup:20260425` | `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444` | 1956605318 | `bash` | Isolate with QEMU rows; image history markers include `qemu` and `ssh`. |
+| `reshard-c4-data` | 996 | `tb2-offline/reshard-c4-data:20260425` | `sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879` | 2517145790 | `python3` | Good 10A candidate; old report said tar missing and also named it in build failures, but current swe_dev cache identity is present and inspect matches. |
+| `torch-pipeline-parallelism` | 1113 | `tb2-offline/torch-pipeline-parallelism:20260425` | `sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a` | 11315069350 | `/bin/bash` | Defer; giant torch row. Export/push/load-smoke alone or paired only after storage check. |
+| `torch-tensor-parallelism` | 1125 | `tb2-offline/torch-tensor-parallelism:20260425` | `sha256:7f0d9bce1454a49b3890a9af55bab21405a4586cb7fe56d941447be303bdbf97` | 11026213679 | `/bin/bash` | Defer; giant torch row. Export/push/load-smoke alone or paired only after storage check. |
+
+### Concrete next commands for implementation owner, not run in this lane
+
+For 10A fallback tar plus P0 digest publication on swe_dev:
+
+```bash
+cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy
+out=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1
+mkdir -p "$out"
+for slug in mteb-retrieve reshard-c4-data pytorch-model-cli; do
+  src="tb2-offline/${slug}:20260425"
+  tar="${out}/${slug}.tar"
+  p0="100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-${slug}:20260425"
+  docker image inspect "$src" --format '{{.Id}} {{.Size}}'
+  docker save -o "$tar" "$src"
+  sha256sum "$tar"
+  docker tag "$src" "$p0"
+  docker push "$p0"
+  docker image inspect "$p0" --format '{{json .RepoDigests}}'
+done
+```
+
+After manifest update, verify static and worker fallback mode without depending on direct P0 pull:
+
+```bash
+cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py lint-registry --bench-registry manifests/bench_registry.yaml --policy selected-required --verify-fallback-files
+
+WORKER_SSH='ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn'
+ssh -CAXY "$WORKER_SSH" 'cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy && export DOCKER_HOST=unix:///tmp/rl/run/docker.sock && PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml --allow-pull=false --load-fallback --run-smoke --json'
+```
+
+Guardrails for implementation owner:
+
+- Fallback tar is still required even if P0 digest publication succeeds, because worker rootless direct P0 pull remains constrained by #8.
+- Use the manifest smoke command with `network: none`; do not run default image commands, task harnesses, benchmark commands, QEMU guests, SSH daemons, PyTorch training/inference, C4/MTEB retrieval, or model recovery.
+- For #12/#13, worker-check artifacts should preserve parsed counts and safe image IDs/statuses, but default controller logs must not persist raw checker stdout/stderr or task/log contents.
+
+### Cross-lane notes
+
+- Runner ledger #13 already covers the raw controller image-preflight log sink. These 10 remaining rows increase the importance of that fix because QEMU/SSH, data/ML, and torch rows can produce arbitrary Docker stderr or smoke stderr. This is not a new issue.
+- Runner ledger #12 already covers preserving structured image-check evidence. Batch10 worker checks should record fallback-vs-pull mode, `tar_verified`, `loaded`, `present`, `smoke_passed`, `identity_mismatch`, `errors`, per-row IDs, safe source IDs, safe fallback pointers, and parsed redaction metadata.
+- Batch9 evidence has `pulled=0`; do not reinterpret it as worker direct-P0 readiness.
+- No contradiction found with runner/results ledger #12/#13.
+
+### Round 20 command evidence before ledger validation
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read selected skill docs and the `Continuous Multi-Agent Bug-Hunt & Cross-Model Alignment` section of `WORKFLOW.md`: rc 0.
+- `ssh swe_dev 'cd .../image-warmup-policy && git rev-parse --abbrev-ref HEAD && git rev-parse --short HEAD && git status --short --untracked-files=all'`: rc 0; branch/head `feat/image-warmup-policy` / `d1895a2`; no worktree status lines printed before this ledger edit.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` and current runtime ledger tail: rc 0.
+- Cross-checked `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` for #12/#13/raw preflight/P0/fallback terms: rc 0.
+- Initial manifest parse using plain slugs instead of `local_ref` schema returned `rows_found 0`: rc 0; not used as evidence except to correct the parser to the actual schema.
+- `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml --skip-docker --json`: rc 0; JSON counts included `tar_verified=79`, `unchecked=89`, `tar_missing=0`, `tar_mismatch=0`, `errors=0`.
+- Corrected YAML parse plus read-only `docker image inspect` for the 10 `local_ref` values: rc 0; all 10 inspected successfully and matched manifest source IDs.
+- Exact fallback tar search under `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images`: rc 0; no exact `.tar`, `.tar.gz`, or `.tgz` hits for the 10 slugs.
+- Read-only local P0 tag `docker image inspect` for `100.97.118.137:8555/bench-runtime/tb2-offline:<slug>`: wrapper rc 0; each per-row inspect returned rc 1 with no local image.
+- Registry HEAD probes against `https://100.97.118.137:8555/v2/bench-runtime/tb2-offline/manifests/<slug>` with Docker manifest accept header: wrapper rc 0; all 10 returned HTTP 404.
+- Broad shared-directory `find` for task directories was interrupted after it remained too broad: rc 255; not used as evidence.
+- `git ls-files | grep` for the 10 slugs: rc 0 with no output, confirming this worktree does not track task source directories for these slugs.
+- Targeted repo grep for the 10 slugs across manifests, reports, and coordination inventories: rc 0; found manifest lines, cache inventories, handoff, and old repair-plan references.
+- Read `reports/next_terminal_bench_2_1_image_repair_plan_20260625.md:440-510` and `520-545`: rc 0; confirmed old missing-archive/source-absent classifications and build-failure notes.
+- Read-only `docker image history --no-trunc --format '{{.CreatedBy}}'` marker scan for the 10 refs: rc 0; printed marker names and line counts only, not raw history commands.
+- Manifest line context with `nl -ba manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`: rc 0; confirmed all 10 rows have `fallback_transport: none`, `fallback_status: missing_shared_tar`, `needs_network: false`, and network-none smoke.
+- Batch9 TSV and worker-check JSON inspection: rc 0; batch9 worker check has `tar_verified=4`, `loaded=4`, `present=4`, `smoke_passed=4`, `pulled=0`, `errors=0`.
+
+### Round 20 validation evidence
+
+- Remote hash guard before first ledger copy-back: rc 0; remote and local pre-edit hash matched `449a6f6bfad2b71ce88653f56c045c5ab279cec13cdbbe31797103cac1c695d5`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- First bounded secret-scan command had a shell quoting error: rc 1, `zsh:20: unmatched "`. It was not used as validation.
+- Corrected bounded secret scan for private-key blocks, bearer tokens, explicit secret assignments, OpenAI-style keys, and GitHub-style tokens: rc 0, `bounded_secret_scan no_matches`.
+- Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.
+- Post-reorder validation after moving Round20 to EOF: rc 0 for `git diff --check`, trailing-whitespace scan, bounded secret scan, heading-order grep, and status/diff-stat. Round20 now follows Round19 in the ledger.
