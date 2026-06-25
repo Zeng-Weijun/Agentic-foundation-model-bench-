@@ -2126,3 +2126,155 @@ Cross-lane runtime/images check:
 - Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_scan=no_matches`.
 - `git status --short --untracked-files=all`: rc 0. This lane modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; unowned `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` and `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` were also modified in the shared worktree, and untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_secret_batch7_20260626.tsv` plus `_coordination/20260625_harbor_bench/inventory/tb2_secret_batch7_worker_check_20260626.json` were present. They were left untouched.
 - `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; Round17 ledger diff was 132 inserted lines before this validation block.
+
+## Round 18 batch7 secret plus future batch8 image-check provenance/redaction
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` and this runner/results ledger before Round18 checks.
+- Active branch/head observed: `feat/image-warmup-policy` / `ce4f268 Record TB2 batch7 handoff`.
+- Wrote only this runner/results/provenance ledger. No production code, manifests, tests, Docker, benchmark execution, model requests, commits, or pushes.
+- Focus: from the one-command runner angle, audit how `agentic_bench.image_check.v1` JSON enters normalized result/provenance/redaction for batch7 secret evidence, future batch8 medium generic evidence, cached preflight rows, and raw stderr/log allowlists.
+
+### ISSUE-READY: controller image-preflight logs persist raw checker stdout before parser redaction
+
+severity: High for secret-sensitive tasks; medium for generic image checks.
+
+dedup: Related to #10, but not a duplicate unless #10 is explicitly broadened beyond parser source allowlists and normalized result serialization. Existing #10 covers secret-bearing adapter sidecars and future parser allowlists. This finding is earlier in the data flow: the suite writes raw checker stdout into durable controller preflight logs before any parser or sanitizer can run. Related to #12 because the fix should materialize a safe parsed image-check artifact pointer. Not #1 or #2.
+
+location:
+
+- `scripts/agentic_bench_suite.py:1047-1054`: the command-cache owner runs the image preflight with `stdout=handle` and `stderr=subprocess.STDOUT`, so whatever the checker prints is persisted in `logs/<bench>.image_preflight.log`.
+- `scripts/agentic_bench_suite.py:1056-1059`: cached waiters only log `[image_preflight_cached] ... rc=N`, making the owner log the sole raw checker-output sink under concurrency.
+- `scripts/agentic_bench_suite.py:1109-1117`: `_run_image_preflight_one()` passes the per-bench log handle into `_cached_preflight_command_returncode()`.
+- `scripts/agentic_bench_images.py:574-598`: native checker rows can include nested `inspect_attempts[].stderr`, `pull_stderr`, and `load_stderr`.
+- `scripts/agentic_bench_images.py:600-613`: native checker rows can include raw `smoke_stderr` on smoke failure.
+- `scripts/agentic_bench_images.py:628-643`: the checker returns the raw `agentic_bench.image_check.v1` payload containing those fields.
+
+static_repro:
+
+- Use a temp copy of committed `_coordination/20260625_harbor_bench/inventory/tb2_secret_batch7_worker_check_20260626.json`.
+- Insert an unprinted synthetic sensitive sentinel into `images[0].inspect_attempts[0].stderr` and `images[0].smoke_stderr`.
+- Run `_execute_image_preflights()` with three rows sharing one required preflight command, `suite_concurrency=50`, and `image_preflight_concurrency=4`; the helper prints the mutated checker JSON and exits 0. No Docker, benchmark, or model call is involved.
+- Observed: `probe_rc=0`, `summary.status=0`, `counts.pass=3`, `image_preflight_unique_commands=1`, `summary_has_sentinel=False`, `result_has_sentinel=False`, but `any_log_has_sentinel=True`.
+- The log with the raw checker JSON was nondeterministically `tb2_secret_cached_a.image_preflight.log`; the other two row logs had only cached markers. This shows both the log leak and the cached-row provenance ambiguity.
+
+impact:
+
+- A one-command runner output can contain raw checker stderr in `controller/logs/*.image_preflight.log` even if future normalized `image_preflight_summary.json`, `summary.json`, and `agentic_bench.result.v1` serializers are correctly redacted.
+- For `vulnerable-secret`, runtime lane explicitly treats task/log content as secret/log-sensitive. The current batch7 JSON has only Docker missing-image stderr, but the code path would also persist future `pull_stderr`, `load_stderr`, `smoke_stderr`, or nested stderr bodies to logs.
+- Cached preflight rows make this harder to audit: the row that owns the shared command is scheduler-dependent, so a parser or reviewer cannot infer which row log is the canonical native checker source from manifest order alone.
+
+fix:
+
+- Do not stream raw image-check JSON stdout/stderr into generic controller logs. Capture checker stdout/stderr into a bounded temp artifact per unique preflight command, parse `agentic_bench.image_check.v1`, and write an allowlisted/redacted `image_check_artifact.json` or embed the safe subset in `image_preflight_summary.json`.
+- Log only a short sanitized status line, the safe parsed artifact pointer, parse status, counts, and redaction counts. If raw capture must be retained for debugging, store it outside default one-command artifacts or mark it `secret_sensitive=true`, `read_policy=restricted_raw`, and exclude it from normal collection.
+- Add command-cache metadata so owner and cached rows point to the same parsed artifact rather than relying on whichever row log happened to capture stdout.
+- Add regression tests that insert a sentinel into nested inspect stderr and smoke stderr, assert no preflight log/summary/result contains it, and assert parsed status/counts still survive.
+
+evidence:
+
+- Synthetic probe stdout showed `any_log_has_sentinel True`, `summary_has_sentinel False`, `result_has_sentinel False`, `image_preflight_unique_commands 1`, and one owner log with `has_schema=true`, `has_sentinel=true`, `has_cached_marker=false`.
+- Current batch7 checker JSON is tracked at head `ce4f268`, has `schema_version=agentic_bench.image_check.v1`, row `tb2_vulnerable_secret`, and a real nested `inspect_attempts[0].stderr` key path by presence/length only.
+- Existing tests at `scripts/test_agentic_bench_suite.py:548-689` cover concurrency cap and command dedupe, but do not assert raw preflight-log redaction or shared parsed artifact pointers.
+
+### Batch7 tracked evidence and parser fixture contract
+
+Current batch7 evidence shape:
+
+- Evidence file: `_coordination/20260625_harbor_bench/inventory/tb2_secret_batch7_worker_check_20260626.json`, tracked at head `ce4f268`.
+- Native checker schema: `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_secret_batch7_worker_smoke`.
+- Mode: `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=1`, `loaded=1`, `present=1`, `smoke_passed=1`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, `missing=0`, and `pulled=0`.
+- Image row: required `tb2_vulnerable_secret`, role `terminal_bench_task_runtime`, `status=present`, `load_status=loaded`, `smoke_status=passed`, fallback `sha256_status=match`, one fallback path present.
+- Raw-field presence: no top-level raw stdout/stderr keys, but nested `inspect_attempts[0].stderr` exists. I recorded only key path and length, not value.
+- Sensitive-key scan over JSON keys found no `secret`, `token`, `authorization`, `password`, or `api_key` key paths. That is not enough for safety; raw values still require an allowlist because stderr bodies can contain arbitrary text.
+
+Fixture-ready tests:
+
+1. `test_batch7_secret_image_check_promotes_safe_fields_and_excludes_raw_logs`
+
+- Fixture input: distilled batch7 checker JSON.
+- Expected normalized fields: `image_preflight.status="pass"`, `parse_status="parsed"`, counts above, image row id/role/required/status/load/smoke/fallback sha status, and safe source pointer to the image manifest/check artifact.
+- Negative assertions: no raw nested stderr, `pull_stderr`, `load_stderr`, `smoke_stderr`, task file contents, prior Terminal-Bench run logs/casts/panes, env values, adapter transcripts, or model transcripts in serialized `image_preflight_summary.json`, `summary.json`, `agentic_bench.result.v1`, or default collected preflight logs.
+- Source policy assertions: Terminal-Bench task source and historical raw logs, if referenced, are `source.native_artifacts[]` pointer-only with `secret_sensitive=true` and `status=not_read` or `excluded_by_policy`.
+
+2. `test_batch7_secret_cached_preflight_rows_share_parsed_artifact`
+
+- Fixture input: same batch7 checker JSON printed by one shared preflight command across at least three rows with `suite_concurrency=50`.
+- Expected after implementation: `image_preflight_unique_commands==1`, all rows have parsed counts, and all rows point to the same parsed checker artifact or JSON pointer.
+- Negative assertion: no row is considered less proven merely because its own log contains only `[image_preflight_cached]`.
+
+3. `test_required_secret_preflight_failure_is_infra_blocked_not_adapter_crash`
+
+- Fixture input: batch7-like checker JSON with a synthetic required image failure and an execution result `fail:image_preflight:N`.
+- Expected after implementation: `execution.status="fail"`, `benchmark_result.status="infra_blocked"`, `metric="image_preflight"`, `failure_category="image_preflight_failed"`, `score_claim_valid=false`, and parsed redacted image-check evidence preserved.
+- Dedup: #1/#12/#10.
+
+### Future batch8 medium generic/data contract
+
+No batch8 inventory JSON exists yet in `_coordination/20260625_harbor_bench/inventory/` at this head. Runtime lane identifies the remaining medium/generic candidates separately from secret, service, QEMU, torch/pytorch, and largest-data rows. Relevant currently untransported manifest rows include:
+
+- `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:779`: `tb2_path_tracing`, currently `image_transport=swe_dev_cache_identity`, `fallback_transport=none`, `fallback_status=missing_shared_tar`.
+- `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:848`: `tb2_prove_plus_comm`, currently `image_transport=swe_dev_cache_identity`, `fallback_transport=none`, `fallback_status=missing_shared_tar`.
+- Runtime lane also lists medium/data rows such as `mteb-retrieve`, `multi-source-data-merger`, `portfolio-optimization`, `reshard-c4-data`, `sam-cell-seg`, `train-fasttext`, and `video-processing`, while keeping QEMU and torch/pytorch separate.
+
+Fixture-ready future batch8 tests:
+
+1. `test_batch8_medium_generic_image_check_promotes_multirow_counts`
+
+- Synthetic fixture rows: at minimum `tb2_path_tracing` and `tb2_prove_plus_comm`, both role `terminal_bench_task_runtime`, required true, fallback sha match, `load_status=loaded`, `status=present`, `smoke_status=passed`.
+- Expected counts: `tar_verified == row_count`, `loaded == row_count`, `present == row_count`, `smoke_passed == row_count`, `identity_mismatch == 0`, `errors == 0`, `pulled == 0` when worker evidence uses fallback load.
+- Required provenance: preserve fallback-vs-pull mode, image ids/roles/statuses, safe fallback pointer or basename, manifest pointer, and checker artifact digest/pointer.
+- Negative assertions: no raw Docker stdout/stderr, full command text, env values, task source, model transcript, or adapter transcript in default normalized artifacts/logs.
+
+2. `test_batch8_medium_generic_does_not_inherit_secret_task_policy_but_keeps_raw_stderr_allowlist`
+
+- Purpose: medium generic rows are not `vulnerable-secret`, but they can still produce raw `inspect_attempts[].stderr`, `pull_stderr`, `load_stderr`, or `smoke_stderr` from Docker/runtime failures.
+- Expected source policy: task files are not automatically marked secret-sensitive solely by task id, but raw checker stderr remains `read_policy=redacted_field` or excluded by allowlist.
+- If any medium task has benchmark logs/casts in future artifacts, parser must still use pointer-only source records until a Terminal-Bench native result parser owns a structured result file.
+
+3. `test_batch8_cached_rows_do_not_depend_on_owner_log_order`
+
+- Same cached command shape as batch7, but fixture has multiple medium images.
+- Expected after implementation: owner and cached rows all point to the shared parsed checker artifact for the current invocation, and the log owner name is not part of correctness.
+- Dedup: #12/#2 plus the new log-redaction issue above.
+
+Cross-lane runtime/images check:
+
+- Runtime-images Round17 agrees that `vulnerable-secret` is fallback-ready and should remain isolated from task/log inspection; it explicitly says checker stderr and task/log content must not be copied by result/provenance layers.
+- Runtime lane's next suggested split is to choose from the remaining 16 rows while keeping QEMU, torch/pytorch, largest data, and medium generic/data rows separated. This matches the future batch8 contract above.
+- No contradiction found. Runner/results should preserve structured image-readiness evidence, not reinterpret fallback smoke as Terminal-Bench task success or worker P0-pull readiness.
+
+### Round 18 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first, output truncated by tool.
+- Skill discovery for `systematic-debugging`, `verification-before-completion`, and `using-superpowers`: rc 0.
+- Read `superpowers:systematic-debugging`, `superpowers:verification-before-completion`, and `superpowers:using-superpowers` instruction files from cache `d08f0354`: rc 0.
+- Memory quick search for relevant workflow/coordination terms in `/Users/Zhuanz1/.codex/memories/MEMORY.md`: rc 0; used only to retain strict remote/coordination workflow pattern.
+- Remote handoff/head/ledger command on `swe_dev`: rc 0; read `_coordination/20260625_harbor_bench/HANDOFF.md`, observed branch `feat/image-warmup-policy`, head `ce4f268`, and read this runner ledger tail plus round index.
+- `git status --short --untracked-files=all && git log --oneline -12 && git diff --stat 5eb8822..ce4f268 ...`: rc 0; status output was empty before this ledger append, and batch7 diff touched handoff, batch7 TSV/JSON, and the TB2 image manifest. No script changes in that range.
+- Inventory file listing for batch7/batch8/medium/path/prove artifacts: rc 0; only batch7 TSV and worker-check JSON were present.
+- Handoff/runtime-lane grep for batch7/batch8/medium/path/prove/vulnerable-secret: rc 0; used to cross-check remaining-row and next-batch context.
+- Bounded Python inspection of batch7 secret and batch6 service worker-check JSON: rc 0; printed schema, counts, row ids/statuses, fallback sha statuses, raw-field key paths/lengths, and sensitive-key path presence only. No raw stderr or secret value was printed.
+- `nl`/`sed` reads for `scripts/agentic_bench_suite.py`, `scripts/agentic_bench_images.py`, and `scripts/test_agentic_bench_suite.py`: rc 0.
+- Manifest grep/line reads for `tb2_vulnerable_secret`, `tb2_path_tracing`, `tb2_prove_plus_comm`, and related rows: rc 0.
+- An ad hoc manifest parse for missing transport candidates returned rc 0 but used a broader criterion than the registry lint gate and overcounted rows that have fallback sha but no digest ref. It was not used as authoritative evidence; handoff/runtime verified lint remains the source for the remaining 16 rows.
+- Corrected manifest line read for `tb2_prove_plus_comm`, `tb2_rstan_to_pystan`, `tb2_sam_cell_seg`, and `tb2_vulnerable_secret`: rc 0; used to avoid relying on a mixed unnumbered `sed` snippet.
+- Synthetic secret-sentinel controller probe using a temp mutated batch7 checker JSON at `suite_concurrency=50`: rc 0; confirmed raw sentinel presence in one controller preflight log and absence from summary/result. The sentinel value was not printed.
+- Cross-ledger grep for #10/raw checker/preflight log/stderr: rc 0; confirmed prior rounds covered normalized parser redaction but not this exact controller log emission repro.
+- Runtime-images ledger tail read: rc 0; no contradiction found.
+
+## Round 18 validation evidence
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_scan=no_matches`.
+- `git status --short --untracked-files=all`: rc 0. This lane modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; unowned `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` was also modified in the shared worktree and left untouched.
+- `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; Round18 ledger diff was 139 inserted lines before this validation block.
+
+### Round 18 issue filing
+
+- Filed GitHub issue #13 for the controller image-preflight raw-log sink: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13
+- Dedup retained: related to #10/#12, but distinct because the leak occurs before parser/result redaction.

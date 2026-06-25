@@ -1,0 +1,128 @@
+{
+  "asset_root": "manifests",
+  "bench_id": "tb2_medium_batch8_worker_smoke",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 2,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 2,
+    "pulled": 0,
+    "smoke_passed": 2,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 2,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing.tar"
+        ],
+        "sha256": "7fcd3b217cefa36c9365e93ed7d4d8c5b308004d7db01e141a2494da53bbb034",
+        "sha256_actual": "7fcd3b217cefa36c9365e93ed7d4d8c5b308004d7db01e141a2494da53bbb034",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing.tar"
+        ]
+      },
+      "id": "tb2_path_tracing",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing@sha256:07659e59709c19d41fc10f2e824f2645736a3751733b72837733f088ab9724ba"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/path-tracing:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/path-tracing:20260425"
+        },
+        {
+          "actual_image_id": "sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/path-tracing:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/path-tracing:20260425"
+      ],
+      "present_ref": "tb2-offline/path-tracing:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/prove-plus-comm.tar"
+        ],
+        "sha256": "a19995fee30fac9e219c5a284173edac73df3dc1e4c0d03d7e36953932bc1272",
+        "sha256_actual": "a19995fee30fac9e219c5a284173edac73df3dc1e4c0d03d7e36953932bc1272",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/prove-plus-comm.tar"
+        ]
+      },
+      "id": "tb2_prove_plus_comm",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-prove-plus-comm@sha256:70b7a8e1e4ad02ac01dc434585c6167b936078680c0c6ae64084be096efc6748"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/prove-plus-comm:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/prove-plus-comm:20260425"
+        },
+        {
+          "actual_image_id": "sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/prove-plus-comm:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/prove-plus-comm:20260425"
+      ],
+      "present_ref": "tb2-offline/prove-plus-comm:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/tmp/tb2_medium_batch8_worker_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

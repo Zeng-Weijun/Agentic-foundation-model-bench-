@@ -1530,3 +1530,106 @@ Next runtime/image subdomain: choose the next isolated group from the remaining 
 - Initial broad secret-assignment scan over the ledger: rc 1 with false positives on the literal `vulnerable-secret` task slug and marker-name examples, not secret values. Line-reference inspection for those hits: rc 0.
 - Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
 - Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and untracked batch7 TSV/worker-check JSON were present and left untouched.
+
+## Round 18 - TB2 medium generic batch8 candidate audit (path-tracing, prove-plus-comm) after batch7 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, registry tag `HEAD`, manifest/lint reads, fallback tar searches, task file-name and marker-count scans, and cross-lane grep only.
+
+COMMENT-READY for #6/#8/#10/#12: `path-tracing` and `prove-plus-comm` are feasible as a two-row medium-generic batch8, but they are not materialized yet and must be accepted by verified fallback tar plus worker fallback-load/network-none smoke rather than P0-only or real benchmark execution
+
+dedup: comment-on-#6 for TB2 transport population and worker fallback warmup. comment-on-#8 because direct worker P0 pull remains unproven and this batch should keep fallback tar mandatory. comment-on-#12 because the eventual batch8 worker-check JSON should be preserved as structured image-check provenance. comment-on-#10 because task/test logs and checker stderr remain untrusted native artifacts, even though no new secret-bearing row was found. Not #11: both local source images match their manifest `source_image_id`. No new ISSUE-READY block.
+
+Current state:
+- Observed branch/head: `feat/image-warmup-policy` at `ce4f268`.
+- `git status --short --untracked-files=all` was clean before this ledger edit.
+- Current TB2-only verified lint baseline is post-batch7: `fallback_tar_verified=73`, `required_with_fallback_sha=73`, `required_with_digest_ref=23`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=16`.
+- The 16 non-`ok` rows still include `tb2_path_tracing` and `tb2_prove_plus_comm`.
+
+### Candidate evidence
+
+| row | manifest line | risk label | local ref | source image ID | inspect size bytes | current transport |
+| --- | ---: | --- | --- | --- | ---: | --- |
+| `path-tracing` | 779 | medium generic, no service/qemu/torch marker in image config | `tb2-offline/path-tracing:20260425` | `sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b` | 1104154092 | `swe_dev_cache_identity`, `fallback_transport: none`, `fallback_status: missing_shared_tar` |
+| `prove-plus-comm` | 848 | medium generic, no service/qemu/torch marker in image config | `tb2-offline/prove-plus-comm:20260425` | `sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5` | 1461316125 | `swe_dev_cache_identity`, `fallback_transport: none`, `fallback_status: missing_shared_tar` |
+
+Read-only Docker inspect on `swe_dev`:
+- Both refs exist in the local cache and their Docker image IDs exactly match the manifest `source_image_id`.
+- `path-tracing`: `Entrypoint=null`, `Cmd=["/bin/bash"]`, no exposed ports, working dir `/app`, empty user, `env_count=2`, no repo digests.
+- `prove-plus-comm`: `Entrypoint=null`, `Cmd=["/bin/bash"]`, no exposed ports, working dir `/workspace`, empty user, `env_count=4`, no repo digests.
+- The default `Cmd=["/bin/bash"]` is safe only because the image checker uses a command override for smoke; do not rely on the image default command as the smoke.
+
+Transport state:
+- No shared fallback tar exists for `path-tracing.tar` or `prove-plus-comm.tar` in the checked shared TB2 image trees. The only path-tracing tar hit is `path-tracing-reverse.tar`, which is a distinct already-materialized row and must not be reused.
+- No batch8 inventory TSV/JSON exists yet.
+- Local Docker has no P0 tag for either `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing:20260425` or `...terminal-bench-2-1-prove-plus-comm:20260425`.
+- Registry `HEAD` by those tag names returned HTTP 404 for both rows. `curl -f` therefore returned rc 22. Treat that as "not published yet", not as a registry health failure.
+
+Smoke/network assessment:
+- The manifest smoke for both rows is the generic image-readiness command `python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok` with `network: none`.
+- `scripts/agentic_bench_images.py:497-509` builds the smoke as `docker run --rm --network <manifest network> <image_ref> /bin/sh -lc <manifest command>`, so the configured smoke overrides the default `/bin/bash` image command and should not run the actual Terminal-Bench task.
+- `scripts/agentic_bench_images.py:600-612` records `smoke_status` and fails on smoke stderr/errors; raw smoke stderr must still be redacted by downstream #10/#12 handling.
+- Bounded task-directory scans found task/test files with generic `curl`, `log`, `benchmark`, and `port` marker counts, but no `secret`, `password`, `token`, `cuda`, `torch`, `qemu`, `server`, or `daemon` marker hits. Contents were not printed. These rows should not use task-level tests, solution scripts, benchmark commands, or log probes for image warmup.
+- Keep `--network none` for worker image smoke. If a future implementation changes either row to service/network/task-level smoke, that would be a new bug because it would conflate image transport readiness with real Terminal-Bench execution.
+
+Batch8 recommendation:
+- Materialize both rows together as a two-row medium-generic batch.
+- Export verified fallback tar+sha first, then optionally push/tag to P0 and record digest refs. Because #8 direct worker registry pull remains unresolved, P0 digest alone is not sufficient.
+- After manifest wiring, run a worker-j9jjd fallback-load/run-smoke check with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `allow_pull=false`, `load_fallback=true`, and `run_smoke=true`.
+- Expected TB2-only static gate movement if both rows are materialized: `required_without_offline_transport 16 -> 14`, `fallback_tar_verified 73 -> 75`, `required_with_fallback_sha 73 -> 75`, and `required_with_digest_ref 23 -> 25` if P0 digest refs are also recorded.
+
+Implementation commands to hand to the writer, not executed in this lane:
+
+```bash
+REG=100.97.118.137:8555
+OUT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1
+for slug in path-tracing prove-plus-comm; do
+  src="tb2-offline/${slug}:20260425"
+  tar="${OUT}/${slug}.tar"
+  docker save "$src" -o "$tar"
+  sha256sum "$tar"
+  docker tag "$src" "$REG/swe-data-harness/terminal-bench-2-1-${slug}:20260425"
+  docker push "$REG/swe-data-harness/terminal-bench-2-1-${slug}:20260425"
+  docker inspect --format='{{index .RepoDigests 0}}' "$REG/swe-data-harness/terminal-bench-2-1-${slug}:20260425"
+done
+```
+
+Worker acceptance command shape after manifest wiring, not executed in this lane:
+
+```bash
+ssh -CAXY ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn \
+  'cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy &&
+   export DOCKER_HOST=unix:///tmp/rl/run/docker.sock &&
+   PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py check \
+     --image-manifest <batch8-two-row-manifest.yaml> \
+     --load-fallback --run-smoke --json'
+```
+
+Cross-lane check:
+- `hunt-runner-results.md` has no contradiction. It continues to require image-check provenance under #12, raw Docker/checker stderr redaction under #10, and keeps worker P0 direct pull readiness in runtime #8.
+- The batch8 worker-check JSON, once created, should be treated like earlier batch fixtures: preserve counts/statuses/fallback sha/identity fields, but do not copy raw stderr, full command output, task source, task logs, or adapter transcripts into normalized results.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:using-superpowers`, `superpowers:systematic-debugging`, and `superpowers:verification-before-completion`: rc 0.
+- Read WORKFLOW continuous bug-hunt section: rc 0.
+- Memory quick search for Round18/TB2/path-tracing/prove-plus-comm terms: rc 0, no relevant hits used.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`, current runtime ledger, and branch/head/status: rc 0; branch/head `feat/image-warmup-policy` / `ce4f268`; status clean before ledger edit.
+- Candidate manifest row plus read-only Docker inspect: rc 0 after one inline-Python quoting attempt failed with rc 1 and was ignored; source IDs/configs/sizes quoted above.
+- TB2-only verified lint with `--verify-fallback-files`: outer rc 0, inner `LINT_RC=1`; counts quoted above.
+- Shared fallback tar search for `path-tracing` and `prove-plus-comm`: rc 0; no exact fallback tars found, and `path-tracing-reverse.tar` was identified as distinct.
+- Batch8/path/prove inventory search: rc 0; no existing batch8 TSV/JSON found.
+- Read-only local P0 tag Docker inspect for both rows: rc 0 wrapper with two `No such image` diagnostics.
+- Registry tag `HEAD` probes for both rows: command rc 0 wrapper, per-tag `curl -f` rc 22 with HTTP 404.
+- Bounded task directory discovery and marker-count scan: rc 0; printed only file names, byte sizes, and marker counts.
+- Read `scripts/agentic_bench_images.py` smoke command/check lines: rc 0.
+- Cross-lane grep/read of `hunt-runner-results.md`: rc 0; no contradiction found.
+
+Next runtime/image subdomain: after batch8 is materialized by a writer, audit the resulting TSV/manifest/worker-check evidence and then split the remaining 14 rows into data/ML medium rows, QEMU rows, torch/pytorch rows, and the largest tar rows.
+
+### Round 18 validation evidence
+
+- Remote hash guard before first ledger copy-back: rc 0; pre-edit and remote hashes both matched `07a73b800c8b0e2caa53985c44d87b19848399384704e5b888fa2224f3786c94`.
+- `git diff --check`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
+- Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.

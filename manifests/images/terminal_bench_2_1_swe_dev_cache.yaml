@@ -779,12 +779,15 @@ images:
   - id: tb2_path_tracing
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/path-tracing:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing@sha256:07659e59709c19d41fc10f2e824f2645736a3751733b72837733f088ab9724ba
     source_image_id: sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing.tar
+    fallback_tar_sha256: 7fcd3b217cefa36c9365e93ed7d4d8c5b308004d7db01e141a2494da53bbb034
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -848,12 +851,15 @@ images:
   - id: tb2_prove_plus_comm
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/prove-plus-comm:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-prove-plus-comm@sha256:70b7a8e1e4ad02ac01dc434585c6167b936078680c0c6ae64084be096efc6748
     source_image_id: sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/prove-plus-comm.tar
+    fallback_tar_sha256: a19995fee30fac9e219c5a284173edac73df3dc1e4c0d03d7e36953932bc1272
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
