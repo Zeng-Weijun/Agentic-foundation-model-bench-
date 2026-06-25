@@ -1,0 +1,54 @@
+bench:
+  name: ""
+  version_or_release: ""
+  task_id: ""
+  task_category: ""
+  source_url_or_dataset_path: ""
+
+model:
+  public_name: ""
+  exact_served_name: ""
+  endpoint: ""
+  provider_or_serving_runtime: ""
+  temperature: null
+  max_context_tokens: null
+  max_output_tokens: null
+  reasoning_effort: ""
+
+agent:
+  scaffold: ""
+  scaffold_version: ""
+  system_prompt_path_or_hash: ""
+  user_prompt_path_or_hash: ""
+  tool_schema_path_or_hash: ""
+  budget:
+    wall_time_s: null
+    max_turns: null
+    max_steps: null
+    cost_limit: null
+
+harness:
+  verifier_command: ""
+  container_or_env: ""
+  metric: ""
+  pass_condition: ""
+
+observations:
+  final_status: ""
+  score_or_reward: null
+  exception_type: ""
+  patch_bytes: null
+  empty_patch: null
+  n_steps: null
+  input_tokens: null
+  output_tokens: null
+  cost_usd: null
+  failure_category: ""
+  short_failure_note: ""
+
+artifacts:
+  raw_trace_path: ""
+  prompt_path: ""
+  patch_path: ""
+  verifier_log_path: ""
+  result_json_path: ""

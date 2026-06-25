@@ -1,0 +1,23 @@
+schema_version: agentic_bench.models.v1
+models:
+  - id: qwen3-coder-30b-a3b-instruct
+    public_name: Qwen/Qwen3-Coder-30B-A3B-Instruct
+    served_name: qwen3-coder-30b-a3b-instruct
+    model_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+    serving_runtime: sglang
+    serving_host: worker_rkn9p
+    base_url: http://100.103.11.77:8503/v1
+    api_key_policy: EMPTY
+    context_tokens: 262144
+    max_output_tokens: 65536
+    status: existing_endpoint_not_rechecked_this_turn
+    notes:
+      - Local SWE-bench Verified Qwen Code score anchor is 245/500 = 49.0%.
+      - Do not conflate with public Qwen3-Coder-Next 80A3 scores.
+  - id: gpt-5.4-mini
+    public_name: gpt-5.4-mini
+    served_name: gpt-5.4-mini
+    serving_runtime: openai_compatible_relay
+    base_url: ""
+    api_key_policy: env_only
+    status: relay_profile_exists_needs_current_check

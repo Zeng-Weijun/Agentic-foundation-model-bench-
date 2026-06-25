@@ -1,0 +1,31 @@
+schema_version: agentic_bench.harnesses.v1
+harnesses:
+  - id: qwen-native-swebench
+    benchmark: swe-bench-verified
+    scaffold: qwen-code
+    path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench
+    runner: scripts/run_qwen_code_swebench.py
+    version: qwen-code-0.15.6
+    status: existing_needs_manifest_audit
+  - id: swe-agent-official
+    benchmark: swe-bench-verified
+    scaffold: swe-agent
+    path: /data/swe/SWE-agent
+    executable: /data/conda_envs/sweagent/bin/sweagent
+    version: ""
+    status: existing_needs_function_calling_full_run_check
+  - id: mini-swe-agent
+    benchmark: swe-bench-verified
+    scaffold: mini-swe-agent
+    path: ""
+    executable: ""
+    version: ""
+    status: existing_needs_path_pin
+  - id: openhands
+    benchmark: swe-bench-verified
+    scaffold: openhands
+    path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0
+    version: "0.54.0"
+    status: configured_but_new_layout_full_run_not_verified
+    known_risks:
+      - Shared config.toml mutation must be isolated before parallel workers.

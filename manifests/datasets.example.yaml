@@ -1,0 +1,19 @@
+schema_version: agentic_bench.datasets.v1
+datasets:
+  - id: swe-bench-verified
+    name: SWE-bench Verified
+    local_path: /data/swe/datasets/SWE-bench_Verified
+    canonical_shared_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swe_dev/datasets/SWE-bench_Verified
+    split: test
+    primary_file: data/test-00000-of-00001.parquet
+    expected_instances: 500
+    status: existing_not_rehashed
+    notes:
+      - Row count and checksum still need verification before final citation.
+  - id: terminal-bench-2.1
+    name: Terminal-Bench 2.1
+    local_path: ""
+    canonical_shared_path: ""
+    status: todo_locate_or_install
+    notes:
+      - Need rootless compatibility classification per task.

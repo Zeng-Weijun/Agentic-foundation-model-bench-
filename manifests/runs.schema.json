@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/schemas/run_manifest.v1.json",
+  "title": "Agentic Bench Run Manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "bench",
+    "mode",
+    "controller_host",
+    "remote_host",
+    "script_path",
+    "status",
+    "model"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "agentic_bench.run_manifest.v1"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "suite_id": {
+      "type": "string"
+    },
+    "bench": {
+      "type": "string"
+    },
+    "mode": {
+      "type": "string"
+    },
+    "controller_host": {
+      "type": "string"
+    },
+    "remote_host": {
+      "type": "string"
+    },
+    "remote_hostname": {
+      "type": "string"
+    },
+    "cwd": {
+      "type": "string"
+    },
+    "script_path": {
+      "type": "string"
+    },
+    "script_sha256": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "ended_at": {
+      "type": "string"
+    },
+    "exit_code": {
+      "type": ["integer", "null"]
+    },
+    "status": {
+      "type": "string"
+    },
+    "model": {
+      "type": "object",
+      "required": ["name", "api_key_set"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "api_key_set": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
