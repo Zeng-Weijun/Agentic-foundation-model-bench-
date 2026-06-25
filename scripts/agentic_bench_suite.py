@@ -569,6 +569,12 @@ def _positive_int(value: Any, *, default: int, field: str) -> int:
     return parsed
 
 
+def _optional_positive_int(value: Any, *, field: str) -> int | None:
+    if value is None or value == "":
+        return None
+    return _positive_int(value, default=1, field=field)
+
+
 def _image_preflight_concurrency(image_config: dict[str, Any], suite_concurrency: int) -> int:
     configured = image_config.get(
         "max_concurrency",
@@ -772,7 +778,19 @@ def build_run_plan(
     execution_kind = str(suite.get("execution_kind", execution.get("kind", "ssh_worker")))
     ssh_options = _require_list(worker.get("ssh_options", []), "worker.ssh_options")
     worker_env = _worker_runtime_env(worker)
-    suite_concurrency = int(max_concurrency or suite.get("concurrency", 1))
+    suite_concurrency = _positive_int(
+        max_concurrency if max_concurrency is not None else suite.get("concurrency", 1),
+        default=1,
+        field="suite.concurrency",
+    )
+    proxy_concurrency_ceiling = _optional_positive_int(
+        suite.get("proxy_concurrency_ceiling"),
+        field="suite.proxy_concurrency_ceiling",
+    )
+    if proxy_concurrency_ceiling is not None and suite_concurrency > proxy_concurrency_ceiling:
+        raise ConfigError(
+            f"suite_concurrency {suite_concurrency} exceeds suite.proxy_concurrency_ceiling {proxy_concurrency_ceiling}"
+        )
     image_preflight_concurrency = _image_preflight_concurrency(image_preflight_config, suite_concurrency)
     runs: list[dict[str, Any]] = []
 
@@ -921,6 +939,7 @@ def build_run_plan(
         "mode": mode,
         "controller_host": suite.get("controller_host", "dev"),
         "suite_concurrency": suite_concurrency,
+        "proxy_concurrency_ceiling": proxy_concurrency_ceiling,
         "image_preflight_concurrency": image_preflight_concurrency,
         "run_root": run_root,
         "bench_root": bench_root,
@@ -946,6 +965,8 @@ def _print_human(plan: dict[str, Any]) -> None:
     print(f"controller_host: {plan['controller_host']}")
     print(f"dry_run: {str(plan['dry_run']).lower()}")
     print(f"suite_concurrency: {plan['suite_concurrency']}")
+    if plan.get("proxy_concurrency_ceiling") is not None:
+        print(f"proxy_concurrency_ceiling: {plan['proxy_concurrency_ceiling']}")
     print(f"image_preflight_concurrency: {plan.get('image_preflight_concurrency', min(int(plan.get('suite_concurrency', 1)), 4))}")
     print("")
     for run in plan["runs"]:

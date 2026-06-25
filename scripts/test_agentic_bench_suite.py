@@ -151,6 +151,43 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("DRY_RUN=1", plan["runs"][0]["command_preview"])
         self.assertIn("MAX_TOKENS=4096", plan["runs"][0]["command_preview"])
 
+    def test_plan_emits_proxy_concurrency_ceiling(self):
+        module = load_module()
+        suite_text = SUITE_YAML.replace("  concurrency: 2\n", "  concurrency: 2\n  proxy_concurrency_ceiling: 2\n", 1)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_text, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True, smoke=False)
+
+        self.assertEqual(plan["suite_concurrency"], 2)
+        self.assertEqual(plan["proxy_concurrency_ceiling"], 2)
+
+    def test_cli_rejects_max_concurrency_above_proxy_ceiling(self):
+        suite_text = SUITE_YAML.replace("  concurrency: 2\n", "  concurrency: 2\n  proxy_concurrency_ceiling: 2\n", 1)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_text, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--dry-run",
+                    "--json",
+                    "--max-concurrency",
+                    "3",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("proxy_concurrency_ceiling", proc.stderr)
+        self.assertIn("3", proc.stderr)
+
     def test_rejects_swe_dev_controller_for_this_repo_contract(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
