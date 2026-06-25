@@ -824,12 +824,15 @@ images:
   - id: tb2_portfolio_optimization
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/portfolio-optimization:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-portfolio-optimization@sha256:e49c81136737cfcddd8c31b2b6525cd0a42688a91808a1d425a7e103803e76c0
     source_image_id: sha256:1fca885f366e54cc7fa1e42c02b22d29ce296a5bf1c7f17e7a9cbbede7ca5614
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/portfolio-optimization.tar
+    fallback_tar_sha256: 8e9d3a0caa013fbf23950f3333cc5688ecb0ea274ff2c44600020aa8164256ef
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -1016,12 +1019,15 @@ images:
   - id: tb2_sam_cell_seg
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/sam-cell-seg:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sam-cell-seg@sha256:9a84f14ac1bb630fc1d8d1eb0276e4c03432f4bb6735abd9789a369bafbbbab8
     source_image_id: sha256:dbc5dfcc120fbcf959d3be14d3ae7b0fb71533e8ca4c5c92b40c9c9dd1a3fe27
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sam-cell-seg.tar
+    fallback_tar_sha256: 76e94e62970ab26bc46ccd55b9280cf470f7d4d3c996a72fa98b3f66610236f9
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -1127,12 +1133,15 @@ images:
   - id: tb2_train_fasttext
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/train-fasttext:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-train-fasttext@sha256:0611d34b94140683d27a859e29e5567080d24d91646137531dae02e14cc4fbd9
     source_image_id: sha256:535d3a38744d0b5cf72b033b520132751569231316e134ac6a99cc62e666d13f
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/train-fasttext.tar
+    fallback_tar_sha256: e0d053cccb27a17ab8a32d7ce49e1afe0dd3a1694d5ae5dfa02d5fa106de6c0a
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -1154,12 +1163,15 @@ images:
   - id: tb2_video_processing
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/video-processing:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-video-processing@sha256:dd6c7305b82e6cd9f99a2c862401b5648cd650abd414769bd51251fbf2c589e3
     source_image_id: sha256:470f922fb58fcc7f66324e9912e31717e0fd07c0468a3ca23f7e2950f27f0fef
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/video-processing.tar
+    fallback_tar_sha256: 3051b12ccc2eefb1e331dc0860bed904f379564ebc8c145c71df414a7c5be1b7
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

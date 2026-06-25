@@ -2278,3 +2278,109 @@ Cross-lane runtime/images check:
 
 - Filed GitHub issue #13 for the controller image-preflight raw-log sink: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13
 - Dedup retained: related to #10/#12, but distinct because the leak occurs before parser/result redaction.
+
+## Round 19 batch8 image-check provenance and #13 follow-up
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` and this runner/results ledger before Round19 checks.
+- Active branch/head observed: `feat/image-warmup-policy` / `6ade6f2 Record TB2 batch8 issue comments`.
+- Wrote only this runner/results/provenance ledger. No production code, manifests, tests, Docker, benchmark execution, model requests, commits, or pushes.
+- Focus: #13 raw image-preflight checker output before parser redaction, batch8 worker JSON provenance, and safe one-command runner artifacts that preserve image-check counts without copying raw stderr/log content.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: batch8 is COMMENT-READY / fixture-ready evidence for #12 and #13, with #10 constraints. #13 already tracks the raw controller `.image_preflight.log` sink, and the Round19 synthetic batch8 replay reproduces the same root cause with a multirow checker payload. #12 covers missing structured image-check counts/source pointers in `image_preflight_summary.json` and `agentic_bench.result.v1`. #10 covers downstream parser/source allowlists and redaction. No distinct #1/#2 root cause was found in this loop.
+
+Current batch8 evidence shape:
+
+- Evidence file: `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch8_worker_check_20260626.json`, tracked at head `6ade6f2`.
+- Native checker schema: `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_medium_batch8_worker_smoke`.
+- Mode: `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=2`, `loaded=2`, `present=2`, `smoke_passed=2`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, `missing=0`, and `pulled=0`.
+- Images: two required `terminal_bench_task_runtime` rows, `tb2_path_tracing` and `tb2_prove_plus_comm`.
+- Both rows have `status=present`, `load_status=loaded`, `smoke_status=passed`, fallback `sha256_status=match`, and one fallback path present.
+- Both rows have nested `inspect_attempts[0].stderr` by key path and length only. I did not print raw stderr values.
+- Sensitive-key path scan over the JSON found no `secret`, `token`, `authorization`, `password`, or `api_key` key paths. That does not remove the need for #10/#13 handling because stderr bodies can contain arbitrary text.
+- Manifest rows now show P0 digest plus verified fallback tar transport: `tb2_path_tracing` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:779-790` and `tb2_prove_plus_comm` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:851-862`.
+
+Current-code cross-check:
+
+- No script changes were introduced from `ce4f268` to `6ade6f2`; batch8 changed handoff, batch8 TSV/JSON, and the TB2 image manifest.
+- `scripts/agentic_bench_suite.py:1047-1054` still streams the command-cache owner image-preflight stdout/stderr directly to `logs/<bench>.image_preflight.log`.
+- `scripts/agentic_bench_suite.py:1056-1059` still writes only a cached return-code marker for non-owner rows.
+- `scripts/agentic_bench_suite.py:1198-1209` still writes `agentic_bench.image_preflight_summary.v1` with coarse row status fields only; it does not persist `image_check_counts`, image rows, redaction metadata, checker artifact digests, or shared parsed artifact pointers.
+- `scripts/agentic_bench_suite.py:1281-1300` still writes `agentic_bench.result.v1` without `source`, `image_preflight`, `image_check_artifacts`, or image-preflight summary pointers.
+- `scripts/agentic_bench_images.py:574-598` can produce raw `inspect_attempts[].stderr`, `pull_stderr`, and `load_stderr`; `scripts/agentic_bench_images.py:600-613` can produce raw `smoke_stderr`; `scripts/agentic_bench_images.py:628-643` returns those fields in native checker JSON.
+- `scripts/test_agentic_bench_suite.py:548-689` covers image-preflight concurrency cap and command de-duplication, but not raw preflight-log redaction, safe parsed checker artifacts, or shared parsed pointers for cached rows.
+
+Synthetic batch8 #13 replay:
+
+- A temp helper printed a mutated copy of the batch8 checker JSON with an unprinted synthetic sentinel inserted into nested inspect stderr and smoke stderr fields for both images. No Docker, benchmark, or model call was made.
+- `_execute_image_preflights()` ran three rows sharing one required preflight command with `suite_concurrency=50` and `image_preflight_concurrency=4`.
+- Observed: `probe_rc=0`, `summary.status=0`, `counts.pass=3`, and `image_preflight_unique_commands=1`.
+- Observed: `summary_has_sentinel=false`, but `any_log_has_sentinel=true`.
+- Observed owner/cached split: `tb2_batch8_owner.image_preflight.log` had `has_schema=true`, `has_sentinel=true`, and no cached marker; the two cached row logs had cached markers, no checker schema, and no sentinel.
+- Observed summary rows had only `bench_id`, `ended_at`, `exit_code`, `fatal`, `log_path`, `policy`, `required`, `started_at`, and `status`; no `image_check_counts`, no native pointer, and no parsed artifact pointer.
+- Interpretation: this is a direct #13 reproduction for batch8 and a #12 evidence gap. It is not a new issue because #13 now owns the raw log-sink root cause.
+
+COMMENT-READY fixture map for #12/#13/#10:
+
+1. `test_batch8_medium_image_check_summary_promotes_safe_counts`
+
+- Fixture input: distilled `tb2_medium_batch8_worker_check_20260626.json`.
+- Expected normalized summary fields after implementation: `image_check_parse_status="parsed"`, `image_check_counts.tar_verified == 2`, `loaded == 2`, `present == 2`, `smoke_passed == 2`, `identity_mismatch == 0`, `errors == 0`, and `pulled == 0`.
+- Expected image allowlist: each row preserves `id`, `role`, `required`, `status`, `load_status`, `smoke_status`, fallback `sha256_status`, safe fallback pointer/basename or digest, final inspect identity status, and safe image refs/ids.
+- Negative assertions: serialized `image_preflight_summary.json`, `summary.json`, and `agentic_bench.result.v1` contain no raw nested stderr, `pull_stderr`, `load_stderr`, `smoke_stderr`, raw Docker stdout/stderr bodies, full command text, env values, task source, task logs, adapter transcripts, or model transcripts.
+
+2. `test_batch8_preflight_logs_do_not_persist_raw_checker_payload_after_13_fix`
+
+- Fixture input: batch8 checker JSON with a synthetic sentinel in nested inspect stderr and smoke/load/pull stderr variants.
+- Expected after #13 fix: no default controller `*.image_preflight.log` contains the sentinel or raw checker JSON body.
+- Positive assertions: logs contain only a sanitized status line, parse status, safe parsed artifact pointer, redaction count, and checker counts; the safe parsed artifact contains allowlisted fields only.
+- Cached-row assertion: owner and cached rows all point to the same parsed checker artifact for the invocation. Correctness must not depend on which row happened to own the command-cache future.
+
+3. `test_batch8_result_artifact_carries_image_preflight_source_without_raw_logs`
+
+- Fixture input: a synthetic passing adapter execution plus batch8 parsed image-check summary.
+- Expected `agentic_bench.result.v1`: includes `source.image_preflight_summary_path`, `source.image_check_artifacts[]` with `role=image_check_artifact_json`, `status=parsed`, `read_policy=allowlist_json`, a content digest or stable JSON pointer, and an `image_preflight` object with status/counts/images.
+- Negative assertion: `source.image_preflight_log_path`, if present, points to a sanitized log or marks any raw log as `secret_sensitive=true` and `read_policy=restricted_raw`; it must not be treated as parser input for raw JSON.
+
+4. `test_batch8_checker_failure_keeps_execution_and_benchmark_status_separate`
+
+- Fixture input: batch8-like checker JSON with one required image failure and synthetic `fail:image_preflight:N` execution.
+- Expected after implementation: process status remains `execution.status="fail"`; benchmark status is `infra_blocked`; `metric="image_preflight"`; `failure_category="image_preflight_failed"`; `score_claim_valid=false`; parsed/redacted image evidence is still present.
+- Dedup: #1/#12/#10/#13.
+
+Cross-lane runtime/images check:
+
+- Handoff now records that batch8 materialized `path-tracing` and `prove-plus-comm`, with worker fallback-load/run-smoke counts matching the JSON inspected here.
+- Runtime lane Round18 predicted these rows as medium-generic candidates and required fallback tar plus worker fallback-load/network-none smoke rather than P0-only or real benchmark execution. Batch8 artifacts satisfy that runtime assumption.
+- Handoff also notes issue comments posted for #6/#8/#12/#13 after batch8. No contradiction found.
+- Runner/results interpretation remains: batch8 proves image transport readiness via fallback-load and network-none smoke. It is not worker direct-P0 readiness, not benchmark/task success, and not permission to copy raw checker stderr/logs.
+
+### Round 19 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first, output truncated by tool.
+- Skill discovery for `systematic-debugging`, `verification-before-completion`, and `using-superpowers`: rc 0.
+- Read `superpowers:systematic-debugging`, `superpowers:verification-before-completion`, and `superpowers:using-superpowers` instruction files from cache `d08f0354`: rc 0.
+- Memory quick search for relevant workflow/coordination terms in `/Users/Zhuanz1/.codex/memories/MEMORY.md`: rc 0; used only to retain strict remote/coordination workflow pattern.
+- Remote handoff/head/ledger command on `swe_dev`: rc 0; read `_coordination/20260625_harbor_bench/HANDOFF.md`, observed branch `feat/image-warmup-policy`, head `6ade6f2`, and read this runner ledger tail plus round index.
+- `git status --short --untracked-files=all && git log --oneline -12 && find ...batch8...`: rc 0; status output was empty before this ledger append, and batch8 TSV/JSON were present.
+- `git diff --stat ce4f268..6ade6f2 -- scripts manifests ...`: rc 0; batch8 changed handoff, batch8 TSV/JSON, and the TB2 image manifest. No script changes in that range.
+- Handoff/runtime-lane grep for batch8/path/prove/#13/checker output: rc 0; used to cross-check issue and runtime assumptions.
+- Bounded Python inspection of `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch8_worker_check_20260626.json`: rc 0; printed schema, counts, row ids/statuses, fallback sha statuses, raw-field key paths/lengths, and sensitive-key path presence only. No raw stderr or secret value was printed.
+- Manifest line reads for `tb2_path_tracing` and `tb2_prove_plus_comm`: rc 0.
+- `nl`/`sed` reads for `scripts/agentic_bench_suite.py`, `scripts/agentic_bench_images.py`, and `scripts/test_agentic_bench_suite.py`: rc 0.
+- Synthetic batch8 secret-sentinel controller replay at `suite_concurrency=50`: rc 0; confirmed raw sentinel presence in one controller preflight log, absence from summary JSON, missing structured image-check counts/pointers, and cached-row owner split. The sentinel value was not printed.
+- Cross-ledger/test grep for image-check artifact/count/log redaction terms: rc 0; confirmed current tests cover dedupe but not #13 redaction or #12 parsed pointers.
+- Runtime-images ledger tail read: rc 0; no contradiction found.
+
+## Round 19 validation evidence
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_scan=no_matches`.
+- `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`.
+- `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; Round19 ledger diff was 98 inserted lines before this validation block.

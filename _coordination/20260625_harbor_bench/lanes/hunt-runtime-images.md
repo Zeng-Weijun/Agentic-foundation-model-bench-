@@ -1633,3 +1633,87 @@ Next runtime/image subdomain: after batch8 is materialized by a writer, audit th
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
 - Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.
+
+## Round 19 - TB2 remaining 14 transport grouping audit after batch8 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, registry tag `HEAD`, static `check --skip-docker`, fallback tar searches, task file-name and marker-count scans, and cross-lane grep only.
+
+COMMENT-READY for #6/#8/#12/#13: the remaining 14 TB2 rows are ready to split into smaller risk-homogeneous transport batches; batch9 should start with small/medium data-ML rows and keep QEMU/supervisord, explicit torch/pytorch, and largest-write rows isolated
+
+dedup: comment-on-#6 for transport population and worker fallback warmup. comment-on-#8 because the rows must remain fallback-tar based until direct worker P0 pull is re-proven. comment-on-#12 because each future worker-check JSON needs parsed provenance in structured artifacts. comment-on-#13 because raw checker stdout/stderr must not be streamed into controller preflight logs for these higher-risk rows. No new ISSUE-READY block: all observed risks are existing transport/population, provenance, redaction, and rootless-registry constraints.
+
+Current state:
+- Observed branch/head: `feat/image-warmup-policy` at `6ade6f2`.
+- `git status --short --untracked-files=all` was clean before this ledger edit.
+- Current TB2 `check --skip-docker` reports `tar_verified=75`, `tar_missing=0`, `tar_mismatch=0`, `unchecked=89`, and exactly 14 fallback-missing rows.
+- All 14 rows are still `image_transport: swe_dev_cache_identity`, `fallback_transport: none`, and `fallback_status: missing_shared_tar`.
+- All 14 source images exist in `swe_dev` Docker cache and read-only `docker image inspect` image IDs match their manifest `source_image_id`.
+- No exact shared fallback tar exists for any of the 14 checked slugs under the shared TB2 image roots.
+- No local P0 tag exists for any row; registry tag `HEAD` for `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-<slug>:20260425` returned HTTP 404 for every row.
+
+### Remaining-row inventory
+
+| group | row | line | source image ID | inspect size bytes | default cmd | marker/risk summary |
+| --- | --- | ---: | --- | ---: | --- | --- |
+| data/ML medium, preferred batch9A | `portfolio-optimization` | 824 | `sha256:1fca885f366e54cc7fa1e42c02b22d29ce296a5bf1c7f17e7a9cbbede7ca5614` | 613395442 | `["python3"]` | benchmark/data/port markers; no qemu/service/default-daemon |
+| data/ML medium, preferred batch9A | `video-processing` | 1154 | `sha256:470f922fb58fcc7f66324e9912e31717e0fd07c0468a3ca23f7e2950f27f0fef` | 793327868 | `["python3"]` | video/data markers; no qemu/service/default-daemon |
+| data/ML medium, preferred batch9A | `train-fasttext` | 1127 | `sha256:535d3a38744d0b5cf72b033b520132751569231316e134ac6a99cc62e666d13f` | 873782103 | `["python3"]` | fasttext/data/model markers; private test tar exists in task tree, so do not read task artifacts |
+| data/ML medium, preferred batch9A with caution | `sam-cell-seg` | 1016 | `sha256:dbc5dfcc120fbcf959d3be14d3ae7b0fb71533e8ca4c5c92b40c9c9dd1a3fe27` | 1130941638 | `["python3"]` | SAM/seg/model plus torch markers; still much smaller than explicit torch batch |
+| data/ML medium-heavy, batch9B | `mteb-retrieve` | 680 | `sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a` | 2117496845 | `["python3"]` | MTEB/model/data markers and some torch markers |
+| data/ML medium-heavy, batch9B | `reshard-c4-data` | 989 | `sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879` | 2517145790 | `["python3"]` | C4/data/dataset markers and large file-hash fixture |
+| QEMU/supervisord special | `qemu-startup` | 917 | `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444` | 1956605318 | `["bash"]` | QEMU/log/network markers; keep isolated |
+| QEMU/supervisord special | `qemu-alpine-ssh` | 905 | `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573` | 1956628773 | `["bash"]` | QEMU/SSH/password/log/network markers; keep isolated and do not print task contents |
+| QEMU/service-like special | `install-windows-3.11` | 499 | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1629941732 | `["supervisord","-c","/etc/supervisor/supervisord.conf"]` | QEMU/windows/supervisord/server/password markers; isolate from generic smoke batches |
+| explicit torch/pytorch | `pytorch-model-cli` | 881 | `sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305` | 2604034114 | `["python3"]` | PyTorch/model/data markers; medium size but explicit torch row |
+| explicit torch/pytorch, largest | `pytorch-model-recovery` | 893 | `sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4` | 19201784321 | `["python3"]` | largest image; PyTorch/model/dataset markers; isolate |
+| explicit torch/pytorch, huge | `torch-tensor-parallelism` | 1115 | `sha256:7f0d9bce1454a49b3890a9af55bab21405a4586cb7fe56d941447be303bdbf97` | 11026213679 | `["/bin/bash"]` | torch/model markers; huge tar/push/load cost |
+| explicit torch/pytorch, huge | `torch-pipeline-parallelism` | 1103 | `sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a` | 11315069350 | `["/bin/bash"]` | torch/model markers plus token marker count in task files; do not print task contents |
+| largest data/write | `multi-source-data-merger` | 692 | `sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83` | 6203486893 | `["/bin/bash"]` | data/dataset markers; large tar/push/load cost |
+
+### Batch9 recommendation
+
+Recommended first batch9 implementation:
+- Batch9A, four rows: `portfolio-optimization`, `video-processing`, `train-fasttext`, and `sam-cell-seg`.
+- Expected static movement if materialized with P0 digest plus verified fallback tar: TB2 `tar_verified 75 -> 79`; remaining `missing_shared_tar 14 -> 10`.
+- Rationale: all four are under 1.2GB, have source IDs already verified, are not QEMU/service/default-daemon rows, and avoid the explicit giant torch/pytorch rows. `sam-cell-seg` has SAM/torch markers, so keep it in the data/ML bucket only if the implementation uses generic image smoke; otherwise move it to the later torch-ish batch.
+
+Recommended second data/ML batch:
+- Batch9B or batch10, two rows: `mteb-retrieve` and `reshard-c4-data`.
+- Expected movement after batch9A: `79 -> 81` verified tars and remaining `10 -> 8`.
+- Rationale: both are medium-heavy data/model rows and should be kept separate from the smaller batch if shared-storage write pressure or worker load time is a concern.
+
+Rows to isolate or defer:
+- QEMU/supervisord batch: `qemu-startup`, `qemu-alpine-ssh`, and `install-windows-3.11`. Keep generic `--network none` smoke and never let image warmup start QEMU, SSH, browser, supervisord, or service behavior. These rows have QEMU, SSH/password, supervisord/server, and log markers.
+- Explicit torch/pytorch batch: `pytorch-model-cli`, `pytorch-model-recovery`, `torch-tensor-parallelism`, and `torch-pipeline-parallelism`. Split `pytorch-model-cli` from the three huge rows if disk or load time is tight. `pytorch-model-recovery`, `torch-tensor-parallelism`, and `torch-pipeline-parallelism` are the largest/highest-write rows.
+- Largest data/write row: `multi-source-data-merger` should not be bundled into batch9A because its image is 6.2GB and task files show data/dataset-heavy markers. Materialize after the medium data/ML rows or with other large-write rows.
+
+Smoke and provenance guard:
+- The manifest smoke for all 14 rows is still the generic `python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok` with `network: none`.
+- Future worker checks must stay `allow_pull=false`, `load_fallback=true`, `run_smoke=true` until #8 direct P0 rootless pull is re-proven.
+- Do not turn image warmup into task execution. Do not run QEMU, SSH, supervisord, torch training/inference, dataset reshards, private test archives, or solution/test scripts during image smoke.
+- #13 is directly relevant for the future batch9 worker-check JSON: raw checker stdout/stderr must not be streamed into durable controller `.image_preflight.log` as the only evidence path. Future runner artifacts should preserve allowlisted counts/statuses/refs/fallback sha/identity fields under #12 and redact or exclude raw `inspect_attempts[].stderr`, `pull_stderr`, `load_stderr`, and `smoke_stderr`.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:using-superpowers`, `superpowers:systematic-debugging`, and `superpowers:verification-before-completion`: rc 0.
+- Read WORKFLOW continuous bug-hunt section: rc 0.
+- Memory quick search for Round19/TB2/batch9 terms: rc 0, no relevant hits used.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`, current runtime ledger, and branch/head/status: rc 0; branch/head `feat/image-warmup-policy` / `6ade6f2`; status clean before ledger edit.
+- Cross-check runner ledger for #13/#12/raw preflight log/provenance implications: rc 0; no contradiction found. Runner ledger says #13 is already filed for raw image-preflight checker output in controller logs and #12 covers parsed image-check provenance.
+- Manifest parse plus read-only Docker inspect for all `fallback_status: missing_shared_tar` rows: rc 0; 14 rows found, all `source_match=true`.
+- TB2 `check --skip-docker --json`: rc 0; `tar_verified=75`, `tar_missing=0`, `tar_mismatch=0`, `unchecked=89`, and 14 fallback-missing ids exactly matching this audit.
+- Shared fallback tar search for all 14 slugs: rc 0; no exact fallback tar hits.
+- Read-only local P0 tag Docker inspect for all 14 rows: rc 0 wrapper; every per-row Docker inspect returned rc 1 with no stdout.
+- Registry tag `HEAD` probes for all 14 rows: rc 0 wrapper; every per-row `curl -f` returned rc 22 with `HTTP/1.1 404 Not Found`.
+- Bounded task directory marker-count scan for all 14 rows: rc 0; printed file names, byte sizes, and marker counts only, not contents.
+- Batch9/remaining/qemu/torch inventory search: rc 0; no existing batch9 or remaining14 TSV/JSON artifacts found.
+
+Next runtime/image subdomain: after batch9A is materialized, audit TSV/manifest/worker-check evidence with special attention to #13 raw preflight logs, then decide whether to take `mteb-retrieve`/`reshard-c4-data` or the QEMU/supervisord batch next.
+
+### Round 19 validation evidence
+
+- Remote hash guard before first ledger copy-back: rc 0; pre-edit and remote hashes both matched `8380ba4b2daf99d5bc1012120e698f2a6cfd8a20bcd27a46da57f2db82353445`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
+- Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.
