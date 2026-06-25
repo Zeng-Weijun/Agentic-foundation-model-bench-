@@ -1834,3 +1834,95 @@ Guardrails for implementation owner:
 - Corrected bounded secret scan for private-key blocks, bearer tokens, explicit secret assignments, OpenAI-style keys, and GitHub-style tokens: rc 0, `bounded_secret_scan no_matches`.
 - Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.
 - Post-reorder validation after moving Round20 to EOF: rc 0 for `git diff --check`, trailing-whitespace scan, bounded secret scan, heading-order grep, and status/diff-stat. Round20 now follows Round19 in the ledger.
+
+## Round 21 - TB2 remaining 8 after batch10 and mteb quarantine
+
+Scope: runtime/images ledger-only audit on `feat/image-warmup-policy` at observed head `250f017`. I did not edit production code, manifests, tests, handoff, runner ledger, issue records, or inventory artifacts. I did not run Docker build/save/load/pull/run, benchmarks, or model calls. Read-only Docker inspect/history, static lints, registry `HEAD`, and bounded artifact scans only.
+
+### Findings
+
+COMMENT-READY for #6/#8/#12/#13, no new ISSUE-READY block.
+
+Dedup judgment:
+
+- #6 still owns the remaining TB2 offline transport population work and the worker warmup requirement.
+- #8 still owns worker-j9jjd rootless Docker instability and direct P0 pull/load readiness. `mteb-retrieve` is now the clearest quarantined row under #8 because tar/P0 staging exists but worker fallback load failed.
+- #12 still owns structured image-check provenance. Batch10 and future failed-load attempts must preserve safe counts/statuses and source pointers, not just log text.
+- #13 still owns the raw image-preflight checker stdout/stderr log sink. The mteb failed-load case would be a strong fixture for #13/#12 after sanitization, but it is not a distinct new root cause.
+
+I do not see a confirmed new bug in manifest promotion criteria. The current implementation behaved conservatively: `mteb-retrieve` has an exported fallback tar and a P0 tag, but it was not promoted into `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` because worker fallback load failed. The strict static gate therefore still fails with `required_without_offline_transport=8`. If a future writer promotes mteb based only on tar/P0 existence, static lint would pass for that row because `scripts/agentic_bench_images.py:328-387` is intentionally a static transport lint: it considers an internal digest ref or verified fallback checksum as offline transport, while `scripts/agentic_bench_images.py:590-598` records actual load failure at runtime preflight. That risk is a policy/process guard for #6/#8, not a newly confirmed code bug in the present branch.
+
+### Safe Counts
+
+- Current generated TB2 cache manifest: 89 rows.
+- TB2 static `check --skip-docker`: `tar_verified=81`, `tar_missing=0`, `tar_mismatch=0`, `errors=0`, `unchecked=89`.
+- Strict registry lint with `--require-offline-transport --verify-fallback-files`: rc 1, global `fallback_tar_verified=86`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=8`.
+- The only manifest with strict lint issues is `terminal_bench_2_1_swe_dev_cache`, with `required_without_offline_transport=8`.
+- Batch10 worker fallback evidence: `tar_verified=2`, `loaded=2`, `present=2`, `smoke_passed=2`, `identity_mismatch=0`, `errors=0`, `pulled=0`.
+- Remaining eight manifest gaps: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `torch-pipeline-parallelism`, and `torch-tensor-parallelism`.
+
+### Remaining-row Classification
+
+| group | row | manifest line | source image id | inspect size bytes | default cmd | current transport evidence | recommendation |
+| --- | --- | ---: | --- | ---: | --- | --- | --- |
+| special quarantined staged row | `mteb-retrieve` | 684 | `sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a` | 2117496845 | `python3` | fallback tar exists, P0 tag HEAD HTTP 200, manifest still `missing_shared_tar` because worker load failed | Do not promote until worker rootless Docker can load it or a fresh worker/load path proves the failure is environmental and resolved. Keep a separate quarantine note/artifact pointer. |
+| generic/data large solo | `multi-source-data-merger` | 696 | `sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83` | 6203486893 | `/bin/bash` | no fallback tar hit, P0 HEAD HTTP 404 | Next safest non-mteb materialization after storage check; do as a solo data/write batch. |
+| QEMU/supervisord isolated | `install-windows-3.11` | 503 | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1629941732 | `supervisord -c /etc/supervisor/supervisord.conf` | no fallback tar hit, P0 HEAD HTTP 404 | Isolate. Use manifest network-none smoke only; never run default supervisord/task behavior in image lane. |
+| QEMU isolated | `qemu-alpine-ssh` | 915 | `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573` | 1956628773 | `bash` | no fallback tar hit, P0 HEAD HTTP 404 | Batch with `qemu-startup` only, or keep separate if worker daemon is unhealthy. |
+| QEMU isolated | `qemu-startup` | 927 | `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444` | 1956605318 | `bash` | no fallback tar hit, P0 HEAD HTTP 404 | Batch with `qemu-alpine-ssh` only; smoke must remain generic network-none. |
+| giant torch | `torch-tensor-parallelism` | 1131 | `sha256:7f0d9bce1454a49b3890a9af55bab21405a4586cb7fe56d941447be303bdbf97` | 11026213679 | `/bin/bash` | no fallback tar hit, P0 HEAD HTTP 404 | Defer to giant-image phase; export/push/load-smoke one at a time. |
+| giant torch | `torch-pipeline-parallelism` | 1119 | `sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a` | 11315069350 | `/bin/bash` | no fallback tar hit, P0 HEAD HTTP 404 | Defer to giant-image phase; export/push/load-smoke one at a time. |
+| largest pytorch | `pytorch-model-recovery` | 903 | `sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4` | 19201784321 | `python3` | no fallback tar hit, P0 HEAD HTTP 404 | Last or solo after explicit free-space and daemon-health checks. |
+
+History-marker scan was safe-count only and did not print full history commands. It found QEMU/SSH markers for the QEMU pair, supervisord/data/password markers for `install-windows-3.11`, data/password markers for `multi-source-data-merger`, MTEB/torch/pytorch/data markers for `mteb-retrieve`, and torch/data markers for the torch/pytorch rows.
+
+### Recommended Next Batch
+
+1. Keep `mteb-retrieve` out of the promoted manifest until the rootless load failure is resolved. It already has tar/P0 staging, so the next action is not more export; it is rootless daemon/load diagnosis or retry after a clean daemon/storage-health proof. Any retry artifact should preserve only safe phase, rc, counts, image id, tar sha status, and a restricted pointer to raw load stderr.
+2. Next implementation batch if storage is healthy: `multi-source-data-merger` solo. It is the only remaining non-QEMU/non-giant candidate, but at 6.2GB it should not be mixed with QEMU or giant torch rows. Expected strict lint movement if promoted and worker-smoked: `required_without_offline_transport 8 -> 7`, TB2 `tar_verified 81 -> 82`.
+3. Then QEMU/service-like batch: `qemu-alpine-ssh` and `qemu-startup`; optionally add `install-windows-3.11` only if the implementation owner is comfortable treating the supervisord default as a special row. Expected movement for the two QEMU rows: `7 -> 5`; with install-windows too: `7 -> 4`.
+4. Final giant rows one by one: `torch-tensor-parallelism`, `torch-pipeline-parallelism`, then `pytorch-model-recovery` last. Use one-row worker fallback-load/run-smoke checks, free-space checks before and after, and no task/model execution.
+
+Guardrails:
+
+- Worker readiness remains fallback-load based with `allow_pull=false`, `load_fallback=true`, and `run_smoke=true` until #8 re-proves direct P0 rootless pull.
+- The generic smoke must stay `--network none`; do not run QEMU guests, SSH daemons, supervisord, PyTorch inference/training, dataset reshards, MTEB retrieval, task harnesses, solution scripts, or benchmark/model calls.
+- Do not let static lint alone promote a row to scheduling readiness. Static lint proves digest/tar identity; worker image preflight proves the worker daemon can consume it.
+
+### Commands And Exit Codes
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0. The command later tried an old skill path and exited rc 1 after `WORKFLOW.md`; I then found and read the current skill paths.
+- Read `WORKFLOW.md` remaining sections including the P0 registry and continuous bug-hunt rules: rc 0.
+- Read current `superpowers` skill files from the refreshed plugin cache: rc 0.
+- Memory quick search for Round21/mteb/batch10 terms: rc 0, no relevant hits used.
+- Remote branch/head/status plus handoff read: rc 0; branch/head `feat/image-warmup-policy` / `250f017`.
+- Read current runtime ledger tail and cross-checked runner ledger for #12/#13/batch10 terms: rc 0; no contradiction found.
+- Manifest parse plus read-only Docker inspect for the eight remaining rows and the two batch10 promoted rows: rc 0; eight remaining rows listed above, batch10 rows show P0 digest plus verified fallback tar in the manifest.
+- TB2 `check --skip-docker --json`: rc 0; counts quoted above and exactly eight fallback-SHA-missing refs.
+- Batch10 TSV and worker-check JSON safe inspection: rc 0; printed slugs/source IDs/P0 digest refs/fallback SHA and safe checker counts/statuses only. Raw nested stderr values were not printed.
+- Initial `lint-registry` command used an obsolete `--bench-registry` flag: rc 2; not used as evidence.
+- Current `lint-registry --help`: rc 0.
+- `lint-registry --verify-fallback-files --json` without `--require-offline-transport`: rc 0; it verifies configured fallback files only and reported `required_without_offline_transport=0`.
+- Strict `lint-registry --require-offline-transport --verify-fallback-files --json`: rc 1; counts quoted above with `required_without_offline_transport=8`.
+- MTEB tar/P0 bounded check: rc 0; one tar hit at `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/mteb-retrieve.tar` size 2159561728, and P0 tag HEAD HTTP 200.
+- Bounded hit-count scan for mteb/load-failure terms across handoff/runtime ledger/reports: rc 0; printed file paths, sizes, and keyword counts only.
+- One intermediate grep command printed historical report lines containing Docker I/O-error text; I discarded that output and did not use it as Round21 evidence. The safe hit-count scan above replaced it.
+- Code-line reads for static lint and runtime load semantics in `scripts/agentic_bench_images.py`: rc 0; relevant lines are `328-387`, `590-598`, and `960-975`.
+- Remaining-eight tar/P0 bounded check: rc 0; `mteb-retrieve` is the only row with a tar hit and P0 HTTP 200; the other seven have zero tar hits and P0 HTTP 404.
+- Read-only Docker history marker scan: rc 0; printed marker names and line counts only, not raw history commands.
+
+### Blockers
+
+- `mteb-retrieve` is blocked at worker rootless fallback load, not at export or P0 publication.
+- The remaining seven non-mteb rows still need fallback tar/P0 materialization and worker fallback-load/run-smoke proof.
+- Rootless worker direct P0 pull is still not the readiness path until #8 is resolved.
+- #12/#13 still block treating one-command image-preflight artifacts as self-auditing unless safe parsed image-check provenance and raw-log redaction are implemented.
+
+### Round 21 validation evidence
+
+- Remote hash guard before first ledger copy-back: rc 0; remote and local pre-edit hash matched `679b933bd94752fbb3cbdba96268ba43677adb78d3e0f4a03e5f5a251686c195`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Bounded secret scan for private-key blocks, bearer tokens, explicit secret assignments, OpenAI-style keys, and GitHub-style tokens: rc 0, `bounded_secret_scan no_matches`.
+- New-time `__pycache__` scan: rc 0 and no paths printed; no cleanup needed.
+- Status/diff-stat check: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` was present and left untouched.

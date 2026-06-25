@@ -2495,3 +2495,148 @@ Runtime lane notes before batch9 recommended exactly this four-row batch and war
 - Trailing whitespace scan on this ledger: rc 0, no matches.
 - Bounded secret scan on this ledger for key-like values, bearer values, authorization values, and long secretish assignments: rc 0, no matches.
 - `git status --short --untracked-files=all`: rc 0 after removing the temporary `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc` produced by the synthetic import; only this ledger remains modified.
+
+## Round 21 batch10 image-check provenance and mteb worker-load failure
+
+### Scope
+
+- Lane: runner/results/provenance ledger-only audit for batch10 worker-check evidence, the mteb worker-load failure, #13 raw image-preflight log sink, and #12 safe normalized result artifacts.
+- Worktree/head verified: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `250f017`.
+- No production code, manifests, tests, handoff, issue records, Docker, benchmark, or model execution was performed. Only this ledger was edited.
+
+### Dedup decision
+
+No new ISSUE-READY block in this round.
+
+- Batch10 promoted `tb2_reshard_c4_data` and `tb2_pytorch_model_cli` with fallback-load/run-smoke evidence. This is fresh COMMENT-READY evidence for #12 and #13, not a new root cause.
+- `tb2_mteb_retrieve` was exported/pushed according to handoff text, but not promoted because worker fallback load failed twice on the rootless daemon. This is covered by #8 for worker/rootless Docker readiness and by #12/#13 for preserving failed image-check provenance without raw stdout/stderr leakage. It is not a Terminal-Bench task-result failure and does not need a runner/results ISSUE-READY block unless a future suite execution drops or misclassifies the failed image-preflight artifact.
+- #6 remains the transport-population umbrella for remaining TB2 rows. #10 remains the raw/native artifact allowlist constraint. #1 remains relevant for status split when a required image preflight blocks adapter execution, but this round did not find a new ordering/status bug.
+- #2 was not implicated: no new invocation-output uniqueness problem was observed.
+
+### Batch10 worker JSON safe facts
+
+Artifact inspected: `_coordination/20260625_harbor_bench/inventory/tb2_medium_batch10_worker_check_20260626.json`.
+
+- `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_medium_batch10_worker_smoke`.
+- Mode: `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=2`, `loaded=2`, `present=2`, `smoke_passed=2`, `pulled=0`, `missing=0`, `identity_mismatch=0`, `tar_missing=0`, `tar_mismatch=0`, `optional_missing=0`, `unchecked=0`, `errors=0`.
+- Rows: `tb2_pytorch_model_cli` and `tb2_reshard_c4_data`.
+- Every row has `role=terminal_bench_task_runtime`, `required=true`, `status=present`, `load_status=loaded`, `smoke_status=passed`, fallback `sha256_status=match`, and one present fallback path.
+- Every row has two inspect attempts. The first attempt has `returncode=1` and a nested `stderr` key by path/length only. I did not transcribe raw stderr values into this ledger.
+- Sensitive-key scan over JSON keys found no `secret`, `token`, `authorization`, `password`, `api_key`, or `credential` key paths. That is not sufficient for safety because raw stderr fields can contain arbitrary text and remain #10/#13 scope.
+
+Interpretation: batch10 proves fallback-load plus network-none smoke readiness for the two promoted rows. It is not proof of benchmark/task success, direct worker P0 pull readiness, or permission to copy raw checker stdout/stderr into one-command artifacts.
+
+### TSV, manifest, and remaining-gap facts
+
+- Evidence TSV: `_coordination/20260625_harbor_bench/inventory/tb2_p0_medium_batch10_20260626.tsv` contains exactly the two promoted rows, `reshard-c4-data` and `pytorch-model-cli`.
+- Manifest anchors: `tb2_pytorch_model_cli` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:884` has `image_transport: p0_digest_plus_fallback_tar`, digest ref, fallback tar, fallback sha, and `fallback_status: p0_digest_and_fallback_tar_verified`. `tb2_reshard_c4_data` at line `995` has the same promoted status shape.
+- `tb2_mteb_retrieve` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:680` still has `image_transport: swe_dev_cache_identity`, `fallback_transport: none`, and `fallback_status: missing_shared_tar`.
+- Static manifest scan after batch10 found 8 `missing_shared_tar` rows: `tb2_install_windows_3_11`, `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_qemu_alpine_ssh`, `tb2_qemu_startup`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`.
+- The batch10 worker JSON contains only `tb2_pytorch_model_cli` and `tb2_reshard_c4_data`; it does not contain mteb.
+- Handoff lines for batch10 distinguish the promoted image-transport smoke from benchmark/task success, record the remaining 8 unpromoted rows, and explicitly classify mteb as a worker-load failure pending rootless Docker resolution.
+
+### mteb worker-load failure assessment
+
+The mteb failure should remain COMMENT-READY for existing issues, not a new runner/results issue:
+
+- The observed failure is in worker image transport, before Terminal-Bench task execution. Normalized benchmark result should therefore use an infra/image-preflight status, not a Terminal-Bench pass/fail score.
+- The failure is a rootless Docker load/readiness problem and belongs with #8 unless runtime/images lane confirms a distinct daemon or archive corruption root cause.
+- The provenance gap is already #12: future suite/controller output should preserve a structured failed-load artifact even when the adapter is blocked.
+- The redaction/logging gap is already #13/#10: future failed-load stderr must not be copied into default logs or normalized JSON; it should be summarized by allowlisted status fields plus a restricted raw-artifact pointer if raw capture is retained.
+- Current mteb evidence is present in handoff text but not in a machine-readable batch10 worker JSON row because it was intentionally not promoted. That is acceptable for this coordination-only batch, but implementation tests should exercise the failure case directly with a synthetic checker JSON row.
+
+### Current runner/result code anchors
+
+- `scripts/agentic_bench_suite.py:1047-1054` still streams the command-cache owner image-preflight stdout/stderr directly to `logs/<bench>.image_preflight.log`.
+- `scripts/agentic_bench_suite.py:1056-1059` still makes cached waiters log only `[image_preflight_cached] ... rc=N`.
+- `scripts/agentic_bench_suite.py:1118-1135` records required preflight command failure as `fail:<rc>` and fatal, but does not parse or attach safe checker details.
+- `scripts/agentic_bench_suite.py:1198-1209` still writes `agentic_bench.image_preflight_summary.v1` with coarse pass/fail counts and per-row process status only; it does not preserve parsed image-check counts, failed-load status, image ids, fallback sha status, redaction metadata, or a shared parsed checker artifact pointer.
+- `scripts/agentic_bench_suite.py:1281-1300` still writes `agentic_bench.result.v1` without `source`, `image_preflight`, image-check artifact pointers, parser version, invocation id, or image-preflight summary pointer.
+- `scripts/agentic_bench_images.py:574-598` can emit raw `inspect_attempts[].stderr`, `pull_stderr`, and `load_stderr`; `scripts/agentic_bench_images.py:600-613` can emit raw `smoke_stderr`; `scripts/agentic_bench_images.py:628-643` returns those fields in native checker JSON.
+- Existing tests cover required preflight blocking, preflight-only execution, transport concurrency cap, and command dedupe. They still do not assert redacted failed-load image-check provenance or shared parsed artifact pointers for cached rows.
+
+### COMMENT-READY normalized result contract for failed image preflight
+
+Future parser/result implementation should preserve these allowlisted fields for fallback-load failures without raw stdout/stderr leakage:
+
+1. `image_preflight`
+
+- `status`: `fail` or `blocked` for required preflight failure.
+- `parse_status`: `parsed` when the checker emitted parseable `agentic_bench.image_check.v1`; `missing` or `parse_error` otherwise.
+- `failure_category`: `image_preflight_failed` with a more specific `failure_reason`, for example `worker_docker_load_failed`, `fallback_tar_missing`, `fallback_tar_mismatch`, `identity_mismatch`, `smoke_failed`, or `image_missing`.
+- `mode`: allowlisted booleans for `allow_pull`, `load_fallback`, `run_smoke`, `skip_docker`, and `fail_on_optional_missing`.
+- `counts`: preserve `tar_verified`, `loaded`, `present`, `smoke_passed`, `pulled`, `missing`, `identity_mismatch`, `tar_missing`, `tar_mismatch`, `optional_missing`, `unchecked`, and `errors`.
+- `images[]`: preserve `id`, `role`, `required`, `status`, `pull_status`, `load_status`, `smoke_status`, `fallback.sha256_status`, `fallback.present_path_count`, `fallback.tar_digest` or configured sha, `source_image_id`, `expected_repo_digest`, and safe present/local ref identifiers. Exclude raw stderr/stdout bodies.
+
+2. `execution` and `benchmark_result`
+
+- `execution.status`: `fail` when adapter execution is blocked by required image preflight.
+- `execution.adapter_status`: keep `fail:image_preflight:<rc>` or equivalent preflight-blocked status.
+- `benchmark_result.status`: `infra_blocked`, not benchmark pass/fail.
+- `benchmark_result.metric`: `image_preflight`.
+- `benchmark_result.failure_category`: `image_preflight_failed`.
+- `benchmark_result.score_claim_valid`: `false`.
+
+3. `source`
+
+- `source.image_preflight_summary_path`: pointer to the safe controller summary.
+- `source.image_check_artifacts[]`: `role=image_check_artifact_json`, `status=parsed` or `parse_error`, `read_policy=allowlist_json`, stable path, content digest, parser version, and redaction count.
+- `source.native_artifacts[]` for raw preflight logs or raw checker captures, if retained: `role=image_preflight_raw_log` or `image_check_raw_capture`, `status=not_read` or `restricted`, `read_policy=restricted_raw`, and `secret_sensitive=true`.
+- `source.promotion_attempts[]` or equivalent for pre-promotion worker-load failures such as mteb: row id, worker id or class, transport mode, safe failure category, attempt count, artifact pointer/digest if available, and redacted raw-log pointer only.
+
+### COMMENT-READY fixture guidance
+
+1. `test_batch10_promoted_rows_preserve_safe_image_check_counts`
+
+- Fixture input: distilled batch10 `agentic_bench.image_check.v1` JSON with `tb2_pytorch_model_cli` and `tb2_reshard_c4_data`.
+- Expected: `parse_status="parsed"`, `image_check_counts.tar_verified == loaded == present == smoke_passed == 2`, `pulled == missing == identity_mismatch == tar_missing == tar_mismatch == errors == 0`, and two image rows with id/role/status/load/smoke/fallback sha status.
+- Negative assertions: no raw nested stderr, raw Docker stdout/stderr bodies, command env, adapter transcripts, model transcripts, task source, task logs, or benchmark run logs in `image_preflight_summary.json`, `summary.json`, or `agentic_bench.result.v1`.
+
+2. `test_mteb_worker_load_failure_is_infra_blocked_with_redacted_source`
+
+- Fixture input: synthetic `agentic_bench.image_check.v1` with row `tb2_mteb_retrieve`, fallback sha verified, `load_status="failed"`, no `present_ref`, `smoke_status` absent/not_run, `errors > 0`, and a synthetic marker in `load_stderr`.
+- Expected: required preflight blocks adapter execution; `execution.status="fail"`; `execution.adapter_status` starts with `fail:image_preflight:`; `benchmark_result.status="infra_blocked"`; `metric="image_preflight"`; `failure_category="image_preflight_failed"`; `score_claim_valid=false`.
+- Expected image-preflight fields: `failure_reason="worker_docker_load_failed"`, parsed counts and image row survive, and raw stderr is excluded from default serialized artifacts.
+- Expected source policy: raw failure capture appears only as a pointer with `read_policy=restricted_raw`, `secret_sensitive=true`, and a redaction count; the safe checker artifact uses `read_policy=allowlist_json`.
+
+3. `test_batch10_cached_preflight_rows_share_failed_or_passed_parsed_artifact`
+
+- Fixture setup: multiple runs at `suite_concurrency=50` with identical preflight command, covering both batch10 pass and mteb-style failure payloads.
+- Expected: every row points to the same parsed checker artifact per unique command, regardless of which row owns the command-cache future.
+- Negative assertion: neither owner nor cached-row logs persist raw checker JSON after #13 fix.
+
+4. `test_transport_readiness_is_not_terminal_bench_task_success`
+
+- Fixture input: batch10 promoted rows plus a synthetic Terminal-Bench native result absence.
+- Expected: image warmup success records only image transport readiness. Benchmark/task score remains `unknown` or parser-specific absent until a Terminal-Bench native result parser consumes an allowlisted structured task result.
+
+### Runtime lane cross-check
+
+Runtime-images Round20 recommended 10A as `mteb-retrieve`, `reshard-c4-data`, and `pytorch-model-cli`, while warning that smoke must remain image-only and fallback tar mandatory. Batch10 materialized only the two rows that passed worker fallback-load/run-smoke; mteb was left unpromoted after worker load failure. This aligns with the runner lane: promoted rows are safe image-readiness evidence, and mteb is a worker transport/provenance case for #8/#12/#13, not Terminal-Bench task evidence.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for using-superpowers, systematic-debugging, and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote handoff/head/ledger read in the active worktree: rc 0; verified branch `feat/image-warmup-policy`, head `250f017`, and initially clean status.
+- Batch10 artifact inventory with `find`: rc 0; found batch10 worker JSON, batch10 TSV, and runtime ledger.
+- Handoff grep for batch10/mteb/#12/#13/#8 context: rc 0.
+- Runtime-images ledger grep for batch10/mteb/transport context: rc 0.
+- `git log --oneline -15`: rc 0; confirmed batch10 commits `0b546ef`, `8a204ba`, and `250f017` on this branch.
+- Bounded Python inspection of batch10 worker JSON: rc 0; printed schema, counts, row ids/statuses, raw-field key paths/lengths, and sensitive-key path counts only.
+- TSV and manifest line reads for `mteb-retrieve`, `pytorch-model-cli`, and `reshard-c4-data`: rc 0.
+- `git diff --stat/name-only d1895a2..250f017` for scripts/manifests/coordination inventory/handoff: rc 0; batch10 changed handoff, batch10 TSV/JSON, and TB2 generated cache manifest, not production scripts.
+- Static manifest scan for remaining `missing_shared_tar` rows and worker JSON row ids: rc 0; confirmed 8 remaining rows and `worker_json_has_mteb=false`.
+- Current suite/image checker/test line reads: rc 0.
+- One broad grep for mteb/batch10 context overmatched checker JSON raw stderr lines; those payloads were not transcribed into this ledger and were not used as evidence. Subsequent evidence uses structured JSON key/path/count inspection only.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, no matches.
+- Bounded secret scan on this ledger for key-like values, bearer values, authorization values, and long secretish assignments: rc 0, no matches.
+- `find scripts -path "*/__pycache__/*" -o -name "*.pyc"`: rc 0 initially found one untracked cache file under `scripts/__pycache__`; it was removed and the empty directory was removed if possible.
+- Final status after cleanup still shows this ledger modified plus unrelated concurrent modifications in manifests/reports. I did not edit, revert, stage, commit, or push those unrelated files.
+- A later pycache scan returned rc 1 after two cache files reappeared under `scripts/__pycache__`; both were removed. A follow-up pycache scan returned rc 0 with no matches.

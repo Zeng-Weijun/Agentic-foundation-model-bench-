@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-batch10 Asia/Shanghai
+Updated: 2026-06-26 post-round21-tau3-only Asia/Shanghai
 
 ## Objective
 
@@ -11,7 +11,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Shared repo root: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo`
 - Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
 - Branch: `feat/image-warmup-policy`
-- Latest implementation commit: `0b546ef Materialize TB2 medium transport batch 10`; this handoff update follows as a coordination-only commit.
+- Latest implementation/coordination head: `e4c98e6 Drop tau2 as active bench target`; Round21 ledger commits follow as coordination-only updates.
 - Original base commit for this workstream: `c42f23c Record runtime image hunt issues`
 - Driver doc: `_coordination/20260625_harbor_bench/DRIVER.md`
 - Remote worker: `worker-j9jjd`
@@ -28,11 +28,11 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 ## In Flight
 
 - Main implementation: image preflight warmup policy in `scripts/agentic_bench_suite.py` and `scripts/agentic_bench_images.py` plus tests/docs.
-- tau3-bench: full 375-task Harbor dataset generated; shared runner dry-run/redaction verified; worker execution remains disabled pending offline images and Harbor CLI env.
+- tau3-bench: full 375-task Harbor dataset generated; shared runner dry-run/redaction verified; worker execution remains disabled pending offline images and Harbor CLI env. `tau2` is no longer an active bench target; keep only tau3, while preserving the upstream source checkout path where tau3 generation depends on it.
 - Image inventory: `swe_dev` has substantially more SWE-bench/TB2.1 Docker images than worker; shared TB2.1 tars are partial, so worker full runs need staging from `swe_dev` cache. Current inventory artifacts: `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`, and identity-enriched `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
 - Terminal-Bench 2.1: `terminal_bench_2_1_image_smoke` is enabled for image preflight using `gcode-to-text`; worker rootless check passes via cached/verified fallback image, while full TB execution remains pending adapter/runtime result wiring.
 - Bug-hunt pair: only surface:50 and surface:54 produce `_coordination/20260625_harbor_bench/lanes/*.md`; each must cross-check the other's ledger before the orchestrator files issues.
-- Current Round 20 completed: surface:50 audited the remaining 10 TB2 rows and recommended 10A as `mteb-retrieve`, `reshard-c4-data`, and `pytorch-model-cli`; surface:54 produced #12/#13 fixture-ready guidance for batch9 image-check provenance. Batch10 materialized only `reshard-c4-data` and `pytorch-model-cli` because `mteb-retrieve` worker `docker load` failed twice with `unlinkat /usr/local/lib/python3.10/site-packages/pip-23.0.1.dist-info: input/output error`. Next dispatch should audit the remaining 8 TB2 `missing_shared_tar` rows: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `torch-pipeline-parallelism`, and `torch-tensor-parallelism`. Both hunt lanes stay ledger-only unless explicitly promoted by the orchestrator.
+- Current Round 21 completed: surface:50 audited the remaining 8 TB2 rows after batch10 and found no new ISSUE-READY bug. `mteb-retrieve` is the only staged-but-quarantined row: fallback tar exists and P0 HEAD returns 200, but worker fallback load failed, so it remains unpromoted. The other seven remaining rows have no fallback tar hit and P0 HEAD 404. Recommended next implementation order is `multi-source-data-merger` solo after storage/daemon-health checks, then the QEMU/service-like rows, then the giant torch/pytorch rows one by one. surface:54 audited batch10 provenance and the mteb failure, also found no new ISSUE-READY bug, and deduped it to #8/#12/#13/#10. Both hunt lanes stay ledger-only unless explicitly promoted by the orchestrator.
 - GitHub issue filing: runner-results lane filed/deduped through REST API:
   - #1 Separate adapter execution status from benchmark result status.
   - #2 Make suite run output directories invocation-unique.
@@ -70,7 +70,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 
 ## Next Wakeup Prompt
 
-Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: publish or record transport for the remaining 8 TB2 cache rows via P0 digest refs plus verified fallback tar sha, while treating `mteb-retrieve` as a special worker-load failure until the rootless Docker I/O error is resolved. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated. SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
+Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: keep `mteb-retrieve` quarantined and diagnose/retry only after a clean worker rootless daemon/storage-health proof; otherwise materialize `multi-source-data-merger` solo next, then QEMU/service-like rows, then giant torch/pytorch rows one by one. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated. SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
 
 ## Acceptance Snapshot
 
@@ -78,7 +78,7 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Target tests pass: done; 5 focused tests pass.
 - Full unittest/py_compile/diff-check: done; 22 unittest pass, py_compile rc 0, `git diff --check` rc 0.
 - Dry-run with `manifests/suite.example.yaml --only repozero_py2js_smoke` resolves `project_root` to the active worktree and forwards `--load-fallback --run-smoke`.
-- Old customer-service suite entry removed per user direction; current no-adapter smoke examples use RepoZero/tau3 paths.
+- Old customer-service/tau2 suite entry removed per user direction; current no-adapter smoke examples and tau-family target use RepoZero/tau3 paths.
 - Worker RepoZero image-preflight-only smoke: done through local control-plane SSH to worker with a temporary local-execution suite; output `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_warmup_policy_20260626_001953`; summary status 0, required preflight pass, RepoZero image present, fallback tar sha256 match, container smoke passed.
 - Worker DeepSWE optional image audit: `--fail-on-optional-missing` returns rc 1 with `optional_missing: 1`, closing the prior optional-image fake-green path.
 - Direct `swe_dev -> worker` remains blocked by publickey; local Mac -> worker works.
@@ -203,3 +203,11 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Full registry fallback lint with `--verify-fallback-files` reports `fallback_tar_verified=86`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=8`; the 8 remaining gaps are the unpromoted TB2 generated cache rows listed above.
 - These rows are image-transport ready only. The `--network none` smoke is a generic image smoke that does not execute Terminal-Bench tasks or claim task success; worker-j9jjd readiness remains fallback-tar based until #8 re-proves direct rootless registry pulls.
 - Issue comments posted after batch10: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4804338762`, #8 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4804338936`, #12 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/12#issuecomment-4804339072`, #13 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13#issuecomment-4804339204`.
+
+
+## 2026-06-26 Round21 bug-hunt and tau3-only scope
+
+- Commit `e4c98e6` drops `tau2` as an active bench target: the standalone tau2 smoke report was deleted, reports/manifests now point the tau-family work at `tau3-bench`, and the no-active-tau2 regression test remains as a guard. Remaining `tau2-bench` strings are upstream source checkout/URL references used by tau3 generation or historical layout/test guards.
+- Round21 runtime-images ledger: `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` now classifies the final 8 TB2 gaps. `mteb-retrieve` is staged but quarantined; `multi-source-data-merger` is the next solo materialization candidate; QEMU/service-like rows and giant torch/pytorch rows stay isolated. No new ISSUE-READY block.
+- Round21 runner-results ledger: `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` now records batch10 image-check provenance and the mteb worker-load failure as COMMENT-READY evidence for existing #8/#12/#13/#10, not a new runner/results issue.
+- Round21 agents started from head `250f017`; orchestrator advanced the branch to `e4c98e6` during their run for tau2 de-scope. Their ledger head references are therefore start-context evidence, while this handoff records the current branch head.
