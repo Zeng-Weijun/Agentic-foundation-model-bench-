@@ -2640,3 +2640,136 @@ Runtime-images Round20 recommended 10A as `mteb-retrieve`, `reshard-c4-data`, an
 - `find scripts -path "*/__pycache__/*" -o -name "*.pyc"`: rc 0 initially found one untracked cache file under `scripts/__pycache__`; it was removed and the empty directory was removed if possible.
 - Final status after cleanup still shows this ledger modified plus unrelated concurrent modifications in manifests/reports. I did not edit, revert, stage, commit, or push those unrelated files.
 - A later pycache scan returned rc 1 after two cache files reappeared under `scripts/__pycache__`; both were removed. A follow-up pycache scan returned rc 0 with no matches.
+
+## Round22 batch11 multi-source quarantine provenance and log-safety
+
+### Scope
+
+- Lane: runner/results provenance and log-safety audit for batch11 quarantine evidence.
+- Worktree/head verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `1b7325a`.
+- No production code, manifests, tests, handoff, issue records, Docker, benchmark, or model execution was performed. Only this runner ledger was edited.
+
+### Dedup decision
+
+No new ISSUE-READY block in this round.
+
+- Batch11 is correctly quarantined in the current branch: `multi-source-data-merger` has staged P0/fallback evidence, but the active TB2 manifest is not promoted because both worker ingest paths failed.
+- This enriches #6 as transport-population/promotion-gate evidence, #8 as worker rootless pull/load readiness evidence, #12 as normalized result/provenance fixture evidence, and #13/#10 as raw checker stdout/stderr redaction evidence.
+- It is not a new #1 status-ordering bug because no suite `--execute` run was performed and the expected future status split is already covered by the failed image-preflight contract from Round21.
+- It is not a new #2 run-dir uniqueness bug. No invocation-output collision was observed.
+- It is not Terminal-Bench task-result evidence. The failure is before task execution and before any benchmark scoring surface.
+
+### Batch11 evidence artifacts
+
+Tracked artifact files:
+
+- `_coordination/20260625_harbor_bench/inventory/tb2_p0_multisource_batch11_20260626.tsv`
+- `_coordination/20260625_harbor_bench/inventory/tb2_multisource_batch11_worker_fallback_load_failed_20260626.json`
+- `_coordination/20260625_harbor_bench/inventory/tb2_multisource_batch11_worker_p0_pull_failed_20260626.json`
+
+`git ls-files --error-unmatch` confirms all three files are tracked. The TSV has one staged row for `multi-source-data-merger` with a local ref, source image id, fallback tar path, 64-character fallback sha, P0 tag, and P0 digest ref. This proves staging exists, not worker readiness.
+
+Safe summary of `tb2_multisource_batch11_worker_fallback_load_failed_20260626.json`:
+
+- `schema_version=agentic_bench.image_check.v1`, `bench_id=terminal_bench_2_1_swe_dev_cache`.
+- Mode: `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=1`, `loaded=0`, `present=0`, `smoke_passed=0`, `pulled=0`, `missing=1`, `identity_mismatch=0`, `tar_missing=0`, `tar_mismatch=0`, `optional_missing=0`, `unchecked=0`, `errors=0`.
+- Row: `tb2_multi_source_data_merger`, `role=terminal_bench_task_runtime`, `required=true`, `status=missing`, `load_status=failed`, fallback `sha256_status=match`, one present fallback path, no smoke status.
+- Raw fields by key path and length only: `images[0].inspect_attempts[0].stderr` and `images[0].load_stderr`. No raw payload was copied into this ledger.
+
+Safe summary of `tb2_multisource_batch11_worker_p0_pull_failed_20260626.json`:
+
+- `schema_version=agentic_bench.image_check.v1`, `bench_id=terminal_bench_2_1_swe_dev_cache`.
+- Mode: `allow_pull=true`, `load_fallback=false`, `run_smoke=true`, `skip_docker=false`, `fail_on_optional_missing=false`.
+- Counts: `tar_verified=1`, `loaded=0`, `present=0`, `smoke_passed=0`, `pulled=0`, `missing=1`, `identity_mismatch=0`, `tar_missing=0`, `tar_mismatch=0`, `optional_missing=0`, `unchecked=0`, `errors=0`.
+- Row: `tb2_multi_source_data_merger`, `role=terminal_bench_task_runtime`, `required=true`, `status=missing`, `pull_status=failed`, fallback `sha256_status=match`, one present fallback path, no smoke status.
+- Raw fields by key path and length only: `images[0].inspect_attempts[0].stderr` and `images[0].pull_stderr`. No raw payload was copied into this ledger.
+
+Bounded secret scan over the TSV and both failure JSONs returned zero hits for key-like values, bearer values, authorization assignments, long secretish assignments, and private-key markers. That does not remove the need for #10/#13 redaction because stderr fields remain arbitrary native output.
+
+### Active manifest and static gate checks
+
+Active manifest parse of `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`:
+
+- `row_count=89`.
+- `missing_shared_tar_count=8`.
+- Missing rows: `tb2_install_windows_3_11`, `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_qemu_alpine_ssh`, `tb2_qemu_startup`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`.
+- `tb2_multi_source_data_merger` remains at line 692 with `image_transport=swe_dev_cache_identity`, `fallback_transport=none`, `fallback_status=missing_shared_tar`, no image ref, no fallback tar, and no fallback sha in the active manifest.
+- The batch10 promoted rows remain promoted: `tb2_pytorch_model_cli` and `tb2_reshard_c4_data` both have `image_transport=p0_digest_plus_fallback_tar`, `fallback_transport=oci_tar`, `fallback_status=p0_digest_and_fallback_tar_verified`, an image ref, fallback tar, and 64-character fallback sha.
+
+Static registry lint was run with `PYTHONDONTWRITEBYTECODE=1` and no Docker:
+
+- Command result: `lint_registry_rc=1`.
+- `schema_version=agentic_bench.registry_lint.v1`.
+- Counts: `manifests=9`, `images=104`, `required_images=94`, `fallback_tar_verified=86`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=8`.
+
+Interpretation: static gate remains at the batch10 level. The staged batch11 TSV and failure JSONs do not make the active manifest or registry-selected lint treat `multi-source-data-merger` as worker-ready.
+
+### One-click runner risk assessment
+
+A future one-click worker run should not accidentally treat the staged P0/tar evidence as worker-ready if it uses the current active manifest and current static gate:
+
+- The staged TSV is not referenced by the active generated TB2 manifest.
+- The active `tb2_multi_source_data_merger` row has no P0 digest ref and no fallback tar path, so the image checker cannot pull or load it from the staged evidence through the manifest.
+- Registry lint remains nonzero with eight required rows lacking offline transport, so an orchestrated promotion gate should still fail closed.
+- If a future implementation promotes the row based only on TSV existence and skips worker pull/load/smoke, that would be a process/promotion regression under #6/#8/#12/#13. Current branch evidence shows the conservative path is working.
+
+### COMMENT-READY fixture guidance
+
+1. `test_batch11_quarantined_staged_artifact_does_not_mark_manifest_ready`
+
+- Fixture input: active manifest row with `fallback_status=missing_shared_tar`, plus a staged TSV row and failed worker JSONs outside the active manifest.
+- Expected: registry lint remains nonzero; `required_without_offline_transport` includes `tb2_multi_source_data_merger`; no suite run plan should derive image readiness from the TSV alone.
+
+2. `test_batch11_failed_fallback_load_preserves_safe_provenance`
+
+- Fixture input: distilled fallback-load failure JSON with `tar_verified=1`, `loaded=0`, `present=0`, `missing=1`, row `status=missing`, `load_status=failed`, fallback `sha256_status=match`, and synthetic marker in `load_stderr`.
+- Expected normalized result: `execution.status=fail`, `execution.adapter_status` starts with `fail:image_preflight:`, `benchmark_result.status=infra_blocked`, `metric=image_preflight`, `failure_category=image_preflight_failed`, `failure_reason=worker_docker_load_failed`, `score_claim_valid=false`, and parsed image-check counts/row survive.
+- Negative assertions: no raw `load_stderr`, nested inspect stderr, Docker stdout/stderr body, command env, task source, task logs, adapter transcript, or model transcript in `image_preflight_summary.json`, `summary.json`, or `agentic_bench.result.v1`.
+
+3. `test_batch11_failed_p0_pull_preserves_safe_provenance`
+
+- Fixture input: distilled P0-pull failure JSON with `tar_verified=1`, `pulled=0`, `present=0`, `missing=1`, row `status=missing`, `pull_status=failed`, and synthetic marker in `pull_stderr`.
+- Expected normalized fields mirror the fallback-load failure, but `failure_reason=worker_docker_pull_failed` and `mode.allow_pull=true`, `mode.load_fallback=false` are preserved.
+- Source policy: raw checker capture, if retained, is pointer-only with `read_policy=restricted_raw`, `secret_sensitive=true`, content digest, and redaction count. Safe parsed artifact uses `read_policy=allowlist_json`.
+
+4. `test_batch11_quarantine_is_not_terminal_bench_task_result`
+
+- Fixture input: batch11 failed image-check artifact with no Terminal-Bench native task result.
+- Expected: no task score is claimed; benchmark status remains infra-blocked or unknown according to preflight state; Terminal-Bench task parser is not invoked on task source/logs.
+
+### Runtime lane and handoff alignment
+
+Handoff and runtime lane are aligned with this runner/results view:
+
+- Handoff says `multi-source-data-merger` was exported/pushed but not promoted because worker could not ingest it through fallback or P0 pull.
+- Handoff says to keep `mteb-retrieve` and `multi-source-data-merger` quarantined and to diagnose/retry only after a clean worker rootless daemon/storage-health proof.
+- Runtime lane Round21 classifies `multi-source-data-merger` as a large solo data/write row and recommends preserving safe phase/rc/counts/source pointers plus restricted raw stderr pointers for retry artifacts.
+- This matches #6/#8/#12/#13 dedup and does not expose a new runner/results root cause.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote handoff/head/ledger read through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `1b7325a`, and initially clean status.
+- Batch11 artifact inventory with `find`: rc 0; found the TSV and two worker failure JSONs.
+- Bounded Python inspection of both batch11 failure JSONs: rc 0; printed schema, counts, row ids/statuses, raw-field key paths/lengths, and sensitive-key path counts only.
+- Bounded TSV inspection: rc 0; printed row count, header, slug/local ref, and booleans/lengths for fallback sha and P0 digest presence.
+- `git log --oneline -12`: rc 0; confirmed head `1b7325a` and batch11 quarantine commits.
+- Active manifest parse for missing/promoted rows: rc 0.
+- Handoff grep for batch11/quarantine/static-gate context: rc 0. The ledger records only the safe summary above.
+- Runtime-images ledger grep for batch11/quarantine context: rc 0; used only for alignment and dedup.
+- `python3 scripts/agentic_bench_images.py lint-registry --help`: rc 0.
+- Static `lint-registry --require-offline-transport --verify-fallback-files --json` with `PYTHONDONTWRITEBYTECODE=1`: rc 1 by expected lint failure; parsed counts recorded above.
+- `git ls-files --error-unmatch` for the three batch11 evidence files: rc 0.
+- Bounded secret-pattern scan over the TSV and both failure JSONs: rc 0, no matches.
+- `git diff --stat/name-only 250f017..1b7325a` over handoff/inventory/scripts/manifests/tests: rc 0; batch11 changed handoff, the three batch11 inventory artifacts, and tau/offline manifest docs, not production scripts or tests.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, no matches.
+- Bounded secret scan on this ledger for key-like values, bearer values, authorization values, long secretish assignments, and private-key markers: rc 0, no matches.
+- Initial pycache scan returned rc 1 with one cache file under `scripts/__pycache__`; it was removed. Follow-up pycache scan returned rc 0, no matches.
+- Final status after cleanup shows this ledger modified plus unrelated concurrent modifications in `scripts/README.md`, `scripts/check_rootless_docker_worker.sh`, and `scripts/test_agentic_bench_suite.py`. I did not edit, revert, stage, commit, or push those unrelated files.
