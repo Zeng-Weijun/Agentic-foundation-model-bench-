@@ -292,7 +292,7 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
   - MCP-Atlas, Tool-Decathlon, programbench, NL2Repo: disabled/pending adapters and placeholder image contracts.
   - tau3-bench: dataset exists but offline runtime images are still pending; tau2 remains de-scoped.
   - DeepSWE: adapter smoke is wired, but the image manifest is still a placeholder without R2E/Pier runtime enumeration.
-- GitHub issue #15 tracks the stale TB2 cache metadata bug: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15
+- GitHub issue #15 tracks the stale TB2 cache metadata bug and was closed after `c95d420`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15; close comment https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15#issuecomment-4805168157
 - Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=81`, and `remaining_transport_gap_count=8`; only the 81 promoted/worker-proven rows are treated as offline-transport ready.
 - Worker-j9jjd RepoZero proof: using a temporary local-execution suite on worker with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, RepoZero readiness returned ready and `--image-preflight-only --only repozero_py2js_smoke` passed. Output: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_readiness_gate_20260626_rerun`; summary `status=0`, counts `pass=1`, `fail=0`, `optional_fail=0`.
 - Round26 bug-hunt ledgers:
