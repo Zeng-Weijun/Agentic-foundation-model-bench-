@@ -325,6 +325,7 @@ def docker_cache_inventory(
     docker_host: str = DEFAULT_DOCKER_HOST,
     runner: Runner = _run,
     base_env: dict[str, str] | None = None,
+    inspect_identities: bool = False,
 ) -> dict[str, Any]:
     env = dict(base_env or os.environ)
     env["DOCKER_HOST"] = docker_host
@@ -362,11 +363,33 @@ def docker_cache_inventory(
         )
 
     images.sort(key=lambda image: image["ref"])
+    counts = {"images": len(images), "prefixes": len(selected_prefixes)}
+    if inspect_identities:
+        identity_inspected = 0
+        identity_errors = 0
+        for image in images:
+            inspect_result = runner(["docker", "image", "inspect", image["ref"]], env)
+            image["inspect_returncode"] = inspect_result.returncode
+            if inspect_result.returncode != 0:
+                identity_errors += 1
+                image["inspect_error"] = inspect_result.stderr.strip()
+                continue
+            doc, error = _inspect_doc(inspect_result.stdout)
+            if error:
+                identity_errors += 1
+                image["inspect_error"] = error
+                continue
+            image["full_image_id"] = str(doc.get("Id") or "").strip()
+            image["repo_digests"] = _string_list(doc.get("RepoDigests"))
+            identity_inspected += 1
+        counts["identity_inspected"] = identity_inspected
+        counts["identity_errors"] = identity_errors
     return {
         "schema_version": "agentic_bench.docker_cache_inventory.v1",
         "docker_host": docker_host,
         "prefixes": selected_prefixes,
-        "counts": {"images": len(images), "prefixes": len(selected_prefixes)},
+        "inspect_identities": inspect_identities,
+        "counts": counts,
         "images": images,
     }
 
@@ -657,6 +680,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     inventory.add_argument("--prefix", action="append", dest="prefixes", default=[], help="repository/tag prefix to include; repeatable")
     inventory.add_argument("--docker-host", default=os.environ.get("DOCKER_HOST", DEFAULT_DOCKER_HOST))
     inventory.add_argument("--output", type=Path, help="write inventory JSON to this path")
+    inventory.add_argument("--inspect-identities", action="store_true", help="run docker image inspect for each selected ref and include full IDs/digests")
     inventory.add_argument("--json", action="store_true")
     return parser.parse_args(argv)
 
@@ -672,7 +696,11 @@ def main(argv: list[str] | None = None) -> int:
                 _print_registry(summary)
             return 1 if summary["counts"]["missing_manifests"] else 0
         if args.command == "inventory-cache":
-            summary = docker_cache_inventory(prefixes=args.prefixes, docker_host=args.docker_host)
+            summary = docker_cache_inventory(
+                prefixes=args.prefixes,
+                docker_host=args.docker_host,
+                inspect_identities=args.inspect_identities,
+            )
             if args.output:
                 args.output.parent.mkdir(parents=True, exist_ok=True)
                 args.output.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")

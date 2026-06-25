@@ -79,6 +79,20 @@ Endpoint used: `ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversea
   - TB2 small subset: `headless-terminal`, `llm-inference-batching-scheduler`, `gcode-to-text`, `dna-insert`, `compile-compcert`.
   - SWE-bench django subset and matching `swerex-prebuilt` tags.
 
+
+## Identity-enriched inventory update
+
+After adding `--inspect-identities`, a read-only swe_dev run inspected all matching local images and wrote `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
+
+- `images`: 1320.
+- `identity_inspected`: 1320.
+- `identity_errors`: 0.
+- rows with `full_image_id`: 1320.
+- rows with non-empty `repo_digests`: 179.
+- Generated manifests from this inventory:
+  - `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`: 89 TB2 cache rows; swe_dev check reported `present=89`, `identity_mismatch=0`.
+  - `manifests/images/swebench_verified_django10097.yaml`: 2 SWE rows; swe_dev check reported `present=2`, `identity_mismatch=0`; worker check reported `present=1`, `identity_mismatch=1`, proving the worker eval-base tag currently aliases to the wrapper image.
+
 ## Immediate action items
 
 1. For SWE-bench Verified non-OpenHands path, use the 500 swe_dev eval-image rows plus #11 identity checking as the source of truth; promote/publish digest refs before worker full run.

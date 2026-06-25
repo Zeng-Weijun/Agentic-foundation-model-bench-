@@ -94,9 +94,12 @@ python3 scripts/agentic_bench_images.py inventory-cache \
   --prefix swebench/ \
   --prefix swerex-prebuilt \
   --prefix ghcr.io/all-hands-ai/runtime \
+  --inspect-identities \
   --output reports/swe_dev_docker_cache_inventory_20260626.json \
   --json >/tmp/agentic_bench_cache_inventory_stdout.json
 ```
+
+`--inspect-identities` performs a read-only `docker image inspect` for each selected ref and records full `Id` plus `RepoDigests`. Use it before generating identity-enforced manifests for SWE-bench or Terminal-Bench caches; the default inventory path remains fast and only records `docker image ls` fields.
 
 Run only suite image preflights, without launching benchmark adapters:
 

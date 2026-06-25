@@ -1,0 +1,42 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: swebench_verified_django10097_identity_probe
+generated_at: "2026-06-26"
+status: materialized_from_swe_dev_cache_p0_pending
+evidence:
+  source_inventory: _coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json
+  source_host: swe_dev
+  docker_host: unix:///var/run/docker.sock
+  issue_refs:
+    - 6
+    - 11
+known_blockers:
+  - p0_digest_refs_not_published
+  - worker_current_swebench_tag_aliases_to_wrapper_identity
+  - wrapper_fallback_tar_sha256_not_recorded
+  - official_base_fallback_tar_missing
+images:
+  - id: swebench_django10097_eval_base
+    role: swebench_eval_base
+    required: true
+    image_transport: swe_dev_cache_identity
+    local_ref: swebench/sweb.eval.x86_64.django_1776_django-10097:latest
+    source_image_id: sha256:cf945d25ceb69a16f1b06ccb38c5772592f6298698ca1a34b794019a4760dba7
+    source_repo_digest: swebench/sweb.eval.x86_64.django_1776_django-10097@sha256:148894532806828ddd882c6617387910c1be8d064e2496fbe7ec046a30eff6fb
+    needs_network: false
+    fallback_transport: none
+    smoke:
+      network: none
+      command: "python --version 2>/dev/null || python3 --version 2>/dev/null || echo swebench-smoke-ok"
+
+  - id: swebench_django10097_swerex_wrapper
+    role: swerex_wrapper
+    required: true
+    image_transport: swe_dev_cache_identity_plus_wrapper_tar
+    local_ref: swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-django-1776-django-10097-latest-8be1c797d4885b41
+    source_image_id: sha256:3e38b9278651320311a7f805a33f6736b4c09aac22d2ba699afc17f7d0ce0c95
+    needs_network: false
+    fallback_transport: oci_tar_unverified_sha
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/swerex_images/chunks/django-1776-django_00.tar
+    smoke:
+      network: none
+      command: "python --version 2>/dev/null || python3 --version 2>/dev/null || echo swerex-smoke-ok"

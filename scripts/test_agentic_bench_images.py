@@ -233,6 +233,62 @@ class AgenticBenchImagesTest(unittest.TestCase):
             ],
         )
 
+
+    def test_inventory_cache_can_enrich_full_image_identity(self):
+        module = load_module()
+        calls = []
+
+        def fake_runner(argv, env):
+            calls.append(argv)
+            if argv == ["docker", "image", "ls", "--format", "{{json .}}"]:
+                return module.CommandResult(
+                    0,
+                    json.dumps(
+                        {
+                            "Repository": "tb2-offline/gcode-to-text",
+                            "Tag": "20260425",
+                            "ID": "8fba1dce95b8",
+                            "Digest": "<none>",
+                            "Size": "182MB",
+                        }
+                    ) + "\n",
+                    "",
+                )
+            if argv == ["docker", "image", "inspect", "tb2-offline/gcode-to-text:20260425"]:
+                return module.CommandResult(
+                    0,
+                    json.dumps(
+                        [
+                            {
+                                "Id": "sha256:8fba1dce95b8full",
+                                "RepoDigests": ["tb2-offline/gcode-to-text@sha256:repo-digest"],
+                            }
+                        ]
+                    ),
+                    "",
+                )
+            raise AssertionError(f"unexpected docker command: {argv!r}")
+
+        summary = module.docker_cache_inventory(
+            prefixes=["tb2-offline/"],
+            docker_host="unix:///var/run/docker.sock",
+            runner=fake_runner,
+            inspect_identities=True,
+        )
+
+        self.assertEqual(summary["counts"]["identity_inspected"], 1)
+        self.assertEqual(summary["counts"]["identity_errors"], 0)
+        self.assertEqual(summary["images"][0]["full_image_id"], "sha256:8fba1dce95b8full")
+        self.assertEqual(summary["images"][0]["repo_digests"], ["tb2-offline/gcode-to-text@sha256:repo-digest"])
+        self.assertEqual(
+            calls,
+            [
+                ["docker", "image", "ls", "--format", "{{json .}}"],
+                ["docker", "image", "inspect", "tb2-offline/gcode-to-text:20260425"],
+            ],
+        )
+
+
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)

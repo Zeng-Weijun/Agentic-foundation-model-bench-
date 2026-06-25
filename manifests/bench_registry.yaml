@@ -47,6 +47,17 @@ image_manifests:
     status: partial_shared_tars_known_bad_fix_git
     policy: disabled_until_rebuilt
 
+
+  - id: terminal_bench_2_1_swe_dev_cache
+    path: images/terminal_bench_2_1_swe_dev_cache.yaml
+    status: generated_from_swe_dev_cache_partial_tar_coverage
+    policy: audit_manifest_for_tb2_full_image_warmup
+
+  - id: swebench_verified_django10097_identity_probe
+    path: images/swebench_verified_django10097.yaml
+    status: generated_identity_probe_p0_pending
+    policy: required_for_swebench_django10097_promotion_smoke
+
   - id: swebench_verified_multi
     path: images/swebench_verified.yaml
     status: partial_worker_cache_missing_exact_task_map
