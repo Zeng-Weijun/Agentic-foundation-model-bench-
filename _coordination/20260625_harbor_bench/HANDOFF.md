@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 00:14 Asia/Shanghai
+Updated: 2026-06-26 00:20 Asia/Shanghai
 
 ## Objective
 
@@ -35,6 +35,12 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Issue #3 is fixed in commit `933544e` by sorting persisted `_execute_plan` summary results back to manifest order, commented, and closed.
 - Issue #1 has partial foundation in commit `b4d3a0c`: `_execute_plan()` now writes normalized `agentic_bench.result.v1` artifacts and summary fields for execution/benchmark status separation, with first parser coverage for RepoZero Py2JS. #1 remains open for tau2/VitaBench/CoCoA/SWE-bench/Terminal-Bench/DeepSWE parser coverage.
 - Issue #2 remains open follow-up implementation item.
+- Runtime-images lane filed #4 through #8:
+  - #4 Make image preflight project_root follow the active suite/worktree.
+  - #5 Make optional image audit failures fatal when requested.
+  - #6 Support pull/load-fallback/run-smoke in suite image preflight warmup.
+  - #7 Make image-preflight-only fail on explicitly selected empty plans.
+  - #8 Split rootless Docker health between info, version, SDK, and compose readiness.
 
 ## Red Lines
 
