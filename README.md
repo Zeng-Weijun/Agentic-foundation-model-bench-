@@ -20,8 +20,13 @@ Key reports:
 - `reports/worker_j9jjd_preflight_20260625.md` - live worker/rootless/API preflight.
 - `reports/tau2_proxy_smoke_20260625.md` - first worker tau2 smoke through the `dev` relay proxy.
 - `reports/offline_image_loader_20260625.md` - offline/rootless Docker image check/load helper.
+- `manifests/offline_images.tb21_fix_git.yaml` - exact one-task Terminal-Bench 2.1 `fix-git` image manifest.
 - `reports/cocoabench_prepare_smoke_20260625.md` - CoCoA worker prepare-only smoke and env blocker.
+- `reports/cocoabench_python313_unblock_20260625.md` - CoCoA worker Python 3.13 runtime unblock.
+- `reports/cocoabench_worker_smoke_20260625.md` - CoCoA one-task worker smoke and rootless Docker socket blocker.
 - `reports/terminal_bench_2_1_smoke_plan_20260625.md` - Terminal-Bench 2.1 one-task smoke wrapper plan.
+- `reports/terminal_bench_2_1_image_load_debug_20260625.md` - Terminal-Bench 2.1 `fix-git` image load root-cause analysis.
+- `reports/vitabench_repozero_worker_preflight_20260625.md` - VitaBench executable smoke and RepoZero image blocker.
 - `reports/trace_manifest_template.yaml` - per-task trace manifest template.
 
 First runnable suite entrypoint:

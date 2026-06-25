@@ -1,0 +1,36 @@
+schema_version: agentic_bench.offline_images.v1
+generated_at: "2026-06-25"
+scope:
+  check_mode: lightweight_read_only
+  controller_host: local_mac_interim
+  worker_id: worker-j9jjd
+  worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  worker_hostname: zwj2-64rlk-3469265-worker-0
+  docker_host: unix:///tmp/rl/run/docker.sock
+  docker_root_dir: /tmp/rl/data
+  rootless: true
+  container_engine: docker
+  worker_network_policy: offline_or_internal_only
+  public_internet_on_worker: forbidden_for_runs
+  dev_to_worker_ssh: blocked_publickey
+  direct_local_to_worker_ssh: ok_for_inventory_and_check_only
+  mutation_policy:
+    - no_image_pull
+    - no_package_install
+    - no_benchmark_run
+    - no_model_call
+    - no_docker_load_in_this_lane
+
+images:
+  - bench: terminal-bench-2.1
+    id: terminal_bench_2_1_fix_git_smoke
+    task_id: fix-git
+    required_images:
+      - tb2-offline/fix-git:20260425
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/fix-git.tar
+    preload_method:
+      - check_exact_tag_before_load
+      - rootless_docker_load_from_shared_tar_only_when_owned_by_image_debug_lane
+      - never_pull_from_worker_public_internet
+    status: exact_one_task_manifest_for_check_only

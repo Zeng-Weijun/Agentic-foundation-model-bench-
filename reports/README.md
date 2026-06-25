@@ -38,13 +38,33 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
   - Offline/rootless Docker image preload/check helper.
   - Documents `scripts/load_offline_images.sh --check`, expected rootless Docker socket defaults, and fake-Docker verification.
 
+- `offline_image_fix_git_manifest_20260625.md`
+  - Exact Terminal-Bench 2.1 `fix-git` image manifest check.
+  - Confirms `tb2-offline/fix-git:20260425` is missing from worker rootless Docker while the shared tar resolves.
+
 - `cocoabench_prepare_smoke_20260625.md`
   - Worker-side CoCoA prepare-only smoke.
   - Confirms the correct shared `COCOA_ROOT` and records the Python 3.13 environment blocker for full CoCoA runs.
 
+- `cocoabench_python313_unblock_20260625.md`
+  - CoCoA Python 3.13 worker runtime unblock.
+  - Records the shared conda env, worker-local uv Python symlink repair, and reusable `scripts/check_cocoabench_env.sh` verification.
+
+- `cocoabench_worker_smoke_20260625.md`
+  - CoCoA one-task worker smoke through the YAML suite and `dev` proxy.
+  - Confirms suite/runner startup but classifies the current task failure as rootless Docker socket/compose infra, not model quality.
+
 - `terminal_bench_2_1_smoke_plan_20260625.md`
   - Terminal-Bench 2.1 one-task smoke plan and dry-run wrapper.
   - Selects `fix-git`, records image/tb CLI blockers, and gives the exact post-unblock execute command.
+
+- `terminal_bench_2_1_image_load_debug_20260625.md`
+  - Terminal-Bench 2.1 `fix-git` image load root-cause analysis.
+  - Shows another TB2.1 tar loads, while `fix-git` fails from shared storage and `/tmp` due a layer import path issue.
+
+- `vitabench_repozero_worker_preflight_20260625.md`
+  - VitaBench and RepoZero worker preflight.
+  - Records a one-task VitaBench smoke through the `dev` proxy and the RepoZero `repoarena-new` Docker image blocker.
 
 - `trace_manifest_template.yaml`
   - Per-task trace collection template.
