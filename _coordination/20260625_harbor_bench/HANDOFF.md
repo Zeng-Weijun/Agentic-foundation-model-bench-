@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 02:14 Asia/Shanghai
+Updated: 2026-06-26 02:19 Asia/Shanghai
 
 ## Objective
 
@@ -32,6 +32,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Image inventory: `swe_dev` has substantially more SWE-bench/TB2.1 Docker images than worker; shared TB2.1 tars are partial, so worker full runs need staging from `swe_dev` cache. Current inventory artifacts: `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`, and identity-enriched `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
 - Terminal-Bench 2.1: `terminal_bench_2_1_image_smoke` is enabled for image preflight using `gcode-to-text`; worker rootless check passes via cached/verified fallback image, while full TB execution remains pending adapter/runtime result wiring.
 - Bug-hunt pair: only surface:50 and surface:54 produce `_coordination/20260625_harbor_bench/lanes/*.md`; each must cross-check the other's ledger before the orchestrator files issues.
+- Current Round 10 dispatch: surface:50 audits concrete transport population for 39 TB2 missing rows plus SWE django10097 eval/wrapper; surface:54 writes fixture-ready parser expectations for Terminal-Bench nonzero-with-manifest and DeepSWE failure-before-result. Both are ledger-only and should not edit production code.
 - GitHub issue filing: runner-results lane filed/deduped through REST API:
   - #1 Separate adapter execution status from benchmark result status.
   - #2 Make suite run output directories invocation-unique.
@@ -53,6 +54,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Issue #11 tracks SWE-bench image identity/lineage checks; implemented in `f2925bf`, with image manifest fields for expected/source image IDs and repo digests plus `identity_mismatch` failure status. Runtime-images lane Round 5 posted additional django-10097 two-artifact promotion evidence to #11/#6.
 - Issue #12 tracks normalized result provenance. Runner-results Round 9 produced the safe `source.native_artifacts[]` role/status map for RepoZero, tau3, SWE-bench, Terminal-Bench 2.1, and DeepSWE; no new issue opened.
 - Registry-selected static transport gate now exists as `python3 scripts/agentic_bench_images.py lint-registry`. It lints selected `bench_registry.yaml` rows by repeated/comma-separated `--policy` or `--manifest-id`, returning nonzero if required rows lack internal digest refs or fallback tar checksums.
+- Issue comments posted after `ce2adf2`: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4802817585`, #11 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/11#issuecomment-4802817769`, #12 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/12#issuecomment-4802817962`, #10 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/10#issuecomment-4802818184`.
 
 ## Red Lines
 
