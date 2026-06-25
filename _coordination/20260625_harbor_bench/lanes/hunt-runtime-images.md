@@ -1983,3 +1983,84 @@ Guardrails:
 - Dedup #6/#12: static lint correctly blocks rows missing promoted offline transport; do not weaken required preflight or allow staged-but-not-worker-ingested rows to pass.
 - Dedup #13: worker failure artifacts should stay redacted and should preserve enough phase/category metadata for runner triage.
 - Blocker: worker-j9jjd rootless storage-health root cause is not isolated enough for a new issue. Need an owner-approved, non-destructive health/retry plan before reattempting mteb or multi-source ingestion.
+## Round23 rootless storage health retry decision tree after HEALTH_SMOKE_IMAGE
+
+### Scope
+
+- Lane: runtime/images rootless Docker image-ingest readiness for worker-j9jjd.
+- Worktree/head verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `5ded6c8`.
+- Ledger-only. I did not edit production code, manifests, tests, handoff, runner ledger, inventory artifacts, or issue records. I did not commit or push.
+- Docker actions were read-only except one cached-image `docker run --rm --network none` through `HEALTH_SMOKE_IMAGE`; no prune, restart, delete, pull, load, save, benchmark, or model call was run.
+
+### Findings
+
+- COMMENT-READY for #8/#6/#12/#13; no new ISSUE-READY root cause found.
+- Commit `32e4f89` improves the rootless worker health probe by making cached-image runtime health separable from storage/transport health: `HEALTH_SMOKE_IMAGE` is read at `scripts/check_rootless_docker_worker.sh:4-6`, documented as optional cached smoke at `:22-29`, and executed only after `docker image inspect` succeeds at `:193-205`.
+- The new probe supports the Round22 diagnosis: worker-j9jjd can still run an already-present image with `--network none`, and Docker storage info/system-df checks return rc 0, but the daemon is not fully healthy because `docker version`, raw `/version`, and Python Docker SDK version checks still fail.
+- Current worker evidence is not strong enough to retry `mteb-retrieve` or `multi-source-data-merger`: cached runtime is healthy, but no successful new-layer ingest has been observed after the mteb/multi-source EIO failures. Both rows remain absent from worker image cache.
+- Active manifest and strict registry lint still fail closed. Both `tb2_mteb_retrieve` and `tb2_multi_source_data_merger` remain `fallback_status: missing_shared_tar`, `fallback_transport: none`, with no active `image_ref`, fallback tar, or fallback sha. `lint-registry --require-offline-transport --verify-fallback-files` still returns rc 1 with `required_without_offline_transport=8`.
+- Artifact staging is present for both risky rows: mteb and multi-source fallback tars exist on shared storage and P0 manifest HEAD returns HTTP 200 with matching digest headers. That proves transport artifacts exist; it does not prove worker ingest readiness.
+- The latest sanitized dockerd-log scan still shows the earlier multi-source layer-register EIO marker and no new EIO/unlinkat markers from this read-only pass. Free space and inode pressure are not current blockers (`/tmp` has about 253GB free, 2% inode use; `docker system df` shows 0 active images/containers/build cache). This narrows the retry question to new-layer ingest behavior, not generic container execution or obvious capacity exhaustion.
+
+### Decision tree for mteb/multi-source retry
+
+Preconditions before any retry:
+
+| Gate | Required evidence | Current Round23 status | Decision |
+| --- | --- | --- | --- |
+| Correct worker endpoint | Explicit `worker-j9jjd` endpoint, not stale alias; local control plane can reach it | PASS via streamed script/local worker SSH; `dev -> worker` script attempt rc 255 and is not usable | Use local control-plane or another proven route for worker checks |
+| No active benchmark/process interference | Health script benchmark process section has zero rows; `docker ps` has zero running rows | PASS, benchmark process count 0, `docker_ps_rows=0` | Safe for read-only checks only |
+| Engine/socket present | Rootlesskit/dockerd/containerd present; socket exists | PASS, health script saw 3 engine-process rows and Docker info rc 0 | No restart allowed or needed in this lane |
+| Basic storage readable | `docker_storage_info_rc=0`, `docker_system_df_rc=0`, free space/inodes healthy, no `no space` markers | PASS for storage metadata and capacity | Capacity is not enough to prove ingest |
+| Cached runtime works | `HEALTH_SMOKE_IMAGE` is already present and `cached_run_smoke_rc=0` with `--network none` | PASS for `tb2-offline/pytorch-model-cli:20260425` | Existing-image execution is healthy |
+| API/version/SDK readiness | `docker version`, raw `/version`, Python Docker SDK version rc 0 | FAIL: version rc 1, raw version rc 52, Python SDK rc 1 | Keep #8 open; do not treat daemon fully healthy |
+| Fresh layer ingest proof | At least one owner-approved small/known-new fallback load plus inspect/run-smoke succeeds after health probe | NOT PROVED in this lane | Do not retry large mteb/multi-source yet |
+
+Retry policy:
+
+1. If any precondition above fails, keep both rows quarantined. Do not promote manifest rows and do not run fallback load/P0 pull.
+2. If only cached runtime passes but version/SDK/raw endpoint still fail, classify as `partial_rootless_health`; keep #8 open and require an owner decision before any fresh ingest attempt.
+3. If the owner wants a minimal ingest proof, first use a small known-new fallback tar that is not mteb or multi-source and run `check --load-fallback --run-smoke` with `allow_pull=false`. Passing cached smoke alone is not enough.
+4. Retry mteb first only if a fresh-layer proof passes and storage/log markers stay clean. Use fallback tar before P0 pull because worker direct P0 remains a #8 risk, and mteb is smaller than multi-source.
+5. Retry multi-source only after mteb or another comparable ingest proof passes. It is larger and already failed through both fallback-load and P0-pull paths.
+6. Any retry result category `tar_verified=1` plus `loaded=0` or `present=0`, `pull_status=failed`, `load_status=failed`, `identity_mismatch>0`, `tar_mismatch>0`, `smoke_passed=0`, new EIO/unlinkat marker, `no space`, daemon restart, or benchmark process interference must remain quarantine and be recorded as restricted raw evidence plus safe parsed counts.
+7. A row can leave quarantine only with active-manifest transport fields, verified fallback sha, worker `loaded/present/smoke_passed` evidence, and no identity mismatch. Static lint passing alone must not be interpreted as worker readiness.
+
+### Dedup and issue status
+
+- #8 owns the daemon-health split. Round23 adds a clearer health hierarchy: cached run and storage metadata are green, but version/SDK/raw API plus fresh ingest are still not proven.
+- #6 owns image warmup and promotion gating. mteb and multi-source must not be promoted from staged tar/P0 evidence without worker ingest proof.
+- #12 owns structured image-check provenance. Retry artifacts need safe counts/statuses, image IDs, fallback sha status, and worker/phase categories.
+- #13 owns raw checker/stdout/stderr leakage. The mteb/multi-source failures should continue to use redacted summaries and restricted raw pointers.
+- No new ISSUE-READY block: the observed behavior is a known #8/#6 quarantine case, and current code/manifest state fails closed rather than fake-passing.
+
+### Command evidence
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md && sed -n '260,980p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0, output truncated by the terminal but the command completed successfully.
+- Read `superpowers` systematic-debugging and verification-before-completion skill files; rc 0. Memory quick grep for Round23/rootless terms; rc 0 with no relevant hits used.
+- `ssh dev 'cd .../image-warmup-policy && git rev-parse --abbrev-ref HEAD && git rev-parse --short HEAD && git status --short --untracked-files=all && sed -n "1,280p" _coordination/20260625_harbor_bench/HANDOFF.md'`; rc 0. Branch/head `feat/image-warmup-policy` / `5ded6c8`.
+- `ssh dev 'cd ... && tail -n 180 _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md'`; rc 0. Confirmed Round22 quarantine and rootless evidence.
+- `ssh dev 'cd ... && tail -n 220 _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md'`; rc 0. Runner lane aligns with #8/#12/#13 dedup; no contradiction.
+- `ssh dev 'cd ... && git show --stat --oneline 32e4f89 -- scripts/check_rootless_docker_worker.sh && sed -n "1,260p" scripts/check_rootless_docker_worker.sh'`; rc 0. Confirmed `HEALTH_SMOKE_IMAGE` support and default read-only mode.
+- `ssh dev 'cd ... && nl -ba scripts/check_rootless_docker_worker.sh | sed -n "1,230p"'`; rc 0. Relevant read-only/storage/smoke lines recorded above.
+- `ssh dev 'cd ... && PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... parse TB2 manifest and run strict lint-registry ... PY'`; rc 0 wrapper. Manifest rows for mteb and multi-source remain unpromoted; inner `lint-registry` rc 1 with `required_without_offline_transport=8`, `fallback_tar_verified=86`, missing/mismatch 0.
+- `ssh dev 'cd ... && PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... summarize batch11 failure JSONs by counts/hash/path-class only ... PY'`; rc 0. Multi-source fallback and P0 failure artifacts both have `tar_verified=1`, `present=0`, safe signatures containing EIO/unlinkat, and no network-unreachable/no-space signature.
+- `ssh dev 'cd ... && WORKER_SSH=... HEALTH_SMOKE_IMAGE=tb2-offline/pytorch-model-cli:20260425 ./scripts/check_rootless_docker_worker.sh --check'` through a sanitizer; rc 0 wrapper, script rc 255. This route is discarded for worker health because `dev -> worker` SSH is blocked.
+- Streamed the same script from the remote worktree to the local control plane and ran it with explicit worker endpoint, `HEALTH_SMOKE_IMAGE=tb2-offline/pytorch-model-cli:20260425`, `REMOTE_DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, and `--check`; rc 0 wrapper, script rc 1. Safe parsed rc fields: `docker_info_rc=0`, `docker_storage_info_rc=0`, `docker_system_df_rc=0`, `cached_run_smoke_rc=0`, `compose_version_rc=0`, `compose_ps_rc=0`, `docker_ps_rc=0`, `docker_images_rc=0`, `docker_version_rc=1`, `raw_version_rc=52`, `python_docker_version_rc=1`. Benchmark process count 0; Docker ps rows 0; unique image count 276; marker counts had no EIO/unlinkat/no-space/network-unreachable in this script capture.
+- `ssh -CAXY ws-4d5210c60d64c583-worker-j9jjd... 'PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... sanitize /tmp/rl/dockerd.log marker counts ... PY'`; rc 0. Full log has one EIO/unlinkat/failed-register marker for multi-source; tail 120/300 has no EIO/unlinkat; no `no space`; recent relevant hits were printed as length/hash/category only.
+- `ssh -CAXY ws-4d5210c60d64c583-worker-j9jjd... 'export DOCKER_HOST=unix:///tmp/rl/run/docker.sock; PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... read-only docker inspect/info/system-df/df/findmnt ... PY'`; rc 0. Cached smoke image inspect rc 0, mteb and multi-source local inspect rc 1, Docker info rc 0 with 0 containers/running and 276 images, `docker system df` rc 0, `/tmp` free about 253GB and inode use 2%, rootless data on tmpfs.
+- `ssh dev 'cd ... && PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... inspect batch10/batch11 TSVs and handoff hit counts ... PY'`; rc 0. Batch10 TSV has only promoted `reshard-c4-data` and `pytorch-model-cli`; batch11 TSV has staged `multi-source-data-merger`; handoff contains mteb staging/failure notes.
+- `ssh dev 'cd ... && PYTHONDONTWRITEBYTECODE=1 python3 - <<PY ... stat mteb/multi-source tars and curl P0 manifest HEADs ... PY'`; rc 0. mteb tar exists size `2159561728`, P0 HEAD HTTP 200 digest `sha256:088c20baec521e159982c27bcdb8a48dda67a15729043a92a86ef27a6472c0a8`; multi-source tar exists size `6324784128`, P0 HEAD HTTP 200 digest `sha256:33d33940e4e6207900e23fb0f4232f8607be2357d4d07062a1b3c4088dc927c2`.
+
+### Blockers
+
+- `dev -> worker` cannot run the script directly (rc 255), so worker checks need the local control plane or another proven route until SSH routing is fixed.
+- Worker rootless Docker is only partially healthy: cached runtime and storage metadata are healthy, but `/version`/SDK checks fail and no post-failure fresh-layer ingest proof exists.
+- `mteb-retrieve` and `multi-source-data-merger` remain absent from worker cache and must stay quarantined until a retry produces worker load/present/smoke evidence without EIO/unlinkat or identity mismatch.
+
+### Validation evidence
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace.
+- Bounded secret scan on the ledger for common token/key forms; rc 1, interpreted as no matches.
+- `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no result; no pycache found.

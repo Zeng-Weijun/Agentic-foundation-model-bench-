@@ -1,0 +1,2408 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "terminal_bench_2_1_swe_dev_cache",
+  "counts": {
+    "images": 89,
+    "inventory_files": 2,
+    "inventory_images": 592,
+    "matched": 89,
+    "missing": 0,
+    "required_images": 89,
+    "required_matched": 89,
+    "required_missing": 0
+  },
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:180e46b0bdc3632408150c04cb049152d297151422668310f38dc57a6bfaf45a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_adaptive_rejection_sampler",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/adaptive-rejection-sampler:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "180e46b0bdc3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/adaptive-rejection-sampler:20260425",
+          "repo_digests": [],
+          "size": "778MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:65873f9ba756370f2db4f55ef781c3d8081a455f04d692c1d7d70f3acd19d06c"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_bn_fit_modify",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/bn-fit-modify:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "65873f9ba756",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/bn-fit-modify:20260425",
+          "repo_digests": [],
+          "size": "718MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5ae42c00d7fac3a5551ad475bcd554169bad94d1dcb0ea0c849ec2bde459dc7a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_break_filter_js_from_html",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/break-filter-js-from-html:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "5ae42c00d7fa",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/break-filter-js-from-html:20260425",
+          "repo_digests": [],
+          "size": "1.17GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:0868e692b06d5c9e743ffae714f73c0d3cf7199c7f753c8be3c93187d8b588b9"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_build_cython_ext",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/build-cython-ext:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "0868e692b06d",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/build-cython-ext:20260425",
+          "repo_digests": [],
+          "size": "1.1GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:6e478c4c42b68b39980104a566d0f79b21e561dfcaaf2b6542cd021b7d6edf52"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_build_pmars",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/build-pmars:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "6e478c4c42b6",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/build-pmars:20260425",
+          "repo_digests": [],
+          "size": "222MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:41a1240312a481513bec1942152e1ffda87aab9d3b9f29f558f892068e8a2ee2"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_build_pov_ray",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/build-pov-ray:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "41a1240312a4",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/build-pov-ray:20260425",
+          "repo_digests": [],
+          "size": "500MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:9a7fa9c8e3619cc76a603f28bb73293ccef13e86636c78615f78b2c13f106a57"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_caffe_cifar_10",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/caffe-cifar-10:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "9a7fa9c8e361",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/caffe-cifar-10:20260425",
+          "repo_digests": [],
+          "size": "716MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:dbf83ba8562baf679ba817f9b65b70420a76b24bbc3c5289f6f3bb19284ca92a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_cancel_async_tasks",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/cancel-async-tasks:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "dbf83ba8562b",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/cancel-async-tasks:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:b96ca32496730f0ceb20290bdec96967bfe1748ceb461ec78955ff326998ea06"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_chess_best_move",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/chess-best-move:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "b96ca3249673",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/chess-best-move:20260425",
+          "repo_digests": [],
+          "size": "769MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c0a57359d38d7a86eef2718f48fae8a5bf1c45c0d9ec9d0103461e823f8230f9"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_circuit_fibsqrt",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/circuit-fibsqrt:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "c0a57359d38d",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/circuit-fibsqrt:20260425",
+          "repo_digests": [],
+          "size": "414MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:40a86d91bbfaaf4a533f72a003f731a9bc9a0eb41a5dc484a866d0118eafcd2b"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_cobol_modernization",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/cobol-modernization:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "40a86d91bbfa",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/cobol-modernization:20260425",
+          "repo_digests": [],
+          "size": "530MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:90e09b5316dfc88765ebb474b7b860938bcf352db1341a7385a1441b3bfdc9a1"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_code_from_image",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/code-from-image:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "90e09b5316df",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/code-from-image:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:413947be9766744e70f84ea101110834f8e3a5b53a51e61bfd17c82a644559c6"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_compile_compcert",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/compile-compcert:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "413947be9766",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/compile-compcert:20260425",
+          "repo_digests": [],
+          "size": "185MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:54a1ca1744e081b2e345f62bb428050cb5a8438ef01f04a2d77cc2cb24f24de3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_configure_git_webserver",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/configure-git-webserver:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "54a1ca1744e0",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/configure-git-webserver:20260425",
+          "repo_digests": [],
+          "size": "355MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c8a4a000adb370ce97a19aa51d5a2131f30405ecafae660ba0cffed80b92c9bf"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_constraints_scheduling",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/constraints-scheduling:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "c8a4a000adb3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/constraints-scheduling:20260425",
+          "repo_digests": [],
+          "size": "203MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:4ad6d53665f55a3cc4c1306fdad61d3df0e915ce94e26cbd596ef74bcba0ebfd"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_count_dataset_tokens",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/count-dataset-tokens:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "4ad6d53665f5",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/count-dataset-tokens:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3e616650c18c5dec15dd58268439fb1b92f32aad1f90c82c34096f8319511b46"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_crack_7z_hash",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/crack-7z-hash:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3e616650c18c",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/crack-7z-hash:20260425",
+          "repo_digests": [],
+          "size": "955MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:f9d93a10ddb58c8c743d25380a6ca1d281c46058bff30defd96332df9589642a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_custom_memory_heap_crash",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/custom-memory-heap-crash:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "f9d93a10ddb5",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/custom-memory-heap-crash:20260425",
+          "repo_digests": [],
+          "size": "4.3GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:aeb04a6573487ed345e83a6443497e3f2ef839215442ed000ea7747d6624fda3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_db_wal_recovery",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/db-wal-recovery:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "aeb04a657348",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/db-wal-recovery:20260425",
+          "repo_digests": [],
+          "size": "669MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:99091c18bc5987b3cac882d0dfdbe834b3e63e26985a1e4498fb573700cf953b"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_distribution_search",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/distribution-search:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "99091c18bc59",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/distribution-search:20260425",
+          "repo_digests": [],
+          "size": "451MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:f04e38e5b09ae2b6741beb5c6252af484b6d53688424b41f3936e77447b95e93"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_dna_assembly",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/dna-assembly:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "f04e38e5b09a",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/dna-assembly:20260425",
+          "repo_digests": [],
+          "size": "185MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a7b3b181c17858b9f951d770a6664376cdf405b021366af390181a9d45c96477"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_dna_insert",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/dna-insert:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a7b3b181c178",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/dna-insert:20260425",
+          "repo_digests": [],
+          "size": "185MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3ac9e0f8fd52bdec1342a07d5af2c4c7fabb7150148f2e3c26a7113b813483fc"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_extract_elf",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/extract-elf:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3ac9e0f8fd52",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/extract-elf:20260425",
+          "repo_digests": [],
+          "size": "1.17GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c58e06ca2738fef8f205d9a654c7b250c31db9cfa1c750645499721e84f78c08"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_extract_moves_from_video",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/extract-moves-from-video:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "c58e06ca2738",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/extract-moves-from-video:20260425",
+          "repo_digests": [],
+          "size": "197MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:9ad91418c3baf71eb5436695d04fdbbb7e5d7fdcd4ae53085c003a43b1960387"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_feal_differential_cryptanalysis",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/feal-differential-cryptanalysis:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "9ad91418c3ba",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/feal-differential-cryptanalysis:20260425",
+          "repo_digests": [],
+          "size": "197MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:7ca0cbc5cbe1fdeba8aa44bef2fe7f4dfdfcf747638b9dc87a71530a8ad128c3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_feal_linear_cryptanalysis",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/feal-linear-cryptanalysis:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "7ca0cbc5cbe1",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/feal-linear-cryptanalysis:20260425",
+          "repo_digests": [],
+          "size": "432MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:308b4198928bdf8ba6de3c90f7e95bb24c308aef9b1410e9be590f21405f8b62"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_filter_js_from_html",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/filter-js-from-html:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "308b4198928b",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/filter-js-from-html:20260425",
+          "repo_digests": [],
+          "size": "1.07GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:80880bd1203f59a164cdade4134603f7a0ed5552fb0ae25b8de5bdc7a3fac451"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_financial_document_processor",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/financial-document-processor:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "80880bd1203f",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/financial-document-processor:20260425",
+          "repo_digests": [],
+          "size": "554MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a18fd3ccaac31bef203fff6faaf1ce700c11603e0bc2c082165b18a35f11d2a5"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_fix_code_vulnerability",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/fix-code-vulnerability:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a18fd3ccaac3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/fix-code-vulnerability:20260425",
+          "repo_digests": [],
+          "size": "466MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:e76e9a24f5950adfc7c65b4f8691f52a69475a72b9693c3be7d96834ac2be91c"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_fix_git",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/fix-git:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "e76e9a24f595",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/fix-git:20260425",
+          "repo_digests": [],
+          "size": "339MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:db5ba11f1d6a18d1707aff2fca66a29355cc60ff714a3577157ce0f8c3df17b3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_fix_ocaml_gc",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/fix-ocaml-gc:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "db5ba11f1d6a",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/fix-ocaml-gc:20260425",
+          "repo_digests": [],
+          "size": "1.17GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:8fba1dce95b8cf9d7c9c8808445c186a99ffaa4a83dbb122584c1113a13c5371"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_gcode_to_text",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/gcode-to-text:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "8fba1dce95b8",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/gcode-to-text:20260425",
+          "repo_digests": [],
+          "size": "182MB"
+        },
+        {
+          "full_image_id": "",
+          "host": "swe_dev2",
+          "image_id": "8fba1dce95b8",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev2.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/gcode-to-text:20260425",
+          "repo_digests": [],
+          "size": "182MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:770691aa8854a4ae131e05e3aebd0f8f4538dce15609e3f955df8bf06f5946c3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_git_leak_recovery",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/git-leak-recovery:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "770691aa8854",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/git-leak-recovery:20260425",
+          "repo_digests": [],
+          "size": "425MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:02793c0bf239543fc181a4edadd1fc95207388d506cdbc75ff32a292be1d34dd"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_git_multibranch",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/git-multibranch:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "02793c0bf239",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/git-multibranch:20260425",
+          "repo_digests": [],
+          "size": "798MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:9cf67aa6719ce5ccd9fa1e0f02320d15fec6e7fe93f60dda591c846dde771b85"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_gpt2_codegolf",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/gpt2-codegolf:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "9cf67aa6719c",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/gpt2-codegolf:20260425",
+          "repo_digests": [],
+          "size": "1.05GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:391df61f6e5030070d2c6ad00c3456ca2437557fcffa49f5fb4aa1ec0116d4ff"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_headless_terminal",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/headless-terminal:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "391df61f6e50",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/headless-terminal:20260425",
+          "repo_digests": [],
+          "size": "185MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:24a5618422c5ffce86db134163972ff654380eaad9dc281e9b350dff0ef651eb"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_hf_model_inference",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/hf-model-inference:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "24a5618422c5",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/hf-model-inference:20260425",
+          "repo_digests": [],
+          "size": "8.81GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_install_windows_3_11",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/install-windows-3.11:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "2dad54561527",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/install-windows-3.11:20260425",
+          "repo_digests": [],
+          "size": "1.63GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:9970cee78ff12e9d7de84a5b8a01a3c237d2505f2624e1f0e7d9385a72d81bb2"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_kv_store_grpc",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/kv-store-grpc:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "9970cee78ff1",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/kv-store-grpc:20260425",
+          "repo_digests": [],
+          "size": "188MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:2c8bf81ae0064688e901041f2ce46f3892006cabfb5057eb2aad302d4fd5d718"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_large_scale_text_editing",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/large-scale-text-editing:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "2c8bf81ae006",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/large-scale-text-editing:20260425",
+          "repo_digests": [],
+          "size": "360MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:fd08236dc67cd657c008413e493d7a3efcb8b236a2eac87262662e6f473ef8d7"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_largest_eigenval",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/largest-eigenval:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "fd08236dc67c",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/largest-eigenval:20260425",
+          "repo_digests": [],
+          "size": "269MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:ddd05f6d1deef06eb492f8187d569ba2890a09887e99fb51ee891ae9ebd62471"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_llm_inference_batching_scheduler",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/llm-inference-batching-scheduler:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "ddd05f6d1dee",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/llm-inference-batching-scheduler:20260425",
+          "repo_digests": [],
+          "size": "180MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:aa0563929ed2736a4935ddb0d8aefc19471a486746631da3b5a7ef088f2cfc31"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_log_summary_date_ranges",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/log-summary-date-ranges:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "aa0563929ed2",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/log-summary-date-ranges:20260425",
+          "repo_digests": [],
+          "size": "235MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:1a1a48b1b2fc63786e697de7c90fbfdec5db7b61255e3eb4ccaed308ee5a41d7"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_mailman",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/mailman:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "1a1a48b1b2fc",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/mailman:20260425",
+          "repo_digests": [],
+          "size": "452MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a0e0956246d5289ec1cc72c01d13283ae6395a28cb49f210c865462ee6cf9832"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_make_doom_for_mips",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/make-doom-for-mips:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a0e0956246d5",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/make-doom-for-mips:20260425",
+          "repo_digests": [],
+          "size": "727MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:293045d19d587dc5afcfd971d3e89b641497b90010a76030523499d3bd9614da"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_make_mips_interpreter",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/make-mips-interpreter:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "293045d19d58",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/make-mips-interpreter:20260425",
+          "repo_digests": [],
+          "size": "1.54GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:8631dfb34e5e24ef98ff556f24d7155e31c0a338486884184b50be9e6cfb7ae5"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_mcmc_sampling_stan",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/mcmc-sampling-stan:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "8631dfb34e5e",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/mcmc-sampling-stan:20260425",
+          "repo_digests": [],
+          "size": "653MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:b7a1bd358d7f8bf2ca3f2a3b40932751b95e9e94f6f25e8fbc457e6de1dd9ed6"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_merge_diff_arc_agi_task",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/merge-diff-arc-agi-task:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "b7a1bd358d7f",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/merge-diff-arc-agi-task:20260425",
+          "repo_digests": [],
+          "size": "365MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:9414270ce6394839c36b42f7536dcf3a975860f0957dc5e2aff0aa9c6429653c"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_model_extraction_relu_logits",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/model-extraction-relu-logits:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "9414270ce639",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/model-extraction-relu-logits:20260425",
+          "repo_digests": [],
+          "size": "438MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:0d8e9ada4fec1de605660f29654e141538ea97a9bd42b9b0ea2a1bc8710ae6a1"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_modernize_scientific_stack",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/modernize-scientific-stack:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "0d8e9ada4fec",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/modernize-scientific-stack:20260425",
+          "repo_digests": [],
+          "size": "1.72GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5add3ac4f6084e28ce9b18f7e66ded2b0216f6d1f862f852f0044004e04e74fa"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_mteb_leaderboard",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/mteb-leaderboard:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "5add3ac4f608",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/mteb-leaderboard:20260425",
+          "repo_digests": [],
+          "size": "2.22GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_mteb_retrieve",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/mteb-retrieve:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "153b4c97f265",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/mteb-retrieve:20260425",
+          "repo_digests": [],
+          "size": "2.12GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_multi_source_data_merger",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/multi-source-data-merger:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a961d2504355",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/multi-source-data-merger:20260425",
+          "repo_digests": [],
+          "size": "6.2GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_nginx_request_logging",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-nginx-request-logging@sha256:d4509a957929e8e9be7779bf0a114b374bb7d6685f972e1da172a16d8f627a08"
+      ],
+      "local_refs": [
+        "tb2-offline/nginx-request-logging:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "e673cf94a1a3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/nginx-request-logging:20260425",
+          "repo_digests": [],
+          "size": "269MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_openssl_selfsigned_cert",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-openssl-selfsigned-cert@sha256:9dcf06c7984424a3aff7573f8478f297a40224c906d232cd92ed6a0ed82e66ca"
+      ],
+      "local_refs": [
+        "tb2-offline/openssl-selfsigned-cert:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "81d7d202b470",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a58256eef1e4e2fb761e753180d216e3edbd0fb79dc3e4b65a7b8c1a16ebb168"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_overfull_hbox",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-overfull-hbox@sha256:20e76797505baeb57f693c8778496b912d390a6afe68975f5e4dd5fd49db06d3"
+      ],
+      "local_refs": [
+        "tb2-offline/overfull-hbox:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a58256eef1e4",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/overfull-hbox:20260425",
+          "repo_digests": [],
+          "size": "531MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:8a4a2ba55bfa8edd5dece054d844969a60d1f237ae2e18cf4ce6842fbd1c3465"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_password_recovery",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-password-recovery@sha256:0603131d761eb98a1daee4bf0f98d2a51e2ebc05c3bfd34fffdb10ee753ae6dd"
+      ],
+      "local_refs": [
+        "tb2-offline/password-recovery:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "8a4a2ba55bfa",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/password-recovery:20260425",
+          "repo_digests": [],
+          "size": "396MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:d0aed029cc004bed222ed1cd39dea1a8a149cd66bb2616354a75e9cb762e6718"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_path_tracing_reverse",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing-reverse@sha256:5a530196fedcca1edd0175c9adcb3eb1b5f900ce5b84545467fa87e8f51d7346"
+      ],
+      "local_refs": [
+        "tb2-offline/path-tracing-reverse:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "d0aed029cc00",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/path-tracing-reverse:20260425",
+          "repo_digests": [],
+          "size": "453MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_path_tracing",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing@sha256:07659e59709c19d41fc10f2e824f2645736a3751733b72837733f088ab9724ba"
+      ],
+      "local_refs": [
+        "tb2-offline/path-tracing:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "49297f604408",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/path-tracing:20260425",
+          "repo_digests": [],
+          "size": "1.1GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:34f1e78e9e23c8c9cc5954a4c235d9b5eb432db89c8c1322c36b13aefa3b4222"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_polyglot_c_py",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-c-py@sha256:f31972c9fe30b7997df06bd448294d54779e861a61e15f2a7cf353dc8f009f6b"
+      ],
+      "local_refs": [
+        "tb2-offline/polyglot-c-py:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "34f1e78e9e23",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/polyglot-c-py:20260425",
+          "repo_digests": [],
+          "size": "560MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a4b68e06827a2ace4a21b98b63872ed9c31183c213cf19e214bde116250394c3"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_polyglot_rust_c",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-rust-c@sha256:608ae734f32f04a7b5013bf5607b890d1f9222bc2f6934d615b765cf8776d064"
+      ],
+      "local_refs": [
+        "tb2-offline/polyglot-rust-c:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a4b68e06827a",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/polyglot-rust-c:20260425",
+          "repo_digests": [],
+          "size": "995MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:1fca885f366e54cc7fa1e42c02b22d29ce296a5bf1c7f17e7a9cbbede7ca5614"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_portfolio_optimization",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-portfolio-optimization@sha256:e49c81136737cfcddd8c31b2b6525cd0a42688a91808a1d425a7e103803e76c0"
+      ],
+      "local_refs": [
+        "tb2-offline/portfolio-optimization:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "1fca885f366e",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/portfolio-optimization:20260425",
+          "repo_digests": [],
+          "size": "613MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c517a0dd99f0991faa3f68ae50943b49a55ca7604abbac6b7d824ed4a71bcd6f"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_protein_assembly",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-protein-assembly@sha256:1144842bb39d1bf67d8925879202101caf6250a8a7a83fcf1e582496991004e9"
+      ],
+      "local_refs": [
+        "tb2-offline/protein-assembly:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "c517a0dd99f0",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/protein-assembly:20260425",
+          "repo_digests": [],
+          "size": "180MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_prove_plus_comm",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-prove-plus-comm@sha256:70b7a8e1e4ad02ac01dc434585c6167b936078680c0c6ae64084be096efc6748"
+      ],
+      "local_refs": [
+        "tb2-offline/prove-plus-comm:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "c6b448d30a2c",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/prove-plus-comm:20260425",
+          "repo_digests": [],
+          "size": "1.46GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_pypi_server",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pypi-server@sha256:18aaa082c92c40a5188fabe4637f2384e4d2d8b94a2d64874d12faea08aab38e"
+      ],
+      "local_refs": [
+        "tb2-offline/pypi-server:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "59e8830ad18e",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/pypi-server:20260425",
+          "repo_digests": [],
+          "size": "321MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_pytorch_model_cli",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-cli@sha256:708e27b09487fbfed9176182bbad343ce2c15fba3294dad910a98726851f1aec"
+      ],
+      "local_refs": [
+        "tb2-offline/pytorch-model-cli:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "cb27d97d9314",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/pytorch-model-cli:20260425",
+          "repo_digests": [],
+          "size": "2.6GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_pytorch_model_recovery",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/pytorch-model-recovery:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3a67ac23a609",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/pytorch-model-recovery:20260425",
+          "repo_digests": [],
+          "size": "19.2GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_qemu_alpine_ssh",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/qemu-alpine-ssh:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "53987a31bb5e",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/qemu-alpine-ssh:20260425",
+          "repo_digests": [],
+          "size": "1.96GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_qemu_startup",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/qemu-startup:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "5814c86fde20",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/qemu-startup:20260425",
+          "repo_digests": [],
+          "size": "1.96GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:b7888e243c321aa0c7fa3076325057b9e1d85637f5e9443a7a80cb1494cf152c"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_query_optimize",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-query-optimize@sha256:41c17768172b7b150ed339831b4103817310a6b9ba098f60b47cb3ab97a2b6ce"
+      ],
+      "local_refs": [
+        "tb2-offline/query-optimize:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "b7888e243c32",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/query-optimize:20260425",
+          "repo_digests": [],
+          "size": "454MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3ed67c59f865f29e6c9693cf36912da16e978c101e611face59fba70f0afe0a4"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_raman_fitting",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-raman-fitting@sha256:9fb585481eae2918c1dc0a437c2e6efad84d8329c884b2ff4e272337ab1e3976"
+      ],
+      "local_refs": [
+        "tb2-offline/raman-fitting:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3ed67c59f865",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/raman-fitting:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_regex_chess",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-chess@sha256:900fadda5d2c081be3097cb331bc491f6383a5b68d18b2c560b0999575b3f1ed"
+      ],
+      "local_refs": [
+        "tb2-offline/regex-chess:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "f30f70838516",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/regex-chess:20260425",
+          "repo_digests": [],
+          "size": "197MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5d9eae30a8a3d2a2853c023bd1f976528c4d7f7a825d926206648aa52d60606e"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_regex_log",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-log@sha256:938819cbbfc8663ea5063cea6688c56aca9f8e8f1524ab1792b338a7de6698bd"
+      ],
+      "local_refs": [
+        "tb2-offline/regex-log:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "5d9eae30a8a3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/regex-log:20260425",
+          "repo_digests": [],
+          "size": "298MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_reshard_c4_data",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-reshard-c4-data@sha256:4ab395e621f6fbd1ecf4433ea20f5ad8a7d3d3be989bb14ef4c049428a7eaa59"
+      ],
+      "local_refs": [
+        "tb2-offline/reshard-c4-data:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3151b2371e33",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/reshard-c4-data:20260425",
+          "repo_digests": [],
+          "size": "2.52GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:83b98640ec92a139654122401f56d4f7471d0282ebf006154c406f38ea468eeb"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_rstan_to_pystan",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-rstan-to-pystan@sha256:a1ab447e9bc4e894c9f6026f091f7011a8932fcf0e88fcc706abd6123f67f0d4"
+      ],
+      "local_refs": [
+        "tb2-offline/rstan-to-pystan:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "83b98640ec92",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/rstan-to-pystan:20260425",
+          "repo_digests": [],
+          "size": "206MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:dbc5dfcc120fbcf959d3be14d3ae7b0fb71533e8ca4c5c92b40c9c9dd1a3fe27"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_sam_cell_seg",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sam-cell-seg@sha256:9a84f14ac1bb630fc1d8d1eb0276e4c03432f4bb6735abd9789a369bafbbbab8"
+      ],
+      "local_refs": [
+        "tb2-offline/sam-cell-seg:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "dbc5dfcc120f",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/sam-cell-seg:20260425",
+          "repo_digests": [],
+          "size": "1.13GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:6fb3909be2d3e41fdba90e7aac02bb6e68e2b31485c426f7b9a21cdd6e53e187"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_sanitize_git_repo",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sanitize-git-repo@sha256:01c595305cfd9a8204ac172226c050a70b2146754ea4ceaf72b21891b998d162"
+      ],
+      "local_refs": [
+        "tb2-offline/sanitize-git-repo:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "6fb3909be2d3",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/sanitize-git-repo:20260425",
+          "repo_digests": [],
+          "size": "466MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_schemelike_metacircular_eval",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval@sha256:bb7876fab3240356105f47555f4486229936a4ec70e7df21f40a6b55ad6ad045"
+      ],
+      "local_refs": [
+        "tb2-offline/schemelike-metacircular-eval:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "5b6101065623",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+          "repo_digests": [],
+          "size": "180MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:b7c23a59ae22a6ba1f724cdd69b5572d850ba3220f662bed4674bd7a23fafec8"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_sparql_university",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sparql-university@sha256:7179cb4ba6cec9cf48e7204fd07cdbd4b9393d7335c4e69c5c15e91c6d452e14"
+      ],
+      "local_refs": [
+        "tb2-offline/sparql-university:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "b7c23a59ae22",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/sparql-university:20260425",
+          "repo_digests": [],
+          "size": "303MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_sqlite_db_truncate",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-db-truncate@sha256:557afac745d304a2148376470df50b2f8ae1c9543895fcf3ec45240b80beaef5"
+      ],
+      "local_refs": [
+        "tb2-offline/sqlite-db-truncate:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "62dc8a21604c",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/sqlite-db-truncate:20260425",
+          "repo_digests": [],
+          "size": "229MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3a0432d8b6977202c755a01b0d3050ef8908f4d6a0c4337c8a13e2925b76d9fa"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_sqlite_with_gcov",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-with-gcov@sha256:efe2293e732832ffa3d19d82ee8a03beb2f9d809b0248f73ea93491fd4d87f47"
+      ],
+      "local_refs": [
+        "tb2-offline/sqlite-with-gcov:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3a0432d8b697",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/sqlite-with-gcov:20260425",
+          "repo_digests": [],
+          "size": "311MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_torch_pipeline_parallelism",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/torch-pipeline-parallelism:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "a014da66007d",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/torch-pipeline-parallelism:20260425",
+          "repo_digests": [],
+          "size": "11.3GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:7f0d9bce1454a49b3890a9af55bab21405a4586cb7fe56d941447be303bdbf97"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_torch_tensor_parallelism",
+      "image_refs": [],
+      "local_refs": [
+        "tb2-offline/torch-tensor-parallelism:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "7f0d9bce1454",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/torch-tensor-parallelism:20260425",
+          "repo_digests": [],
+          "size": "11GB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:535d3a38744d0b5cf72b033b520132751569231316e134ac6a99cc62e666d13f"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_train_fasttext",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-train-fasttext@sha256:0611d34b94140683d27a859e29e5567080d24d91646137531dae02e14cc4fbd9"
+      ],
+      "local_refs": [
+        "tb2-offline/train-fasttext:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "535d3a38744d",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/train-fasttext:20260425",
+          "repo_digests": [],
+          "size": "874MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:77711f5e2763702941189d7959b99ab7edb1d1a0c9c095fd33c669f6b4fca41e"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_tune_mjcf",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-tune-mjcf@sha256:42b5da887fff95421fd422544cc03ed4847919b58d0eb97b03c84a6ce8cae9a7"
+      ],
+      "local_refs": [
+        "tb2-offline/tune-mjcf:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "77711f5e2763",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/tune-mjcf:20260425",
+          "repo_digests": [],
+          "size": "529MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:470f922fb58fcc7f66324e9912e31717e0fd07c0468a3ca23f7e2950f27f0fef"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_video_processing",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-video-processing@sha256:dd6c7305b82e6cd9f99a2c862401b5648cd650abd414769bd51251fbf2c589e3"
+      ],
+      "local_refs": [
+        "tb2-offline/video-processing:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "470f922fb58f",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/video-processing:20260425",
+          "repo_digests": [],
+          "size": "793MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:ed187ec826168b02180860a958bca08ea3cae5b871bc3b12d0e026cff218cd74"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_vulnerable_secret",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-vulnerable-secret@sha256:b57851ef57bb7d00d05f38ac73ccda754851d5cac5fafa3a728b65afddd31ee3"
+      ],
+      "local_refs": [
+        "tb2-offline/vulnerable-secret:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "ed187ec82616",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/vulnerable-secret:20260425",
+          "repo_digests": [],
+          "size": "478MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:3cb6bfd6a3a6db04aa52a00b5eeb2eab71ba1fc4a83c69802126411324ecd892"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_winning_avg_corewars",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-winning-avg-corewars@sha256:ea41cba6fb9a2f72e4647bb578bc08241979ac241a07b24b2342d0c2c7a8befd"
+      ],
+      "local_refs": [
+        "tb2-offline/winning-avg-corewars:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "3cb6bfd6a3a6",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/winning-avg-corewars:20260425",
+          "repo_digests": [],
+          "size": "736MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:868491de68ebb7000a47f5ef8fb65ab8f34967d07542310311a7c38a8d6a795d"
+      ],
+      "expected_repo_digests": [],
+      "id": "tb2_write_compressor",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-write-compressor@sha256:1ab853caf47d81567d48e9f256be114358f6fcfd156d402246ae91fe16c0cd86"
+      ],
+      "local_refs": [
+        "tb2-offline/write-compressor:20260425"
+      ],
+      "match_status": "matched",
+      "matches": [
+        {
+          "full_image_id": "",
+          "host": "swe_dev",
+          "image_id": "868491de68eb",
+          "inventory": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+          "match_reason": "ref",
+          "ref": "tb2-offline/write-compressor:20260425",
+          "repo_digests": [],
+          "size": "996MB"
+        }
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    }
+  ],
+  "inventories": [
+    "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json",
+    "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev2.docker_cache_inventory.json"
+  ],
+  "manifest": "manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
+  "schema_version": "agentic_bench.image_inventory_match.v1"
+}

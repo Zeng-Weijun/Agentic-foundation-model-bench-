@@ -234,3 +234,23 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Commit `19f00f9` records Round22 bug-hunt ledgers for runtime-images and runner-results. Both lanes found no new ISSUE-READY root cause; both dedup batch11 against #6/#8/#12/#13 and keep `mteb-retrieve` plus `multi-source-data-merger` quarantined until worker rootless layer ingest is proven healthy.
 - Runtime evidence now separates cached-image run health from new-layer ingest failure: worker can run an existing TB2 image with `--network none`, while batch11 fresh fallback-load and P0-pull both fail during layer registration with `unlinkat ... input/output error`.
 - Issue comments posted after Round22: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4804709166`, #8 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4804709315`, #12 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/12#issuecomment-4804709470`, #13 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13#issuecomment-4804709619`.
+
+
+## 2026-06-26 remote cache inventory and TB2 missing-transport staging plan
+
+- Added controller-side cache discovery support to `scripts/agentic_bench_images.py`: `inventory-remote-cache`, `match-inventory`, and `plan-stage-missing-transport`.
+- Added `scripts/stage_cache_images_from_plan.sh`, a dry-run-first staging helper. It reads the generated TSV and only performs `docker image inspect`/`docker save` when `--execute` is passed; `--push` is separate and was not used in this round.
+- Direct `dev -> swe_dev/swe_dev2` SSH by alias failed (`Could not resolve hostname`); direct `dev -> full endpoint` failed with publickey/maintenance messages. The successful source inventory route was local Mac control plane -> full `swe_dev`/`swe_dev2` endpoints, writing shared artifacts.
+- Remote cache inventory artifacts:
+  - `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json`: `images=591` for prefixes `tb2-offline/`, `swebench/`, `ghcr.io/jessezzzzz/`, and `sweb.eval`.
+  - `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev2.docker_cache_inventory.json`: `images=1`, currently only `tb2-offline/gcode-to-text:20260425` for those prefixes.
+- Manifest/cache match artifacts:
+  - `tb2_swe_dev_cache_match.json`: TB2 generated cache manifest matched `89/89` required rows against source inventories; `required_missing=0`.
+  - `swebench_verified_cache_match.json`: current narrow SWE-bench Verified image manifest matched `1/2` optional rows against source inventories.
+- TB2 missing offline transport staging plan:
+  - Plan TSV: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv`.
+  - Plan JSON: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.json`.
+  - The plan has 8 rows and all are matched from `swe_dev`: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `torch-pipeline-parallelism`, and `torch-tensor-parallelism`.
+- Dry-run staging on `swe_dev` parsed all 8 rows and wrote `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_dryrun_result.tsv`; no Docker operations were run in dry-run.
+- Real staging smoke executed only `install-windows-3.11` on `swe_dev`, with `--execute` and no `--push`. It saved `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar`, sha256 `eabcacaa81ada0061dc6b08c825a74287cb83da38c0a4cdf91a802edb5510c54`, permission `0644`, and result TSV `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_result.tsv`.
+- No active TB2 manifest row was promoted from this new staging evidence. Worker-j9jjd new-layer ingest remains under #8 quarantine; `mteb-retrieve` and `multi-source-data-merger` stay unpromoted until a clean worker ingest proof exists.

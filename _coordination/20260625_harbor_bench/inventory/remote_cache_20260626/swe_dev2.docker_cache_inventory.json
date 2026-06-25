@@ -1,0 +1,26 @@
+{
+  "counts": {
+    "images": 1,
+    "prefixes": 4
+  },
+  "docker_host": "unix:///var/run/docker.sock",
+  "host": "swe_dev2",
+  "images": [
+    {
+      "digest": "",
+      "image_id": "8fba1dce95b8",
+      "ref": "tb2-offline/gcode-to-text:20260425",
+      "repository": "tb2-offline/gcode-to-text",
+      "size": "182MB",
+      "tag": "20260425"
+    }
+  ],
+  "inspect_identities": false,
+  "prefixes": [
+    "tb2-offline/",
+    "swebench/",
+    "ghcr.io/jessezzzzz/",
+    "sweb.eval"
+  ],
+  "schema_version": "agentic_bench.docker_cache_inventory.v1"
+}

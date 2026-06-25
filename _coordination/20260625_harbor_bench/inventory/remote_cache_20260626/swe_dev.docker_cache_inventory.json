@@ -1,0 +1,4746 @@
+{
+  "counts": {
+    "images": 591,
+    "prefixes": 4
+  },
+  "docker_host": "unix:///var/run/docker.sock",
+  "host": "swe_dev",
+  "images": [
+    {
+      "digest": "",
+      "image_id": "e01d5505ea76",
+      "ref": "ghcr.io/jessezzzzz/repoarena-new:latest",
+      "repository": "ghcr.io/jessezzzzz/repoarena-new",
+      "size": "1.2GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0bb37f1c6a95",
+      "ref": "sweb.eval.x86_64.sphinx-doc__sphinx-8595:latest",
+      "repository": "sweb.eval.x86_64.sphinx-doc__sphinx-8595",
+      "size": "2.74GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cce639c4d4c4",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-12907",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bdbc30d363cf",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13033:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13033",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "236d427ece8e",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13236:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13236",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1047cc1d43b1",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13398:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13398",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "67e4955c1ea7",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13453:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13453",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "38c16ead9bc5",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13579:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13579",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fc877eb6e9ca",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13977:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-13977",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3ac2306a3e17",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14096:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14096",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "770f48b2842d",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14182:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14182",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f896444b1e49",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14309:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14309",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3925b434247f",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14365:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14365",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1a8a749d6b8e",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14369:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14369",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f1f44383c21a",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14508:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14508",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "290a743498af",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14539:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14539",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3f3a0c5f4cd4",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14598:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14598",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "99afb65d48b8",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14995:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-14995",
+      "size": "2.7GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9d9be4d74395",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7166:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7166",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f8933b9ad042",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7336:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7336",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "92c21f521afe",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7606:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7606",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "03575dfa5837",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7671:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-7671",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "100d7f4875ff",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-8707:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-8707",
+      "size": "2.82GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ed1eb9f1ff0a",
+      "ref": "swebench/sweb.eval.x86_64.astropy_1776_astropy-8872:latest",
+      "repository": "swebench/sweb.eval.x86_64.astropy_1776_astropy-8872",
+      "size": "2.82GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cf945d25ceb6",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10097:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10097",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "25ae9c7234d5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10554:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10554",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a03b190e63f5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10880:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10880",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "066b86647012",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10914:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10914",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b4cf17c28105",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10973:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10973",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "598774a93116",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-10999:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-10999",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5b4bd5527d5e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11066:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11066",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7e7898eb284c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11087:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11087",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1e65b38c2c80",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11095:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11095",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "51959a3d2132",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11099:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11099",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bf5c0e197858",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11119:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11119",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ab2e7fd8a096",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11133:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11133",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ec6035fbe634",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11138:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11138",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "022085608d4f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11141:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11141",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f95b2a5863e4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11149:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11149",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "72dce447225f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11163:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11163",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1d30f7cdd9eb",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11179:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11179",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5233d9bbf637",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11206:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11206",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ccc916176aa9",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11211:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11211",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a89c7c98cf76",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11239:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11239",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "389dbf8aa68f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11265:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11265",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e3bb90ac30b6",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11276:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11276",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "aae468010f24",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11292:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11292",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "247e916e4466",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11299:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11299",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "45d510b7aa04",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11333:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11333",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b402f2d215a4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11400:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11400",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b42cf3c325cd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11433:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11433",
+      "size": "2.67GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f1976b7e9652",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11451:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11451",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bd2b3cc01160",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11477:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11477",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7b16a5dae05b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11490:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11490",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d586d9adf21e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11532:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11532",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "203861332d09",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11551:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11551",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "08b69cb685e6",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11555:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11555",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ae07f5b64a34",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11603:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11603",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "59fd745e4126",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11728:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11728",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d00a00d14f92",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11734:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11734",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7dd791f0af58",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11740:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11740",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7ac54b5359a5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11749:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11749",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "790e3abd5bc3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11790:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11790",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "75f4ee823392",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11815:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11815",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9e388fb297a3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11820:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11820",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cfed35934fba",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11848:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11848",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b0537f6048a7",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11880:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11880",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "292e075abd3c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11885:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11885",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a52a8af94396",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11951:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11951",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3da4c4c25954",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11964:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11964",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5e80a14f8eb0",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-11999:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-11999",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9a3bfda0639d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12039:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12039",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5de16138a4ba",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12050:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12050",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "73f653dd2417",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12125:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12125",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5832e3dbfe4c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12143:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12143",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "67bcbb3b5df2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12155:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12155",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8fc2ca05e483",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12193:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12193",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "df4ce296fb54",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12209:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12209",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0b55d69dad44",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12262:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12262",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f1b2f2a7be19",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12273:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12273",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "76e6e71c03be",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12276:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12276",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2f52bf1b2aaf",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12304:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12304",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a5698c4bbe0f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12308:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12308",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9dd18d0f3fde",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12325:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12325",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a075fd5b7450",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12406:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12406",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "19772f2a4b16",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12419:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12419",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "01ef127e99ae",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12663:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12663",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bbfaff8e630a",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12708:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12708",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "acffeec9e23f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12713:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12713",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cddcfdf19871",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12741:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12741",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9191431ff6a4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12754:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12754",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "67a3151db3f0",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12774:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12774",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "097b906f0583",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12858:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12858",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d4a8a7c09ec3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-12965:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-12965",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d1a429343db3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13012:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13012",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8d49cad0f740",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13023:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13023",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "744267f65647",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13028:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13028",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "97c4b5bb39b0",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13033:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13033",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "435290754152",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13089:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13089",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b5d4b3a928c7",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13109:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13109",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9bba1724bffd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13112:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13112",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1c3fd63f25f1",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13121:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13121",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d62c92013102",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13128:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13128",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "31756f145c85",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13158:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13158",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "55f43be82aaa",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13195:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13195",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "93dcc19863e1",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13212:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13212",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "efc7f8ce64f4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13279:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13279",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "29c57279e232",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13297:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13297",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "55a3fee12752",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13315:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13315",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6fa935eef026",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13343:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13343",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "34347637c846",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13344:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13344",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0ceef9d2a6df",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13346:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13346",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3f8c61792f38",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13363:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13363",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f72b178c74ca",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13401:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13401",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2912bfa52968",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13406:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13406",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ff78579f9ede",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13410:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13410",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "29de263e3e34",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13417:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13417",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "73d7fd42fa05",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13449:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13449",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "383d635f9c45",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13512:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13512",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "67966e95bce4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13513:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13513",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cff1ed34ae3b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13516:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13516",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7dddcf0b5d70",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13551:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13551",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "261177d519da",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13568:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13568",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ee87294acde5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13569:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13569",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0fe4e27f2d79",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13590:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13590",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3f5b545cb25d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13658:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13658",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7cdde2a82823",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13670:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13670",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "04563f3af393",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13741:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13741",
+      "size": "2.68GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3d7104c49c6d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13786:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13786",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "967c82a5029d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13794:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13794",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "387c7bc09ea5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13807:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13807",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "57647d6fcbb8",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13809:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13809",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "23edb0106303",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13810:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13810",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "564c5c6bfc67",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13820:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13820",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "793c00e1c4ab",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13821:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13821",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ea8fed59bdb3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13837:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13837",
+      "size": "2.69GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c48296c167d7",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13925:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13925",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "36631347839c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13933:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13933",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fffea3ee5fd9",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-13964:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-13964",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bd34495055dc",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14007:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14007",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "532fddae889e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14011:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14011",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7138b0b05648",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14017:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14017",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2ac1ebf5c7b4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14034:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14034",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6c138c23f527",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14053:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14053",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a529b4ddd3c2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14089:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14089",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8fe5ea380b1a",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14122:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14122",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "db4b43c54d4d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14140:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14140",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "50b6a16e6f52",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14155:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14155",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bd0c9dc8ce59",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14170:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14170",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "47cd1b39ff26",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14238:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14238",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1bb3bd26fac1",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14311:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14311",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c95b952fa79c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14315:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14315",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "dd73a4bbea27",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14349:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14349",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "20eab5a1bddb",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14351:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14351",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "eb81d2bc5733",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14373:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14373",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "56a001344e96",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14376:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14376",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8f609a4cc51d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14404:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14404",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c3e14db136fa",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14434:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14434",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d91c32306146",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14493:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14493",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "87ba36f8e184",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14500:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14500",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d9637a54fb9c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14534:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14534",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cdaf044be481",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14539:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14539",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a7c0638485d5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14559:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14559",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a5b2079d6904",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14580:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14580",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "820540d75c3d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14608:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14608",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2276b0ef946b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14631:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14631",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "90ddc9014d6d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14672:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14672",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fd5e5c1d2ee8",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14725:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14725",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d71ad2c400e0",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14752:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14752",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0a54a89364e5",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14765:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14765",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ca84a7da1fe2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14771:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14771",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "64f480d04dce",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14787:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14787",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a28e71ca90bd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14792:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14792",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "16d4bf2e00e2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14855:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14855",
+      "size": "2.78GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "dc6613bb80b7",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14915:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14915",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "45b9a03ffecd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-14999:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-14999",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "08018217260c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15022:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15022",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f7100a261373",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15037:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15037",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "73c3f56b8e4e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15098:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15098",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "183e0d1d3fcd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15103:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15103",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "58c6cddebc0d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15104:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15104",
+      "size": "2.81GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cb315c5cdf0c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15127:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15127",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9a1131d9a198",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15128:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15128",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "79ec8ded2f43",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15161:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15161",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d3a8c69a9006",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15252:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15252",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "dc64646cd987",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15268:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15268",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5cf8087cb6e4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15277:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15277",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8a6606a70de2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15278:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15278",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a09cd275df29",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15280:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15280",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4e2197eab2f9",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15315:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15315",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b339e9252cf4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15368:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15368",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "81ae17a79e8f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15375:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15375",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ea5bf22cf6ff",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15380:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15380",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0d6f0eb85931",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15382:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15382",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "90093a381f0c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15467:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15467",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3a5c388f7128",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15499:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15499",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ece8c5249177",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15503:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15503",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4bbdf8abd84e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15525:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15525",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "77c282b3675a",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15554:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15554",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d9028d9d3228",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15561:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15561",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bdc143c1361c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15563:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15563",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "100af6278d8c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15569:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15569",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "89e62477bc7d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15572:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15572",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "61eaa401754e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15629:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15629",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2265619b9569",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15695:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15695",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1ac79e2f294a",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15731:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15731",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "679dda98085b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15732:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15732",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9bfd1eb2c081",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15741:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15741",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d008ec863252",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15814:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15814",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f8534b688da3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15851:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15851",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ca988466962b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15863:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15863",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fa4ea1034149",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15916:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15916",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d790dc77232e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15930:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15930",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a426536f6e4b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15957:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15957",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4c93bde1a898",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15973:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15973",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7372fe0fbaec",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-15987:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-15987",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b2e11702d950",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16032:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16032",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "536ef4d46f8f",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16082:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16082",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7a2350698f0b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16100:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16100",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "25e4775e9c23",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16116:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16116",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e6d521b2c282",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16136:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16136",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "45c5e0c2ec3a",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16139:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16139",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "520c27bfee04",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16145:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16145",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4dfa67e33e20",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16255:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16255",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7adfd8b743ee",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16256:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16256",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fb776f863fee",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16263:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16263",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "edd488c0d473",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16315:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16315",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4632a3bddad3",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16333:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16333",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5cf5e76d8551",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16429:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16429",
+      "size": "3.34GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c7c58d0a089c",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16454:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16454",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d1c47757d143",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16485:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16485",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4ac53893b4a7",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16493:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16493",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b40f2de28973",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16502:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16502",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5ad10a76cd69",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16527:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16527",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e730e0b6d168",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16560:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16560",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3f6eae4b543d",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16569:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16569",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ea99eb55da32",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16595:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16595",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e2b461d80c69",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16612:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16612",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "407e76d9ff4e",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16631:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16631",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a6489bdc34a2",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16642:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16642",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c46184e2a035",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16661:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16661",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "352f8e1d6c93",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16662:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16662",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8bbc1a53eb3b",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16667:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16667",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d0c59fd919fa",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16801:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16801",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9024ba4e7794",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16819:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16819",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "10c61f43effd",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16877:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16877",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5c6f6aa493fc",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16899:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16899",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "404b9daf4a22",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16901:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16901",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "668a912e92e9",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16938:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16938",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a94a8d611565",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-16950:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-16950",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4ce6c1382ecc",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-17029:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-17029",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9e4fd474f3f6",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-17084:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-17084",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a49df80b4b51",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-17087:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-17087",
+      "size": "3.4GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ccc58878bfc4",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-7530:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-7530",
+      "size": "3.24GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e4d6e8be3f50",
+      "ref": "swebench/sweb.eval.x86_64.django_1776_django-9296:latest",
+      "repository": "swebench/sweb.eval.x86_64.django_1776_django-9296",
+      "size": "3.17GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ef5c662a6efb",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-13989:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-13989",
+      "size": "4.84GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "021d38bba9bc",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-14623:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-14623",
+      "size": "5.53GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e5e882c7eedc",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20488:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20488",
+      "size": "6.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c591381b110c",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20676:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20676",
+      "size": "6.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8596b346949f",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20826:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20826",
+      "size": "6.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "12a7c3f89e81",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20859:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-20859",
+      "size": "6.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cae7e53dbd05",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-21568:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-21568",
+      "size": "6.07GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "34c746bbbe9b",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22719:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22719",
+      "size": "7.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "000610388f86",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22865:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22865",
+      "size": "7.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "50340e108055",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22871:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-22871",
+      "size": "7.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "92250fb6ef0a",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23299:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23299",
+      "size": "7.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cd640c6ea6f8",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23314",
+      "size": "7.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e3e0973d8733",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23412:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23412",
+      "size": "7.96GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "781a7a7de745",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23476:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-23476",
+      "size": "7.96GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3d043b410b19",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24026:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24026",
+      "size": "8.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "74216e167695",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24149:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24149",
+      "size": "8.07GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2f208dfd1a76",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24177",
+      "size": "8.07GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "af8332fce8d7",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24570:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24570",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c9a26f4b3839",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24627:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24627",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "82f63203ffe0",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24637:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24637",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c775e0db0b03",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24870:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24870",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b8b1121b1a72",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24970:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-24970",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5116cf6f42b6",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25122:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25122",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8671c4b2f1fe",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25287:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25287",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5cd840e72b1e",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25311:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25311",
+      "size": "8.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "12d5a9e2d386",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25332:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25332",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "186d73657576",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25479:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25479",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f5b9d1d797b4",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25775:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25775",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e83ecb670f80",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25960:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-25960",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ac313fdccc12",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26113:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26113",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "261c401955d8",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26208",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0152be57af4d",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26291",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c6757c53acce",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26342:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26342",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b9073588b234",
+      "ref": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26466:latest",
+      "repository": "swebench/sweb.eval.x86_64.matplotlib_1776_matplotlib-26466",
+      "size": "8.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "20413f7c1f78",
+      "ref": "swebench/sweb.eval.x86_64.mwaskom_1776_seaborn-3069:latest",
+      "repository": "swebench/sweb.eval.x86_64.mwaskom_1776_seaborn-3069",
+      "size": "3.55GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "486e05ce177a",
+      "ref": "swebench/sweb.eval.x86_64.mwaskom_1776_seaborn-3187:latest",
+      "repository": "swebench/sweb.eval.x86_64.mwaskom_1776_seaborn-3187",
+      "size": "3.56GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "62ddaa50ecc6",
+      "ref": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014:latest",
+      "repository": "swebench/sweb.eval.x86_64.pallets_1776_flask-5014",
+      "size": "3.26GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "aff74fbf92e0",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-1142:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-1142",
+      "size": "3GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6918525e32ac",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-1724:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-1724",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6bfe2f4febf0",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-1766:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-1766",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "26e3f9a4412d",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-1921:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-1921",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6f52ceb8cb3c",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-2317:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-2317",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "665d7442a4aa",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-2931:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-2931",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3a0902d65137",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-5414:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-5414",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c76fc4e3de92",
+      "ref": "swebench/sweb.eval.x86_64.psf_1776_requests-6028:latest",
+      "repository": "swebench/sweb.eval.x86_64.psf_1776_requests-6028",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b94da2e4f156",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-2905:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-2905",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9ac428096eac",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3095:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3095",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c952cde89612",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3151:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3151",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bda4b9929447",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3305:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3305",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "382cbe3ab3d9",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3677:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3677",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "14e0b85e65ae",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3993:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-3993",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c4db1242d724",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4075:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4075",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9d01a1086751",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4094:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4094",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cf3d74500375",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4356:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4356",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1e212a543816",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4629:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4629",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "422be7862dfa",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4687:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4687",
+      "size": "5.39GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d2f9a9142377",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4695:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4695",
+      "size": "5.38GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "26ac046f25ca",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4966:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-4966",
+      "size": "5.39GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bdf0f19a3f5f",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6461:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6461",
+      "size": "5.03GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bf79b2010133",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6599:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6599",
+      "size": "5.31GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "42e435339a4f",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6721:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6721",
+      "size": "5.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c8b49bd80684",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6744:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6744",
+      "size": "5.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e9c3428a0a30",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6938:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6938",
+      "size": "5.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ecda84a98e36",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6992:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-6992",
+      "size": "5.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5e0239b6d05a",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7229:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7229",
+      "size": "4.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f78cebbd4ba9",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7233:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7233",
+      "size": "4.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ca21eedc524b",
+      "ref": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7393:latest",
+      "repository": "swebench/sweb.eval.x86_64.pydata_1776_xarray-7393",
+      "size": "4.95GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8ed14105395f",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4551",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9beb767387ce",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4604:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4604",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "74a16503b145",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4661",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0871cf3826ba",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-4970",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9423ba749cb2",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6386",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f5625576de32",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6528",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2930d205ddd6",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-6903",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e7cbd9fc1ae2",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7080",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cb1fed5a8c9d",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7277:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-7277",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "db46f898b227",
+      "ref": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898:latest",
+      "repository": "swebench/sweb.eval.x86_64.pylint-dev_1776_pylint-8898",
+      "size": "3.05GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cc3f0015d461",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10051",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "df5003d79db3",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10081:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10081",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "68f05e66b75c",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-10356",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "afed139a8913",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5262",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ec59d63e79dd",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5631",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7767e341dd5a",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5787",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6353c5d67b80",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5809",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "db8359409e67",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5840:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-5840",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4cc720f21df9",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6197",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bf8f4488e618",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-6202",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "82c0177d286e",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7205",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "495e87aa751a",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7236",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "97e5f0fd603c",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7324:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7324",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4315d06ebace",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7432",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "11133a750673",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7490",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9b99a689c813",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7521",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6711a75ba66f",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7571",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "866fb26939cc",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-7982",
+      "size": "3.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2b4b328695e7",
+      "ref": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-8399:latest",
+      "repository": "swebench/sweb.eval.x86_64.pytest-dev_1776_pytest-8399",
+      "size": "3.02GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3e7ce78e5d88",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10297:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10297",
+      "size": "3.97GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b51b49fd7501",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10844",
+      "size": "3.97GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "dff30d33c126",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10908:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-10908",
+      "size": "3.97GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "01207d8971d0",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-11310:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-11310",
+      "size": "3.97GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f94a4acf0ad8",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-11578:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-11578",
+      "size": "3.98GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "17a353014c94",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12585:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12585",
+      "size": "3.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e7c5980451b2",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12682:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12682",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "75b79b16509a",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12973:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-12973",
+      "size": "3.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b32001355f2a",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13124:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13124",
+      "size": "3.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c5f9f89eabb7",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13135:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13135",
+      "size": "3.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "deb4b6689173",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13142:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13142",
+      "size": "3.99GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fc77ecc617a2",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13328:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13328",
+      "size": "4.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9a4a9cedd7be",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13439:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13439",
+      "size": "4.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2bc9cef11cf1",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13496:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13496",
+      "size": "4.01GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ab1200548815",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13779:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-13779",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7aed1f4c36ef",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14053",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1928772c9557",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14087:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14087",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2fd31f7c98bd",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14141:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14141",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5a7969c8940d",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14496",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c3787d97959c",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14629:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14629",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "57258228351a",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14710:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14710",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4bb9bac5f070",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14894:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14894",
+      "size": "4.05GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0b841fe20a8f",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14983:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-14983",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "735c748b57a5",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-15100:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-15100",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0134b87326ba",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25102:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25102",
+      "size": "5.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7aa5408f0aa0",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25232:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25232",
+      "size": "5.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5a3aa378b08c",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25747:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25747",
+      "size": "4.96GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4a69531097dc",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25931",
+      "size": "5.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "309c044aa7f3",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25973:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-25973",
+      "size": "5.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a665b5eb5112",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-26194:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-26194",
+      "size": "5.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "184dc737b037",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-26323:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-26323",
+      "size": "5.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5b320d1737d7",
+      "ref": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-9288:latest",
+      "repository": "swebench/sweb.eval.x86_64.scikit-learn_1776_scikit-learn-9288",
+      "size": "4.04GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ef6a604d30c2",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10323:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10323",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b348be39ea0f",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10435:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10435",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "32855efc81ac",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10449:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10449",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c81dcb2c552f",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10466:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10466",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e3b8c38b91d3",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10614:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10614",
+      "size": "3.28GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1ae121b75a18",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10673:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-10673",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "693b3362fd4b",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-11445:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-11445",
+      "size": "3.15GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ae86a5865d35",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-11510:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-11510",
+      "size": "3.28GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3b0a505305f3",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7440:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7440",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9057145640a2",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7454:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7454",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "40efae6ba3d8",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7462:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7462",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "77acfad4c257",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7590:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7590",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5771c828f945",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7748:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7748",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "adbe8a42fd93",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7757:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7757",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bd5a7fe856dc",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7889:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7889",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e8d4796a5a72",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7910:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7910",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3e9bd5444af9",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7985:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-7985",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "79c02a62795b",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8035:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8035",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bb8730f859b5",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8056:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8056",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fbb0526e72d8",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8120:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8120",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b7d673de7d14",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8265:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8265",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0ea4b219f886",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8269:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8269",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a8fa8d959994",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8459:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8459",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4f899acab0e6",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8475:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8475",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "79847bb9a3d8",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8548:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8548",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4ba5adc20429",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8551:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8551",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ecb88a268b40",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8593:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8593",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "71d1b75dd311",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8595:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8595",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "042f66d3562f",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8621:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8621",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "96629c5fefc2",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8638:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8638",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e9bc277e12cc",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8721:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8721",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3ca113e13419",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9229:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9229",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "696a2588b2c8",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9230:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9230",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "111db6828382",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9258:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9258",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1798004e0e20",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9281:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9281",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c736c13098d4",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9320:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9320",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7aefb0628395",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9367:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9367",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "7254e95b374d",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9461:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9461",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f00db8a9852b",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9591:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9591",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5e2a2c6ae5ba",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9602:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9602",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0d09e3211343",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9658:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9658",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6efc0254027d",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9673:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9673",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "25c354244397",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9698:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9698",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6f7e0eb2fff0",
+      "ref": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9711:latest",
+      "repository": "swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-9711",
+      "size": "3.14GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1c5c030709b3",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-11618:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-11618",
+      "size": "3.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c9c01cebae34",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12096:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12096",
+      "size": "3.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "397e35a6ab6e",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12419:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12419",
+      "size": "3.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "38c52419f3c3",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12481:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12481",
+      "size": "3.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "31d1cbc2649e",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12489:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-12489",
+      "size": "3.06GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "281b7f27b4ba",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13031:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13031",
+      "size": "3.07GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d88091a0149c",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13091:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13091",
+      "size": "3.07GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "cfc5c341d26c",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13372:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13372",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5c21970b8cf9",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13480:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13480",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "14cac5857dc9",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13551:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13551",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5073f98d0a9f",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13615:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13615",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6fb00657ede1",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13647:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13647",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "10880d8af764",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13757:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13757",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a0d1e7808871",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13798:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13798",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "c067f666b307",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13852:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13852",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "930f7d5bea93",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13877:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13877",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2a3f6aba39cd",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13878:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13878",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e44b7607f3e5",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13974:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-13974",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fb106342a82b",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14248:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14248",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "57bafe49549e",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14531:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14531",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "bb0a2b6f4f0b",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14711:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14711",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8421a5612fb2",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14976:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-14976",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f02a5a60ceba",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15017:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15017",
+      "size": "3.08GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "efb88332c4a0",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15345:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15345",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5346a292bbaf",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15349:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15349",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "44b068146600",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15599:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15599",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ffe329f32697",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15809:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15809",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4ba3f23b388b",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15875:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15875",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "01ef3192bf2d",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15976:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-15976",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "5a627a609ab7",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16450:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16450",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f0b6159dbfb1",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16597:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16597",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ee3470afc4d8",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16766:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16766",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ea9435e998dc",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16792:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16792",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "abfcd566f881",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16886:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-16886",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a3ad3700dc99",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17139:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17139",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4d17f44ab364",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17318:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17318",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "2fed509388f6",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17630:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17630",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "fe40bddda7da",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17655:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-17655",
+      "size": "3.09GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "68fd09a2b7b9",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18189:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18189",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "54e72a7bbd11",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18199:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18199",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3c9f680e8f02",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18211:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18211",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "194d64a22c2c",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18698:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18698",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "badddf9e3ac6",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18763:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-18763",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "3eeead6d8ca0",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19040:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19040",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9dab67611d61",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19346:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19346",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "b0bbfabf5e34",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19495:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19495",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9c5b16b203f4",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19637:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19637",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "f31aa495b622",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19783:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19783",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ec89c708d1fe",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19954:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-19954",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4de87cd349f2",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20154:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20154",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "a2677324bcf2",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20428:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20428",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "06202c3f30b6",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20438:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20438",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0f436e534616",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20590:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20590",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e5527f8068a9",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20801:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20801",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "26e0c01e8020",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20916:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-20916",
+      "size": "3.1GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "d3835b985d4b",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21379:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21379",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6aea65f2297d",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21596:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21596",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "0e29eded38b5",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21612:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21612",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "36586e043875",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21847:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21847",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e477b5bcd3c7",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21930:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-21930",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "75bd15f04f37",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22080:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22080",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ec34fb0bdf93",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22456:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22456",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e53797740176",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22714:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22714",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "8d77aa95bccc",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22914:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-22914",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ffc7761a5e4f",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23262:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23262",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4833cde4057f",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23413:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23413",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "24babee09439",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23534:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23534",
+      "size": "3.11GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "1b36b9c93f14",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23824:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23824",
+      "size": "3.13GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "e913f33bea99",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23950:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-23950",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "926f5eb380f3",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24066:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24066",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ffdeca34bbda",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24213:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24213",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "4b7afbd6f776",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24443:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24443",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "ebdf51856204",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24539:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24539",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "9012f618157e",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24562:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24562",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "6add3d4909c1",
+      "ref": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24661:latest",
+      "repository": "swebench/sweb.eval.x86_64.sympy_1776_sympy-24661",
+      "size": "3.12GB",
+      "tag": "latest"
+    },
+    {
+      "digest": "",
+      "image_id": "180e46b0bdc3",
+      "ref": "tb2-offline/adaptive-rejection-sampler:20260425",
+      "repository": "tb2-offline/adaptive-rejection-sampler",
+      "size": "778MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "65873f9ba756",
+      "ref": "tb2-offline/bn-fit-modify:20260425",
+      "repository": "tb2-offline/bn-fit-modify",
+      "size": "718MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "5ae42c00d7fa",
+      "ref": "tb2-offline/break-filter-js-from-html:20260425",
+      "repository": "tb2-offline/break-filter-js-from-html",
+      "size": "1.17GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "0868e692b06d",
+      "ref": "tb2-offline/build-cython-ext:20260425",
+      "repository": "tb2-offline/build-cython-ext",
+      "size": "1.1GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "6e478c4c42b6",
+      "ref": "tb2-offline/build-pmars:20260425",
+      "repository": "tb2-offline/build-pmars",
+      "size": "222MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "41a1240312a4",
+      "ref": "tb2-offline/build-pov-ray:20260425",
+      "repository": "tb2-offline/build-pov-ray",
+      "size": "500MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "9a7fa9c8e361",
+      "ref": "tb2-offline/caffe-cifar-10:20260425",
+      "repository": "tb2-offline/caffe-cifar-10",
+      "size": "716MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "dbf83ba8562b",
+      "ref": "tb2-offline/cancel-async-tasks:20260425",
+      "repository": "tb2-offline/cancel-async-tasks",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "b96ca3249673",
+      "ref": "tb2-offline/chess-best-move:20260425",
+      "repository": "tb2-offline/chess-best-move",
+      "size": "769MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "c0a57359d38d",
+      "ref": "tb2-offline/circuit-fibsqrt:20260425",
+      "repository": "tb2-offline/circuit-fibsqrt",
+      "size": "414MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "40a86d91bbfa",
+      "ref": "tb2-offline/cobol-modernization:20260425",
+      "repository": "tb2-offline/cobol-modernization",
+      "size": "530MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "90e09b5316df",
+      "ref": "tb2-offline/code-from-image:20260425",
+      "repository": "tb2-offline/code-from-image",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "413947be9766",
+      "ref": "tb2-offline/compile-compcert:20260425",
+      "repository": "tb2-offline/compile-compcert",
+      "size": "185MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "54a1ca1744e0",
+      "ref": "tb2-offline/configure-git-webserver:20260425",
+      "repository": "tb2-offline/configure-git-webserver",
+      "size": "355MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "c8a4a000adb3",
+      "ref": "tb2-offline/constraints-scheduling:20260425",
+      "repository": "tb2-offline/constraints-scheduling",
+      "size": "203MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "4ad6d53665f5",
+      "ref": "tb2-offline/count-dataset-tokens:20260425",
+      "repository": "tb2-offline/count-dataset-tokens",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3e616650c18c",
+      "ref": "tb2-offline/crack-7z-hash:20260425",
+      "repository": "tb2-offline/crack-7z-hash",
+      "size": "955MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "f9d93a10ddb5",
+      "ref": "tb2-offline/custom-memory-heap-crash:20260425",
+      "repository": "tb2-offline/custom-memory-heap-crash",
+      "size": "4.3GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "aeb04a657348",
+      "ref": "tb2-offline/db-wal-recovery:20260425",
+      "repository": "tb2-offline/db-wal-recovery",
+      "size": "669MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "99091c18bc59",
+      "ref": "tb2-offline/distribution-search:20260425",
+      "repository": "tb2-offline/distribution-search",
+      "size": "451MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "f04e38e5b09a",
+      "ref": "tb2-offline/dna-assembly:20260425",
+      "repository": "tb2-offline/dna-assembly",
+      "size": "185MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a7b3b181c178",
+      "ref": "tb2-offline/dna-insert:20260425",
+      "repository": "tb2-offline/dna-insert",
+      "size": "185MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3ac9e0f8fd52",
+      "ref": "tb2-offline/extract-elf:20260425",
+      "repository": "tb2-offline/extract-elf",
+      "size": "1.17GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "c58e06ca2738",
+      "ref": "tb2-offline/extract-moves-from-video:20260425",
+      "repository": "tb2-offline/extract-moves-from-video",
+      "size": "197MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "9ad91418c3ba",
+      "ref": "tb2-offline/feal-differential-cryptanalysis:20260425",
+      "repository": "tb2-offline/feal-differential-cryptanalysis",
+      "size": "197MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "7ca0cbc5cbe1",
+      "ref": "tb2-offline/feal-linear-cryptanalysis:20260425",
+      "repository": "tb2-offline/feal-linear-cryptanalysis",
+      "size": "432MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "308b4198928b",
+      "ref": "tb2-offline/filter-js-from-html:20260425",
+      "repository": "tb2-offline/filter-js-from-html",
+      "size": "1.07GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "80880bd1203f",
+      "ref": "tb2-offline/financial-document-processor:20260425",
+      "repository": "tb2-offline/financial-document-processor",
+      "size": "554MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a18fd3ccaac3",
+      "ref": "tb2-offline/fix-code-vulnerability:20260425",
+      "repository": "tb2-offline/fix-code-vulnerability",
+      "size": "466MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "e76e9a24f595",
+      "ref": "tb2-offline/fix-git:20260425",
+      "repository": "tb2-offline/fix-git",
+      "size": "339MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "db5ba11f1d6a",
+      "ref": "tb2-offline/fix-ocaml-gc:20260425",
+      "repository": "tb2-offline/fix-ocaml-gc",
+      "size": "1.17GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "8fba1dce95b8",
+      "ref": "tb2-offline/gcode-to-text:20260425",
+      "repository": "tb2-offline/gcode-to-text",
+      "size": "182MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "770691aa8854",
+      "ref": "tb2-offline/git-leak-recovery:20260425",
+      "repository": "tb2-offline/git-leak-recovery",
+      "size": "425MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "02793c0bf239",
+      "ref": "tb2-offline/git-multibranch:20260425",
+      "repository": "tb2-offline/git-multibranch",
+      "size": "798MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "9cf67aa6719c",
+      "ref": "tb2-offline/gpt2-codegolf:20260425",
+      "repository": "tb2-offline/gpt2-codegolf",
+      "size": "1.05GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "391df61f6e50",
+      "ref": "tb2-offline/headless-terminal:20260425",
+      "repository": "tb2-offline/headless-terminal",
+      "size": "185MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "24a5618422c5",
+      "ref": "tb2-offline/hf-model-inference:20260425",
+      "repository": "tb2-offline/hf-model-inference",
+      "size": "8.81GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "2dad54561527",
+      "ref": "tb2-offline/install-windows-3.11:20260425",
+      "repository": "tb2-offline/install-windows-3.11",
+      "size": "1.63GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "9970cee78ff1",
+      "ref": "tb2-offline/kv-store-grpc:20260425",
+      "repository": "tb2-offline/kv-store-grpc",
+      "size": "188MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "2c8bf81ae006",
+      "ref": "tb2-offline/large-scale-text-editing:20260425",
+      "repository": "tb2-offline/large-scale-text-editing",
+      "size": "360MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "fd08236dc67c",
+      "ref": "tb2-offline/largest-eigenval:20260425",
+      "repository": "tb2-offline/largest-eigenval",
+      "size": "269MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "ddd05f6d1dee",
+      "ref": "tb2-offline/llm-inference-batching-scheduler:20260425",
+      "repository": "tb2-offline/llm-inference-batching-scheduler",
+      "size": "180MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "aa0563929ed2",
+      "ref": "tb2-offline/log-summary-date-ranges:20260425",
+      "repository": "tb2-offline/log-summary-date-ranges",
+      "size": "235MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "1a1a48b1b2fc",
+      "ref": "tb2-offline/mailman:20260425",
+      "repository": "tb2-offline/mailman",
+      "size": "452MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a0e0956246d5",
+      "ref": "tb2-offline/make-doom-for-mips:20260425",
+      "repository": "tb2-offline/make-doom-for-mips",
+      "size": "727MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "293045d19d58",
+      "ref": "tb2-offline/make-mips-interpreter:20260425",
+      "repository": "tb2-offline/make-mips-interpreter",
+      "size": "1.54GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "8631dfb34e5e",
+      "ref": "tb2-offline/mcmc-sampling-stan:20260425",
+      "repository": "tb2-offline/mcmc-sampling-stan",
+      "size": "653MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "b7a1bd358d7f",
+      "ref": "tb2-offline/merge-diff-arc-agi-task:20260425",
+      "repository": "tb2-offline/merge-diff-arc-agi-task",
+      "size": "365MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "9414270ce639",
+      "ref": "tb2-offline/model-extraction-relu-logits:20260425",
+      "repository": "tb2-offline/model-extraction-relu-logits",
+      "size": "438MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "0d8e9ada4fec",
+      "ref": "tb2-offline/modernize-scientific-stack:20260425",
+      "repository": "tb2-offline/modernize-scientific-stack",
+      "size": "1.72GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "5add3ac4f608",
+      "ref": "tb2-offline/mteb-leaderboard:20260425",
+      "repository": "tb2-offline/mteb-leaderboard",
+      "size": "2.22GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "153b4c97f265",
+      "ref": "tb2-offline/mteb-retrieve:20260425",
+      "repository": "tb2-offline/mteb-retrieve",
+      "size": "2.12GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a961d2504355",
+      "ref": "tb2-offline/multi-source-data-merger:20260425",
+      "repository": "tb2-offline/multi-source-data-merger",
+      "size": "6.2GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "e673cf94a1a3",
+      "ref": "tb2-offline/nginx-request-logging:20260425",
+      "repository": "tb2-offline/nginx-request-logging",
+      "size": "269MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "81d7d202b470",
+      "ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+      "repository": "tb2-offline/openssl-selfsigned-cert",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a58256eef1e4",
+      "ref": "tb2-offline/overfull-hbox:20260425",
+      "repository": "tb2-offline/overfull-hbox",
+      "size": "531MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "8a4a2ba55bfa",
+      "ref": "tb2-offline/password-recovery:20260425",
+      "repository": "tb2-offline/password-recovery",
+      "size": "396MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "d0aed029cc00",
+      "ref": "tb2-offline/path-tracing-reverse:20260425",
+      "repository": "tb2-offline/path-tracing-reverse",
+      "size": "453MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "49297f604408",
+      "ref": "tb2-offline/path-tracing:20260425",
+      "repository": "tb2-offline/path-tracing",
+      "size": "1.1GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "34f1e78e9e23",
+      "ref": "tb2-offline/polyglot-c-py:20260425",
+      "repository": "tb2-offline/polyglot-c-py",
+      "size": "560MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a4b68e06827a",
+      "ref": "tb2-offline/polyglot-rust-c:20260425",
+      "repository": "tb2-offline/polyglot-rust-c",
+      "size": "995MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "1fca885f366e",
+      "ref": "tb2-offline/portfolio-optimization:20260425",
+      "repository": "tb2-offline/portfolio-optimization",
+      "size": "613MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "c517a0dd99f0",
+      "ref": "tb2-offline/protein-assembly:20260425",
+      "repository": "tb2-offline/protein-assembly",
+      "size": "180MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "c6b448d30a2c",
+      "ref": "tb2-offline/prove-plus-comm:20260425",
+      "repository": "tb2-offline/prove-plus-comm",
+      "size": "1.46GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "59e8830ad18e",
+      "ref": "tb2-offline/pypi-server:20260425",
+      "repository": "tb2-offline/pypi-server",
+      "size": "321MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "cb27d97d9314",
+      "ref": "tb2-offline/pytorch-model-cli:20260425",
+      "repository": "tb2-offline/pytorch-model-cli",
+      "size": "2.6GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3a67ac23a609",
+      "ref": "tb2-offline/pytorch-model-recovery:20260425",
+      "repository": "tb2-offline/pytorch-model-recovery",
+      "size": "19.2GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "53987a31bb5e",
+      "ref": "tb2-offline/qemu-alpine-ssh:20260425",
+      "repository": "tb2-offline/qemu-alpine-ssh",
+      "size": "1.96GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "5814c86fde20",
+      "ref": "tb2-offline/qemu-startup:20260425",
+      "repository": "tb2-offline/qemu-startup",
+      "size": "1.96GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "b7888e243c32",
+      "ref": "tb2-offline/query-optimize:20260425",
+      "repository": "tb2-offline/query-optimize",
+      "size": "454MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3ed67c59f865",
+      "ref": "tb2-offline/raman-fitting:20260425",
+      "repository": "tb2-offline/raman-fitting",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "f30f70838516",
+      "ref": "tb2-offline/regex-chess:20260425",
+      "repository": "tb2-offline/regex-chess",
+      "size": "197MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "5d9eae30a8a3",
+      "ref": "tb2-offline/regex-log:20260425",
+      "repository": "tb2-offline/regex-log",
+      "size": "298MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3151b2371e33",
+      "ref": "tb2-offline/reshard-c4-data:20260425",
+      "repository": "tb2-offline/reshard-c4-data",
+      "size": "2.52GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "83b98640ec92",
+      "ref": "tb2-offline/rstan-to-pystan:20260425",
+      "repository": "tb2-offline/rstan-to-pystan",
+      "size": "206MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "dbc5dfcc120f",
+      "ref": "tb2-offline/sam-cell-seg:20260425",
+      "repository": "tb2-offline/sam-cell-seg",
+      "size": "1.13GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "6fb3909be2d3",
+      "ref": "tb2-offline/sanitize-git-repo:20260425",
+      "repository": "tb2-offline/sanitize-git-repo",
+      "size": "466MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "5b6101065623",
+      "ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+      "repository": "tb2-offline/schemelike-metacircular-eval",
+      "size": "180MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "b7c23a59ae22",
+      "ref": "tb2-offline/sparql-university:20260425",
+      "repository": "tb2-offline/sparql-university",
+      "size": "303MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "62dc8a21604c",
+      "ref": "tb2-offline/sqlite-db-truncate:20260425",
+      "repository": "tb2-offline/sqlite-db-truncate",
+      "size": "229MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3a0432d8b697",
+      "ref": "tb2-offline/sqlite-with-gcov:20260425",
+      "repository": "tb2-offline/sqlite-with-gcov",
+      "size": "311MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "a014da66007d",
+      "ref": "tb2-offline/torch-pipeline-parallelism:20260425",
+      "repository": "tb2-offline/torch-pipeline-parallelism",
+      "size": "11.3GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "7f0d9bce1454",
+      "ref": "tb2-offline/torch-tensor-parallelism:20260425",
+      "repository": "tb2-offline/torch-tensor-parallelism",
+      "size": "11GB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "535d3a38744d",
+      "ref": "tb2-offline/train-fasttext:20260425",
+      "repository": "tb2-offline/train-fasttext",
+      "size": "874MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "77711f5e2763",
+      "ref": "tb2-offline/tune-mjcf:20260425",
+      "repository": "tb2-offline/tune-mjcf",
+      "size": "529MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "470f922fb58f",
+      "ref": "tb2-offline/video-processing:20260425",
+      "repository": "tb2-offline/video-processing",
+      "size": "793MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "ed187ec82616",
+      "ref": "tb2-offline/vulnerable-secret:20260425",
+      "repository": "tb2-offline/vulnerable-secret",
+      "size": "478MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "3cb6bfd6a3a6",
+      "ref": "tb2-offline/winning-avg-corewars:20260425",
+      "repository": "tb2-offline/winning-avg-corewars",
+      "size": "736MB",
+      "tag": "20260425"
+    },
+    {
+      "digest": "",
+      "image_id": "868491de68eb",
+      "ref": "tb2-offline/write-compressor:20260425",
+      "repository": "tb2-offline/write-compressor",
+      "size": "996MB",
+      "tag": "20260425"
+    }
+  ],
+  "inspect_identities": false,
+  "prefixes": [
+    "tb2-offline/",
+    "swebench/",
+    "ghcr.io/jessezzzzz/",
+    "sweb.eval"
+  ],
+  "schema_version": "agentic_bench.docker_cache_inventory.v1"
+}

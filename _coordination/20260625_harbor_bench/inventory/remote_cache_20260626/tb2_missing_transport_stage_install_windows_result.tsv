@@ -1,0 +1,2 @@
+id	slug	local_ref	source_image_id	fallback_tar	fallback_tar_sha256	p0_tag	p0_digest_ref	status
+tb2_install_windows_3_11	install-windows-3.11	tb2-offline/install-windows-3.11:20260425	sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b	/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar	eabcacaa81ada0061dc6b08c825a74287cb83da38c0a4cdf91a802edb5510c54	100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11:20260425		saved

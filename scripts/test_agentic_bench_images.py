@@ -1,6 +1,9 @@
+import contextlib
 import hashlib
+import io
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -288,6 +291,284 @@ class AgenticBenchImagesTest(unittest.TestCase):
             ],
         )
 
+
+    def test_remote_inventory_cache_runs_host_scoped_inventory_commands(self):
+        module = load_module()
+        calls = []
+
+        def fake_runner(argv, env):
+            calls.append((argv, env))
+            self.assertEqual(argv[:2], ["ssh", "swe_dev"])
+            self.assertIn("agentic_bench_images.py inventory-cache", argv[-1])
+            self.assertIn("--prefix tb2-offline/", argv[-1])
+            self.assertIn("--prefix swebench/", argv[-1])
+            self.assertIn("--docker-host unix:///var/run/docker.sock", argv[-1])
+            self.assertIn("--output /shared/inventory/swe_dev.docker_cache_inventory.json", argv[-1])
+            self.assertIn("--inspect-identities", argv[-1])
+            return module.CommandResult(0, "inventory ok\n", "")
+
+        summary = module.remote_cache_inventory(
+            hosts=["swe_dev"],
+            prefixes=["tb2-offline/", "swebench/"],
+            project_root="/shared/repo",
+            output_dir="/shared/inventory",
+            docker_host="unix:///var/run/docker.sock",
+            inspect_identities=True,
+            runner=fake_runner,
+        )
+
+        self.assertEqual(summary["schema_version"], "agentic_bench.remote_cache_inventory.v1")
+        self.assertEqual(summary["counts"], {"hosts": 1, "ok": 1, "failed": 0})
+        self.assertEqual(summary["hosts"][0]["host"], "swe_dev")
+        self.assertEqual(summary["hosts"][0]["output"], "/shared/inventory/swe_dev.docker_cache_inventory.json")
+        self.assertEqual(len(calls), 1)
+
+
+    def test_remote_inventory_cache_accepts_labelled_ssh_targets(self):
+        module = load_module()
+        calls = []
+
+        def fake_runner(argv, env):
+            calls.append(argv)
+            self.assertEqual(argv[1], "zengweijun+zwj.group@endpoint")
+            self.assertIn("--output /shared/inventory/swe_dev.docker_cache_inventory.json", argv[-1])
+            self.assertIn("--host-label swe_dev", argv[-1])
+            return module.CommandResult(0, "", "")
+
+        summary = module.remote_cache_inventory(
+            hosts=["swe_dev=zengweijun+zwj.group@endpoint"],
+            prefixes=[],
+            project_root="/shared/repo",
+            output_dir="/shared/inventory",
+            runner=fake_runner,
+        )
+
+        self.assertEqual(summary["hosts"][0]["host"], "swe_dev")
+        self.assertEqual(summary["hosts"][0]["ssh_target"], "zengweijun+zwj.group@endpoint")
+        self.assertEqual(summary["hosts"][0]["output"], "/shared/inventory/swe_dev.docker_cache_inventory.json")
+
+
+    def test_match_manifest_inventory_finds_remote_cache_candidates(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "tb2.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: terminal_bench_2_1_smoke
+                    images:
+                      - id: mteb_retrieve
+                        required: true
+                        local_ref: tb2-offline/mteb-retrieve:20260425
+                        source_image_id: sha256:expected-full-id
+                      - id: still_missing
+                        required: true
+                        local_ref: tb2-offline/still-missing:20260425
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            inventory = root / "swe_dev.docker_cache_inventory.json"
+            inventory.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "agentic_bench.docker_cache_inventory.v1",
+                        "host": "swe_dev",
+                        "images": [
+                            {
+                                "ref": "tb2-offline/mteb-retrieve:20260425",
+                                "image_id": "short",
+                                "full_image_id": "sha256:expected-full-id",
+                                "repo_digests": [],
+                                "size": "1.2GB",
+                            }
+                        ],
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            summary = module.match_manifest_inventory(
+                manifest,
+                inventories=[inventory],
+                asset_root=root,
+            )
+
+        self.assertEqual(summary["schema_version"], "agentic_bench.image_inventory_match.v1")
+        self.assertEqual(summary["counts"]["images"], 2)
+        self.assertEqual(summary["counts"]["matched"], 1)
+        self.assertEqual(summary["counts"]["required_missing"], 1)
+        self.assertEqual(summary["images"][0]["id"], "mteb_retrieve")
+        self.assertEqual(summary["images"][0]["match_status"], "matched")
+        self.assertEqual(summary["images"][0]["matches"][0]["host"], "swe_dev")
+        self.assertEqual(summary["images"][0]["matches"][0]["match_reason"], "ref")
+        self.assertEqual(summary["images"][1]["match_status"], "missing")
+
+
+    def test_plan_missing_transport_uses_remote_cache_match_for_stage_rows(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "tb2.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: terminal_bench_2_1_smoke
+                    images:
+                      - id: tb2_missing_transport
+                        required: true
+                        local_ref: tb2-offline/missing-transport:20260425
+                        source_image_id: sha256:abc123
+                      - id: tb2_digest_ready
+                        required: true
+                        local_ref: tb2-offline/ready:20260425
+                        image_ref: 100.97.118.137:8555/swe-data-harness/ready@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            inventory = root / "swe_dev.docker_cache_inventory.json"
+            inventory.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "agentic_bench.docker_cache_inventory.v1",
+                        "host": "swe_dev",
+                        "images": [
+                            {
+                                "ref": "tb2-offline/missing-transport:20260425",
+                                "image_id": "abc123",
+                                "size": "2GB",
+                            }
+                        ],
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            summary = module.plan_missing_transport_staging(
+                manifest,
+                inventories=[inventory],
+                tar_dir="/shared/images/tb2",
+                registry_domain="100.97.118.137:8555",
+                repository_prefix="swe-data-harness",
+                p0_name_prefix="terminal-bench-2-1-",
+            )
+
+        self.assertEqual(summary["schema_version"], "agentic_bench.missing_transport_staging_plan.v1")
+        self.assertEqual(summary["counts"], {"missing_transport": 1, "matched": 1, "unmatched": 0})
+        self.assertEqual(summary["rows"][0]["id"], "tb2_missing_transport")
+        self.assertEqual(summary["rows"][0]["slug"], "missing-transport")
+        self.assertEqual(summary["rows"][0]["source_host"], "swe_dev")
+        self.assertEqual(summary["rows"][0]["fallback_tar"], "/shared/images/tb2/missing-transport.tar")
+        self.assertEqual(summary["rows"][0]["p0_tag"], "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-missing-transport:20260425")
+
+
+    def test_cli_dispatches_remote_inventory_command(self):
+        module = load_module()
+        calls = []
+        original = module.remote_cache_inventory
+
+        def fake_remote_cache_inventory(**kwargs):
+            calls.append(kwargs)
+            return {
+                "schema_version": "agentic_bench.remote_cache_inventory.v1",
+                "counts": {"hosts": 1, "ok": 1, "failed": 0},
+                "hosts": [{"host": "swe_dev", "status": "ok", "output": "/out/swe_dev.docker_cache_inventory.json"}],
+            }
+
+        module.remote_cache_inventory = fake_remote_cache_inventory
+        try:
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                rc = module.main([
+                    "inventory-remote-cache",
+                    "--host",
+                    "swe_dev",
+                    "--prefix",
+                    "tb2-offline/",
+                    "--project-root",
+                    "/shared/repo",
+                    "--output-dir",
+                    "/out",
+                    "--json",
+                ])
+        finally:
+            module.remote_cache_inventory = original
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(calls[0]["hosts"], ["swe_dev"])
+        self.assertEqual(calls[0]["prefixes"], ["tb2-offline/"])
+        self.assertIn("agentic_bench.remote_cache_inventory.v1", stdout.getvalue())
+
+
+
+    def test_stage_cache_images_script_executes_with_fake_docker(self):
+        script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_docker = fakebin / "docker"
+            fake_docker.write_text(
+                textwrap.dedent(
+                    """
+                    #!/usr/bin/env bash
+                    set -euo pipefail
+                    printf '%s\n' "$*" >> "$FAKE_DOCKER_LOG"
+                    if [ "$1 $2" = "image inspect" ]; then
+                      printf '[{"Id":"sha256:fake"}]\n'
+                      exit 0
+                    fi
+                    if [ "$1" = "save" ]; then
+                      out=""
+                      while [ "$#" -gt 0 ]; do
+                        if [ "$1" = "-o" ]; then
+                          out="$2"
+                          shift 2
+                          continue
+                        fi
+                        shift
+                      done
+                      printf 'fake docker tar bytes' > "$out"
+                      exit 0
+                    fi
+                    echo "unexpected docker $*" >&2
+                    exit 9
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+            fake_docker.chmod(0o755)
+            plan = root / "plan.tsv"
+            tar_path = root / "images" / "missing.tar"
+            plan.write_text(
+                "id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tp0_tag\tmatch_status\n"
+                f"tb2_missing\tmissing\ttb2-offline/missing:20260425\tsha256:fake\tswe_dev\ttb2-offline/missing:20260425\tfake\t1GB\t{tar_path}\t100.97.118.137:8555/swe-data-harness/missing:20260425\tmatched\n",
+                encoding="utf-8",
+            )
+            out_tsv = root / "result.tsv"
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            env["FAKE_DOCKER_LOG"] = str(root / "docker.log")
+            proc = subprocess.run(
+                ["bash", str(script), "--plan", str(plan), "--execute", "--output-tsv", str(out_tsv)],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertTrue(tar_path.is_file())
+            result_text = out_tsv.read_text(encoding="utf-8")
+            self.assertIn("fallback_tar_sha256", result_text)
+            self.assertIn(hashlib.sha256(b"fake docker tar bytes").hexdigest(), result_text)
 
 
     def test_lint_manifest_reports_required_rows_without_offline_transport(self):

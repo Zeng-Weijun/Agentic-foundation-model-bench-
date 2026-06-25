@@ -2773,3 +2773,101 @@ Handoff and runtime lane are aligned with this runner/results view:
 - Bounded secret scan on this ledger for key-like values, bearer values, authorization values, long secretish assignments, and private-key markers: rc 0, no matches.
 - Initial pycache scan returned rc 1 with one cache file under `scripts/__pycache__`; it was removed. Follow-up pycache scan returned rc 0, no matches.
 - Final status after cleanup shows this ledger modified plus unrelated concurrent modifications in `scripts/README.md`, `scripts/check_rootless_docker_worker.sh`, and `scripts/test_agentic_bench_suite.py`. I did not edit, revert, stage, commit, or push those unrelated files.
+
+## Round23 rootless health probe and one-click preflight gating review
+
+### Scope
+
+- Lane: runner/results/provenance review of the rootless health probe and one-click image preflight gating added around commits `32e4f89`, `19f00f9`, and `5ded6c8`.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `5ded6c8`.
+- No production code, manifests, tests, handoff, issue records, Docker commands, benchmarks, or model calls were run or edited. Only this runner ledger was edited.
+
+### Dedup decision
+
+No new ISSUE-READY block in this round.
+
+- #6 still owns TB2 offline transport population and promotion gating. Static and suite paths still rely on active manifests, not staged TSV rows alone.
+- #8 still owns worker rootless runtime and new-layer ingest health. `HEALTH_SMOKE_IMAGE` proves an already cached image can run, not that fresh pull/load layer registration is healthy.
+- #12 still owns normalized result/provenance fields for image-check and worker-health evidence.
+- #13 still owns raw checker/health output sinks before parser redaction. The new health probe adds useful phase evidence, but its raw output must stay pointer-only and restricted.
+
+### Findings
+
+1. `HEALTH_SMOKE_IMAGE` evidence is useful but not yet represented as structured result provenance.
+
+- `scripts/check_rootless_docker_worker.sh:4-6` defines `HEALTH_SMOKE_IMAGE`; `:116-120` prints the selected image ref; `:182-205` records storage diagnostics and optional cached-image `docker inspect` plus no-network `docker run`; `:208-234` still runs compose and SDK checks; `:244` exits the aggregate health status.
+- `scripts/README.md:73-80` correctly documents the cached-image smoke as optional and says it distinguishes cached-image runtime from layer-ingest failures.
+- `scripts/test_agentic_bench_suite.py:114-120` currently asserts only that the script text contains the health-smoke/storage markers. It does not lock the semantic contract that cached-image success is not layer-ingest success, nor that missing cached image is a non-fatal skip.
+- Result contract recommendation for #12/#13: represent this as `rootless_health_summary` or `image_preflight.health_probe` with allowlisted fields only: `schema_version`, `worker_id`, `docker_host`, `probe_script`, `health_smoke_image_ref`, `cached_image_present`, `cached_run_smoke_rc`, `docker_storage_info_rc`, `docker_system_df_rc`, `docker_version_rc`, `docker_sdk_rc`, `overall_status`, `phase_statuses`, and a restricted raw-log pointer with digest/size/redaction counts. Do not copy raw daemon logs, raw stderr, full Docker command output, env dumps, or task artifacts into `image_preflight_summary.json`, `summary.json`, or `agentic_bench.result.v1`.
+
+2. Current suite image preflight does not fake-pass staged-but-not-ingested rows.
+
+- `manifests/suite.example.yaml:53-60` enables manifest-based image preflight with fallback load and smoke by default. `terminal_bench_2_1_image_smoke` at `:281-293` points at `manifests/images/terminal_bench_2_1.yaml` and remains a required image-preflight row.
+- Dry-run JSON for `terminal_bench_2_1_image_smoke` shows `image_preflight.required=true`, `allow_pull=false`, `load_fallback=true`, `run_smoke=true`, and the rendered command does not include `check_rootless_docker_worker.sh` or `HEALTH_SMOKE_IMAGE`.
+- `scripts/agentic_bench_suite.py:602-701` builds suite preflight commands from each bench `image_manifest`; it does not consult staged TSVs or `bench_registry.required_guard`. `manifests/bench_registry.yaml:27-28` contains the rootless guard metadata, but grep found no production script reference other than the manifest itself.
+- `scripts/agentic_bench_images.py:574-626` marks a required row `missing` when it cannot inspect/pull/load the image, and `:1018-1029` exits nonzero on `missing`, `tar_missing`, `identity_mismatch`, `tar_mismatch`, or smoke errors. Therefore staged P0/tar evidence cannot satisfy suite readiness unless it is promoted into the active image manifest and the checker can consume it successfully.
+
+3. The raw-output risk remains existing #13, not a new root cause.
+
+- Normal execution preflight streams checker stdout/stderr directly into the per-benchmark log at `scripts/agentic_bench_suite.py:988-1009`.
+- `--image-preflight-only` also streams raw checker output into image-preflight logs at `scripts/agentic_bench_suite.py:1047-1057` and `:1109-1135`, then writes summary counts/statuses at `:1198-1209`.
+- `agentic_bench.result.v1` currently contains suite/run/bench/adapter plus execution and benchmark_result at `scripts/agentic_bench_suite.py:1281-1300`; it has no structured pointer for image-check JSON, health-probe summaries, or restricted raw artifacts. This is direct #12/#13 fixture material rather than a separate new issue.
+
+### COMMENT-READY test recommendations
+
+1. `test_rootless_health_smoke_is_cached_runtime_not_ingest_readiness`
+
+- Fixture: synthetic health output with `health_smoke_image_ref` set, `cached_run_smoke_rc=0`, `docker_storage_info_rc=0`, and a separate synthetic worker-load failure for a new image.
+- Expected: normalized provenance records cached-runtime health as a worker probe, not as image transport readiness; benchmark status remains `infra_blocked` or equivalent when manifest image load/pull fails.
+- Negative assertions: no raw dockerd log, raw Docker stderr/stdout payload, full command history, env dump, or task artifact content appears in normalized result artifacts.
+
+2. `test_staged_transport_artifact_cannot_satisfy_suite_preflight_without_manifest_promotion`
+
+- Fixture: active manifest row still missing offline transport, plus separate staged TSV/P0/tar evidence.
+- Expected: suite plan uses only the active `image_manifest`; image checker returns nonzero for required missing rows; summary counts preserve `missing` and the staged file is only referenced as quarantine/provenance if explicitly attached.
+
+3. `test_health_probe_raw_output_is_pointer_only_in_agentic_result`
+
+- Fixture: synthetic health output containing a marker in raw stderr/log text and allowlisted phase rc fields.
+- Expected normalized result: safe fields include worker id, docker host, phase rc/status, cached-image ref, and raw artifact pointer/digest/size/redaction count. The marker must not appear in `image_preflight_summary.json`, `summary.json`, or `agentic_bench.result.v1`.
+
+4. `test_image_preflight_summary_distinguishes_cached_command_reuse_from_health_cache_success`
+
+- Fixture: two suite runs sharing the same image-check command and a separate cached-image health probe.
+- Expected: `image_preflight_unique_commands` and `[image_preflight_cached]` represent command de-duplication only; they must not be confused with Docker cached-image runtime health or with new-layer ingest success.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote handoff/head/ledger read through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `5ded6c8`, and initially clean status.
+- `git show --stat --oneline --decorate 32e4f89 19f00f9 5ded6c8`: rc 0.
+- Static grep for `HEALTH_SMOKE_IMAGE`, rootless health, preflight, and raw-log sink terms across scripts/manifests/coordination: rc 0.
+- `nl -ba scripts/check_rootless_docker_worker.sh | sed -n '1,260p'`: rc 0.
+- `nl -ba scripts/README.md | sed -n '66,84p'`: rc 0.
+- `nl -ba manifests/bench_registry.yaml | sed -n '20,32p'`: rc 0.
+- `nl -ba scripts/test_agentic_bench_suite.py | sed -n '108,123p'`: rc 0.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite.RootlessWorkerHealthScriptTest`: rc 0, one test passed.
+- Dry-run parse of `python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --json --model-profile dev_proxy_gpt54mini_8130`: rc 0; parsed 11 runs and the `terminal_bench_2_1_image_smoke` preflight fields summarized above.
+- One attempted shell pipeline from suite dry-run JSON into a here-doc Python parser returned rc 1 with `BrokenPipeError` because the here-doc consumed stdin; this was an operator-side parsing mistake, produced no artifact changes, and was not used as product evidence.
+- First ledger append attempt returned rc 127 because local shell quoting interpreted markdown single quotes before the SSH Python script could complete; follow-up grep/status checks returned rc 0 and confirmed no Round23 section or ledger modification before the safe append.
+- `nl -ba scripts/agentic_bench_suite.py | sed -n '600,740p'`: rc 0.
+- `nl -ba scripts/agentic_bench_suite.py | sed -n '930,1025p;1188,1215p;1270,1310p'`: rc 0.
+- `nl -ba scripts/agentic_bench_suite.py | sed -n '1038,1142p'`: rc 0.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '540,700p'` plus required-guard grep: rc 0; `required_guard` appeared only in `manifests/bench_registry.yaml`.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '700,840p;920,1010p'`: rc 0.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '1004,1035p'`: rc 0.
+- `nl -ba manifests/suite.example.yaml | sed -n '45,65p;265,295p'`: rc 0.
+- Runtime-images ledger alignment grep for Round22/rootless/cached context: rc 0; it aligns that cached existing-image smoke is separate from new-layer ingest failure.
+- `git status --short --untracked-files=all`: rc 0 before ledger edit, no output.
+- `grep -n '^## Round23' _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md || true`: rc 0 before append, no existing Round23 section.
+
+### Validation
+
+- Initial `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 2 due to a blank line at EOF introduced by the safe append; fixed by rewriting this ledger with exactly one final newline.
+- Initial trailing whitespace scan on this ledger: rc 0, no matches.
+- Initial pycache scan after bounded Python/unit probes: rc 0, no matches.
+- Initial bounded full-ledger secret scan: rc 1 because an older pre-Round23 issue title at line 113 contains a historical auth-header redaction-risk title, not a secret value.
+- Round23-only bounded secret scan: rc 0, no matches.
+- Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.

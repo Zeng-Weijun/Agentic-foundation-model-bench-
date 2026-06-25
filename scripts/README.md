@@ -111,6 +111,30 @@ python3 scripts/agentic_bench_images.py inventory-cache \
 
 `--inspect-identities` performs a read-only `docker image inspect` for each selected ref and records full `Id` plus `RepoDigests`. Use it before generating identity-enforced manifests for SWE-bench or Terminal-Bench caches; the default inventory path remains fast and only records `docker image ls` fields.
 
+Inventory a cache host over SSH when controller aliases are not available on `dev`. The `label=ssh_target` form keeps artifact names stable while using the full endpoint:
+
+```bash
+python3 scripts/agentic_bench_images.py inventory-remote-cache   --host swe_dev=zengweijun+zwj.group-ailab-mineruinfra-mineruinfra-cpu+root.ailab-mineruinfra.ws@h.pjlab.org.cn   --ssh-option=-CAXY   --prefix tb2-offline/   --prefix swebench/   --project-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy   --output-dir _coordination/20260625_harbor_bench/inventory/remote_cache_20260626   --docker-host unix:///var/run/docker.sock   --json
+```
+
+Match a manifest against one or more cache inventory artifacts without Docker:
+
+```bash
+python3 scripts/agentic_bench_images.py match-inventory   --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml   --inventory _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json   --json
+```
+
+Generate a staging plan for required rows that still lack digest-pinned P0 refs or fallback tar SHA metadata. This only writes JSON/TSV planning artifacts; it does not save, load, push, or edit manifests:
+
+```bash
+python3 scripts/agentic_bench_images.py plan-stage-missing-transport   --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml   --inventory _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json   --tar-dir /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2   --p0-name-prefix terminal-bench-2-1-   --output-tsv _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv   --json
+```
+
+Run the generated plan on the source Docker host. This script is dry-run by default; `--execute` is required before it calls `docker image inspect` and `docker save`. Add `--push` only after the registry/CA path for that host is intentionally verified.
+
+```bash
+scripts/stage_cache_images_from_plan.sh   --plan _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv   --only install-windows-3.11   --execute   --output-tsv _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_result.tsv
+```
+
 
 Statically lint a generated image manifest before using it as a full offline transport contract:
 

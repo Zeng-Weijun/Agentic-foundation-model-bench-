@@ -7,6 +7,8 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -426,6 +428,7 @@ def docker_cache_inventory(
     runner: Runner = _run,
     base_env: dict[str, str] | None = None,
     inspect_identities: bool = False,
+    host_label: str = "",
 ) -> dict[str, Any]:
     env = dict(base_env or os.environ)
     env["DOCKER_HOST"] = docker_host
@@ -486,12 +489,371 @@ def docker_cache_inventory(
         counts["identity_errors"] = identity_errors
     return {
         "schema_version": "agentic_bench.docker_cache_inventory.v1",
+        "host": host_label,
         "docker_host": docker_host,
         "prefixes": selected_prefixes,
         "inspect_identities": inspect_identities,
         "counts": counts,
         "images": images,
     }
+
+
+def _safe_label(value: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(value)).strip("_.-")
+    return cleaned or "host"
+
+
+def _render_argv(argv: list[str]) -> str:
+    return " ".join(shlex.quote(str(part)) for part in argv)
+
+
+def _split_host_spec(value: str) -> tuple[str, str]:
+    text = str(value).strip()
+    if "=" not in text:
+        return text, text
+    label, target = text.split("=", 1)
+    label = label.strip()
+    target = target.strip()
+    if not label or not target:
+        raise ImageManifestError(f"invalid host spec {value!r}; use label=ssh_target")
+    return label, target
+
+
+def _join_remote_path(directory: str, name: str) -> str:
+    return str(directory).rstrip("/") + "/" + name
+
+
+def remote_cache_inventory(
+    *,
+    hosts: list[str],
+    prefixes: list[str] | None = None,
+    project_root: str,
+    output_dir: str,
+    docker_host: str = DEFAULT_DOCKER_HOST,
+    ssh_options: list[str] | None = None,
+    inspect_identities: bool = False,
+    runner: Runner = _run,
+    base_env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    env = dict(base_env or os.environ)
+    selected_hosts = [_split_host_spec(str(host)) for host in hosts if str(host).strip()]
+    selected_prefixes = [str(prefix).strip() for prefix in (prefixes or []) if str(prefix).strip()]
+    selected_ssh_options = [str(option) for option in (ssh_options or [])]
+    results: list[dict[str, Any]] = []
+    ok = 0
+    failed = 0
+    for host, ssh_target in selected_hosts:
+        host_label = _safe_label(host)
+        output_path = _join_remote_path(output_dir, f"{host_label}.docker_cache_inventory.json")
+        inventory_argv = [
+            "python3",
+            "scripts/agentic_bench_images.py",
+            "inventory-cache",
+            "--docker-host",
+            docker_host,
+            "--output",
+            output_path,
+            "--host-label",
+            host_label,
+        ]
+        for prefix in selected_prefixes:
+            inventory_argv.extend(["--prefix", prefix])
+        if inspect_identities:
+            inventory_argv.append("--inspect-identities")
+        inventory_argv.append("--json")
+        remote_body = "\n".join(
+            [
+                "set -euo pipefail",
+                f"mkdir -p {shlex.quote(output_dir)}",
+                f"cd {shlex.quote(project_root)}",
+                "exec " + _render_argv(inventory_argv),
+            ]
+        )
+        command_argv = ["ssh", *selected_ssh_options, ssh_target, "bash -c " + shlex.quote(remote_body)]
+        result = runner(command_argv, env)
+        status = "ok" if result.returncode == 0 else "failed"
+        if result.returncode == 0:
+            ok += 1
+        else:
+            failed += 1
+        host_result: dict[str, Any] = {
+            "host": host,
+            "ssh_target": ssh_target,
+            "host_label": host_label,
+            "status": status,
+            "returncode": result.returncode,
+            "output": output_path,
+            "command_argv": command_argv,
+            "command": _render_argv(command_argv),
+        }
+        if result.stdout.strip():
+            host_result["stdout"] = result.stdout.strip()
+        if result.stderr.strip():
+            host_result["stderr"] = result.stderr.strip()
+        results.append(host_result)
+    return {
+        "schema_version": "agentic_bench.remote_cache_inventory.v1",
+        "project_root": project_root,
+        "output_dir": output_dir,
+        "docker_host": docker_host,
+        "prefixes": selected_prefixes,
+        "inspect_identities": inspect_identities,
+        "counts": {"hosts": len(selected_hosts), "ok": ok, "failed": failed},
+        "hosts": results,
+    }
+
+
+def _load_inventory(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ImageManifestError(f"could not read inventory {path}: {exc}") from exc
+    if not isinstance(payload, dict):
+        raise ImageManifestError(f"inventory {path} must be a JSON object")
+    images = payload.get("images")
+    if not isinstance(images, list):
+        raise ImageManifestError(f"inventory {path} requires an images list")
+    return payload
+
+
+def _inventory_host(payload: dict[str, Any], path: Path) -> str:
+    host = str(payload.get("host") or "").strip()
+    if host:
+        return host
+    name = path.name
+    suffix = ".docker_cache_inventory.json"
+    return name[: -len(suffix)] if name.endswith(suffix) else path.stem
+
+
+def _inventory_image_tokens(image: dict[str, Any]) -> dict[str, set[str]]:
+    refs = set(_string_list(image.get("ref")))
+    repository = str(image.get("repository") or "").strip()
+    tag = str(image.get("tag") or "").strip()
+    if repository and tag and tag != "<none>":
+        refs.add(f"{repository}:{tag}")
+    image_ids = set(_string_list(image.get("image_id"), image.get("full_image_id")))
+    image_ids = {_normalize_digest_like(value) for value in image_ids if value}
+    repo_digest_tokens: set[str] = set()
+    for digest in _string_list(image.get("repo_digests"), image.get("digest")):
+        if digest == "<none>":
+            continue
+        repo_digest_tokens.update(_identity_tokens(digest))
+    return {"refs": refs, "image_ids": image_ids, "repo_digest_tokens": repo_digest_tokens}
+
+
+def _entry_match_tokens(entry: dict[str, Any]) -> dict[str, set[str]]:
+    expected_image_ids = {_normalize_digest_like(value) for value in entry.get("expected_image_ids", [])}
+    expected_repo_digest_tokens: set[str] = set()
+    for digest in entry.get("expected_repo_digests", []):
+        expected_repo_digest_tokens.update(_identity_tokens(digest))
+    return {
+        "refs": set(entry.get("inspect_refs", [])) | set(entry.get("local_refs", [])) | set(entry.get("image_refs", [])),
+        "expected_image_ids": expected_image_ids,
+        "expected_repo_digest_tokens": expected_repo_digest_tokens,
+    }
+
+
+def _match_inventory_image(entry_tokens: dict[str, set[str]], image_tokens: dict[str, set[str]]) -> str:
+    if entry_tokens["refs"].intersection(image_tokens["refs"]):
+        return "ref"
+    if entry_tokens["expected_image_ids"] and entry_tokens["expected_image_ids"].intersection(image_tokens["image_ids"]):
+        return "image_id"
+    if entry_tokens["expected_repo_digest_tokens"] and entry_tokens["expected_repo_digest_tokens"].intersection(image_tokens["repo_digest_tokens"]):
+        return "repo_digest"
+    return ""
+
+
+def match_manifest_inventory(
+    manifest_path: str | Path,
+    *,
+    inventories: list[str | Path],
+    asset_root: str | Path = DEFAULT_ASSET_ROOT,
+) -> dict[str, Any]:
+    manifest = Path(manifest_path)
+    asset_root_path = Path(asset_root)
+    bench_id, entries = image_entries(_load(manifest))
+    inventory_payloads: list[tuple[Path, dict[str, Any], str]] = []
+    inventory_image_count = 0
+    for inventory in inventories:
+        inventory_path = Path(inventory)
+        payload = _load_inventory(inventory_path)
+        host = _inventory_host(payload, inventory_path)
+        inventory_payloads.append((inventory_path, payload, host))
+        inventory_image_count += len(payload.get("images", []))
+
+    counts = {
+        "images": len(entries),
+        "required_images": 0,
+        "matched": 0,
+        "required_matched": 0,
+        "missing": 0,
+        "required_missing": 0,
+        "inventory_files": len(inventory_payloads),
+        "inventory_images": inventory_image_count,
+    }
+    results: list[dict[str, Any]] = []
+    for entry in entries:
+        required = bool(entry["required"])
+        if required:
+            counts["required_images"] += 1
+        entry_tokens = _entry_match_tokens(entry)
+        matches: list[dict[str, Any]] = []
+        for inventory_path, payload, host in inventory_payloads:
+            for image in payload.get("images", []):
+                if not isinstance(image, dict):
+                    continue
+                reason = _match_inventory_image(entry_tokens, _inventory_image_tokens(image))
+                if not reason:
+                    continue
+                matches.append(
+                    {
+                        "host": host,
+                        "inventory": str(inventory_path),
+                        "match_reason": reason,
+                        "ref": str(image.get("ref") or ""),
+                        "image_id": str(image.get("image_id") or ""),
+                        "full_image_id": str(image.get("full_image_id") or ""),
+                        "repo_digests": _string_list(image.get("repo_digests")),
+                        "size": str(image.get("size") or ""),
+                    }
+                )
+        if matches:
+            counts["matched"] += 1
+            if required:
+                counts["required_matched"] += 1
+            match_status = "matched"
+        else:
+            counts["missing"] += 1
+            if required:
+                counts["required_missing"] += 1
+                match_status = "missing"
+            else:
+                match_status = "optional_missing"
+        results.append(
+            {
+                "id": entry["id"],
+                "role": entry["role"],
+                "required": required,
+                "local_refs": entry["local_refs"],
+                "image_refs": entry["image_refs"],
+                "expected_image_ids": entry["expected_image_ids"],
+                "expected_repo_digests": entry["expected_repo_digests"],
+                "match_status": match_status,
+                "matches": matches,
+            }
+        )
+    return {
+        "schema_version": "agentic_bench.image_inventory_match.v1",
+        "manifest": str(manifest),
+        "bench_id": bench_id,
+        "asset_root": str(asset_root_path),
+        "inventories": [str(path) for path, _, _ in inventory_payloads],
+        "counts": counts,
+        "images": results,
+    }
+
+
+def _slug_from_ref(ref: str) -> str:
+    text = str(ref).strip().split("@", 1)[0]
+    if ":" in text.rsplit("/", 1)[-1]:
+        text = text.rsplit(":", 1)[0]
+    return _safe_label(text.rsplit("/", 1)[-1]).replace("_", "-")
+
+
+def _tag_from_ref(ref: str) -> str:
+    tail = str(ref).strip().split("@", 1)[0].rsplit("/", 1)[-1]
+    if ":" in tail:
+        return tail.rsplit(":", 1)[1]
+    return "latest"
+
+
+def plan_missing_transport_staging(
+    manifest_path: str | Path,
+    *,
+    inventories: list[str | Path],
+    tar_dir: str,
+    registry_domain: str = "100.97.118.137:8555",
+    repository_prefix: str = "swe-data-harness",
+    p0_name_prefix: str = "",
+    asset_root: str | Path = DEFAULT_ASSET_ROOT,
+) -> dict[str, Any]:
+    lint = lint_image_manifest(
+        manifest_path,
+        asset_root=asset_root,
+        require_offline_transport=True,
+        verify_fallback_files=False,
+    )
+    missing_ids = {
+        row["id"]
+        for row in lint["images"]
+        if row.get("required") and row.get("lint_status") == "missing_offline_transport"
+    }
+    matches = match_manifest_inventory(manifest_path, inventories=inventories, asset_root=asset_root)
+    rows: list[dict[str, Any]] = []
+    matched = 0
+    unmatched = 0
+    for image in matches["images"]:
+        if image["id"] not in missing_ids:
+            continue
+        local_ref = (image.get("local_refs") or [""])[0]
+        slug = _slug_from_ref(local_ref or image["id"])
+        tag = _tag_from_ref(local_ref)
+        first_match = (image.get("matches") or [{}])[0]
+        if image.get("matches"):
+            matched += 1
+        else:
+            unmatched += 1
+        p0_name = f"{p0_name_prefix}{slug}"
+        p0_tag = f"{registry_domain.rstrip('/')}/{repository_prefix.strip('/')}/{p0_name}:{tag}"
+        rows.append(
+            {
+                "id": image["id"],
+                "slug": slug,
+                "local_ref": local_ref,
+                "source_image_id": (image.get("expected_image_ids") or [""])[0],
+                "source_host": str(first_match.get("host") or ""),
+                "source_ref": str(first_match.get("ref") or ""),
+                "source_cache_image_id": str(first_match.get("image_id") or first_match.get("full_image_id") or ""),
+                "source_size": str(first_match.get("size") or ""),
+                "fallback_tar": _join_remote_path(tar_dir, f"{slug}.tar"),
+                "p0_tag": p0_tag,
+                "match_status": image.get("match_status", "missing"),
+            }
+        )
+    return {
+        "schema_version": "agentic_bench.missing_transport_staging_plan.v1",
+        "manifest": str(manifest_path),
+        "bench_id": matches["bench_id"],
+        "tar_dir": tar_dir,
+        "registry_domain": registry_domain,
+        "repository_prefix": repository_prefix,
+        "p0_name_prefix": p0_name_prefix,
+        "inventories": [str(path) for path in inventories],
+        "counts": {"missing_transport": len(rows), "matched": matched, "unmatched": unmatched},
+        "rows": rows,
+    }
+
+
+def write_staging_plan_tsv(summary: dict[str, Any], output_path: str | Path) -> None:
+    columns = [
+        "id",
+        "slug",
+        "local_ref",
+        "source_image_id",
+        "source_host",
+        "source_ref",
+        "source_cache_image_id",
+        "source_size",
+        "fallback_tar",
+        "p0_tag",
+        "match_status",
+    ]
+    lines = ["\t".join(columns)]
+    for row in summary.get("rows", []):
+        lines.append("\t".join(str(row.get(column, "")) for column in columns))
+    path = Path(output_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _smoke_command(entry: dict[str, Any], image_ref: str) -> list[str] | None:
@@ -943,7 +1305,35 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     inventory.add_argument("--docker-host", default=os.environ.get("DOCKER_HOST", DEFAULT_DOCKER_HOST))
     inventory.add_argument("--output", type=Path, help="write inventory JSON to this path")
     inventory.add_argument("--inspect-identities", action="store_true", help="run docker image inspect for each selected ref and include full IDs/digests")
+    inventory.add_argument("--host-label", default="", help="host label to store in the inventory artifact")
     inventory.add_argument("--json", action="store_true")
+
+    remote_inventory = subparsers.add_parser("inventory-remote-cache", help="run inventory-cache on remote hosts over SSH and write host-scoped artifacts")
+    remote_inventory.add_argument("--host", action="append", dest="hosts", required=True, help="remote host to inventory; repeatable")
+    remote_inventory.add_argument("--prefix", action="append", dest="prefixes", default=[], help="repository/tag prefix to include; repeatable")
+    remote_inventory.add_argument("--project-root", required=True, help="remote project root containing scripts/agentic_bench_images.py")
+    remote_inventory.add_argument("--output-dir", required=True, help="remote/shared directory for inventory JSON artifacts")
+    remote_inventory.add_argument("--docker-host", default=os.environ.get("DOCKER_HOST", DEFAULT_DOCKER_HOST))
+    remote_inventory.add_argument("--ssh-option", action="append", dest="ssh_options", default=[], help="extra ssh option; repeatable")
+    remote_inventory.add_argument("--inspect-identities", action="store_true", help="run docker image inspect for each selected ref on each host")
+    remote_inventory.add_argument("--json", action="store_true")
+
+    match_inventory = subparsers.add_parser("match-inventory", help="match a bench image manifest against one or more docker cache inventory artifacts")
+    match_inventory.add_argument("--image-manifest", type=Path, required=True)
+    match_inventory.add_argument("--inventory", action="append", dest="inventories", required=True, help="docker cache inventory JSON path; repeatable")
+    match_inventory.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
+    match_inventory.add_argument("--json", action="store_true")
+
+    plan_stage = subparsers.add_parser("plan-stage-missing-transport", help="plan fallback tar/P0 staging rows for required images missing offline transport")
+    plan_stage.add_argument("--image-manifest", type=Path, required=True)
+    plan_stage.add_argument("--inventory", action="append", dest="inventories", required=True, help="docker cache inventory JSON path; repeatable")
+    plan_stage.add_argument("--tar-dir", required=True, help="target shared directory for fallback tar files")
+    plan_stage.add_argument("--registry-domain", default="100.97.118.137:8555")
+    plan_stage.add_argument("--repository-prefix", default="swe-data-harness")
+    plan_stage.add_argument("--p0-name-prefix", default="")
+    plan_stage.add_argument("--asset-root", type=Path, default=DEFAULT_ASSET_ROOT)
+    plan_stage.add_argument("--output-tsv", type=Path, help="write the staging plan as TSV")
+    plan_stage.add_argument("--json", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -979,6 +1369,7 @@ def main(argv: list[str] | None = None) -> int:
                 prefixes=args.prefixes,
                 docker_host=args.docker_host,
                 inspect_identities=args.inspect_identities,
+                host_label=args.host_label,
             )
             if args.output:
                 args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -988,6 +1379,66 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 _print_inventory(summary)
             return 0
+        if args.command == "inventory-remote-cache":
+            summary = remote_cache_inventory(
+                hosts=args.hosts,
+                prefixes=args.prefixes,
+                project_root=args.project_root,
+                output_dir=args.output_dir,
+                docker_host=args.docker_host,
+                ssh_options=args.ssh_options,
+                inspect_identities=args.inspect_identities,
+            )
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                print(
+                    f"Remote inventory hosts={summary['counts']['hosts']} "
+                    f"ok={summary['counts']['ok']} failed={summary['counts']['failed']}"
+                )
+                for host in summary["hosts"]:
+                    print(f"- {host['host']}: {host['status']} {host['output']}")
+            return 1 if summary["counts"]["failed"] else 0
+        if args.command == "match-inventory":
+            summary = match_manifest_inventory(
+                args.image_manifest,
+                inventories=args.inventories,
+                asset_root=args.asset_root,
+            )
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                counts = summary["counts"]
+                print(
+                    f"Inventory match images={counts['images']} "
+                    f"matched={counts['matched']} required_missing={counts['required_missing']}"
+                )
+                for image in summary["images"]:
+                    print(f"- {image['id']}: {image['match_status']}")
+            return 1 if summary["counts"]["required_missing"] else 0
+        if args.command == "plan-stage-missing-transport":
+            summary = plan_missing_transport_staging(
+                args.image_manifest,
+                inventories=args.inventories,
+                tar_dir=args.tar_dir,
+                registry_domain=args.registry_domain,
+                repository_prefix=args.repository_prefix,
+                p0_name_prefix=args.p0_name_prefix,
+                asset_root=args.asset_root,
+            )
+            if args.output_tsv:
+                write_staging_plan_tsv(summary, args.output_tsv)
+            if args.json:
+                print(json.dumps(summary, indent=2, sort_keys=True))
+            else:
+                counts = summary["counts"]
+                print(
+                    f"Missing transport rows={counts['missing_transport']} "
+                    f"matched={counts['matched']} unmatched={counts['unmatched']}"
+                )
+                for row in summary["rows"]:
+                    print(f"- {row['id']}: {row['source_host']} {row['source_ref']} -> {row['fallback_tar']}")
+            return 1 if summary["counts"]["unmatched"] else 0
         if args.command == "lint":
             summary = lint_image_manifest(
                 args.image_manifest,
