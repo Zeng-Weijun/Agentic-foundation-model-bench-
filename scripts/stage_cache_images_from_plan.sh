@@ -3,7 +3,7 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: stage_cache_images_from_plan.sh --plan PLAN.tsv [--execute] [--push] [--output-tsv OUT.tsv] [--only ID_OR_SLUG]
+Usage: stage_cache_images_from_plan.sh --plan PLAN.tsv [--execute] [--push] [--source-host-label HOST] [--output-tsv OUT.tsv] [--only ID_OR_SLUG]
 
 Dry-run by default. With --execute, docker-save matched rows from PLAN.tsv to
 fallback_tar. With --push, also docker tag/push p0_tag after saving. The script
@@ -16,6 +16,7 @@ PLAN=""
 EXECUTE=0
 PUSH=0
 OUTPUT_TSV=""
+SOURCE_HOST_LABEL=""
 ONLY_VALUES=()
 
 while [ "$#" -gt 0 ]; do
@@ -34,6 +35,10 @@ while [ "$#" -gt 0 ]; do
       ;;
     --output-tsv)
       OUTPUT_TSV="$2"
+      shift 2
+      ;;
+    --source-host-label)
+      SOURCE_HOST_LABEL="$2"
       shift 2
       ;;
     --only)
@@ -81,9 +86,24 @@ selected() {
   return 1
 }
 
+inspect_image_id() {
+  local ref="$1"
+  docker image inspect "$ref" | python3 -c 'import json, sys; payload=json.load(sys.stdin); doc=payload[0] if isinstance(payload, list) and payload else payload; print(doc.get("Id", "") if isinstance(doc, dict) else "")'
+}
+
+write_result_row() {
+  local row_status="$1"
+  if [ -z "$OUTPUT_TSV" ]; then
+    return 0
+  fi
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$id" "$slug" "$local_ref" "$source_image_id" "$source_host" "$source_ref" "$source_cache_image_id" "$source_size" \
+    "$fallback_tar" "$fallback_sha" "$p0_tag" "$p0_digest_ref" "$actual_image_id" "$row_status" >> "$OUTPUT_TSV"
+}
+
 if [ -n "$OUTPUT_TSV" ]; then
   mkdir -p "$(dirname "$OUTPUT_TSV")"
-  printf 'id\tslug\tlocal_ref\tsource_image_id\tfallback_tar\tfallback_tar_sha256\tp0_tag\tp0_digest_ref\tstatus\n' > "$OUTPUT_TSV"
+  printf 'id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tfallback_tar_sha256\tp0_tag\tp0_digest_ref\tactual_image_id\tstatus\n' > "$OUTPUT_TSV"
 fi
 
 count=0
@@ -114,10 +134,26 @@ while IFS=$'\t' read -r id slug local_ref source_image_id source_host source_ref
   echo "ROW $id local_ref=$local_ref fallback_tar=$fallback_tar p0_tag=$p0_tag"
   fallback_sha=""
   p0_digest_ref=""
+  actual_image_id=""
   status="dry_run"
 
+  if [ -n "$SOURCE_HOST_LABEL" ] && [ -n "$source_host" ] && [ "$source_host" != "$SOURCE_HOST_LABEL" ]; then
+    echo "FAIL source host mismatch $id expected_source_host=$source_host current_source_host=$SOURCE_HOST_LABEL" >&2
+    failed=$((failed + 1))
+    status="source_host_mismatch"
+    write_result_row "$status"
+    continue
+  fi
+
   if [ "$EXECUTE" -eq 1 ]; then
-    docker image inspect "$local_ref" >/dev/null
+    actual_image_id="$(inspect_image_id "$local_ref")"
+    if [ -n "$source_image_id" ] && [ "$actual_image_id" != "$source_image_id" ]; then
+      echo "FAIL image identity mismatch $id expected=$source_image_id actual=$actual_image_id" >&2
+      failed=$((failed + 1))
+      status="identity_mismatch"
+      write_result_row "$status"
+      continue
+    fi
     mkdir -p "$(dirname "$fallback_tar")"
     tmp_tar="${fallback_tar}.tmp.$$"
     rm -f "$tmp_tar"
@@ -140,10 +176,7 @@ while IFS=$'\t' read -r id slug local_ref source_image_id source_host source_ref
     staged=$((staged + 1))
   fi
 
-  if [ -n "$OUTPUT_TSV" ]; then
-    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
-      "$id" "$slug" "$local_ref" "$source_image_id" "$fallback_tar" "$fallback_sha" "$p0_tag" "$p0_digest_ref" "$status" >> "$OUTPUT_TSV"
-  fi
+  write_result_row "$status"
 done < "$PLAN"
 
 if [ "$failed" -gt 0 ]; then

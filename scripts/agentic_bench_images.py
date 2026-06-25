@@ -631,14 +631,21 @@ def _inventory_image_tokens(image: dict[str, Any]) -> dict[str, set[str]]:
     tag = str(image.get("tag") or "").strip()
     if repository and tag and tag != "<none>":
         refs.add(f"{repository}:{tag}")
-    image_ids = set(_string_list(image.get("image_id"), image.get("full_image_id")))
+    full_image_ids = set(_string_list(image.get("full_image_id")))
+    image_ids = set(_string_list(image.get("image_id"))) | full_image_ids
     image_ids = {_normalize_digest_like(value) for value in image_ids if value}
     repo_digest_tokens: set[str] = set()
     for digest in _string_list(image.get("repo_digests"), image.get("digest")):
         if digest == "<none>":
             continue
         repo_digest_tokens.update(_identity_tokens(digest))
-    return {"refs": refs, "image_ids": image_ids, "repo_digest_tokens": repo_digest_tokens}
+    authoritative_identity = {"present"} if full_image_ids or repo_digest_tokens else set()
+    return {
+        "refs": refs,
+        "image_ids": image_ids,
+        "repo_digest_tokens": repo_digest_tokens,
+        "authoritative_identity": authoritative_identity,
+    }
 
 
 def _entry_match_tokens(entry: dict[str, Any]) -> dict[str, set[str]]:
@@ -653,14 +660,30 @@ def _entry_match_tokens(entry: dict[str, Any]) -> dict[str, set[str]]:
     }
 
 
-def _match_inventory_image(entry_tokens: dict[str, set[str]], image_tokens: dict[str, set[str]]) -> str:
-    if entry_tokens["refs"].intersection(image_tokens["refs"]):
-        return "ref"
+def _inventory_identity_reason(entry_tokens: dict[str, set[str]], image_tokens: dict[str, set[str]]) -> str:
     if entry_tokens["expected_image_ids"] and entry_tokens["expected_image_ids"].intersection(image_tokens["image_ids"]):
         return "image_id"
     if entry_tokens["expected_repo_digest_tokens"] and entry_tokens["expected_repo_digest_tokens"].intersection(image_tokens["repo_digest_tokens"]):
         return "repo_digest"
     return ""
+
+
+def _entry_requires_identity(entry_tokens: dict[str, set[str]]) -> bool:
+    return bool(entry_tokens["expected_image_ids"] or entry_tokens["expected_repo_digest_tokens"])
+
+
+def _inventory_has_identity_evidence(image_tokens: dict[str, set[str]]) -> bool:
+    return bool(image_tokens["authoritative_identity"])
+
+
+def _match_inventory_image(entry_tokens: dict[str, set[str]], image_tokens: dict[str, set[str]]) -> str:
+    identity_reason = _inventory_identity_reason(entry_tokens, image_tokens)
+    ref_matches = bool(entry_tokens["refs"].intersection(image_tokens["refs"]))
+    if ref_matches:
+        if _entry_requires_identity(entry_tokens) and _inventory_has_identity_evidence(image_tokens) and not identity_reason:
+            return "identity_mismatch"
+        return "ref"
+    return identity_reason
 
 
 def match_manifest_inventory(
@@ -688,6 +711,8 @@ def match_manifest_inventory(
         "required_matched": 0,
         "missing": 0,
         "required_missing": 0,
+        "identity_mismatch": 0,
+        "required_identity_mismatch": 0,
         "inventory_files": len(inventory_payloads),
         "inventory_images": inventory_image_count,
     }
@@ -698,6 +723,7 @@ def match_manifest_inventory(
             counts["required_images"] += 1
         entry_tokens = _entry_match_tokens(entry)
         matches: list[dict[str, Any]] = []
+        identity_mismatches: list[dict[str, Any]] = []
         for inventory_path, payload, host in inventory_payloads:
             for image in payload.get("images", []):
                 if not isinstance(image, dict):
@@ -705,18 +731,20 @@ def match_manifest_inventory(
                 reason = _match_inventory_image(entry_tokens, _inventory_image_tokens(image))
                 if not reason:
                     continue
-                matches.append(
-                    {
-                        "host": host,
-                        "inventory": str(inventory_path),
-                        "match_reason": reason,
-                        "ref": str(image.get("ref") or ""),
-                        "image_id": str(image.get("image_id") or ""),
-                        "full_image_id": str(image.get("full_image_id") or ""),
-                        "repo_digests": _string_list(image.get("repo_digests")),
-                        "size": str(image.get("size") or ""),
-                    }
-                )
+                match = {
+                    "host": host,
+                    "inventory": str(inventory_path),
+                    "match_reason": reason,
+                    "ref": str(image.get("ref") or ""),
+                    "image_id": str(image.get("image_id") or ""),
+                    "full_image_id": str(image.get("full_image_id") or ""),
+                    "repo_digests": _string_list(image.get("repo_digests")),
+                    "size": str(image.get("size") or ""),
+                }
+                if reason == "identity_mismatch":
+                    identity_mismatches.append(match)
+                    continue
+                matches.append(match)
         if matches:
             counts["matched"] += 1
             if required:
@@ -724,11 +752,17 @@ def match_manifest_inventory(
             match_status = "matched"
         else:
             counts["missing"] += 1
+            if identity_mismatches:
+                counts["identity_mismatch"] += 1
             if required:
                 counts["required_missing"] += 1
-                match_status = "missing"
+                if identity_mismatches:
+                    counts["required_identity_mismatch"] += 1
+                    match_status = "identity_mismatch"
+                else:
+                    match_status = "missing"
             else:
-                match_status = "optional_missing"
+                match_status = "optional_identity_mismatch" if identity_mismatches else "optional_missing"
         results.append(
             {
                 "id": entry["id"],
@@ -740,6 +774,7 @@ def match_manifest_inventory(
                 "expected_repo_digests": entry["expected_repo_digests"],
                 "match_status": match_status,
                 "matches": matches,
+                "identity_mismatches": identity_mismatches,
             }
         )
     return {

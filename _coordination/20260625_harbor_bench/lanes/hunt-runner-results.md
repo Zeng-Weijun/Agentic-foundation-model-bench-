@@ -2871,3 +2871,111 @@ No new ISSUE-READY block in this round.
 - Initial bounded full-ledger secret scan: rc 1 because an older pre-Round23 issue title at line 113 contains a historical auth-header redaction-risk title, not a secret value.
 - Round23-only bounded secret scan: rc 0, no matches.
 - Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.
+
+## Round24 remote cache staging workflow provenance review
+
+### Scope
+
+- Lane: runner/results/provenance review of the remote cache and staging workflow added in `ccff9db` and issue-comment update `86ae01e`.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `86ae01e`.
+- Read/inspected only: `scripts/agentic_bench_images.py`, `scripts/stage_cache_images_from_plan.sh`, `scripts/README.md`, `HANDOFF.md`, `scripts/test_agentic_bench_images.py`, both bug-hunt ledgers, and `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/*` artifacts.
+- No production code, manifests, tests, handoff, issue records, Docker commands, worker commands, benchmark runs, model calls, commits, or pushes were performed. Only this runner ledger was edited.
+
+### ISSUE-READY: remote cache staging can accept a tag/ref match even when the cache image identity is not proven
+
+severity: HIGH
+
+dedup: new root cause for the remote-cache staging workflow. Related to #6 because it can corrupt transport population, #12 because normalized provenance needs identity fields, and #13 because retries must stay redacted. Not a duplicate of #8 because no worker ingest is required to trigger it. Not just #12: the current code can generate a staging plan and fallback tar result for the wrong local image before any normalized result parser sees the artifact.
+
+location:
+
+- `scripts/agentic_bench_images.py:656-663`: `_match_inventory_image()` returns `ref` before checking expected image IDs or repo digests.
+- `scripts/agentic_bench_images.py:708-718`: `match_manifest_inventory()` records a matched inventory image but has no `identity_status` or mismatch status.
+- `scripts/agentic_bench_images.py:798-821`: `plan_missing_transport_staging()` turns the first match into a staging row and records both `source_image_id` and `source_cache_image_id` while still counting the row as `matched`.
+- `scripts/stage_cache_images_from_plan.sh:94-145`: the staging helper reads `source_image_id` and `source_cache_image_id`, but only runs `docker image inspect "$local_ref" >/dev/null`, never compares the actual inspected image ID to either plan identity, then writes the plan's `source_image_id` to the result TSV.
+- `scripts/test_agentic_bench_images.py:351-408` and `:510-571`: current tests cover positive ref/plan/stage flows but do not cover ref-match identity mismatch or pre-save image ID verification.
+
+static_repro:
+
+- Synthetic no-Docker parser probe: create a manifest row with `local_ref=tb2-offline/probe:20260425` and `source_image_id=sha256:expected-good`; create an inventory row with the same ref but `image_id=sha256:wrong-cache-id` and `full_image_id=sha256:wrong-cache-id`; call `match_manifest_inventory()` and `plan_missing_transport_staging()`.
+- Observed output: `match_status=matched`, `match_reason=ref`, `expected_image_id=sha256:expected-good`, `matched_cache_image_id=sha256:wrong-cache-id`, `plan_counts={"matched":1,"missing_transport":1,"unmatched":0}`, `plan_source_image_id=sha256:expected-good`, `plan_source_cache_image_id=sha256:wrong-cache-id`.
+- Static shell path: even if a later source host tag has drifted, `stage_cache_images_from_plan.sh` discards `docker image inspect` output at line 120 and saves the image at lines 124-127. The output TSV at lines 143-145 reports the planned `source_image_id`, not the actual saved image identity.
+
+impact:
+
+- A retagged or stale source Docker cache can produce a fallback tar and optional P0 push for the wrong image while the plan/result artifacts still look matched and saved.
+- A future one-command suite or promotion gate that consumes only `match_status=matched`, staging rc 0, or `status=saved` can treat the wrong fallback tar as valid offline transport. The worker preflight might later catch an identity mismatch only if the manifest is updated with exact expected IDs and the checker runs; otherwise the mismatch can become a benchmark-runtime failure or a false transport-ready claim.
+- The real Round24 artifacts show why this matters: `swe_dev.docker_cache_inventory.json` and `swe_dev2.docker_cache_inventory.json` have `inspect_identities=false`; their image rows have only docker-list fields, and the plan rows carry 71-character expected source image IDs beside 12-character cache IDs. That is planning evidence, not exact identity proof.
+
+fix:
+
+- In `match_manifest_inventory()`, when a manifest row has `expected_image_ids` or `expected_repo_digests`, do not let a ref-only match become `matched` unless the inventory also proves one expected identity token. Emit `identity_mismatch` or `identity_unverified` separately from `missing`.
+- Make `plan-stage-missing-transport` require identity-inspected inventory for rows with `source_image_id`, or mark rows `identity_unverified` and return nonzero unless an explicit unsafe override is provided.
+- In `stage_cache_images_from_plan.sh`, parse `docker image inspect "$local_ref"`, compare the actual full `Id` and RepoDigests against `source_image_id`/`source_cache_image_id`, fail before `docker save` on mismatch or unknown identity, and write `actual_image_id`, `actual_repo_digests_hash`, `identity_status`, `source_host`, `source_ref`, and `source_cache_image_id` to the result TSV.
+- Add red tests: `test_match_inventory_ref_match_with_wrong_expected_image_id_is_identity_mismatch`, `test_plan_stage_missing_transport_refuses_identity_unverified_inventory`, and a fake-docker staging test where inspect returns a wrong ID and the script exits nonzero without creating a tar.
+
+evidence:
+
+- The synthetic probe above returned rc 0 and printed the mismatched expected/cache identity while both match and plan counts stayed successful.
+- Real `remote_cache_20260626` artifacts: `swe_dev.docker_cache_inventory.json` has `inspect_identities=False`, `images=591`, and image rows with keys `digest,image_id,ref,repository,size,tag`; the first three staging-plan rows have `source_image_id_len=71` and `source_cache_image_id_len=12`, all with `match_status=matched`.
+
+### COMMENT-READY for #12/#13: remote inventory stdout/stderr should be pointer-only, not embedded raw output
+
+- `remote_cache_inventory()` builds a remote `inventory-cache ... --json` command at `scripts/agentic_bench_images.py:548-563`.
+- `inventory-cache` with both `--output` and `--json` writes the inventory artifact and prints the same inventory JSON to stdout at `scripts/agentic_bench_images.py:1374-1379`.
+- `remote_cache_inventory()` stores `host_result["stdout"]` and `host_result["stderr"]` verbatim at `scripts/agentic_bench_images.py:589-592`, and `inventory-remote-cache --json` prints that parent summary at `:1392-1393`.
+- Current real artifacts are not secret-bearing by the bounded scan, but the largest inventory JSON is 152586 bytes and a host failure could put SSH/docker stderr directly into a summary. A future one-click runner should preserve only `host`, `host_label`, `returncode`, `status`, `output`, `stdout_bytes`, `stderr_bytes`, `stdout_sha256`, `stderr_sha256`, and restricted raw pointers. Do not embed raw stdout/stderr or nested inventory JSON in `summary.json`, `image_preflight_summary.json`, or `agentic_bench.result.v1`.
+
+### COMMENT-READY for #12/#6/#8: planning/staging artifacts are pre-benchmark transport evidence, not benchmark results
+
+- The new schemas are distinct and should stay distinct: `agentic_bench.docker_cache_inventory.v1`, `agentic_bench.image_inventory_match.v1`, and `agentic_bench.missing_transport_staging_plan.v1`.
+- Grep found no suite-runner integration: `remote_cache`, `missing_transport_stage`, and `staging_plan` currently appear in `scripts/agentic_bench_images.py`, tests, README, handoff, and coordination artifacts, not in `scripts/agentic_bench_suite.py`.
+- Result contract recommendation: when the one-click suite references these artifacts, attach them under a provenance/source section such as `source.native_artifacts[]` or `image_transport_artifacts[]` with `artifact_kind=image_inventory|image_inventory_match|missing_transport_staging_plan|stage_result`, `role=pre_benchmark_transport`, `status=planning|dry_run|saved|saved_pushed|identity_unverified|identity_mismatch`, `read_policy=allowlist_json` for parsed summaries, and `restricted_raw` for command logs. They must not set `benchmark_result.status=pass`, `score_claim_valid=true`, or adapter success.
+- CLI return codes are useful but insufficient as parser fixtures: `match-inventory` returns 1 on `required_missing`, `plan-stage-missing-transport` returns 1 on `unmatched`, and `stage_cache_images_from_plan.sh` returns 1 on `failed>0`, but a filtered no-op can still be rc 0 with `rows=0/staged=0`. Fixtures should assert expected row IDs and expected staged count, not rc alone.
+
+### Remote-cache artifact summary
+
+- `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626` contains 8 tracked artifacts.
+- `swe_dev.docker_cache_inventory.json`: `agentic_bench.docker_cache_inventory.v1`, 152586 bytes, `images=591`, `prefixes=4`, `inspect_identities=false`.
+- `swe_dev2.docker_cache_inventory.json`: `agentic_bench.docker_cache_inventory.v1`, 554 bytes, `images=1`, `prefixes=4`, `inspect_identities=false`.
+- `tb2_swe_dev_cache_match.json`: `agentic_bench.image_inventory_match.v1`, 80654 bytes, `images=89`, `required_images=89`, `matched=89`, `required_missing=0`.
+- `swebench_verified_cache_match.json`: `agentic_bench.image_inventory_match.v1`, 2040 bytes, `images=2`, `matched=1`, `required_images=0`, `required_missing=0`.
+- `tb2_missing_transport_stage_plan.json`: `agentic_bench.missing_transport_staging_plan.v1`, 6848 bytes, `missing_transport=8`, `matched=8`, `unmatched=0`.
+- `tb2_missing_transport_stage_plan.tsv`: 8 rows, fields `id,slug,local_ref,source_image_id,source_host,source_ref,source_cache_image_id,source_size,fallback_tar,p0_tag,match_status`, all `match_status=matched`.
+- `tb2_missing_transport_stage_dryrun_result.tsv`: 8 rows, fields `id,slug,local_ref,source_image_id,fallback_tar,fallback_tar_sha256,p0_tag,p0_digest_ref,status`, all `status=dry_run`.
+- `tb2_missing_transport_stage_install_windows_result.tsv`: 1 row, same result fields, `status=saved`.
+- Bounded secret scan over these 8 artifacts returned 0 hits for auth values, token-like bearer values, key assignments, and private-key markers.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Initial skill-file reads using stale cache path: rc 1 for both; follow-up `find` located the current skill path and reads for systematic-debugging and verification-before-completion returned rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote handoff/head/ledger read through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `86ae01e`, and initially clean status.
+- `find _coordination/20260625_harbor_bench/inventory -maxdepth 2 -type f -path '*remote_cache_20260626*' -print`: rc 0; found the 8 artifacts summarized above.
+- `git show --stat --oneline --decorate ccff9db 86ae01e && git diff --name-only 5ded6c8..86ae01e`: rc 0.
+- Static grep for `inventory-remote-cache`, `match-inventory`, and `plan-stage-missing-transport` in `scripts/agentic_bench_images.py`: rc 0.
+- `nl -ba scripts/stage_cache_images_from_plan.sh | sed -n '1,260p'`: rc 0.
+- `nl -ba scripts/README.md | sed -n '80,150p'`: rc 0.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '400,760p'`: rc 0.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '760,940p;1290,1445p'`: rc 0.
+- `nl -ba scripts/test_agentic_bench_images.py | sed -n '280,640p'`: rc 0.
+- Python artifact summarizer over `remote_cache_20260626`: rc 0; printed schema/counts/field summaries and byte sizes only.
+- First attempted shell pipeline from `match-inventory --json` into a here-doc parser returned rc 0 for the shell but produced a `BrokenPipeError`; this was the same operator-side stdin/here-doc mistake as Round23, produced no artifact changes, and was not used as product evidence.
+- Correct subprocess parse of `match-inventory --json` and `plan-stage-missing-transport --json`: rc 0 for both; counts recorded above.
+- Grep for remote-cache/staging terms across `scripts/agentic_bench_suite.py`, scripts, manifests, and runtime lane: rc 0; no suite integration was found.
+- Synthetic no-Docker identity-mismatch probe for `match_manifest_inventory()` and `plan_missing_transport_staging()`: rc 0; output recorded in the ISSUE-READY block.
+- Python check of real staging-plan identity field lengths/statuses: rc 0; plan has 8 rows, all matched, with 71-character expected source image IDs and 12-character source cache IDs.
+- Bounded secret scan over the 8 remote-cache artifacts: rc 0, `remote_cache_secret_scan_hits=0`.
+- Focused unittest selector mistakes: `RemoteCacheInventoryTest` rc 1 and `ImageManifestCheckerTest` rc 1 because those classes do not exist. These were selector errors only; no artifacts changed.
+- Correct focused unittest command for the five remote-cache/stage tests under `AgenticBenchImagesTest`: rc 0, 5 tests passed.
+- Runtime-images ledger tail read for alignment: rc 0. It has no Round24 remote-cache section yet and does not contradict this finding.
+- `grep -n '^## Round24' _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md || true`: rc 0 before append, no existing Round24 section.
+
+### Validation
+
+- Initial `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 2 due to one blank line at EOF introduced by the append; fixed by rewriting this ledger with exactly one final newline.
+- Initial trailing whitespace scan on this ledger: rc 0, no matches.
+- Initial pycache scan after safe Python/unit probes: rc 0, no matches.
+- Initial bounded full-ledger secret scan with the historical auth-title false positive excluded: rc 0, `ledger_secret_scan_hits=0`.
+- Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.

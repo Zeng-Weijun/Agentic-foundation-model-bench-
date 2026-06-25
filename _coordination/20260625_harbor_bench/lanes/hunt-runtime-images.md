@@ -2064,3 +2064,101 @@ Retry policy:
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace.
 - Bounded secret scan on the ledger for common token/key forms; rc 1, interpreted as no matches.
 - `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no result; no pycache found.
+## Round24 remote cache staging workflow and worker-readiness boundary
+
+### Scope
+
+- Lane: runtime/images review of the remote cache staging workflow added around `ccff9db` and recorded at head `86ae01e`.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `86ae01e`.
+- Ledger-only. I did not edit production code, manifests, tests, handoff, runner ledger, or inventory artifacts. I did not commit or push.
+- No Docker save/load/push/pull and no worker actions were run in this lane. Static reads, JSON/TSV parsing, and lint/match commands only.
+
+### ISSUE-READY: staging script can save a shared fallback tar from the wrong host or wrong image identity
+
+Severity: Medium. This is a transport-population integrity bug that can corrupt shared fallback-tar evidence before worker preflight sees it.
+
+Dedup: related to #6 image transport population and #11 image identity, but distinct from #8/#12/#13. #8 is worker rootless health, #12/#13 are result/log provenance. This bug is in the source-side staging writer before manifest promotion or worker ingest.
+
+Location:
+
+- `scripts/stage_cache_images_from_plan.sh:94` reads `source_host`, `source_ref`, `source_cache_image_id`, and `source_size` from the staging plan.
+- `scripts/stage_cache_images_from_plan.sh:119-128` only runs `docker image inspect "$local_ref"`, `docker save -o "$tmp_tar" "$local_ref"`, moves the tar to the shared `fallback_tar`, chmods it, and hashes it. It does not check the current host against `source_host` and does not compare the inspected image ID to `source_image_id` or `source_cache_image_id` before writing the tar.
+- `scripts/stage_cache_images_from_plan.sh:143-145` writes result rows without `source_host`, `source_ref`, `source_cache_image_id`, `source_size`, or `actual_image_id`, so provenance needed to audit a wrong-host save is dropped from the result TSV.
+- `scripts/README.md:132-135` says the generated plan should run on the source Docker host, but this is a documentation-only guard.
+- `scripts/test_agentic_bench_images.py:510-571` covers a successful fake Docker save, but it does not assert host-label enforcement or image-ID mismatch rejection.
+
+Static repro:
+
+1. Use a plan row whose `source_host` is `swe_dev`, `local_ref` is `tb2-offline/install-windows-3.11:20260425`, and `source_image_id` is `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b`.
+2. Run `scripts/stage_cache_images_from_plan.sh --plan PLAN --execute --only install-windows-3.11` on any host where that tag exists but resolves to a different image ID, or with a fake `docker image inspect` returning a wrong `.Id`.
+3. By inspection of `scripts/stage_cache_images_from_plan.sh:119-128`, the script still saves the tar and computes a valid SHA because the inspect result is used only as a presence check. No branch compares identity or host before writing the shared `fallback_tar`.
+
+Impact:
+
+- A wrong host or stale tag can overwrite a shared fallback tar with valid bytes and a valid SHA, producing result status `saved` even though the tar is not the plan's source image.
+- Later worker identity checks may catch this if the row is promoted and load-smoked, but the shared staging evidence is already polluted and can waste large storage/time. If a future promotion path trusts saved tar+sha without worker identity evidence, this becomes a fake-ready path.
+- The concrete Round24 plan rows all say `source_host=swe_dev`, while `swe_dev2` has only one matching prefix image. Host confusion is therefore realistic in this workflow, especially because direct `dev -> swe_dev` aliases were reported broken and operators are using full endpoints/control-plane hops.
+
+Concrete fix:
+
+- Add an explicit host guard, for example `--source-host-label swe_dev` or `SOURCE_HOST_LABEL=swe_dev`, and fail if any selected row's `source_host` differs unless an explicit `--allow-source-host-mismatch` is provided.
+- Parse `docker image inspect "$local_ref"` JSON before `docker save`; compare `.Id` to `source_image_id` when present and compare the configured `source_cache_image_id` as a prefix/minimum check. Fail before writing `tmp_tar` on mismatch.
+- Write `source_host`, `source_ref`, `source_cache_image_id`, `source_size`, and `actual_image_id` into the result TSV.
+- Add tests that fake `docker image inspect` with a wrong ID and assert no tar is written, plus a test that selected rows with a different source host fail unless an explicit override is set.
+
+### COMMENT-READY: staging artifacts do not currently imply worker readiness
+
+- The new controller commands separate inventory/match/plan from active manifests. `plan-stage-missing-transport` calls static lint with `require_offline_transport=True` and only emits rows for required active-manifest gaps (`scripts/agentic_bench_images.py:770-834`); `write_staging_plan_tsv` only writes the planning TSV (`:837-856`).
+- The active TB2 manifest still fails closed. `tb2_install_windows_3_11`, `tb2_mteb_retrieve`, and `tb2_multi_source_data_merger` remain `fallback_status: missing_shared_tar`, `fallback_transport: none`, with no active image ref, fallback tar, or fallback sha.
+- Strict registry lint still returns rc 1 with `required_without_offline_transport=8`, `fallback_tar_verified=86`, and no fallback missing/mismatch. The saved install-windows tar has not changed the active promotion gate.
+- The plan/match artifacts are source-cache evidence only: `tb2_swe_dev_cache_match.json` reports `matched=89/89`, and the 8-row staging plan has all rows matched from `swe_dev`. This proves source cache availability, not P0 digest publication, worker fallback load, identity verification, or runtime smoke.
+
+### COMMENT-READY: install-windows saved tar remains quarantined
+
+- `tb2_missing_transport_stage_install_windows_result.tsv` has one row with `status=saved`, a 64-character `fallback_tar_sha256`, and empty `p0_digest_ref`.
+- The install-windows tar exists at the batch2 target path and is about 1.66GB, but the active manifest row still has no fallback tar or sha and strict lint still lists it among the 8 missing offline-transport rows.
+- It must remain quarantined until the staging script source-host/identity guard is fixed or manually verified, then a worker fallback-load/run-smoke evidence artifact proves `loaded/present/smoke_passed` with no identity mismatch. The image smoke command is `python3 --version ... || echo tb2-smoke-ok` with `network: none`; it does not run the task's supervisord/default behavior or any real Terminal-Bench benchmark.
+
+### Next row order and runtime risk
+
+- Source-side export order should first fix or manually compensate for the staging script guard above. After that, `install-windows-3.11` can be treated as a small-but-special worker-ingest probe only if it remains isolated and is not interpreted as task success.
+- Keep `mteb-retrieve` and `multi-source-data-merger` quarantined despite existing staged tar/P0 evidence because both have worker ingest failure history or related rootless risk.
+- Keep QEMU rows (`qemu-alpine-ssh`, `qemu-startup`) isolated from install-windows and from generic data rows. They are moderate size but have special runtime semantics.
+- Keep giant rows last and one-at-a-time: `torch-pipeline-parallelism`, `torch-tensor-parallelism`, and especially `pytorch-model-recovery` at 19.2GB source size.
+- The all-row `--execute` mode can write roughly the whole remaining plan if `--only` is omitted. This is mitigated by dry-run default, but the safer operational contract is an explicit `--all` or row/byte budget for multi-row saves.
+
+### Command evidence
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md && sed -n '260,980p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0, output truncated by the terminal but command completed successfully.
+- Read systematic-debugging and verification-before-completion skill files; rc 0. Memory quick grep for Round24/remote-cache terms; rc 0 with no relevant hits used.
+- `ssh dev 'cd .../image-warmup-policy && git rev-parse --abbrev-ref HEAD && git rev-parse --short HEAD && git status --short --untracked-files=all && sed -n "1,320p" _coordination/20260625_harbor_bench/HANDOFF.md'`; rc 0. Branch/head `feat/image-warmup-policy` / `86ae01e`.
+- Read runtime ledger tail and runner ledger tail for Round22/Round23 alignment; rc 0.
+- `git show --stat --oneline ccff9db` and `git show --stat --oneline 86ae01e`; rc 0. Confirmed remote cache staging workflow and issue-comment commit.
+- Grep for new CLI names in `scripts/agentic_bench_images.py`; rc 0. CLI parsers are at `scripts/agentic_bench_images.py:1311-1336`, dispatch at `:1382-1441`.
+- `nl -ba scripts/stage_cache_images_from_plan.sh | sed -n '1,240p'`; rc 0. Static source-host/identity guard finding comes from lines `94` and `119-145`.
+- `find _coordination/20260625_harbor_bench/inventory/remote_cache_20260626 -maxdepth 1 -type f -printf '%f	%s
+'`; rc 0. Found 7 remote-cache artifacts.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '560,705p'`; rc 0. Inventory host fallback and match behavior read at `:619-663` and `:666-705`.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '700,1040p'`; rc 0. Planning and active checker semantics read at `:770-856` and `:874-1005`.
+- `nl -ba scripts/README.md | sed -n '80,135p'`; rc 0. README documents remote cache inventory, match, plan, and staging usage.
+- `nl -ba scripts/test_agentic_bench_images.py | sed -n '351,620p'`; rc 0. Tests cover inventory matching, staging-plan generation, CLI dispatch, and successful fake staging, but no wrong-host or wrong-image-ID rejection.
+- Parsed `tb2_missing_transport_stage_plan.tsv`, `tb2_missing_transport_stage_dryrun_result.tsv`, and `tb2_missing_transport_stage_install_windows_result.tsv`; rc 0. Plan has 8 rows, all `source_host=swe_dev`; install-windows result has `status=saved`, SHA length 64, empty P0 digest; result TSVs omit source host/ref/cache-size fields.
+- Parsed `swe_dev.docker_cache_inventory.json`, `swe_dev2.docker_cache_inventory.json`, `tb2_swe_dev_cache_match.json`, `swebench_verified_cache_match.json`, and `tb2_missing_transport_stage_plan.json`; rc 0. Counts: swe_dev images 591, swe_dev2 images 1, TB2 matched 89/89, SWE matched 1/2 optional rows, staging plan matched 8/8.
+- The first attempt to pipe `match-inventory --json` into a here-doc parser returned rc 1 with a JSON decode/BrokenPipe operator error; discarded as evidence.
+- Re-ran `match-inventory` through a subprocess wrapper; rc 0. Counts: images 89, matched 89, required_missing 0. The three reviewed remaining rows matched `swe_dev` by ref with short source cache IDs.
+- Parsed the active TB2 manifest and strict `lint-registry --require-offline-transport --verify-fallback-files --json`; wrapper rc 0, inner lint rc 1. `install-windows`, `mteb`, and `multi-source` remain unpromoted; lint counts still show `required_without_offline_transport=8`, `fallback_tar_verified=86`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`.
+- Parsed smoke settings for install-windows, mteb, multi-source, and QEMU rows; rc 0. All reviewed rows use a generic `network: none` smoke command and do not run task/default service behavior.
+
+### Blockers
+
+- The staging writer needs source-host and image-ID guards before the result TSV can be trusted as clean source-side fallback evidence at scale.
+- `install-windows-3.11` has saved-tar evidence only, not P0 digest or worker fallback-load/run-smoke evidence.
+- Worker-j9jjd rootless new-layer ingest remains under #8 quarantine; staging source-cache evidence must not bypass worker preflight.
+
+### Validation evidence
+
+- Initial `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 2 due to a new blank line at EOF from the append. Fixed by normalizing this ledger to exactly one final newline.
+- Follow-up `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace.
+- Bounded secret scan on the ledger for common token/key forms; rc 1, interpreted as no matches.
+- `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no result; no pycache found.

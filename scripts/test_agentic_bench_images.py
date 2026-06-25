@@ -408,6 +408,60 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][1]["match_status"], "missing")
 
 
+    def test_match_manifest_inventory_rejects_ref_match_with_wrong_identity(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "tb2.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: terminal_bench_2_1_smoke
+                    images:
+                      - id: mteb_retrieve
+                        required: true
+                        local_ref: tb2-offline/mteb-retrieve:20260425
+                        source_image_id: sha256:expected-full-id
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            inventory = root / "swe_dev.docker_cache_inventory.json"
+            inventory.write_text(
+                json.dumps(
+                    {
+                        "schema_version": "agentic_bench.docker_cache_inventory.v1",
+                        "host": "swe_dev",
+                        "images": [
+                            {
+                                "ref": "tb2-offline/mteb-retrieve:20260425",
+                                "image_id": "short",
+                                "full_image_id": "sha256:wrong-cache-id",
+                                "repo_digests": [],
+                                "size": "1.2GB",
+                            }
+                        ],
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            summary = module.match_manifest_inventory(
+                manifest,
+                inventories=[inventory],
+                asset_root=root,
+            )
+
+        self.assertEqual(summary["counts"]["matched"], 0)
+        self.assertEqual(summary["counts"]["required_missing"], 1)
+        self.assertEqual(summary["counts"]["identity_mismatch"], 1)
+        self.assertEqual(summary["images"][0]["match_status"], "identity_mismatch")
+        self.assertEqual(summary["images"][0]["matches"], [])
+        self.assertEqual(summary["images"][0]["identity_mismatches"][0]["full_image_id"], "sha256:wrong-cache-id")
+
+
     def test_plan_missing_transport_uses_remote_cache_match_for_stage_rows(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -567,8 +621,127 @@ class AgenticBenchImagesTest(unittest.TestCase):
             self.assertEqual(proc.returncode, 0, proc.stderr)
             self.assertTrue(tar_path.is_file())
             result_text = out_tsv.read_text(encoding="utf-8")
+            self.assertIn("source_host", result_text)
+            self.assertIn("source_ref", result_text)
+            self.assertIn("source_cache_image_id", result_text)
+            self.assertIn("actual_image_id", result_text)
             self.assertIn("fallback_tar_sha256", result_text)
+            self.assertIn("\tswe_dev\t", result_text)
+            self.assertIn("\tsha256:fake\tsaved", result_text)
             self.assertIn(hashlib.sha256(b"fake docker tar bytes").hexdigest(), result_text)
+
+
+    def test_stage_cache_images_script_rejects_wrong_source_image_id(self):
+        script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_docker = fakebin / "docker"
+            fake_docker.write_text(
+                textwrap.dedent(
+                    """
+                    #!/usr/bin/env bash
+                    set -euo pipefail
+                    printf '%s\n' "$*" >> "$FAKE_DOCKER_LOG"
+                    if [ "$1 $2" = "image inspect" ]; then
+                      printf '[{"Id":"sha256:wrong-cache-id"}]\n'
+                      exit 0
+                    fi
+                    if [ "$1" = "save" ]; then
+                      echo "unexpected docker save" >&2
+                      exit 9
+                    fi
+                    echo "unexpected docker $*" >&2
+                    exit 9
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+            fake_docker.chmod(0o755)
+            plan = root / "plan.tsv"
+            tar_path = root / "images" / "wrong.tar"
+            plan.write_text(
+                "id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tp0_tag\tmatch_status\n"
+                f"tb2_wrong\twrong\ttb2-offline/wrong:20260425\tsha256:expected-full-id\tswe_dev\ttb2-offline/wrong:20260425\tsha256:wrong-cache-id\t1GB\t{tar_path}\t100.97.118.137:8555/swe-data-harness/wrong:20260425\tmatched\n",
+                encoding="utf-8",
+            )
+            out_tsv = root / "result.tsv"
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            env["FAKE_DOCKER_LOG"] = str(root / "docker.log")
+            proc = subprocess.run(
+                ["bash", str(script), "--plan", str(plan), "--execute", "--output-tsv", str(out_tsv)],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("image identity mismatch", proc.stderr)
+            self.assertFalse(tar_path.exists())
+            docker_log = (root / "docker.log").read_text(encoding="utf-8")
+            self.assertIn("image inspect tb2-offline/wrong:20260425", docker_log)
+            self.assertNotIn("save", docker_log)
+            result_text = out_tsv.read_text(encoding="utf-8")
+            self.assertIn("actual_image_id", result_text)
+            self.assertIn("sha256:wrong-cache-id", result_text)
+            self.assertIn("identity_mismatch", result_text)
+
+
+    def test_stage_cache_images_script_rejects_wrong_source_host_label(self):
+        script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_docker = fakebin / "docker"
+            fake_docker.write_text(
+                textwrap.dedent(
+                    """
+                    #!/usr/bin/env bash
+                    echo "docker should not be called" >&2
+                    exit 9
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+            fake_docker.chmod(0o755)
+            plan = root / "plan.tsv"
+            tar_path = root / "images" / "wrong-host.tar"
+            plan.write_text(
+                "id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tp0_tag\tmatch_status\n"
+                f"tb2_wrong_host\twrong-host\ttb2-offline/wrong-host:20260425\tsha256:expected-full-id\tswe_dev\ttb2-offline/wrong-host:20260425\texpected\t1GB\t{tar_path}\t100.97.118.137:8555/swe-data-harness/wrong-host:20260425\tmatched\n",
+                encoding="utf-8",
+            )
+            out_tsv = root / "result.tsv"
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            proc = subprocess.run(
+                [
+                    "bash",
+                    str(script),
+                    "--plan",
+                    str(plan),
+                    "--execute",
+                    "--source-host-label",
+                    "swe_dev2",
+                    "--output-tsv",
+                    str(out_tsv),
+                ],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("source host mismatch", proc.stderr)
+            self.assertFalse(tar_path.exists())
+            self.assertIn("source_host_mismatch", out_tsv.read_text(encoding="utf-8"))
 
 
     def test_lint_manifest_reports_required_rows_without_offline_transport(self):

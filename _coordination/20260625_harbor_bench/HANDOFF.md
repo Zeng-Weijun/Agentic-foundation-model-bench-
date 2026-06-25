@@ -256,3 +256,16 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - No active TB2 manifest row was promoted from this new staging evidence. Worker-j9jjd new-layer ingest remains under #8 quarantine; `mteb-retrieve` and `multi-source-data-merger` stay unpromoted until a clean worker ingest proof exists.
 
 - Issue comments posted for remote cache staging workflow: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4804915658`, #8 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4804915768`, #12 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/12#issuecomment-4804915896`, #13 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/13#issuecomment-4804916055`.
+
+## 2026-06-26 staging source-host and image-identity guard
+
+- Implemented the Round24 remote-cache staging provenance fix in `scripts/stage_cache_images_from_plan.sh` and `scripts/agentic_bench_images.py`.
+- `match_manifest_inventory()` now reports `identity_mismatch` instead of `matched` when a manifest row has expected image identity and an identity-inspected inventory row has the same ref but a different full image ID or repo digest. Real TB2 `swe_dev` inventory still matches `89/89` with `identity_mismatch=0`.
+- `stage_cache_images_from_plan.sh --execute` now parses `docker image inspect` before `docker save` and fails before writing a tar if the actual image `Id` differs from the plan `source_image_id`.
+- Staging now accepts `--source-host-label`; selected rows fail with `source_host_mismatch` before Docker access when the plan `source_host` differs from the operator-provided label.
+- Stage result TSVs now include `source_host`, `source_ref`, `source_cache_image_id`, `source_size`, and `actual_image_id` so saved/dry-run/mismatch rows keep source provenance.
+- New dry-run evidence using the guard-aware output schema: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_identity_guard_dryrun_result.tsv`.
+- The prior `install-windows-3.11` saved tar remains source-staged only and was not re-promoted or re-saved in this guard fix. It still needs worker fallback-load/run-smoke evidence before active manifest promotion.
+- Verification after the fix: `python3 -m unittest scripts.test_agentic_bench_suite scripts.test_agentic_bench_images scripts.test_offline_images_manifest` passed 46 tests; `bash -n` for shell helpers passed; `git diff --check` passed; guard dry-run emitted aligned provenance columns.
+- Source-cache audit report: `_coordination/20260625_harbor_bench/lanes/source-cache-audit-round25.md`. It confirms `swe_dev:/data/docker` is the main source cache, with `tb2-offline=89`, `swebench/sweb.eval=500`, and `swerex-prebuilt=728`; combined shared/agentic TB2 tar presence is about `84/89`, but only `81` TB2 rows remain active-promotion verified because staged/quarantined tar presence is not enough for worker readiness.
+- Runner concurrency report: `_coordination/20260625_harbor_bench/lanes/runner-concurrency-relay-round25.md`. It confirms current suite dry-run default `suite_concurrency=40`, image preflight concurrency `4`, and records a new ISSUE-READY gap that `proxy_concurrency_ceiling` is not enforced when `--max-concurrency` is raised above 50.

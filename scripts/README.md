@@ -129,10 +129,10 @@ Generate a staging plan for required rows that still lack digest-pinned P0 refs 
 python3 scripts/agentic_bench_images.py plan-stage-missing-transport   --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml   --inventory _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json   --tar-dir /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2   --p0-name-prefix terminal-bench-2-1-   --output-tsv _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv   --json
 ```
 
-Run the generated plan on the source Docker host. This script is dry-run by default; `--execute` is required before it calls `docker image inspect` and `docker save`. Add `--push` only after the registry/CA path for that host is intentionally verified.
+Run the generated plan on the source Docker host. This script is dry-run by default; `--execute` is required before it calls `docker image inspect` and `docker save`. Pass `--source-host-label` so selected rows fail before Docker access if the operator is on the wrong source host. The execute path compares the inspected image `Id` against `source_image_id` before saving and writes source/actual identity columns to the result TSV. Add `--push` only after the registry/CA path for that host is intentionally verified.
 
 ```bash
-scripts/stage_cache_images_from_plan.sh   --plan _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv   --only install-windows-3.11   --execute   --output-tsv _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_result.tsv
+scripts/stage_cache_images_from_plan.sh   --plan _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv   --only install-windows-3.11   --source-host-label swe_dev   --execute   --output-tsv _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_result.tsv
 ```
 
 
