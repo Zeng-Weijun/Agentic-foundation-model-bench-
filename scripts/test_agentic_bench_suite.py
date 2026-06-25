@@ -864,5 +864,235 @@ class AgenticBenchSuiteTest(unittest.TestCase):
             self.assertIn(f"{key}={value}", run["command_preview"])
 
 
+    def test_readiness_report_covers_target_benches_and_blocks_unready_assets(self):
+        module = load_module()
+        suite_yaml = textwrap.dedent(
+            """
+            schema_version: agentic_bench.suite.v1
+            suite:
+              id: readiness_unit
+              controller_host: dev
+              concurrency: 4
+              proxy_concurrency_ceiling: 50
+              offline_policy:
+                network_policy: offline_or_internal_only
+                forbid_public_internet: true
+                rootless_required: true
+            model_profiles:
+              - id: gpt54mini_8130
+                model_name: gpt-5.4-mini
+                provider: openai_compatible_relay
+                base_url: http://8.130.49.170/v1
+                api_key_env: OPENAI_API_KEY
+            benches:
+              - id: repozero_py2js_smoke
+                benchmark: repozero_py2js
+                adapter: repozero_py2js
+                adapter_script: run_repozero_py2js.sh
+                adapter_status: wired_legacy
+                image_manifest: manifests/images/repozero.yaml
+                image_policy: required
+                model_profile: gpt54mini_8130
+                params:
+                  MAX_CONCURRENCY: 1
+              - id: terminal_bench_2_1
+                benchmark: terminal_bench_2_1
+                adapter: terminal_bench_2_1
+                adapter_script: run_terminal_bench_2_1.sh
+                adapter_status: pending_adapter
+                image_manifest: manifests/images/terminal_bench_2_1.yaml
+                image_policy: required
+                model_profile: gpt54mini_8130
+              - id: mcp_atlas
+                benchmark: MCP-Atlas
+                adapter: mcp_atlas
+                adapter_script: run_mcp_atlas.sh
+                adapter_status: pending_adapter
+                enabled: false
+                model_profile: gpt54mini_8130
+            """
+        ).strip()
+        repozero_manifest = textwrap.dedent(
+            """
+            schema_version: agentic_bench.image_manifest.v1
+            bench_id: repozero_py2js_smoke
+            images:
+              - id: repozero_runtime
+                required: true
+                image_ref: 100.97.118.137:8555/swe-data-harness/repozero-runtime@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                fallback_tar: images/repozero/runtime.tar
+                fallback_tar_sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+            """
+        ).strip()
+        tb_manifest = textwrap.dedent(
+            """
+            schema_version: agentic_bench.image_manifest.v1
+            bench_id: terminal_bench_2_1
+            images:
+              - id: tb2_runtime_missing_transport
+                required: true
+                local_ref: tb2-offline/example:20260425
+                image_transport: swe_dev_cache_identity
+            """
+        ).strip()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            suite_path = root / "manifests" / "suite.yaml"
+            suite_path.parent.mkdir(parents=True)
+            (root / "manifests" / "images").mkdir()
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            (root / "manifests" / "images" / "repozero.yaml").write_text(repozero_manifest, encoding="utf-8")
+            (root / "manifests" / "images" / "terminal_bench_2_1.yaml").write_text(tb_manifest, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            report = module.build_readiness_report(
+                config,
+                suite_path=suite_path,
+                target_benches=["RepoZero", "Terminal Bench 2.1", "MCP-Atlas", "NL2Repo"],
+            )
+
+        by_id = {item["target_id"]: item for item in report["targets"]}
+        self.assertEqual(report["schema_version"], "agentic_bench.readiness_report.v1")
+        self.assertEqual(report["counts"], {"ready": 1, "blocked": 2, "missing": 1, "total": 4})
+        self.assertEqual(by_id["repozero"]["status"], "ready")
+        self.assertEqual(by_id["terminal_bench_2_1"]["status"], "blocked")
+        self.assertIn("no_enabled_wired_adapter", by_id["terminal_bench_2_1"]["blockers"])
+        self.assertIn("required_image_transport_missing", by_id["terminal_bench_2_1"]["blockers"])
+        self.assertEqual(by_id["mcp_atlas"]["status"], "blocked")
+        self.assertIn("no_enabled_suite_entry", by_id["mcp_atlas"]["blockers"])
+        self.assertEqual(by_id["nl2repo"]["status"], "missing")
+        self.assertEqual(by_id["nl2repo"]["blockers"], ["missing_suite_entry"])
+
+
+    def test_cli_readiness_gate_emits_json_and_fails_on_blocked_targets(self):
+        suite_yaml = textwrap.dedent(
+            """
+            schema_version: agentic_bench.suite.v1
+            suite:
+              id: readiness_cli
+              controller_host: dev
+            model_profiles:
+              - id: gpt54mini_8130
+                model_name: gpt-5.4-mini
+                provider: openai_compatible_relay
+            benches:
+              - id: repozero_py2js_smoke
+                benchmark: repozero_py2js
+                adapter: repozero_py2js
+                adapter_script: run_repozero_py2js.sh
+                adapter_status: wired_legacy
+                model_profile: gpt54mini_8130
+            """
+        ).strip()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--readiness",
+                    "--json",
+                    "--target-benches",
+                    "RepoZero,NL2Repo",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 1)
+        self.assertEqual(proc.stderr, "")
+        report = json.loads(proc.stdout)
+        self.assertEqual(report["schema_version"], "agentic_bench.readiness_report.v1")
+        self.assertEqual(report["counts"], {"ready": 1, "blocked": 0, "missing": 1, "total": 2})
+        self.assertEqual([target["target_id"] for target in report["targets"]], ["repozero", "nl2repo"])
+        self.assertEqual(report["targets"][1]["blockers"], ["missing_suite_entry"])
+
+
+    def test_terminal_bench_full_entry_uses_cache_manifest_with_current_gap_counts(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tb_full = next(bench for bench in config["benches"] if bench["id"] == "terminal_bench_2_1")
+
+        self.assertEqual(tb_full["image_manifest"], "manifests/images/terminal_bench_2_1_swe_dev_cache.yaml")
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["Terminal Bench 2.1"])
+        tb_target = report["targets"][0]
+        full_entry = next(entry for entry in tb_target["entries"] if entry["bench_id"] == "terminal_bench_2_1")
+        manifest_counts = full_entry["image_manifests"][0]["counts"]
+
+        self.assertEqual(manifest_counts["required_images"], 89)
+        self.assertEqual(manifest_counts["required_with_offline_transport"], 81)
+        self.assertEqual(manifest_counts["required_without_offline_transport"], 8)
+        self.assertIn("required_image_transport_missing", full_entry["blockers"])
+
+        cache_manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1_swe_dev_cache.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 81)
+        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 8)
+        blockers = cache_manifest["known_blockers"]
+        self.assertIn("missing_transport_for_8_cache_tasks", blockers)
+        self.assertNotIn("missing_transport_for_39_cache_only_tasks", blockers)
+
+
+    def test_readiness_resolves_manifests_from_image_preflight_project_root(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            repo_root = root / "repo"
+            manifests_dir = repo_root / "manifests" / "images"
+            manifests_dir.mkdir(parents=True)
+            (manifests_dir / "repozero.yaml").write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: repozero_py2js_smoke
+                    images:
+                      - id: repozero_runtime
+                        required: true
+                        image_ref: 100.97.118.137:8555/swe-data-harness/repozero-runtime@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            suite_path = root / "tmp_suite.yaml"
+            suite_path.write_text(
+                textwrap.dedent(
+                    f"""
+                    schema_version: agentic_bench.suite.v1
+                    suite:
+                      id: readiness_external_suite
+                      controller_host: dev
+                    model_profiles:
+                      - id: gpt54mini_8130
+                        model_name: gpt-5.4-mini
+                        provider: openai_compatible_relay
+                    image_preflight:
+                      project_root: {repo_root}
+                    benches:
+                      - id: repozero_py2js_smoke
+                        benchmark: repozero_py2js
+                        adapter: repozero_py2js
+                        adapter_script: run_repozero_py2js.sh
+                        adapter_status: wired_legacy
+                        image_manifest: manifests/images/repozero.yaml
+                        image_policy: required
+                        model_profile: gpt54mini_8130
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            config = module.load_suite_config(suite_path)
+            report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["RepoZero"])
+
+        self.assertEqual(report["counts"], {"ready": 1, "blocked": 0, "missing": 0, "total": 1})
+        target = report["targets"][0]
+        self.assertEqual(target["status"], "ready")
+        manifest_report = target["entries"][0]["image_manifests"][0]
+        self.assertEqual(Path(manifest_report["path"]).parent.name, "images")
+        self.assertNotIn("image_manifest_missing", target["blockers"])
+
+
 if __name__ == "__main__":
     unittest.main()

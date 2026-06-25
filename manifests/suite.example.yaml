@@ -273,7 +273,7 @@ benches:
     adapter: terminal_bench_2_1
     adapter_script: run_terminal_bench_2_1.sh
     adapter_status: pending_adapter
-    image_manifest: manifests/images/terminal_bench_2_1.yaml
+    image_manifest: manifests/images/terminal_bench_2_1_swe_dev_cache.yaml
     image_policy: required
     model_profile: gpt54mini_8130
     enabled: false

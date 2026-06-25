@@ -163,6 +163,14 @@ python3 scripts/agentic_bench_images.py lint-registry \
 
 `lint-registry` accepts repeated or comma-separated `--policy` and `--manifest-id` filters. With no filters it lints every image manifest listed in `bench_registry.yaml`. Use this as the promotion gate for worker-ready selections: all required rows in the selected registry slice must have either an internal digest-pinned `image_ref` or a fallback tar checksum before large offline worker runs are enabled. Add `--verify-fallback-files` for promotion gates that should also resolve fallback tar paths and verify sha256 values without using Docker.
 
+
+Static all-bench readiness gate for the tracked agentic bench set:
+
+```bash
+scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --json
+```
+
+The readiness gate reads the suite YAML plus referenced image manifests and exits nonzero while any selected target is `blocked` or `missing`. It does not call models, Docker, or benchmark adapters. Use `--target-benches RepoZero,Terminal-Bench-2.1` for a subset. The default target set is SWE-bench Verified multi, Terminal Bench 2.1, MCP-Atlas, Tool-Decathlon, tau3-bench, programbench, RepoZero, NL2Repo, and DeepSWE.
 Run only suite image preflights, without launching benchmark adapters:
 
 ```bash

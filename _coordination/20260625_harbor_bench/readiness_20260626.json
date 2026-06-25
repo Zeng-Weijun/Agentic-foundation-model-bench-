@@ -1,0 +1,565 @@
+{
+  "counts": {
+    "blocked": 8,
+    "missing": 0,
+    "ready": 1,
+    "total": 9
+  },
+  "created_at": "2026-06-25T23:49:01Z",
+  "schema_version": "agentic_bench.readiness_report.v1",
+  "suite_id": "dev_worker_smoke_dryrun",
+  "suite_path": "manifests/suite.example.yaml",
+  "targets": [
+    {
+      "blockers": [
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 4,
+      "entries": [
+        {
+          "adapter": "swebench_verified_qwen_code",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "swebench_verified_qwen_code_smoke",
+          "benchmark": "swe-bench-verified",
+          "blockers": [
+            "image_manifest_not_materialized"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "swebench_verified_multi",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 2,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/swebench_verified.yaml",
+              "manifest_status": "partial_worker_cache_not_full_manifest",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/swebench_verified.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        },
+        {
+          "adapter": "mini_swe_agent",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "swebench_verified_mini_swe_agent",
+          "benchmark": "swe-bench-verified",
+          "blockers": [
+            "image_manifest_not_materialized"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "swebench_verified_multi",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 2,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/swebench_verified.yaml",
+              "manifest_status": "partial_worker_cache_not_full_manifest",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/swebench_verified.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        },
+        {
+          "adapter": "swe_agent",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "swebench_verified_swe_agent",
+          "benchmark": "swe-bench-verified",
+          "blockers": [
+            "image_manifest_not_materialized"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "swebench_verified_multi",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 2,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/swebench_verified.yaml",
+              "manifest_status": "partial_worker_cache_not_full_manifest",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/swebench_verified.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        },
+        {
+          "adapter": "openhands",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "swebench_verified_openhands",
+          "benchmark": "swe-bench-verified",
+          "blockers": [
+            "image_manifest_not_materialized"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "swebench_verified_multi",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 2,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/swebench_verified.yaml",
+              "manifest_status": "partial_worker_cache_not_full_manifest",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/swebench_verified.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 4,
+      "label": "SWE-bench Verified multi",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "swebench_verified_multi",
+      "wired_entry_count": 4
+    },
+    {
+      "blockers": [
+        "no_enabled_wired_adapter",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "required_image_transport_missing"
+      ],
+      "enabled_entry_count": 1,
+      "entries": [
+        {
+          "adapter": "terminal_bench_2_1",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "terminal_bench_2_1",
+          "benchmark": "terminal_bench_2_1",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "required_image_transport_missing"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "terminal_bench_2_1_swe_dev_cache",
+              "blockers": [
+                "required_image_transport_missing"
+              ],
+              "counts": {
+                "images": 89,
+                "optional_placeholders": 0,
+                "required_images": 89,
+                "required_with_offline_transport": 81,
+                "required_without_offline_transport": 8
+              },
+              "manifest": "manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
+              "manifest_status": "materialized_from_swe_dev_cache_81_of_89_offline_transport_ready",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        },
+        {
+          "adapter": "terminal_bench_2_1",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "terminal_bench_2_1_image_smoke",
+          "benchmark": "terminal_bench_2_1",
+          "blockers": [
+            "adapter_not_wired"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "terminal_bench_2_1",
+              "blockers": [],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 0,
+                "required_images": 1,
+                "required_with_offline_transport": 1,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/terminal_bench_2_1.yaml",
+              "manifest_status": "one_task_image_smoke_ready_full_inventory_partial",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/terminal_bench_2_1.yaml",
+              "status": "ready"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 2,
+      "label": "Terminal Bench 2.1",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "terminal_bench_2_1",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [
+        "no_enabled_suite_entry",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 0,
+      "entries": [
+        {
+          "adapter": "mcp_atlas",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "mcp_atlas",
+          "benchmark": "MCP-Atlas",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "image_manifest_not_materialized"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "pending_agentic_benches",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 4,
+                "optional_placeholders": 4,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/pending_benches.yaml",
+              "manifest_status": "dataset_and_image_contracts_missing",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/pending_benches.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "MCP-Atlas",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "mcp_atlas",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [
+        "no_enabled_suite_entry",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 0,
+      "entries": [
+        {
+          "adapter": "tool_decathlon",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "tool_decathlon",
+          "benchmark": "Tool-Decathlon",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "image_manifest_not_materialized"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "pending_agentic_benches",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 4,
+                "optional_placeholders": 4,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/pending_benches.yaml",
+              "manifest_status": "dataset_and_image_contracts_missing",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/pending_benches.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "Tool-Decathlon",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "tool_decathlon",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [
+        "no_enabled_suite_entry",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 0,
+      "entries": [
+        {
+          "adapter": "tau3_bench",
+          "adapter_ready": false,
+          "adapter_status": "pending_offline_image",
+          "bench_id": "tau3_bench",
+          "benchmark": "tau3-bench",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "image_manifest_not_materialized"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "tau3_bench",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 2,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/tau3_bench.yaml",
+              "manifest_status": "dataset_ready_offline_images_pending",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/tau3_bench.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "tau3-bench",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "tau3_bench",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [
+        "no_enabled_suite_entry",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 0,
+      "entries": [
+        {
+          "adapter": "programbench",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "programbench",
+          "benchmark": "programbench",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "image_manifest_not_materialized"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "pending_agentic_benches",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 4,
+                "optional_placeholders": 4,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/pending_benches.yaml",
+              "manifest_status": "dataset_and_image_contracts_missing",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/pending_benches.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "programbench",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "programbench",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [],
+      "enabled_entry_count": 1,
+      "entries": [
+        {
+          "adapter": "repozero_py2js",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "repozero_py2js_smoke",
+          "benchmark": "repozero_py2js",
+          "blockers": [],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "repozero_py2js_smoke",
+              "blockers": [],
+              "counts": {
+                "images": 1,
+                "optional_placeholders": 0,
+                "required_images": 1,
+                "required_with_offline_transport": 1,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/repozero.yaml",
+              "manifest_status": "image_ready_from_shared_tar_and_worker_cache",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/repozero.yaml",
+              "status": "ready"
+            }
+          ],
+          "ready": true
+        }
+      ],
+      "entry_count": 1,
+      "label": "RepoZero",
+      "ready_entry_count": 1,
+      "status": "ready",
+      "target_id": "repozero",
+      "wired_entry_count": 1
+    },
+    {
+      "blockers": [
+        "no_enabled_suite_entry",
+        "suite_entry_disabled",
+        "adapter_not_wired",
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 0,
+      "entries": [
+        {
+          "adapter": "nl2repo",
+          "adapter_ready": false,
+          "adapter_status": "pending_adapter",
+          "bench_id": "nl2repo",
+          "benchmark": "NL2Repo",
+          "blockers": [
+            "suite_entry_disabled",
+            "adapter_not_wired",
+            "image_manifest_not_materialized"
+          ],
+          "enabled": false,
+          "image_manifests": [
+            {
+              "bench_id": "pending_agentic_benches",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 4,
+                "optional_placeholders": 4,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/pending_benches.yaml",
+              "manifest_status": "dataset_and_image_contracts_missing",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/pending_benches.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "NL2Repo",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "nl2repo",
+      "wired_entry_count": 0
+    },
+    {
+      "blockers": [
+        "image_manifest_not_materialized"
+      ],
+      "enabled_entry_count": 1,
+      "entries": [
+        {
+          "adapter": "deepswe",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "deepswe",
+          "benchmark": "deepswe",
+          "blockers": [
+            "image_manifest_not_materialized"
+          ],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "deepswe",
+              "blockers": [
+                "image_manifest_not_materialized"
+              ],
+              "counts": {
+                "images": 1,
+                "optional_placeholders": 1,
+                "required_images": 0,
+                "required_with_offline_transport": 0,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/deepswe.yaml",
+              "manifest_status": "missing_r2e_image_manifest",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/deepswe.yaml",
+              "status": "blocked"
+            }
+          ],
+          "ready": false
+        }
+      ],
+      "entry_count": 1,
+      "label": "DeepSWE",
+      "ready_entry_count": 0,
+      "status": "blocked",
+      "target_id": "deepswe",
+      "wired_entry_count": 1
+    }
+  ]
+}

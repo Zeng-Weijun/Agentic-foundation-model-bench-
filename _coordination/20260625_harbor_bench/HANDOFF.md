@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-round21-tau3-only Asia/Shanghai
+Updated: 2026-06-26 post-readiness-gate Asia/Shanghai
 
 ## Objective
 
@@ -11,7 +11,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Shared repo root: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo`
 - Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
 - Branch: `feat/image-warmup-policy`
-- Latest implementation/coordination head: `e4c98e6 Drop tau2 as active bench target`; Round21 ledger commits follow as coordination-only updates.
+- Current readiness-gate work is recorded in the active branch head; immediate pre-readiness head was `d6bafec Record proxy ceiling issue closure`.
 - Original base commit for this workstream: `c42f23c Record runtime image hunt issues`
 - Driver doc: `_coordination/20260625_harbor_bench/DRIVER.md`
 - Remote worker: `worker-j9jjd`
@@ -278,3 +278,24 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Regression tests added: `test_plan_emits_proxy_concurrency_ceiling` and `test_cli_rejects_max_concurrency_above_proxy_ceiling`.
 - Verification: full unit suite passed 48 tests; shell syntax checks and `git diff --check` passed.
 - #14 fixed/closed comment: `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/14#issuecomment-4805037855`.
+
+
+## 2026-06-26 all-bench readiness gate and RepoZero worker proof
+
+- Added suite-level static readiness gate in `scripts/agentic_bench_suite.py`: `--readiness` emits `agentic_bench.readiness_report.v1` and exits nonzero when any selected target is `blocked` or `missing`. It does not call models, Docker, or benchmark adapters.
+- Default readiness target set now covers the user-requested bench list: SWE-bench Verified multi, Terminal Bench 2.1, MCP-Atlas, Tool-Decathlon, tau3-bench, programbench, RepoZero, NL2Repo, and DeepSWE. Subsets can be selected with `--target-benches`.
+- Tracked readiness artifact: `_coordination/20260625_harbor_bench/readiness_20260626.json`. Current counts are `ready=1`, `blocked=8`, `missing=0`, `total=9`.
+- Current ready target: RepoZero. `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches RepoZero` returns ready.
+- Current blocked targets and dominant blockers:
+  - SWE-bench Verified multi: image manifest is still not materialized for full multi-agent coverage.
+  - Terminal Bench 2.1: full adapter is disabled/pending and the 89-row cache manifest still has `required_image_transport_missing` for 8 rows.
+  - MCP-Atlas, Tool-Decathlon, programbench, NL2Repo: disabled/pending adapters and placeholder image contracts.
+  - tau3-bench: dataset exists but offline runtime images are still pending; tau2 remains de-scoped.
+  - DeepSWE: adapter smoke is wired, but the image manifest is still a placeholder without R2E/Pier runtime enumeration.
+- GitHub issue #15 tracks the stale TB2 cache metadata bug: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15
+- Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=81`, and `remaining_transport_gap_count=8`; only the 81 promoted/worker-proven rows are treated as offline-transport ready.
+- Worker-j9jjd RepoZero proof: using a temporary local-execution suite on worker with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, RepoZero readiness returned ready and `--image-preflight-only --only repozero_py2js_smoke` passed. Output: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_readiness_gate_20260626_rerun`; summary `status=0`, counts `pass=1`, `fail=0`, `optional_fail=0`.
+- Round26 bug-hunt ledgers:
+  - `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: #14 proxy ceiling enforcement re-review found no new ISSUE-READY bug.
+  - `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: source-cache staging guard re-review found no new independent ISSUE-READY bug; ref-only inventory identity uncertainty is deduped to existing staging/provenance issues.
+- Verification for this round: full relevant unittest suite passed 52 tests; `python3 -m py_compile` for Python helpers passed; `bash -n` for shell helpers passed; `git diff --check` passed; worker RepoZero image preflight passed.

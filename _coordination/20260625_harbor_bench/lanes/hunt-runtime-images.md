@@ -2162,3 +2162,57 @@ Concrete fix:
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace.
 - Bounded secret scan on the ledger for common token/key forms; rc 1, interpreted as no matches.
 - `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no result; no pycache found.
+
+## Round26 source-cache staging guard review
+
+Scope: runtime/images ledger-only review of commits `c3d267b`, `f66a43c`, and `d6bafec` at branch head `d6bafec`. No Docker save/load/pull/run/build, no benchmark/model calls, and no production file edits were performed.
+
+### Findings
+
+No new ISSUE-READY bug from this lane. The current guard changes fix the highest-risk source-side write path found earlier, but the promotion workflow still has an existing identity-unverified planning boundary already covered by the runner/results Round24 ISSUE-READY block and by #6/#12 commentary.
+
+- `scripts/agentic_bench_images.py:628-687` now distinguishes ref matches from authoritative identity mismatch when inventory rows include `full_image_id` or repo digest evidence. `scripts/agentic_bench_images.py:689-788` reports `identity_mismatch` counts, and CLI dispatch at `scripts/agentic_bench_images.py:1437-1453` returns nonzero when required rows become missing through identity mismatch.
+- `scripts/agentic_bench_images.py:805-869` keeps staging plans limited to required rows missing offline transport. Its CLI at `scripts/agentic_bench_images.py:1454-1476` returns nonzero when rows are unmatched, so an authoritative identity mismatch does not become a successful staging plan.
+- `scripts/stage_cache_images_from_plan.sh:89-106` added result columns for `source_host`, `source_ref`, `source_cache_image_id`, `source_size`, and `actual_image_id`. `scripts/stage_cache_images_from_plan.sh:140-160` fails selected rows on explicit `--source-host-label` mismatch and, in `--execute`, compares inspected Docker `Id` to `source_image_id` before `docker save`. `scripts/stage_cache_images_from_plan.sh:182-185` exits 1 when any selected row failed.
+- The guard-aware dry-run artifact `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_identity_guard_dryrun_result.tsv` has the new provenance columns and one `dry_run` row for `tb2_install_windows_3_11` with `source_host=swe_dev`, `source_ref=tb2-offline/install-windows-3.11:20260425`, `source_cache_image_id=2dad54561527`, and blank `actual_image_id`, as expected for non-execute dry-run.
+- Older artifacts in the same directory remain old-schema evidence: `tb2_missing_transport_stage_dryrun_result.tsv` and `tb2_missing_transport_stage_install_windows_result.tsv` do not include source host/ref/cache-size/actual ID columns. This is not a new bug because HANDOFF says prior install-windows tar is source-staged only, not re-promoted or worker-ready. Any future promotion should regenerate execute result evidence with the guard-aware schema.
+- Current stdout-only match using current code reports `identity_mismatch=0`, but the persisted `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_swe_dev_cache_match.json` is stale-schema and lacks the new identity count keys. Treat that JSON as cache-availability evidence, not proof of the new guard fields.
+
+### COMMENT-READY / dedup
+
+- Dedup to runner/results Round24 and #6/#12: the remote cache inventory used by the staged plan is still not identity-inspected. `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/swe_dev.docker_cache_inventory.json` has `inspect_identities=False`, 591 image rows, zero `full_image_id` rows, and zero repo-digest rows. A synthetic no-Docker probe confirms a ref-only inventory row with a wrong short `image_id` still matches by ref and exits 0. This is the same identity-unverified planning root cause already filed by the runner/results lane, not a new distinct runtime/images issue after `c3d267b`.
+- The execute path now materially reduces blast radius: even if a ref-only plan is produced, `--execute` inspects the local image and fails before writing a tar when the actual full `Id` differs from `source_image_id`. The remaining fix plan is still to generate staging plans from `--inspect-identities` inventories, or make `plan-stage-missing-transport` mark rows `identity_unverified` and fail unless an explicit unsafe override is supplied.
+- `--source-host-label` is effective when supplied. Because README at `scripts/README.md:132-135` tells operators to pass it, and the execute ID guard catches wrong-tag image drift, omission is an operational guardrail gap under the existing source-cache issue rather than a fresh ISSUE-READY block. A stricter follow-up would require `--source-host-label` for `--execute` whenever selected plan rows include `source_host`, with an explicit override for legacy plans.
+- Dedup to #8/#12/#13: staging and dry-run TSVs remain pre-worker source-cache artifacts. They do not prove worker rootless ingest, P0 pull, fallback-load, smoke success, or benchmark readiness. Rows with mteb/multi-source load failures and install-windows staged-only status must remain quarantined until active manifest metadata plus worker image-check evidence exists.
+
+### Probe evidence
+
+- `ssh dev 'cd .../image-warmup-policy && git rev-parse --abbrev-ref HEAD && git rev-parse --short HEAD && sed -n ... HANDOFF.md'`; rc 0. Branch/head was `feat/image-warmup-policy` / `d6bafec`; HANDOFF records the source-host and image-identity guard, new dry-run evidence, and notes prior install-windows staging is not worker-ready.
+- `git show --stat --oneline c3d267b`, `git show --stat --oneline f66a43c`, and `git show --stat --oneline d6bafec`; rc 0. Confirmed the guard implementation, issue-record-only update, and proxy-ceiling handoff update.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '620,920p'`; rc 0. Read identity token, mismatch, inventory match, and plan generation code.
+- `nl -ba scripts/agentic_bench_images.py | sed -n '1240,1518p'`; rc 0. Read CLI return-code behavior for `match-inventory` and `plan-stage-missing-transport`.
+- `nl -ba scripts/stage_cache_images_from_plan.sh | sed -n '1,260p'`; rc 0. Read source-host guard, execute-time image ID comparison, result TSV schema, and failure exit behavior.
+- `find _coordination/20260625_harbor_bench/inventory/remote_cache_20260626 -maxdepth 1 -type f -printf '%f\t%s\n' | sort`; rc 0. Found the remote-cache inventories, match/plan JSON/TSV, old dry-run/result TSVs, and the new guard-aware dry-run TSV.
+- Parsed remote-cache artifacts with Python; rc 0. Persisted `tb2_missing_transport_stage_plan.json` has `missing_transport=8`, `matched=8`, `unmatched=0`; all rows have `match_status=matched`. New guard dry-run TSV has columns `id, slug, local_ref, source_image_id, source_host, source_ref, source_cache_image_id, source_size, fallback_tar, fallback_tar_sha256, p0_tag, p0_digest_ref, actual_image_id, status`. Old dry-run/result TSVs have old columns only.
+- Current-code stdout-only `match-inventory` over the TB2 manifest and the two remote-cache inventories; rc 0. Counts included `identity_mismatch=0`, `required_identity_mismatch=0`, `matched=89`, `required_missing=0`.
+- Current-code stdout-only `plan-stage-missing-transport` over the same manifest/inventories; rc 0. Counts were `missing_transport=8`, `matched=8`, `unmatched=0`; row statuses were all `matched`.
+- Dry-run stage helper with correct source label: `scripts/stage_cache_images_from_plan.sh --plan ... --only install-windows-3.11 --source-host-label swe_dev`; rc 0. It selected one row, staged zero, skipped seven, failed zero, and did not enter execute/Docker paths.
+- Dry-run stage helper with wrong source label: `scripts/stage_cache_images_from_plan.sh --plan ... --only install-windows-3.11 --source-host-label worker-j9jjd`; wrapper rc 0, inner rc 1. Output reported `source host mismatch`, rows=1, staged=0, skipped=7, failed=1.
+- Synthetic authoritative mismatch probe using temporary files outside the repo; rc 0. Inner `match-inventory` rc was 1 with `identity_mismatch=1`, `required_identity_mismatch=1`, and row status `identity_mismatch`. Inner `plan-stage-missing-transport` rc was 1 with `missing_transport=1`, `matched=0`, `unmatched=1`, and row status `identity_mismatch`.
+- Synthetic ref-only probe using temporary files outside the repo; rc 0. Inner `match-inventory` rc was 0 with `matched=1`, `identity_mismatch=0`, and match reason `ref` even though the inventory short `image_id` differed from manifest `source_image_id`. This is the existing identity-unverified planning issue, not a new issue after the execute guard fix.
+- Parsed inventory identity coverage; rc 0. Remote-cache `swe_dev.docker_cache_inventory.json` has `inspect_identities=False`, 591 images, zero full-ID rows, and zero repo-digest rows. The older identity inventory `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json` has `inspect_identities=True`, 1320 full-ID rows, and 179 repo-digest rows, so it is the safer source for identity-enforced plan generation.
+- Grep cross-check against runtime and runner ledgers for `#12`, `#13`, `Round24`, `identity`, `source-host`, and `staging`; rc 0. Runner/results Round24 already contains ISSUE-READY text for ref-only identity-unverified remote-cache staging, while runtime Round24 contains the earlier source-host/execute identity writer bug that `c3d267b` addresses.
+
+### Blockers / next guard changes
+
+- Regenerate source-cache match/plan artifacts from an identity-inspected inventory before treating the staging plan as identity proof. The existing remote-cache plan is usable for row selection only.
+- Regenerate any execute result TSVs that will be used for promotion with the new guard-aware schema, including `actual_image_id`; do not rely on the old install-windows saved TSV for final promotion.
+- Keep worker readiness separate from source staging: active manifest transport plus worker fallback-load/present/smoke evidence is still required before rows leave quarantine.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0 after normalizing this ledger to one final newline.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace.
+- Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches. The first broad scan rule falsely matched the task name `vulnerable-secret:20260425`; the final stricter scan requires key-like prefixes or bearer/private-key forms.
+- `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no output.
+- `git status --short --untracked-files=all`; rc 0. It shows this lane's modified `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` plus concurrent unrelated modifications to `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` and `scripts/test_agentic_bench_suite.py`; those other files were not edited by this lane.

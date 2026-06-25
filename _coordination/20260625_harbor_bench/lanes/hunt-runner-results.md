@@ -2979,3 +2979,74 @@ evidence:
 - Initial pycache scan after safe Python/unit probes: rc 0, no matches.
 - Initial bounded full-ledger secret scan with the historical auth-title false positive excluded: rc 0, `ledger_secret_scan_hits=0`.
 - Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.
+
+## Round26 proxy concurrency ceiling re-review
+
+### Scope
+
+- Lane: runner/results/provenance re-review of #14 proxy-concurrency ceiling enforcement after `3c8e1e2` and issue-closure commit `d6bafec`.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `d6bafec`.
+- Read-only except this ledger append. No production code, manifests, tests, handoff, issue records, Docker save/load/pull/run/build, benchmark runs, model calls, commits, or pushes were performed.
+
+### Finding
+
+No new ISSUE-READY bug in this round.
+
+The #14 fix appears effective for the current suite runner contract:
+
+- `manifests/suite.example.yaml:10-11` sets `concurrency: 40` and `proxy_concurrency_ceiling: 50`.
+- `scripts/agentic_bench_suite.py:781-793` parses the final `suite_concurrency` after CLI `--max-concurrency` override and raises `ConfigError` if it exceeds `suite.proxy_concurrency_ceiling`.
+- `scripts/agentic_bench_suite.py:941-943` emits `suite_concurrency`, `proxy_concurrency_ceiling`, and `image_preflight_concurrency` in the JSON plan.
+- `scripts/agentic_bench_suite.py:967-970` emits the same fields in human dry-run output.
+- `scripts/agentic_bench_suite.py:1349-1351` uses the validated `plan["suite_concurrency"]` as the benchmark adapter executor size, so `--execute` cannot use a higher adapter-process concurrency than the already validated plan.
+- `scripts/run_suite_from_yaml.sh:15-16` only execs `agentic_bench_suite.py` with forwarded args, so it does not bypass the ceiling.
+
+Dry-run probes against the real suite:
+
+- Default JSON dry-run with `--model-profile dev_proxy_gpt54mini_8130`: rc 0, `suite_concurrency=40`, `proxy_concurrency_ceiling=50`, `image_preflight_concurrency=4`, `run_count=11`, and every enabled smoke adapter concurrency parameter found was `1`; no per-adapter concurrency param exceeded 50.
+- Human dry-run with `--model-profile dev_proxy_gpt54mini_8130`: rc 0 and first lines include `suite_concurrency: 40`, `proxy_concurrency_ceiling: 50`, and `image_preflight_concurrency: 4`.
+- Default JSON dry-run without model override: rc 0, `suite_concurrency=40`, `proxy_concurrency_ceiling=50`, `image_preflight_concurrency=4`; the plan used default profile ids `gpt54mini_8130` and `qwen3_coder_30b_a3b_sglang_future`.
+- `--max-concurrency 50` with `dev_proxy_gpt54mini_8130`: rc 0.
+- `--max-concurrency 80` with `dev_proxy_gpt54mini_8130`: rc 2, stderr `config error: suite_concurrency 80 exceeds suite.proxy_concurrency_ceiling 50`, stdout empty.
+- Original Round25 repro shape, `--only repozero_py2js_smoke --model-profile gpt54mini_8130`: `--max-concurrency 40` rc 0, `50` rc 0, `80` rc 2 with the same ceiling error.
+
+### Result/provenance assessment
+
+- Execute and preflight paths both persist the validated plan to `run_manifest.json` before work: `_execute_image_preflights()` at `scripts/agentic_bench_suite.py:1171-1177` and `_execute_plan()` at `:1344-1349`. That run manifest is the authoritative provenance artifact carrying `suite_concurrency`, `proxy_concurrency_ceiling`, and `image_preflight_concurrency`.
+- Image warmup concurrency is separate from relay/model concurrency: `_execute_image_preflights()` uses `plan["image_preflight_concurrency"]` at `scripts/agentic_bench_suite.py:1175-1179`, and the generated image preflight summary records `image_preflight_concurrency` and command dedupe count at `:1219-1228`.
+- Normal benchmark `summary.json` remains result-focused at `scripts/agentic_bench_suite.py:1359-1362` and does not duplicate concurrency fields, but the same execution output root has `run_manifest.json` with those fields. This is adequate for #14; if #12 later wants every per-bench `agentic_bench.result.v1` to carry concurrency provenance, that is a provenance enrichment, not a #14 regression.
+- Residual design note, not a current bug: Round25 already noted that adapter-internal model concurrency can exceed process concurrency if future manifests raise adapter params. Current enabled smoke entries keep `MAX_CONCURRENCY`, `TB_N_CONCURRENT`, and similar keys at `1`, so the present suite cannot exceed the 40/50 relay limit through adapter-internal params. A future full-run manifest should keep adapter internal concurrency at 1 or add a dedicated model-call semaphore / effective-concurrency calculation.
+
+### Dedup
+
+- #14: fixed in current head by fail-closed plan validation plus JSON/human emission.
+- #6/#8: image warmup concurrency remains separately capped and is not confused with suite/model process concurrency in dry-run output or image-preflight summary fields.
+- #12: possible future enrichment if normalized per-bench result artifacts should duplicate run-level concurrency provenance; no current false pass or over-concurrency path found.
+- #13/#10: no raw log or secret surface was exercised; probes were dry-run and static only.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote head/status/handoff/ledger read through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `d6bafec`, and initial `git status --short --untracked-files=all` had no output.
+- `git show --stat --oneline --decorate d6bafec`: rc 0; `d6bafec` only updates handoff for #14 closure.
+- Grep for `proxy_concurrency`, `suite_concurrency`, and `image_preflight_concurrency` across `scripts/agentic_bench_suite.py`, `manifests/suite.example.yaml`, tests, and handoff: rc 0.
+- Line reads for `manifests/suite.example.yaml`, `scripts/agentic_bench_suite.py`, `scripts/test_agentic_bench_suite.py`, and `scripts/run_suite_from_yaml.sh`: rc 0.
+- Default JSON dry-run with `--model-profile dev_proxy_gpt54mini_8130`: rc 0, parsed fields recorded above.
+- Human dry-run with `--model-profile dev_proxy_gpt54mini_8130`: rc 0, printed the concurrency fields recorded above.
+- Override dry-runs with `--max-concurrency 50` and `80` under `dev_proxy_gpt54mini_8130`: rc 0 and rc 2 respectively.
+- Default JSON dry-run without model override: rc 0, parsed fields recorded above.
+- Focused #14 regression tests `test_plan_emits_proxy_concurrency_ceiling` and `test_cli_rejects_max_concurrency_above_proxy_ceiling`: rc 0, 2 tests passed.
+- Original Round25 repro shape using `--only repozero_py2js_smoke --model-profile gpt54mini_8130` with max concurrency 40/50/80: rc 0/0/2 respectively.
+- Dry-run for `terminal_bench_2_1_image_smoke` with dev proxy profile: rc 0, `suite_concurrency=40`, `proxy_concurrency_ceiling=50`, `image_preflight_concurrency=4`, run count 1, required image preflight enabled, `MAX_CONCURRENCY=1`, `TB_N_CONCURRENT=1`.
+- Grep of Round25 relay report: rc 0; it records the now-fixed old behavior where `--max-concurrency 80` was accepted and `proxy_concurrency_ceiling` was absent.
+- `grep -n '^## Round26' _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md || true`: rc 0 before append, no existing Round26 section.
+
+### Validation
+
+- Initial `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 2 due to one blank line at EOF introduced by the append; fixed by rewriting this ledger with exactly one final newline.
+- Initial trailing whitespace scan on this ledger: rc 0, no matches.
+- Initial pycache scan after safe dry-run/unit probes: rc 0, no matches.
+- Initial Round26-only bounded secret scan: rc 0, `round26_secret_scan_hits=0`.
+- Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.

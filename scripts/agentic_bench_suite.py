@@ -26,6 +26,30 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SUITE = ROOT / "manifests" / "suite.example.yaml"
 EXECUTABLE_ADAPTER_STATES = {"wired", "wired_legacy"}
 
+READINESS_TARGETS = [
+    {
+        "target_id": "swebench_verified_multi",
+        "label": "SWE-bench Verified multi",
+        "aliases": ["swebench_verified_multi", "swe_bench_verified_multi", "swebench_verified", "swe_bench_verified", "swe-bench-verified"],
+    },
+    {
+        "target_id": "terminal_bench_2_1",
+        "label": "Terminal Bench 2.1",
+        "aliases": ["terminal_bench_2_1", "terminal bench 2.1", "terminal-bench-2.1", "tb2", "tb2_1"],
+    },
+    {"target_id": "mcp_atlas", "label": "MCP-Atlas", "aliases": ["mcp_atlas", "mcp-atlas", "mcp atlas"]},
+    {
+        "target_id": "tool_decathlon",
+        "label": "Tool-Decathlon",
+        "aliases": ["tool_decathlon", "tool-decathlon", "tool decathlon"],
+    },
+    {"target_id": "tau3_bench", "label": "tau3-bench", "aliases": ["tau3_bench", "tau3-bench", "tau3 bench"]},
+    {"target_id": "programbench", "label": "programbench", "aliases": ["programbench", "program_bench"]},
+    {"target_id": "repozero", "label": "RepoZero", "aliases": ["repozero", "repozero_py2js", "repozero py2js"]},
+    {"target_id": "nl2repo", "label": "NL2Repo", "aliases": ["nl2repo", "nl2_repo"]},
+    {"target_id": "deepswe", "label": "DeepSWE", "aliases": ["deepswe", "deep_swe"]},
+]
+
 
 class ConfigError(ValueError):
     """Raised when a suite YAML file violates the launcher contract."""
@@ -707,6 +731,238 @@ def _image_preflight_for_bench(
     }
 
 
+
+def _readiness_key(value: Any) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", str(value).lower()).strip("_")
+
+
+def _readiness_target_specs(target_benches: list[str] | None) -> list[dict[str, Any]]:
+    known: dict[str, dict[str, Any]] = {}
+    for target in READINESS_TARGETS:
+        aliases = {_readiness_key(target["target_id"]), _readiness_key(target["label"])}
+        aliases.update(_readiness_key(alias) for alias in target.get("aliases", []))
+        spec = {"target_id": target["target_id"], "label": target["label"], "aliases": aliases}
+        for alias in aliases:
+            known[alias] = spec
+    if not target_benches:
+        return [known[_readiness_key(target["target_id"])] for target in READINESS_TARGETS]
+    specs: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for raw in target_benches:
+        key = _readiness_key(raw)
+        spec = known.get(key, {"target_id": key, "label": str(raw), "aliases": {key}})
+        if spec["target_id"] not in seen:
+            specs.append(spec)
+            seen.add(spec["target_id"])
+    return specs
+
+
+def _bench_readiness_keys(bench: dict[str, Any]) -> set[str]:
+    keys: set[str] = set()
+    for field in ("id", "benchmark", "adapter"):
+        value = bench.get(field)
+        if value:
+            keys.add(_readiness_key(value))
+    for manifest in _image_manifest_values(bench.get("image_manifest") or bench.get("image_manifests")):
+        manifest_path = Path(manifest)
+        keys.add(_readiness_key(manifest_path.stem))
+        keys.add(_readiness_key(str(manifest_path.with_suffix(""))))
+    return keys
+
+
+def _resolve_readiness_manifest_path(manifest: str, *, project_root: str | Path) -> Path:
+    path = Path(manifest).expanduser()
+    if path.is_absolute():
+        return path
+    return (Path(project_root) / path).resolve()
+
+
+def _readiness_list(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if item is not None]
+    return [str(value)]
+
+
+def _image_has_offline_transport(image: dict[str, Any]) -> bool:
+    image_refs = _readiness_list(image.get("image_ref")) + _readiness_list(image.get("image_refs"))
+    digest_refs = _readiness_list(image.get("source_repo_digest")) + _readiness_list(image.get("source_repo_digests"))
+    has_digest_ref = any("@sha256:" in ref for ref in image_refs + digest_refs)
+    has_fallback_sha = bool(image.get("fallback_tar") and image.get("fallback_tar_sha256"))
+    return has_digest_ref or has_fallback_sha
+
+
+def _static_image_manifest_readiness(manifest: str, *, project_root: str | Path) -> dict[str, Any]:
+    path = _resolve_readiness_manifest_path(manifest, project_root=project_root)
+    result: dict[str, Any] = {
+        "manifest": manifest,
+        "path": str(path),
+        "status": "missing_manifest",
+        "blockers": ["image_manifest_missing"],
+        "counts": {
+            "images": 0,
+            "required_images": 0,
+            "required_with_offline_transport": 0,
+            "required_without_offline_transport": 0,
+            "optional_placeholders": 0,
+        },
+    }
+    if not path.is_file():
+        return result
+    data = _require_mapping(_load_yaml(path.read_text(encoding="utf-8")), f"image manifest {manifest}")
+    images = _require_list(data.get("images", []), f"image manifest {manifest}.images")
+    blockers: list[str] = []
+    counts = dict(result["counts"])
+    counts["images"] = len(images)
+    for raw_image in images:
+        image = _require_mapping(raw_image, f"image manifest {manifest}.images")
+        required = _bool(image.get("required"), default=True)
+        transport_text = " ".join(
+            str(image.get(key, ""))
+            for key in ("image_transport", "registry_status", "fallback_transport", "offline_blocker")
+        ).lower()
+        if required:
+            counts["required_images"] += 1
+            if _image_has_offline_transport(image):
+                counts["required_with_offline_transport"] += 1
+            else:
+                counts["required_without_offline_transport"] += 1
+        elif any(token in transport_text for token in ("todo", "missing", "pending", "none")):
+            counts["optional_placeholders"] += 1
+    if counts["required_without_offline_transport"]:
+        blockers.append("required_image_transport_missing")
+    manifest_status = str(data.get("status", "")).lower()
+    known_blockers = data.get("known_blockers") or []
+    manifest_unmaterialized = (
+        counts["required_images"] == 0
+        and (counts["optional_placeholders"] or known_blockers or any(token in manifest_status for token in ("missing", "pending", "todo")))
+    )
+    if manifest_unmaterialized:
+        blockers.append("image_manifest_not_materialized")
+    result.update(
+        {
+            "status": "blocked" if blockers else "ready",
+            "bench_id": data.get("bench_id", ""),
+            "manifest_status": data.get("status", ""),
+            "blockers": blockers,
+            "counts": counts,
+        }
+    )
+    return result
+
+
+def _unique_preserve_order(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        if item not in seen:
+            result.append(item)
+            seen.add(item)
+    return result
+
+
+def _bench_readiness_entry(
+    bench: dict[str, Any],
+    *,
+    suite_path: str | Path,
+    image_config: dict[str, Any],
+) -> dict[str, Any]:
+    bench_id = str(bench.get("id", ""))
+    enabled = _bool(bench.get("enabled"), default=True)
+    adapter_status = str(bench.get("adapter_status", "todo"))
+    adapter_ready = adapter_status in EXECUTABLE_ADAPTER_STATES
+    image_manifests = _image_manifest_values(bench.get("image_manifest") or bench.get("image_manifests"))
+    project_root = _resolve_suite_relative_path(
+        bench.get("image_project_root", image_config.get("project_root")),
+        suite_path=suite_path,
+        default=_default_project_root_for_suite(suite_path),
+    )
+    image_reports = [
+        _static_image_manifest_readiness(manifest, project_root=project_root) for manifest in image_manifests
+    ]
+    image_blockers = _unique_preserve_order(
+        [blocker for report in image_reports for blocker in report.get("blockers", [])]
+    )
+    blockers: list[str] = []
+    if not enabled:
+        blockers.append("suite_entry_disabled")
+    if not adapter_ready:
+        blockers.append("adapter_not_wired")
+    blockers.extend(image_blockers)
+    return {
+        "bench_id": bench_id,
+        "benchmark": bench.get("benchmark", bench_id),
+        "adapter": bench.get("adapter", ""),
+        "enabled": enabled,
+        "adapter_status": adapter_status,
+        "adapter_ready": adapter_ready,
+        "image_manifests": image_reports,
+        "blockers": _unique_preserve_order(blockers),
+        "ready": enabled and adapter_ready and not image_blockers,
+    }
+
+
+def build_readiness_report(
+    config: dict[str, Any],
+    *,
+    suite_path: str | Path,
+    target_benches: list[str] | None = None,
+) -> dict[str, Any]:
+    targets = _readiness_target_specs(target_benches)
+    image_config = _require_mapping(config.get("image_preflight", {}), "image_preflight")
+    benches = [_require_mapping(bench, "benches") for bench in _bench_list(config)]
+    target_results: list[dict[str, Any]] = []
+    counts = {"ready": 0, "blocked": 0, "missing": 0, "total": 0}
+    for target in targets:
+        aliases = set(target["aliases"])
+        matched = [bench for bench in benches if _bench_readiness_keys(bench) & aliases]
+        entry_reports = [
+            _bench_readiness_entry(bench, suite_path=suite_path, image_config=image_config)
+            for bench in matched
+        ]
+        enabled_entries = [entry for entry in entry_reports if entry["enabled"]]
+        wired_entries = [entry for entry in enabled_entries if entry["adapter_ready"]]
+        ready_entries = [entry for entry in entry_reports if entry["ready"]]
+        blockers: list[str] = []
+        if not matched:
+            status = "missing"
+            blockers.append("missing_suite_entry")
+        elif ready_entries:
+            status = "ready"
+        else:
+            status = "blocked"
+            if not enabled_entries:
+                blockers.append("no_enabled_suite_entry")
+            if enabled_entries and not wired_entries:
+                blockers.append("no_enabled_wired_adapter")
+            blockers.extend(blocker for entry in entry_reports for blocker in entry["blockers"])
+        blockers = _unique_preserve_order(blockers)
+        counts[status] += 1
+        target_results.append(
+            {
+                "target_id": target["target_id"],
+                "label": target["label"],
+                "status": status,
+                "blockers": blockers,
+                "entry_count": len(entry_reports),
+                "enabled_entry_count": len(enabled_entries),
+                "wired_entry_count": len(wired_entries),
+                "ready_entry_count": len(ready_entries),
+                "entries": entry_reports,
+            }
+        )
+    counts["total"] = len(target_results)
+    suite = _require_mapping(config.get("suite", {}), "suite")
+    return {
+        "schema_version": "agentic_bench.readiness_report.v1",
+        "suite_id": suite.get("id", suite.get("id_prefix", "")),
+        "suite_path": str(Path(suite_path)),
+        "created_at": _utc_now(),
+        "counts": counts,
+        "targets": target_results,
+    }
+
 def _command_preview(
     *,
     adapter_script: str,
@@ -981,6 +1237,25 @@ def _print_human(plan: dict[str, Any]) -> None:
         for note in run["notes"]:
             print(f"  note: {note}")
 
+
+
+def _print_readiness_report(report: dict[str, Any]) -> None:
+    counts = report["counts"]
+    print(f"suite: {report.get('suite_id', '')}")
+    print(
+        "readiness: "
+        f"ready={counts['ready']} "
+        f"blocked={counts['blocked']} "
+        f"missing={counts['missing']} "
+        f"total={counts['total']}"
+    )
+    print("")
+    for target in report["targets"]:
+        print(f"- {target['target_id']} [{target['status']}]")
+        print(f"  label: {target['label']}")
+        print(f"  entries: {target['entry_count']} enabled={target['enabled_entry_count']} wired={target['wired_entry_count']} ready={target['ready_entry_count']}")
+        for blocker in target["blockers"]:
+            print(f"  blocker: {blocker}")
 
 def _write_plan(plan: dict[str, Any], output_path: str | Path) -> None:
     path = Path(output_path)
@@ -1377,6 +1652,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--json", action="store_true", help="print the full JSON plan")
     parser.add_argument("--emit-plan", help="write the JSON plan to this path")
     parser.add_argument("--output-dir", help="local/controller output dir for --execute logs and manifests")
+    parser.add_argument("--readiness", action="store_true", help="emit a static all-bench readiness report and fail if any selected target is blocked or missing")
+    parser.add_argument("--target-benches", help="comma-separated readiness target names; defaults to the tracked agentic bench set")
     parser.add_argument("--image-preflight-only", action="store_true", help="run image preflight commands only; never launch adapters")
     parser.add_argument("--include-optional-image-preflight", action="store_true", help="include optional image preflights in --image-preflight-only")
     parser.add_argument("--fail-on-optional-image-preflight", action="store_true", help="make optional image preflight failures fatal when included")
@@ -1388,6 +1665,18 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     try:
         config = load_suite_config(args.suite_yaml)
+        if args.readiness:
+            target_benches = _unique_preserve_order(
+                [item.strip() for item in args.target_benches.split(",") if item.strip()]
+            ) if args.target_benches else None
+            report = build_readiness_report(config, suite_path=args.suite_yaml, target_benches=target_benches)
+            if args.emit_plan:
+                _write_plan(report, args.emit_plan)
+            if args.json:
+                print(json.dumps(report, indent=2, sort_keys=True))
+            else:
+                _print_readiness_report(report)
+            return 0 if report["counts"]["blocked"] == 0 and report["counts"]["missing"] == 0 else 1
         only = set(filter(None, [item.strip() for item in args.only.split(",")])) if args.only else None
         plan = build_run_plan(
             config,
