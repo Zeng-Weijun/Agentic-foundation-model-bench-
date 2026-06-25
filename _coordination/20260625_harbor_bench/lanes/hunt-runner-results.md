@@ -710,3 +710,98 @@ Next loop should inspect whether current normalized result artifacts have enough
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
 - Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
 - Tail final ledger for sanity: rc 0.
+
+
+## Round 8 normalized result identity and provenance contract
+
+Scope for this round:
+
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, observed head `25820b4`.
+- Write set: this ledger only. No production code, manifests, tests, Docker state, benchmark execution, or model calls.
+- Method: static code reads, dry-run JSON inspection, and one temporary synthetic `_attach_benchmark_result()` fixture under `/data/tmp` with `PYTHONDONTWRITEBYTECODE=1`.
+- Secret policy: synthetic fixture used harmless paths and no token-like values; result scan below printed only key presence and booleans.
+
+### Static data flow
+
+The suite run plan already carries most identity/provenance fields needed by cross-run aggregation:
+
+- `build_run_plan()` derives `profile_id`, `worker_host`, `run_id`, and `run_dir`; see `scripts/agentic_bench_suite.py:786-823`.
+- The run manifest stores `worker_host`, `worker_id`, `run_root`, `run_dir`, `model`, redacted `runtime_env`, params, command, and optional `image_preflight`; see `scripts/agentic_bench_suite.py:860-909`.
+- `_execute_plan()` writes the whole plan to `<output_root>/run_manifest.json`; see `scripts/agentic_bench_suite.py:1323-1325`.
+
+The normalized result writer drops most of that metadata:
+
+- `_attach_benchmark_result()` writes only top-level `schema_version`, `suite_id`, `run_id`, `bench_id`, `bench`, `adapter`, an `execution` object with process/log fields, and `benchmark_result`; see `scripts/agentic_bench_suite.py:1281-1299`.
+- It does not include a `parser` object, `source` object, model/profile field, worker field, run directory, invocation id, native artifact pointer, image-preflight summary pointer, or parser version.
+- Current test coverage only asserts the status split and RepoZero numeric result fields; it does not assert provenance fields; see `scripts/test_agentic_bench_suite.py:430-470`.
+
+The design report already describes the missing shape:
+
+- Suggested `agentic_bench.result.v1` includes `parser.id`, `parser.version`, `parser.parsed_at`, and a `source` section with controller summary/log, run manifest, native artifact root, and native artifacts; see `reports/next_result_parser_contract_20260625.md:100-119`.
+- Parser source discovery should record native artifacts instead of relying on prose/log inference; see `reports/next_result_parser_contract_20260625.md:650-670`.
+
+Dry-run evidence from the live suite row:
+
+- `repozero_py2js_smoke` dry-run has `model.profile_id=dev_proxy_gpt54mini_8130`, the explicit `worker_host`, `worker_id=worker-j9jjd`, `run_dir`, `runtime_env.BENCH_RUN_DIR`, and a populated `image_preflight` object.
+- The run-plan keys include `model`, `worker_host`, `worker_id`, `run_dir`, `runtime_env`, and `image_preflight`, proving the data is available before result emission.
+
+Synthetic normalized result probe:
+
+- Input `run` included `model.profile_id`, `worker_host`, `worker_id`, `run_dir`, `runtime_env.BENCH_RUN_DIR`, `image_preflight`, `result_parser`, and `artifact_hints` with a harmless native artifact path and `artifact_manifest.json` path.
+- The controller output dir also contained a synthetic `image_preflight_summary.json`.
+- The emitted `agentic_bench.result.v1` had top-level keys only: `adapter`, `bench`, `bench_id`, `benchmark_result`, `execution`, `run_id`, `schema_version`, `suite_id`.
+- Missing paths were all true for: top-level `model`, `model_profile`, `worker_host`, `worker_id`, `run_dir`, `runtime_env`, `parser`, `source`, `image_preflight`; nested `execution.image_preflight_status`, `execution.run_dir`; nested `benchmark_result.parser_id`, `benchmark_result.parser_version`.
+- The result text did not mention the native artifact root, `artifact_manifest.json`, `image_preflight_summary.json`, or worker id. The model profile appeared only as a substring inside `run_id`, not as a first-class field.
+
+ISSUE-READY: normalized result artifacts are not self-contained enough for cross-run aggregation
+severity: HIGH
+dedup: new issue candidate unless #1 is intentionally expanded beyond status/parser semantics. Related but not duplicate of #1 because per-row `execution_status`/`benchmark_status` can be correct while provenance is still missing. Related but not duplicate of #2 because invocation-unique dirs will create the missing stable `invocation_id`/run-dir value, but this result writer still has to persist it. Related but not duplicate of #10 because #10 constrains which source files and fields are safe to read; this issue requires safe provenance pointers, not raw sidecar contents.
+location: `scripts/agentic_bench_suite.py:786-823`, `scripts/agentic_bench_suite.py:860-909`, `scripts/agentic_bench_suite.py:1281-1299`, `scripts/agentic_bench_suite.py:1323-1341`, `reports/next_result_parser_contract_20260625.md:100-119`, `reports/next_result_parser_contract_20260625.md:650-670`, `scripts/test_agentic_bench_suite.py:430-470`
+static_repro: Build a dry-run plan for `repozero_py2js_smoke` and observe that the run manifest has model/profile, worker, run dir, runtime env, and image-preflight metadata. Then import `scripts/agentic_bench_suite.py` with `PYTHONDONTWRITEBYTECODE=1`, call `_attach_benchmark_result()` with a synthetic run containing `model`, `worker_host`, `worker_id`, `run_dir`, `runtime_env.BENCH_RUN_DIR`, `image_preflight`, `result_parser`, and `artifact_hints`, and inspect the emitted `results/<bench_id>.result.json`.
+impact: A standalone normalized result file cannot be aggregated safely across runs, workers, models, parser versions, or native artifact sources. Consumers must join against `run_manifest.json` by `run_id`, but `run_id` is not invocation-unique today (#2), and moved/copied result files lose their controller context. The current artifact cannot answer which model profile produced the score, which worker/rootless context ran it, which exact `BENCH_RUN_DIR` or native artifact was parsed, whether image preflight passed, or which parser version produced the benchmark status. This blocks reliable cross-run comparisons for RepoZero, tau3, SWE-bench, DeepSWE, Terminal-Bench, and any future parser registry.
+fix: Make `agentic_bench.result.v1` self-contained with allowlisted provenance fields. Add a `run` or `identity` object with `suite_id`, `run_id`, future `invocation_id`, `bench_id`, `adapter`, `model_profile_id`, `model_name`, `worker_id`, `worker_host`, `execution_host`, `run_dir`, and `bench_run_dir`. Add a `parser` object with `id`, `version`, `status`, `parsed_at`, and warnings. Add a `source` object with `run_manifest_path`, `controller_summary_path`, `controller_log_path`, `image_preflight_summary_path`, and `native_artifacts` pointer records. Native artifacts must be pointers/statuses only unless parser-specific allowlists and #10 redaction approve fields. Keep `run_id` for compatibility but do not rely on it as unique after #2.
+evidence: Dry-run JSON showed the run has `model.profile_id=dev_proxy_gpt54mini_8130`, `worker_id=worker-j9jjd`, `run_dir`, `runtime_env.BENCH_RUN_DIR`, and populated `image_preflight`. Synthetic result probe returned `result_top_keys=[adapter,bench,bench_id,benchmark_result,execution,run_id,schema_version,suite_id]`, `execution_keys=[adapter_status,ended_at,exit_code,log_path,started_at,status]`, no `parser` or `source`, no explicit model/worker/run-dir fields, no native artifact pointer, and no image-preflight summary pointer.
+
+COMMENT-READY for #2: invocation-unique dirs should be persisted in result artifacts, not only run manifests
+severity: HIGH
+dedup: comment-on-#2
+location: `scripts/agentic_bench_suite.py:812-823`, `scripts/agentic_bench_suite.py:1284-1299`
+static_repro: Inspect current `run_id`/`run_dir` construction and the result writer. `run_id` is derived from `suite_id + bench_id + profile_id`; `run_dir` is `<run_root>/<suite_id>/<bench_id>`; result JSON stores `run_id` but no `run_dir`, `BENCH_RUN_DIR`, or invocation id.
+impact: Even after #2 adds a unique invocation directory, downstream aggregation will still be forced to recover the exact native run directory from logs or `run_manifest.json` unless `agentic_bench.result.v1` carries that field. Result files copied into reports, issue comments, or dashboards can become detached from the only artifact that explains which invocation they represent.
+fix: When implementing #2, add `invocation_id`, `run_dir`, and `bench_run_dir` to the normalized result artifact and summary rows. Include `run_manifest_path` as a source pointer so consumers can verify the full redacted run plan.
+evidence: Synthetic result probe had input `run_dir` and `runtime_env.BENCH_RUN_DIR`, but both `top_run_dir` and `execution_run_dir` were absent in the emitted result JSON.
+
+COMMENT-READY for #10: provenance fix must use source pointers and allowlists, not raw run-dir serialization
+severity: HIGH
+dedup: comment-on-#10
+location: `scripts/agentic_bench_suite.py:888-889`, `scripts/agentic_bench_suite.py:1284-1299`
+static_repro: `build_run_plan()` stores redacted `runtime_env` in the run manifest, while prior lane evidence shows multiple adapters write secret-bearing sidecars under `BENCH_RUN_DIR`. The current result writer avoids copying them, but also omits safe pointers.
+impact: The fix for result provenance could regress into #10 if it serializes raw `runtime_env`, command files, config files, or sidecar contents. The right contract is pointer-oriented: record where a parser looked and what role/status each source had, but do not inline arbitrary file contents.
+fix: Add a typed `source.native_artifacts[]` list with `role`, `path`, `status`, optional sha/size where cheap, and parser-specific safe summaries. Reuse `_redact_env()` for any environment metadata and add recursive sanitizer before writing normalized results.
+evidence: Synthetic result probe included harmless `artifact_hints`, but current writer ignored them. The recommended fix is to persist sanitized pointer records, not to copy arbitrary hint/source payloads.
+
+### Round 8 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first as required, tool display truncated.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Found and read `superpowers:systematic-debugging` skill: `find .../systematic-debugging/SKILL.md` rc 0; `cat` rc 0.
+- Active worktree status and branch/head probe: rc 0; branch `feat/image-warmup-policy`, head `25820b4`; observed concurrent/unowned `scripts/test_agentic_bench_images.py` and `scripts/__pycache__` changes.
+- Read run-plan construction, result writer, RepoZero parser, and execute summary code with `nl`/`sed`: rc 0.
+- Grep for model/profile/worker/run-dir/parser/source/native-artifact/image-preflight fields across suite/tests/report/current ledger: rc 0.
+- Dry-run JSON inspection for `repozero_py2js_smoke`: rc 0; printed only field names/paths and no secrets.
+- Read result contract lines and current focused tests: rc 0.
+- Synthetic `_attach_benchmark_result()` provenance fixture under `/data/tmp`: rc 0; safe JSON output summarized above.
+- Read `_execute_plan()` write points and current ledger dedup tail/grep: rc 0.
+
+## Next runner/result subdomain
+
+Next loop should inspect parser provenance for actual adapter families: for RepoZero, tau3, SWE-bench, Terminal-Bench, and DeepSWE, define the minimal safe `source.native_artifacts[]` roles and statuses needed so #10 allowlists and this result-provenance issue can be implemented without over-reading `BENCH_RUN_DIR`.
+
+
+## Round 8 validation evidence
+
+- Append Round 8 ledger section via remote Python over SSH stdin: rc 0.
+- `git status --short --untracked-files=all && git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0 for ledger diff whitespace. Status also showed concurrent/unowned changes outside this lane: `_coordination/20260625_harbor_bench/HANDOFF.md`, `scripts/README.md`, `scripts/agentic_bench_images.py`, `scripts/test_agentic_bench_images.py`, and untracked `scripts/__pycache__/...`. This lane did not edit or revert them.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
+- Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
+- Tail final ledger for sanity: rc 0.
