@@ -277,3 +277,4 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Real suite example check: default dry-run now emits `suite_concurrency=40`, `proxy_concurrency_ceiling=50`, and `image_preflight_concurrency=4`; `--max-concurrency 50` passes; `--max-concurrency 80` returns rc 2 with `suite_concurrency 80 exceeds suite.proxy_concurrency_ceiling 50`.
 - Regression tests added: `test_plan_emits_proxy_concurrency_ceiling` and `test_cli_rejects_max_concurrency_above_proxy_ceiling`.
 - Verification: full unit suite passed 48 tests; shell syntax checks and `git diff --check` passed.
+- #14 fixed/closed comment: `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/14#issuecomment-4805037855`.
