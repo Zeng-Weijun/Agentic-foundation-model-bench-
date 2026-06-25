@@ -1456,3 +1456,77 @@ Next runtime/image subdomain: audit `vulnerable-secret` separately next, because
 - Bounded secret-pattern scan over this ledger: rc 0, `secret_pattern_hits=none`.
 - Final `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, untracked service batch6 TSV/worker-check JSON, and untracked `scripts/__pycache__/*.pyc` files were present and left untouched.
 - Final `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+
+## Round 17 - TB2 vulnerable-secret isolated transport audit after batch6 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, manifest/lint reads, fallback tar hash reads, task file-name and marker-count scans, worker-check JSON bounded reads, and grep/find only. No task, solution, test, or log contents were printed.
+
+COMMENT-READY for #6/#8/#10/#12: `vulnerable-secret` is valid as an isolated transport row and is now fallback-ready on worker-j9jjd, but worker smoke must remain the generic network-none image-readiness smoke and result/provenance layers must not copy raw checker stderr or any task/log contents
+
+dedup: comment-on-#6 for TB2 offline transport population, #8 because the worker proof used fallback load with `allow_pull=false` and `pulled=0`, #10 because this task is explicitly secret/log-sensitive and the checker JSON contains a raw nested Docker stderr field, and #12 because the worker proof should be preserved through allowlisted image-check provenance. Not #11: the local image ID matched `source_image_id`. No new ISSUE-READY block.
+
+Current state and concurrency notes:
+- Observed branch/head: `feat/image-warmup-policy` at `5eb8822`.
+- Initial Round 17 status already had unowned concurrent changes: modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` plus untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_secret_batch7_20260626.tsv` and `_coordination/20260625_harbor_bench/inventory/tb2_secret_batch7_worker_check_20260626.json`. This runtime lane did not edit those files.
+- Before reading the concurrent batch7 files, the committed manifest row at line 1160 was still `image_transport: swe_dev_cache_identity`, `fallback_transport: none`, and `fallback_status: missing_shared_tar`.
+- The current dirty manifest row at line 1160 is wired as `p0_digest_plus_fallback_tar` with `image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-vulnerable-secret@sha256:b57851ef57bb7d00d05f38ac73ccda754851d5cac5fafa3a728b65afddd31ee3`, `fallback_transport: oci_tar`, `fallback_status: p0_digest_and_fallback_tar_verified`, fallback tar `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/vulnerable-secret.tar`, and fallback sha `0a1c8f4454cfd1c9b197b1dcd69dcb0318fdda154cd2b14cc54b88bff1ddd2b0`.
+- Post-batch7 verified lint returns rc 1 because 16 other TB2 rows still lack offline transport, but `tb2_vulnerable_secret` itself is now `lint_status: ok` with `fallback_sha256_status: match`.
+
+### Vulnerable-secret evidence
+
+| row | manifest line | task runtime risk | source image ID | inspect size bytes | fallback tar sha | P0 digest ref |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| `vulnerable-secret` | 1160 | secret/log-sensitive task; isolate from any log-inspection smoke | `sha256:ed187ec826168b02180860a958bca08ea3cae5b871bc3b12d0e026cff218cd74` | 478004753 | `0a1c8f4454cfd1c9b197b1dcd69dcb0318fdda154cd2b14cc54b88bff1ddd2b0` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-vulnerable-secret@sha256:b57851ef57bb7d00d05f38ac73ccda754851d5cac5fafa3a728b65afddd31ee3` |
+
+Transport and worker checks:
+- Read-only Docker inspect on `swe_dev` for `tb2-offline/vulnerable-secret:20260425` returned the expected source image ID, size `478004753`, no entrypoint, `Cmd=["python3"]`, no exposed ports, working dir `/app`, empty user, `env_count=7`, and no repo digests.
+- The concurrent batch7 TSV has exactly one data row for `vulnerable-secret`, with the same local ref, source image ID, fallback tar, and fallback tar sha.
+- The fallback tar exists, size `487526912` bytes, and read-only `sha256sum` matched the manifest/TSV sha.
+- The worker check JSON reports `schema_version=agentic_bench.image_check.v1`, `docker_host=unix:///tmp/rl/run/docker.sock`, `mode.allow_pull=false`, `mode.load_fallback=true`, `mode.run_smoke=true`, `tar_verified=1`, `loaded=1`, `present=1`, `smoke_passed=1`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, and `pulled=0`.
+- The worker check image row has `status=present`, `load_status=loaded`, and `smoke_status=passed`; the final inspect attempt saw actual image ID `sha256:ed187ec826168b02180860a958bca08ea3cae5b871bc3b12d0e026cff218cd74`.
+- The worker check JSON has no stdout fields and no `password`, `credential`, `private key`, `BEGIN`, `flag{`, `secret=`, or `token=` marker hits. It does contain one nested `inspect_attempts[0].stderr` field from the pre-load missing-image probe. That current value was not printed by this lane and should remain excluded/redacted by downstream parsers under #10/#12.
+
+Smoke/network and secret/log assessment:
+- The manifest smoke is still the generic image-readiness smoke: `python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok` with `network: none`.
+- That smoke is the right acceptance probe for this row. Because the image has no entrypoint and default `Cmd=["python3"]`, the checker command override should not execute task code, read task logs, run solution/tests, or emit secret-bearing challenge content.
+- Do not replace this with a task-level smoke, grep, exploit, test, solution, or log probe. Bounded file-name/marker-count scans of the task directory found secret/log-related markers in `environment/offline.Dockerfile`, `environment/vulnerable.c`, `instruction.md`, `solution/solve.sh`, `task.toml`, `tests/test.sh`, and `tests/test_outputs.py`; contents were intentionally not printed.
+- Treat any future checker `smoke_stderr`, `load_stderr`, `pull_stderr`, or nested `inspect_attempts[].stderr` as untrusted native artifact content. Promote only allowlisted status/count/id/ref/sha fields and safe path pointers/basenames into one-command runner summaries.
+
+Worker #8 implication:
+- This row is worker fallback-ready, not worker P0-pull-ready. The observed proof used `allow_pull=false`, `load_fallback=true`, and ended with `loaded=1`, `pulled=0`.
+- Keep fallback tar+sha required even with the P0 digest ref present. Do not switch this row to P0-only until direct worker rootless registry pull has its own passing proof.
+
+Expected and observed gate movement:
+- The expected movement for materializing this single isolated row after batch6 was `required_without_offline_transport 17 -> 16`, `fallback_tar_verified 72 -> 73`, `required_with_fallback_sha 72 -> 73`, and `required_with_digest_ref 22 -> 23`.
+- The observed post-batch7 verified lint exactly matches that movement and keeps `fallback_tar_missing=0` and `fallback_tar_mismatch=0`.
+- The remaining 16 TB2 non-`ok` rows are `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `path-tracing`, `portfolio-optimization`, `prove-plus-comm`, `pytorch-model-cli`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `reshard-c4-data`, `sam-cell-seg`, `torch-pipeline-parallelism`, `torch-tensor-parallelism`, `train-fasttext`, and `video-processing`.
+
+Cross-lane check:
+- `hunt-runner-results.md` continues to treat raw checker stderr and smoke stderr as #10 redaction scope, image-check provenance as #12, and worker P0 pull readiness as runtime #8. No contradiction found.
+- The `vulnerable-secret` worker-check JSON is a useful real success-path fixture for #10/#12 because it passes fallback-load/run-smoke while still containing a nested Docker inspect stderr field; it is not a reason to copy raw checker JSON wholesale.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging`, `superpowers:using-superpowers`, and `superpowers:verification-before-completion` instructions: rc 0 after one stale-cache-path attempt failed with rc 1.
+- Memory quick search for Round17/TB2/vulnerable-secret/image-warmup terms: rc 0, no relevant hits used.
+- Read WORKFLOW continuous bug-hunt section: rc 0.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`, current runtime ledger, and branch/head/status: rc 0.
+- Manifest row plus read-only Docker inspect for `tb2-offline/vulnerable-secret:20260425`: rc 0 after one shell-quoting attempt failed with rc 1 and was ignored; source ID/config/size quoted above.
+- Initial P0 tag inspect probe before concurrent batch7 materialization settled: rc 0 wrapper with `No such image` from Docker inspect; current dirty manifest now has the P0 digest ref above.
+- Initial shared fallback tar `find`: rc 0 with no output; after concurrent batch7 staging, fallback tar existence and sha verification returned rc 0 and matched the manifest value.
+- Inventory batch7 TSV/worker-check JSON bounded read: rc 0; printed only schema/count/status/id/ref/hash metadata, key names, lengths, and redacted hashes for sensitive-looking fields.
+- Worker-check JSON summary and marker-count scan: rc 0; no stdout fields and no secret marker hits in the JSON payload.
+- Post-batch7 TB2 verified lint with `--verify-fallback-files`: outer rc 0, inner `LINT_RC=1`; counts `fallback_tar_verified=73`, `required_with_fallback_sha=73`, `required_with_digest_ref=23`, `required_without_offline_transport=16`, `fallback_tar_missing=0`, and `fallback_tar_mismatch=0`.
+- Bounded task path and marker-count scan for `vulnerable-secret`: rc 0; printed file names, byte sizes, and marker counts only, not contents.
+- Cross-lane grep/read of `hunt-runner-results.md` and current runtime ledger tail: rc 0; no contradiction found.
+
+Next runtime/image subdomain: choose the next isolated group from the remaining 16 rows. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated, and continue requiring fallback tar+sha until #8 direct worker pull readiness is re-proven.
+
+### Round 17 validation evidence
+
+- Remote hash guard before first ledger copy-back: rc 0; pre-edit and remote hashes both matched `810cfb2b56d9a28d8f5fd67f876685325bbfee7a4a2b3ced9779f8d643d2fe61`.
+- `git diff --check`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Initial broad secret-assignment scan over the ledger: rc 1 with false positives on the literal `vulnerable-secret` task slug and marker-name examples, not secret values. Line-reference inspection for those hits: rc 0.
+- Refined bounded secret scan for explicit key assignments, bearer tokens, private-key blocks, and common token prefixes: rc 0, `bounded_secret_scan no_matches`.
+- Status/diff-stat check after first copy-back: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and untracked batch7 TSV/worker-check JSON were present and left untouched.
