@@ -660,3 +660,152 @@ commands/evidence:
 - Cross-lane grep and `_execute_image_preflights()` source read: rc 0.
 
 Next runtime/image subdomain: after registry-selected lint is wired into orchestration, re-check the concrete missing transports: publish/record P0 digests or verified fallback shas for the 39 TB2 rows and the two django10097 SWE rows, then run worker runtime `check` only after the static gate is green.
+
+## Round 10 - Concrete transport population audit (2026-06-26)
+
+Scope held: runtime/images lane only. Worked on `swe_dev` in the active worktree. No production code/manifest/test edits. No Docker push/load/run. Docker/image evidence below comes from saved swe_dev identity inventory plus read-only file/tar/hash inspection. The only write in this loop is this ledger append.
+
+COMMENT-READY for #6/#11: populate the 41 missing transports from known swe_dev sources; no new distinct bug found
+
+dedup: comment-on-#6 for image transport population and lint-registry gating. comment-on-#11 for preserving the django10097 official-base versus wrapper identity split. Not #8 except for later worker pull/readiness validation after transport is populated.
+
+Current lint gate:
+- `lint-registry` on the TB2+SWE promotion slice returns rc 1 as expected: `selected_manifests=2`, `required_images=91`, `required_with_fallback_sha=50`, `required_with_digest_ref=0`, `required_without_offline_transport=41`.
+- TB2 accounts for 39 missing transports; SWE django10097 accounts for 2 missing transports.
+
+### TB2 39-row transport matrix
+
+All 39 TB2 missing rows are exact swe_dev cache hits and can be exported to verified fallback tar+sha from swe_dev. None currently has a shared tar at the expected `terminalbench2.1/prebuilt-images/20260425/<task>.tar` path, and none has a source repo digest in the identity inventory. P0 digest push is therefore not required to make `lint-registry` pass, but it is preferable for scale and should be kept alongside fallback tar while worker-j9jjd registry pulls remain less reliable than fallback loading.
+
+Counts:
+- `missing_rows=39`
+- `cache_present=39`
+- `identity_match=39`
+- `expected_tar_exists=0`
+- `with_repo_digests=0`
+- approximate Docker virtual size total: `76.01GB`
+
+| category | count | rows | minimum transport to pass lint | preferred scale transport |
+|---|---:|---|---|---|
+| TB2 small, `<1GB` | 26 | `tb2_nginx_request_logging(269MB)`, `tb2_openssl_selfsigned_cert(229MB)`, `tb2_overfull_hbox(531MB)`, `tb2_password_recovery(396MB)`, `tb2_path_tracing_reverse(453MB)`, `tb2_polyglot_c_py(560MB)`, `tb2_polyglot_rust_c(995MB)`, `tb2_portfolio_optimization(613MB)`, `tb2_protein_assembly(180MB)`, `tb2_pypi_server(321MB)`, `tb2_query_optimize(454MB)`, `tb2_raman_fitting(229MB)`, `tb2_regex_chess(197MB)`, `tb2_regex_log(298MB)`, `tb2_rstan_to_pystan(206MB)`, `tb2_sanitize_git_repo(466MB)`, `tb2_schemelike_metacircular_eval(180MB)`, `tb2_sparql_university(303MB)`, `tb2_sqlite_db_truncate(229MB)`, `tb2_sqlite_with_gcov(311MB)`, `tb2_train_fasttext(874MB)`, `tb2_tune_mjcf(529MB)`, `tb2_video_processing(793MB)`, `tb2_vulnerable_secret(478MB)`, `tb2_winning_avg_corewars(736MB)`, `tb2_write_compressor(996MB)` | `docker save` each exact `tb2-offline/*:20260425` ref to shared tar and record `sha256sum` | optional P0 digest after fallback smoke |
+| TB2 medium, `1-3GB` | 9 | `tb2_install_windows_3_11(1.63GB)`, `tb2_mteb_retrieve(2.12GB)`, `tb2_path_tracing(1.1GB)`, `tb2_prove_plus_comm(1.46GB)`, `tb2_pytorch_model_cli(2.6GB)`, `tb2_qemu_alpine_ssh(1.96GB)`, `tb2_qemu_startup(1.96GB)`, `tb2_reshard_c4_data(2.52GB)`, `tb2_sam_cell_seg(1.13GB)` | `docker save` plus sha is sufficient | P0 digest preferred when worker pull path is healthy |
+| TB2 large, `>3GB` | 4 | `tb2_multi_source_data_merger(6.2GB)`, `tb2_pytorch_model_recovery(19.2GB)`, `tb2_torch_pipeline_parallelism(11.3GB)`, `tb2_torch_tensor_parallelism(11GB)` | fallback tar+sha still sufficient for lint | P0 digest strongly preferred for repeated multi-worker runs; keep fallback until #8/rootless pull is resolved |
+
+TB2 concrete next commands (not executed in this loop):
+
+```bash
+TB_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425
+mkdir -p "$TB_ROOT"
+while read -r slug ref expected_id; do
+  out="$TB_ROOT/${slug}.tar"
+  actual_id=$(docker image inspect --format '{{.Id}}' "$ref")
+  test "$actual_id" = "$expected_id"
+  docker save -o "$out" "$ref"
+  sha256sum "$out" > "$out.sha256"
+done <<'EOF'
+install-windows-3.11 tb2-offline/install-windows-3.11:20260425 sha256:2dad54561527cd64bf8d66c1e3eb555b8e9fbacee320fc578d8654b18c718b4d
+mteb-retrieve tb2-offline/mteb-retrieve:20260425 sha256:153b4c97f265aeb902b976c782cb47cefec872f20a31b5a5c1fa1fff644b3672
+multi-source-data-merger tb2-offline/multi-source-data-merger:20260425 sha256:a961d25043559f9105b73e875bde5b2cc74b7ba7164bed2ef607fd82181fb8ad
+nginx-request-logging tb2-offline/nginx-request-logging:20260425 sha256:e673cf94a1a34da48db6f93a1da618d4cc4aec3d6a4d113d79decd9d1647bab7
+openssl-selfsigned-cert tb2-offline/openssl-selfsigned-cert:20260425 sha256:81d7d202b4704906a2e20a240011c44aa1049b49aa07a97a420b9ea1e8208bcb
+overfull-hbox tb2-offline/overfull-hbox:20260425 sha256:a58256eef1e42facdb751f33fde0aa1cfd74719a8a420a2ebbf294308d975cbb
+password-recovery tb2-offline/password-recovery:20260425 sha256:8a4a2ba55bfa3cf70f52b86ca6b297bfbb6cb3a082283422621e19a2efd2ce2f
+path-tracing-reverse tb2-offline/path-tracing-reverse:20260425 sha256:d0aed029cc00c03b921dce59927f0812d8a17e9786e9095d334b8c6f6d889a83
+path-tracing tb2-offline/path-tracing:20260425 sha256:49297f6044089e6cf96f9ff85626e3385c3bab32b5544a87a14077dbb4a34b36
+polyglot-c-py tb2-offline/polyglot-c-py:20260425 sha256:34f1e78e9e233130df2102ff26672ff6efa598195b02a7e75f5e84809fdc25ec
+polyglot-rust-c tb2-offline/polyglot-rust-c:20260425 sha256:a4b68e06827a967edee6ce3ee670bf5c7890987da211b37cb270e23279262d5d
+portfolio-optimization tb2-offline/portfolio-optimization:20260425 sha256:1fca885f366e81e4e02a9ebb7336fe5eb212326e4510a507ee9f310d7115262f
+protein-assembly tb2-offline/protein-assembly:20260425 sha256:c517a0dd99f0d98d6e95e849e21625f5f6fb7fec903fb15fcdb5f95d7942a757
+prove-plus-comm tb2-offline/prove-plus-comm:20260425 sha256:c6b448d30a2cc3b2f45120f49ff26eefda18c4a487c1a386fae5aef312947b32
+pypi-server tb2-offline/pypi-server:20260425 sha256:59e8830ad18e1f668d8fb97cd802161fd3e311524ba843d687699132df1f779f
+pytorch-model-cli tb2-offline/pytorch-model-cli:20260425 sha256:cb27d97d931461dd0e6b72ce2c5eaf3e2f65e8d418b250a07f06ba6a0ff07ab2
+pytorch-model-recovery tb2-offline/pytorch-model-recovery:20260425 sha256:3a67ac23a6097fbd4b6b9b8a78b06f11be5b8076568714c76ab2db5c5e684aa0
+qemu-alpine-ssh tb2-offline/qemu-alpine-ssh:20260425 sha256:53987a31bb5e61cfbe1c04d6f860fb4a7a316c6302dac8f168fc92649e40bc1b
+qemu-startup tb2-offline/qemu-startup:20260425 sha256:5814c86fde20d025cc06277e708ac9019bb3df9021af4d7421a3d11b45ecc849
+query-optimize tb2-offline/query-optimize:20260425 sha256:b7888e243c3263b9e97669e777f8d7ef0196eb5ba964d8f804ca45d32aff19d9
+raman-fitting tb2-offline/raman-fitting:20260425 sha256:3ed67c59f865cf947f06a60f64d0e673deef9c17dfc8a0a2c39288661920f432
+regex-chess tb2-offline/regex-chess:20260425 sha256:f30f7083851614ac29c8d7c3f653e5e6382fb520e11fcb410765995f0efaf75d
+regex-log tb2-offline/regex-log:20260425 sha256:5d9eae30a8a332f29f90f3e1957d872bb6c678e75aac94c0af6fa57c58fd3a77
+reshard-c4-data tb2-offline/reshard-c4-data:20260425 sha256:3151b2371e33ed58430f3764533e499f8de126df7f71650e107c85fc263419d6
+rstan-to-pystan tb2-offline/rstan-to-pystan:20260425 sha256:83b98640ec929691b076c253bd4bdc2364056793e729f382c1167e9afc8c6b88
+sam-cell-seg tb2-offline/sam-cell-seg:20260425 sha256:dbc5dfcc120f219e687090b0dd55f66dca019428d92bf901690eb31761db7152
+sanitize-git-repo tb2-offline/sanitize-git-repo:20260425 sha256:6fb3909be2d39ded79f422fc5c8c8669ef02e91680de764630926df74d2bdba1
+schemelike-metacircular-eval tb2-offline/schemelike-metacircular-eval:20260425 sha256:5b61010656231f3f13b912c5e4433898efdc926b265e11fe2322813f84816c78
+sparql-university tb2-offline/sparql-university:20260425 sha256:b7c23a59ae2253d3e45c8b9d3907bfcd9618242029e0eb6384d98c86f78b513d
+sqlite-db-truncate tb2-offline/sqlite-db-truncate:20260425 sha256:62dc8a21604c405fa2a3fc361058993b1dd65b5917df05b9bb3a625605547283
+sqlite-with-gcov tb2-offline/sqlite-with-gcov:20260425 sha256:3a0432d8b697baf97d51aca0c1d760eaf8f4583696b3861f8fd8ece48ac25dde
+torch-pipeline-parallelism tb2-offline/torch-pipeline-parallelism:20260425 sha256:a014da66007d31e1fb4cc89ed91a0db2f6d99709698b3bfbfc0c12298d663ed0
+torch-tensor-parallelism tb2-offline/torch-tensor-parallelism:20260425 sha256:7f0d9bce1454c702e1b7ed3bc8b086d96637cf5091e7d7ebfbfb8e0743436445
+train-fasttext tb2-offline/train-fasttext:20260425 sha256:535d3a38744d6c75e60830a5bdf5e3447dbb301af52ca29ddb48e46c7e41f3b2
+tune-mjcf tb2-offline/tune-mjcf:20260425 sha256:77711f5e27632be2f05d3f8c8e8a8bb8b6d9f78f956d67d5946a243b9b344475
+video-processing tb2-offline/video-processing:20260425 sha256:470f922fb58f033ad22ba766310e58a914e3f45a546433c06d5e543f09f0872e
+vulnerable-secret tb2-offline/vulnerable-secret:20260425 sha256:ed187ec82616ca051d93c8dfd84965d42d98ab9d016604cb67c42860b65f0a1b
+winning-avg-corewars tb2-offline/winning-avg-corewars:20260425 sha256:3cb6bfd6a3a61962786d02979ce71349759473985e6c7ca294720beae1889cf0
+write-compressor tb2-offline/write-compressor:20260425 sha256:868491de68eb60d48c8c1e0cb452ac10a73158c3857e997128d0a83f9b6843b8
+EOF
+```
+
+For P0 follow-up after fallback artifacts exist, tag/push each source ref by immutable task slug and record the returned internal repo digest. Do not remove fallback tars until worker-j9jjd has reliable internal-registry pull+smoke for the same digest.
+
+### SWE django10097 transport matrix
+
+| row | current source identity | existing transport | minimum to pass lint-registry | preferred scale transport |
+|---|---|---|---|---|
+| `swebench_django10097_eval_base` | exact swe_dev cache match for `swebench/sweb.eval.x86_64.django_1776_django-10097:latest`; source image id `sha256:cf945d25...`; source repo digest `swebench/...@sha256:148894...`; cache size `2.81GB` | no fallback tar; no internal P0 digest ref | either `docker save` the exact eval-base image to shared tar and record sha, or tag/push it to P0 and record internal digest `image_ref` | P0 digest preferred because official eval base already has source repo digest; keep `source_image_id` and `source_repo_digest` so #11 identity checks remain strict |
+| `swebench_django10097_swerex_wrapper` | exact swe_dev cache match for `swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-django-1776-django-10097-latest-8be1c797d4885b41`; source image id `sha256:3e38b927...`; cache size `3.25GB` | existing tar `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/swerex_images/chunks/django-1776-django_00.tar`, size `7832649216` bytes; no sha sidecar | add `fallback_tar_sha256: 2ba506ed3e6ff4fdbb2ed54612b633ed782b4604a7b94a9d49173b0b2fb73275` | P0 digest optional later; existing tar+sha is enough for lint and fallback, but runtime `check --load-fallback` must still verify `source_image_id` |
+
+SWE concrete next commands (not executed in this loop):
+
+```bash
+# Wrapper row: no Docker needed to satisfy static transport lint.
+WRAP=/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/swerex_images/chunks/django-1776-django_00.tar
+sha256sum "$WRAP"
+# Record fallback_tar_sha256: 2ba506ed3e6ff4fdbb2ed54612b633ed782b4604a7b94a9d49173b0b2fb73275.
+# Keep local_ref/source_image_id unchanged.
+
+# Eval-base fallback route, sufficient for lint-registry.
+SWE_OUT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runtime-images/swebench_verified/django10097
+mkdir -p "$SWE_OUT"
+REF=swebench/sweb.eval.x86_64.django_1776_django-10097:latest
+EXPECTED=sha256:cf945d25ceb69a16f1b06ccb38c5772592f6298698ca1a34b794019a4760dba7
+actual=$(docker image inspect --format '{{.Id}}' "$REF")
+test "$actual" = "$EXPECTED"
+docker save -o "$SWE_OUT/sweb.eval.x86_64.django_1776_django-10097.tar" "$REF"
+sha256sum "$SWE_OUT/sweb.eval.x86_64.django_1776_django-10097.tar" > "$SWE_OUT/sweb.eval.x86_64.django_1776_django-10097.tar.sha256"
+
+# Eval-base P0 route, preferred for scale once registry consumer smoke is healthy.
+REG=100.97.118.137:8555
+P0_TAG=$REG/swe-data-harness/swebench-django10097-eval-base:cf945d25
+P0_REF=$REG/swe-data-harness/swebench-django10097-eval-base@sha256:<digest-from-push>
+docker tag "$REF" "$P0_TAG"
+docker push "$P0_TAG"
+docker inspect --format='{{index .RepoDigests 0}}' "$P0_TAG"
+# Record the returned digest-pinned P0_REF as image_ref; keep source_image_id/source_repo_digest fields.
+```
+
+Blockers:
+- No TB2 source rows have P0/internal repo digests yet; P0 publication needs a separate push/consumer-smoke phase.
+- TB2 fallback export is mechanically possible for all 39 rows, but the large-image subset (`19.2GB`, `11.3GB`, `11GB`, `6.2GB`) will be expensive as shared tars; prefer P0 plus fallback for those.
+- SWE eval base has no existing fallback tar; one artifact still must be created or a P0 digest must be published.
+- Worker-j9jjd should not rely on P0-only transport until #8 registry pull readiness is fixed or explicitly smoke-proven. Keep fallback tar+sha for every promoted row.
+
+Cross-lane check:
+- `hunt-runner-results.md` has no contradictory runtime/image transport finding. Its image-preflight notes remain runner-result classification issues and are compatible with this #6/#11 transport-population plan.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Remote status/head check on `swe_dev`: rc 0; branch `feat/image-warmup-policy`, observed head `a2c3f67`, with `ce2adf2 Add registry image lint gate` in history.
+- `lint-registry --help`: rc 0; filters are exact `--policy`/`--manifest-id`, not prefix flags.
+- Initial stale `--policy-prefix` lint-registry probe: rc 2; useful only to show the command sketch from Round 9 is superseded by current CLI syntax.
+- Correct TB2+SWE lint-registry JSON probe: outer rc 0, inner `LINT_RC=1`, `PY_RC=0`; counts quoted above.
+- Inventory-shape read for `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`: rc 0; `images=1320`, `identity_errors=0`.
+- TB2 missing-row parser against manifest plus identity inventory: first table print hit a quoting bug and exited rc 1 after already printing core counts; rerun succeeded rc 0 with the 39-row table/counts quoted above.
+- SWE django10097 manifest/inventory table: rc 0; both rows are exact cache identity matches; wrapper tar exists and eval-base tar is absent.
+- Wrapper tar sidecar/stat/bounded search: rc 0; no sha sidecar found; refs file includes target wrapper ref; tar metadata parse confirms target tag appears once with config `blobs/sha256/3e38b927...`.
+- `sha256sum` of wrapper tar: rc 0; digest `2ba506ed3e6ff4fdbb2ed54612b633ed782b4604a7b94a9d49173b0b2fb73275`.
+- Over-broad shared-tree find for existing eval-base tar was interrupted after it failed to finish quickly; no conclusion depends on that search because the manifest and bounded wrapper tree already show no configured eval-base fallback.
+- TB2 size-bucket command: rc 0.
+- Pre-append `git diff --check`/status: rc 0; clean before append.
+
+Next runtime/image subdomain: after these transports are created and manifests updated by the implementation lane, re-run `lint-registry` for the same two policies, then run worker runtime `check` with identity verification and fallback load/smoke on a small representative set before attempting all 91 required rows.

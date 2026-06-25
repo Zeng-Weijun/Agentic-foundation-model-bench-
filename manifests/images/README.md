@@ -24,7 +24,7 @@ rootless guard.
 Two generated audit manifests currently materialize swe_dev cache state with image identity fields:
 
 - `terminal_bench_2_1_swe_dev_cache.yaml`: 89 `tb2-offline/*:20260425` rows from swe_dev Docker cache. It records full source image IDs and marks which rows have shared tar fallback coverage under `terminalbench2.1/prebuilt-images/20260425`.
-- `swebench_verified_django10097.yaml`: two required rows for the SWE-bench `django__django-10097` promotion probe: the official eval base and the exact `swerex-prebuilt` wrapper. This manifest is expected to pass on swe_dev and fail with `identity_mismatch` on the current worker until the official base is staged correctly.
+- `swebench_verified_django10097.yaml`: two required rows for the SWE-bench `django__django-10097` promotion probe: the official eval base and the exact `swerex-prebuilt` wrapper. Both rows now have verified fallback tar checksums; worker-j9jjd `--load-fallback --run-smoke` loaded the official base over the prior alias mismatch and passed both image smokes.
 
 Generated cache manifests are audit/promotion inputs. Do not treat them as P0-ready until every required row either has a digest-pinned registry ref or a verified fallback tar sha256.
 
@@ -39,4 +39,4 @@ python3 scripts/agentic_bench_images.py lint-registry \
   --require-offline-transport
 ```
 
-As of the current audit, that TB2 + SWE promotion selection is expected to fail closed because 39 TB2 rows and 2 SWE django rows still lack P0 digest refs or verified fallback checksums.
+As of the current audit, that TB2 + SWE promotion selection still fails closed only because 39 TB2 rows lack P0 digest refs or verified fallback checksums; the SWE django10097 rows now satisfy the fallback-tar transport gate. P0 digest refs are still preferred for scale, but no longer required for this narrow SWE django fallback smoke.

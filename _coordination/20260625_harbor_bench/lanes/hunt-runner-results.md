@@ -926,3 +926,92 @@ Next runner/results subdomain: fixture-ready parser expectations for these role 
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - First `rg` token-pattern scanner had shell quoting damage in the regex and printed a shell error despite outer rc 0, so it was ignored. Corrected remote Python scanner: rc 0, `secret_pattern_scan=no_matches`.
 - `git diff --stat --` and `git diff --numstat --` for this ledger after Round 9 append: rc 0, `113 insertions` before this validation block.
+
+## Round 10 fixture-ready parser expectations for Terminal-Bench and DeepSWE
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Active branch/head observed at start: `feat/image-warmup-policy` / `ce2adf2 Add registry image lint gate`.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker, benchmark execution, or model requests.
+- Focus: fixture-ready parser expectations for Terminal-Bench 2.1 nonzero-with-`artifact_manifest.json` and DeepSWE failure-before-result/manifest cases.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: this is implementation/test-spec detail for #1, #10, and #12. It is not a new issue because Round 5/Round 9 already established that current `_benchmark_result_for_run()` short-circuits nonzero adapter exits and that normalized results lack `source.native_artifacts[]`. It is not #2 except that fixture expected output should include future invocation/run-dir provenance once #2 lands.
+
+Static root-cause evidence:
+
+- `scripts/agentic_bench_suite.py:979-1024` records process status and controller log path from `_run_one()`, but `_benchmark_result_for_run()` returns `parser_status=not_run`, `status=infra_error`, and `failure_category=adapter_crash` for any nonzero exit before looking at `BENCH_RUN_DIR` or `artifact_manifest.json` (`scripts/agentic_bench_suite.py:1251-1262`).
+- `_attach_benchmark_result()` writes `agentic_bench.result.v1` without `parser`, `source`, run-dir, or native-artifact provenance (`scripts/agentic_bench_suite.py:1281-1300`).
+- Terminal-Bench 2.1 wrapper writes `run.env.summary`, `command.sh`, `terminal_bench.log`, `tb.exit_status`, and `artifact_manifest.json` before returning nonzero on `tb_rc` (`run_terminal_bench_2_1.sh:87-139`). It calls `bench_finish` only on success (`run_terminal_bench_2_1.sh:138-141`), so a parser must not require `artifact=`/`done:` for this failure mode.
+- DeepSWE wrapper writes secret-bearing `pier.env` before launching Pier (`run_deepswe.sh:147-159`), writes safe `run.env.summary` and redacted command path material (`run_deepswe.sh:218-245`), then only writes `artifact_manifest.json` after `job_dir/result.json` exists (`run_deepswe.sh:247-289`). If Pier exits nonzero, or if `result.json` is absent, the manifest is not emitted.
+- Current contract doc already requires parsers to record found and missing artifacts in `source.native_artifacts[]` (`reports/next_result_parser_contract_20260625.md:662-670`).
+
+COMMENT-READY test-spec table for #1/#10/#12:
+
+| Fixture | Synthetic files to add later | Expected execution/benchmark split | Required `source.native_artifacts[]` records | Redaction negative assertions |
+|---|---|---|---|---|
+| `tests/fixtures/result_parsers/terminal_bench_2_1_nonzero_with_manifest/` | `run_manifest.json`; `execution_result.json`; `bench_run/artifact_manifest.json`; `bench_run/tb.exit_status`; `bench_run/terminal_bench.log`; `bench_run/command.sh`; `native_run/results.json`; `native_run/run_metadata.json`; `expected.result.json` | `execution.status=fail`, `execution.exit_code=2`, `execution.adapter_status=fail:2`; `parser.id=terminal_bench_2_1`, `parser.status=parsed`; `benchmark_result.parser_status=parsed`, `benchmark_result.status=fail`, `benchmark_result.metric=accuracy`, `benchmark_result.score=0.0`, `benchmark_result.passed=false`, `benchmark_result.score_claim_valid=true`, `benchmark_result.tasks_passed=0`, `benchmark_result.tasks_total=1`, `benchmark_result.failure_category=task_unresolved` | `terminal_bench_artifact_manifest`: `parsed` / `allowlist_json`; `terminal_bench_exit_status`: `parsed_summary` / `allowlist_text_regex`; `terminal_bench_results_json`: `parsed_summary` / `allowlist_json`; `terminal_bench_run_metadata`: `parsed_summary` / `allowlist_json`; `terminal_bench_artifact_root`: `referenced_not_read` / `pointer_only`; `terminal_bench_log`: `parsed_excerpt` / `allowlist_text_regex`; `terminal_bench_command`: `unsafe_excluded` / `exclude_secret_or_transcript` | Serialized normalized JSON must not contain `UNIT_SENTINEL_TERMINAL`, raw `instruction`, raw `agent_kwargs`, raw command content, or any key/value from `command.sh`. It may contain the path to `command.sh` only as an unsafe-excluded source record. |
+| `tests/fixtures/result_parsers/deepswe_nonzero_before_result_no_manifest/` | `run_manifest.json`; `execution_result.json`; `bench_run/run.env.summary`; `bench_run/pier.log`; `bench_run/pier.env`; `bench_run/command.sh`; deliberately no `bench_run/artifact_manifest.json`; deliberately no `bench_run/pier_jobs/deepswe_unit/result.json`; `expected.result.json` | `execution.status=fail`, `execution.exit_code=1`, `execution.adapter_status=fail:1`; `parser.id=deepswe`, `parser.status=partial`; `benchmark_result.parser_status=partial`, `benchmark_result.status=infra_error`, `benchmark_result.metric=native_artifact_presence`, `benchmark_result.passed=false`, `benchmark_result.score_claim_valid=false`, `benchmark_result.failure_category=deepswe_pier_failed_before_result`, `benchmark_result.short_failure_note` bounded to a sanitized Pier error summary | `deepswe_env_summary`: `parsed_summary` / `allowlist_text_regex`; `deepswe_artifact_manifest`: `not_emitted` / `allowlist_json`; `deepswe_result_json`: `not_emitted` / `allowlist_json`; `deepswe_pier_job_dir`: `missing` / `pointer_only`; `deepswe_pier_log`: `parsed_excerpt` / `allowlist_text_regex`; `deepswe_pier_env`: `redacted_excluded` / `exclude_secret_or_transcript`; `deepswe_command`: `unsafe_excluded` / `exclude_secret_or_transcript` | Serialized normalized JSON must not contain `UNIT_SENTINEL_DEEPSWE`, `OPENAI_API_KEY`, `MSWEA_API_KEY`, `OPENAI_API_BASE`, raw `pier.env` contents, raw command content, or unbounded `pier.log`. It may contain `pier.env` as a path with `redacted_excluded`. |
+
+Terminal-Bench fixture content contract:
+
+- `run_manifest.json` should mirror the suite run shape, with `suite_id=unit_parser_fixture`, `bench_id=terminal_bench_2_1_image_smoke`, `bench=terminal_bench_2_1`, `adapter=terminal_bench_2_1`, `adapter_status=wired_legacy`, `runtime_env.BENCH_RUN_DIR=<fixture>/bench_run`, `params.TB_TASK_IDS=gcode-to-text`, `worker_id=worker-j9jjd`, and a redacted model profile. Do not include live credentials.
+- `execution_result.json` should represent the controller-side `_run_one()` result: `status=fail:2`, `exit_code=2`, and a controller log path. This is the reproducer for #1: process failed, but native TB score artifacts are still present.
+- `bench_run/artifact_manifest.json` should use the wrapper keys from `run_terminal_bench_2_1.sh:124-134`: `agent`, `benchmark`, `artifact`, `artifact_symlink`, `command`, `terminal_bench_log`, `exit_status`, `results`, and `run_metadata`.
+- `bench_run/tb.exit_status` should contain only `tb_rc=2`.
+- `native_run/results.json` should use the observed Terminal-Bench top-level shape from existing artifacts: `accuracy`, `id`, `n_resolved`, `n_unresolved`, `pass_at_k`, `resolved_ids`, `unresolved_ids`, and `results`. The synthetic row should include only safe scalar fields needed by the parser, for example `task_id=gcode-to-text`, `is_resolved=false`, `failure_mode=unit_unresolved`, token counts, and timestamps. It should include a raw `instruction` value containing `UNIT_SENTINEL_TERMINAL` to prove the parser does not copy prompts/instructions.
+- `native_run/run_metadata.json` should include only safe metadata keys observed in existing artifacts, such as `run_id`, `dataset_name`, `dataset_path`, `dataset_version`, `task_ids`, `n_concurrent_trials`, `n_attempts`, `agent_name`, and `model_name`. If it includes `agent_kwargs` with `UNIT_SENTINEL_TERMINAL`, the expected normalized result must omit that object entirely.
+- `expected.result.json` should assert the normalized output keeps `execution.status=fail` while deriving `benchmark_result.status=fail` from native results, not `infra_error` from the process exit alone.
+
+DeepSWE fixture content contract:
+
+- `run_manifest.json` should mirror a DeepSWE suite row, with `bench_id=deepswe`, `bench=deepswe`, `adapter=deepswe`, `adapter_status=wired_legacy`, `runtime_env.BENCH_RUN_DIR=<fixture>/bench_run`, `params.DEEPSWE_MODE=smoke`, and `params.MAX_CONCURRENCY=1`.
+- `execution_result.json` should represent `_run_one()` returning `status=fail:1`, `exit_code=1`, and a controller log path.
+- `bench_run/run.env.summary` should include only safe wrapper keys from `run_deepswe.sh:218-240`: `deepswe_root`, `deepswe_commit`, `deepswe_task_count`, `pier_bin`, `deepswe_agent`, `deepswe_model`, `deepswe_model_class`, `deepswe_mode`, `deepswe_n_tasks`, `deepswe_n_concurrent`, `deepswe_jobs_dir`, `deepswe_job_name`, `deepswe_host_api_relay`, `deepswe_relay_upstream_proxy_set`, and `deepswe_set_mswea_api_key`. It should not contain actual URLs with credentials.
+- `bench_run/pier.log` should include a short synthetic infra error and `UNIT_SENTINEL_DEEPSWE` in a line that must be redacted or dropped from `short_failure_note`. The expected result may include a bounded sanitized category such as `pier failed before result.json`.
+- `bench_run/pier.env` should contain short synthetic placeholders for secret-bearing keys to prove the parser never reads or serializes the file. The expected result should record only the path and `redacted_excluded` status.
+- `bench_run/command.sh` should contain the `--env-file $BENCH_RUN_DIR/pier.env` pattern, but the expected result should record only a pointer with `unsafe_excluded`.
+- There must be no `bench_run/artifact_manifest.json` and no `pier_jobs/deepswe_unit/result.json`. The parser should treat this as a partial parse of safe sidecars, not `no_parser`, not `unknown`, and not a score claim.
+
+Minimal tests to add before implementation:
+
+1. `test_terminal_bench_nonzero_with_manifest_parses_native_result`: load the Terminal-Bench fixture, call the future parser/result attachment entry point with `execution_result.exit_code=2`, then assert the exact execution/benchmark split and `score_claim_valid=true` from `results.json`.
+2. `test_terminal_bench_nonzero_with_manifest_records_sources`: assert every expected Terminal-Bench source record has the exact `role`, `status`, `required`, and `read_policy`, and that `terminal_bench_command` is `unsafe_excluded`.
+3. `test_terminal_bench_parser_does_not_copy_prompts_or_command_sidecars`: serialize the normalized result and assert `UNIT_SENTINEL_TERMINAL`, raw `instruction`, raw `agent_kwargs`, and command contents are absent.
+4. `test_deepswe_nonzero_before_manifest_records_partial_sources`: load the DeepSWE fixture, call the parser/result attachment entry point with `execution_result.exit_code=1`, then assert `parser.status=partial`, `benchmark_result.status=infra_error`, and source records for `artifact_manifest`/`result_json` are `not_emitted` while `pier_env` is `redacted_excluded`.
+5. `test_deepswe_partial_parser_does_not_read_pier_env`: serialize the normalized result and assert `UNIT_SENTINEL_DEEPSWE`, env key names, and raw `pier.env`/`command.sh` contents are absent.
+6. `test_nonzero_exit_does_not_short_circuit_parser_discovery_when_bench_run_dir_exists`: a narrow regression test for #1 using either fixture should fail against current `scripts/agentic_bench_suite.py:1251-1262` until parser discovery is moved before the process-status fallback.
+
+Implementation notes for the next code lane:
+
+- Add fixture paths under `tests/fixtures/result_parsers/` rather than embedding large JSON strings in `scripts/test_agentic_bench_suite.py`; keep fixtures minimal and synthetic.
+- Add a parser discovery helper that accepts `run` and `execution_result`, resolves `BENCH_RUN_DIR` from `run.runtime_env.BENCH_RUN_DIR`, and only reads allowlisted files. It should run even when `execution_result.exit_code != 0`.
+- Keep `execution.status` process-level. Do not change suite rc semantics: `_execute_plan()` should still return nonzero when adapter exit is nonzero, while the normalized result can hold a parsed benchmark failure or infra failure.
+- Add a recursive sanitizer before writing result JSON, and make tests inspect the serialized JSON string, not only Python objects.
+- Do not add fixture files containing live paths or real native artifacts. Paths can be relative inside the fixture root or synthetic `/tmp/unit/...` placeholders.
+
+### Round 10 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first, display truncated by tool.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- `ssh swe_dev 'cd ...image-warmup-policy && pwd && git branch --show-current && git rev-parse --short HEAD && git log -1 --oneline && git status --short --untracked-files=all'`: rc 0; branch `feat/image-warmup-policy`, head `ce2adf2`, status clean at that moment.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read current runner ledger tail: rc 0.
+- Three initial `rg` commands failed because `rg` is unavailable on `swe_dev`: rc 127; reran with `grep`/`find`.
+- Grep and `nl`/`sed` reads for `scripts/agentic_bench_suite.py` and `scripts/test_agentic_bench_suite.py`: rc 0.
+- Resolved wrapper real paths with `readlink -f`: rc 0.
+- Read Terminal-Bench wrapper, DeepSWE wrapper, `bench_common.sh`, and result-contract report line ranges: rc 0.
+- Read runtime-images lane tail and manifest suite entries for Terminal-Bench/DeepSWE: rc 0.
+- Broad existing-artifact `find` probes were interrupted after they ran too long: rc 255. The Terminal-Bench scan printed only file paths, not file contents or secrets; the DeepSWE scan produced no output before interruption.
+- Bounded Terminal-Bench JSON shape probe over one existing `results.json` and `run_metadata.json`: rc 0; printed only top-level keys and nested key names, no instruction/model output content.
+
+## Round 10 validation evidence
+
+- `git status --short --untracked-files=all`: rc 0; only this lane ledger was modified at validation time.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
+- `git diff --stat --` and `git diff --numstat --` for this ledger after the Round 10 append: rc 0, `80 insertions` before this validation block.
+- Post-validation final status note: a later `git status --short --untracked-files=all` returned rc 0 and showed concurrent/unowned `manifests/images/swebench_verified_django10097.yaml` modified outside this lane; this lane did not touch it.
