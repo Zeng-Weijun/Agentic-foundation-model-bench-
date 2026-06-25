@@ -3,6 +3,7 @@ set -euo pipefail
 
 WORKER_SSH="${WORKER_SSH:-ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn}"
 REMOTE_DOCKER_HOST="${REMOTE_DOCKER_HOST:-unix:///tmp/rl/run/docker.sock}"
+HEALTH_SMOKE_IMAGE="${HEALTH_SMOKE_IMAGE:-}"
 MODE="${1:-check}"
 
 case "$MODE" in
@@ -21,6 +22,7 @@ Checks rootless Docker health on worker-j9jjd.
 Environment:
   WORKER_SSH          SSH target for the worker.
   REMOTE_DOCKER_HOST Rootless Docker socket URI.
+  HEALTH_SMOKE_IMAGE Optional cached image ref to run with --network none.
 
 The default mode is read-only. --restart-if-down starts the daemon only when no
 engine processes are present and docker info is not healthy. It does not delete
@@ -34,11 +36,12 @@ USAGE
     ;;
 esac
 
-ssh -o BatchMode=yes -o ConnectTimeout=12 "$WORKER_SSH" 'bash -s' -- "$MODE" "$REMOTE_DOCKER_HOST" <<'REMOTE'
+ssh -o BatchMode=yes -o ConnectTimeout=12 "$WORKER_SSH" 'bash -s' -- "$MODE" "$REMOTE_DOCKER_HOST" "$HEALTH_SMOKE_IMAGE" <<'REMOTE'
 set -u
 
 mode="$1"
 docker_host="$2"
+health_smoke_image="${3:-}"
 export DOCKER_HOST="$docker_host"
 
 engine_comm_re='^(dockerd|rootlesskit|containerd|containerd-shim|containerd-shim-runc-v2|runc|docker-proxy|slirp4netns|vpnkit)$'
@@ -114,6 +117,7 @@ echo "date=$(date -Is)"
 echo "host=$(hostname)"
 echo "mode=$mode"
 echo "docker_host=$DOCKER_HOST"
+echo "health_smoke_image=${health_smoke_image:-}"
 
 echo "--- socket ---"
 ls -l /tmp/rl/run/docker.sock 2>&1 || true
@@ -174,6 +178,32 @@ timeout 60 docker images --format '{{.Repository}}:{{.Tag}} {{.ID}} {{.Size}}' |
 rc=${PIPESTATUS[0]}
 echo "docker_images_rc=$rc"
 [ "$rc" -eq 0 ] || status=1
+
+echo "--- docker storage ---"
+df -h /tmp /tmp/rl /tmp/rl/data /mnt/shared-storage-user 2>&1 || true
+df -i /tmp /tmp/rl /tmp/rl/data /mnt/shared-storage-user 2>&1 || true
+timeout 30 docker info --format 'driver={{.Driver}} root={{.DockerRootDir}} containers={{.Containers}} images={{.Images}} driver_status={{json .DriverStatus}}' 2>&1
+rc=$?
+echo "docker_storage_info_rc=$rc"
+timeout 30 docker system df 2>&1
+rc=$?
+echo "docker_system_df_rc=$rc"
+du -sh /tmp/rl/data /tmp/rl/data/overlay2 2>&1 || true
+
+echo "--- cached run smoke ---"
+if [ -z "$health_smoke_image" ]; then
+  echo "cached_run_smoke_skipped=HEALTH_SMOKE_IMAGE_unset"
+else
+  echo "cached_run_smoke_image=$health_smoke_image"
+  if timeout 20 docker image inspect "$health_smoke_image" >/dev/null 2>&1; then
+    timeout 45 docker run --rm --network none "$health_smoke_image" /bin/sh -lc 'python3 --version 2>/dev/null || python --version 2>/dev/null || echo cached-run-ok' 2>&1
+    rc=$?
+    echo "cached_run_smoke_rc=$rc"
+    [ "$rc" -eq 0 ] || status=1
+  else
+    echo "cached_run_smoke_skipped=image_not_present"
+  fi
+fi
 
 echo "--- compose ---"
 timeout 20 docker compose version 2>&1

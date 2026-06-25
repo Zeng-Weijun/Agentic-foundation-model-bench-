@@ -111,6 +111,15 @@ WORKER_STYLE_YAML = textwrap.dedent(
 ).strip()
 
 
+class RootlessWorkerHealthScriptTest(unittest.TestCase):
+    def test_health_script_reports_storage_and_optional_cached_run_smoke(self):
+        script = (ROOT / "scripts" / "check_rootless_docker_worker.sh").read_text(encoding="utf-8")
+        self.assertIn("HEALTH_SMOKE_IMAGE", script)
+        self.assertIn("--- docker storage ---", script)
+        self.assertIn("docker system df", script)
+        self.assertIn("--- cached run smoke ---", script)
+
+
 class AgenticBenchSuiteTest(unittest.TestCase):
     def test_default_plan_is_dry_run_and_secret_safe(self):
         module = load_module()

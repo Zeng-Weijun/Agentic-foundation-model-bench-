@@ -70,6 +70,16 @@ Check offline/rootless Docker image readiness on the worker:
 scripts/load_offline_images.sh --check
 ```
 
+Check rootless Docker daemon/storage health before a worker prewarm.
+`HEALTH_SMOKE_IMAGE` is optional; when set to an already cached image, the
+health check also runs a no-network container smoke so layer-ingest failures can
+be distinguished from cached-image runtime failures.
+
+```bash
+HEALTH_SMOKE_IMAGE=tb2-offline/pytorch-model-cli:20260425 \
+  scripts/check_rootless_docker_worker.sh --check
+```
+
 Validate the P0 Harbor/OCI image manifest index:
 
 ```bash
