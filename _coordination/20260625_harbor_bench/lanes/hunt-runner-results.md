@@ -437,3 +437,107 @@ Next loop should inspect whether current adapter logs reliably emit artifact poi
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0 through an inverted check; no trailing whitespace matches.
 - Strict secret-pattern scan for token-like strings in the ledger: rc 0 through an inverted check; no matches printed.
 - Tail final ledger for sanity: rc 0.
+## Round 5 adapter artifact pointer/result contract
+
+Scope for this round:
+
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy` at pushed commit `edae6f2`.
+- Write set: this ledger only. No production code, manifests, Docker state, benchmark execution, or model calls.
+- Static/bounded reads only: suite dry-run JSON, shared legacy wrappers under `/data/nips/bench`, current branch scripts/reports, and existing run artifacts.
+- Secret policy: probes reported key-path/presence only; no token values were printed or written.
+
+### Current suite pointer surface
+
+The suite always exports a `BENCH_RUN_DIR`, but it does not expose parser hints in the run manifest:
+
+- `_remote_body()` creates `BENCH_RUN_DIR`, `cd`s to `bench_root`, and executes `./<adapter_script>`; see `scripts/agentic_bench_suite.py:523-538`.
+- `build_run_plan()` sets `BENCH_RUN_DIR=<run_root>/<suite_id>/<bench_id>` and `RUN_TAG=<suite_id>`; see `scripts/agentic_bench_suite.py:788-799`.
+- Dry-run probe for enabled rows found `has_bench_run_dir=True` for RepoZero, VitaBench, CoCoA, DeepSWE, all SWE-bench scaffolds, and `terminal_bench_2_1_image_smoke`, but `has_result_parser_field=False` and `has_artifact_hints=False` for all of them.
+- No `AGENTIC_RESULT_JSON` emission exists in current `scripts/`, `manifests/`, or reports except as a proposed future contract in `reports/next_result_parser_contract_20260625.md`.
+
+`/data/nips/bench/lib/bench_common.sh:223-227` defines the legacy pointer contract:
+
+- append `artifact=<path>` to `$BENCH_RUN_DIR/run.env.summary`.
+- print `done: <path>` to stdout.
+
+That is useful but not enough for every adapter because some wrappers write richer `artifact_manifest.json`, some only point at a parent directory, and some sidecar files under `BENCH_RUN_DIR` are secret-bearing.
+
+### Adapter pointer matrix
+
+| Adapter / bench | Pointer emitted by wrapper | Existing artifact evidence | Parser blocker / redaction risk |
+|---|---|---|---|
+| RepoZero Py2JS | `run_repozero_py2js.sh:96-100` writes `command.sh`, `repozero_py2js.log`, then `bench_finish <RepoZero/Py2JS/output_codex/run_name>`. | Existing `run.env.summary` has `artifact=/mnt/.../RepoZero/Py2JS/output_codex/gpt-5.4-mini_dev_worker_smoke_dryrun_smoke`; no `artifact_manifest.json`. | Pointer is stable enough for current RepoZero parser, but normalized result still does not record native artifact root. |
+| VitaBench | `run_vitabench.sh:101-106` writes `command.sh`, `vitabench.log`, then `bench_finish <VitaBench/data/simulations/save_to>`. | Historical `run.env.summary` has a native simulation artifact path. Existing `vita_models.yaml` has a secret-pattern match; native simulation JSON also has `info.user_info.llm_args.headers.Authorization` from prior #9 evidence. | Parser can discover native result from `artifact=`, but must avoid copying `vita_models.yaml`, raw `info.user_info`, or raw headers. Dedup to #9 for Vita-native header risk. |
+| CoCoA | `run_cocoabench.sh:149-153` writes `command.sh`, `cocoabench.log`, then `bench_finish $COCOA_OUTPUT_DIR`; config intentionally writes empty `api_key` at line 66. | Existing `run.env.summary` points to `.../cocoabench/results`; task result and `statistics.txt` exist. No `artifact_manifest.json`. | Pointer is sufficient for a parser; absence of manifest means parser must know CoCoA result file conventions under the results dir. |
+| tau3-bench | `run_tau3_bench.sh:30-39` writes run metadata; `run_tau3_bench.sh:86-89` can `bench_finish $TAU3_DATASET_DIR` when Harbor run is skipped; real Harbor run logs to `tau3_harbor.log` and `bench_finish $TAU3_JOBS_DIR` at lines 92-94. | Existing verification summaries show `tau3_harbor_run=skipped` and `artifact=<dataset_dir>`. Command artifacts use placeholder API-key assignments, not non-placeholder values. | A parser must not treat a skipped-Harbor dataset artifact as a benchmark result. Need explicit `tau3_harbor_run` state and jobs/result discovery, not just `artifact=`. |
+| DeepSWE | `run_deepswe.sh:247-289` writes `artifact_manifest.json` and `bench_finish <Pier result.json>` only after Pier result exists. `run_deepswe.sh:147-159` writes secret-bearing `pier.env`. | Historical `artifact_manifest.json` includes safe keys: `pier_job_dir`, `result_json`, `pier_log`, `command`, `env_summary`, and summary counts. Historical `pier.env` has a secret-pattern match. Current suite `runs/dev_worker_smoke_dryrun/deepswe` does not exist. | Parser should prefer `artifact_manifest.json` and `result_json`; never copy `pier.env`. For missing suite run dirs, report `parse_error/native_artifact_missing`. |
+| SWE-bench Qwen Code | `run_swebench_verified_qwen_code.sh:42-48` passes `--base-url`, `--api-key`, output parent, namespace, and run name; `run_swebench_verified_qwen_code.sh:74-78` writes full command and `bench_finish <out_parent/run_name>`. | No current suite run dir exists for `swebench_verified_qwen_code_smoke`. Static code shows `command.sh` would include the expanded `--api-key` argument. | Strong secret-sidecar risk plus missing score artifact contract. Parser must require explicit score/preds/artifact hints and must not read `command.sh` as raw evidence. |
+| SWE-bench mini-swe-agent | `run_swebench_verified_mini_swe_agent.sh:60-83` writes `artifact_manifest.json` with `predictions`, `agent_trace_root`, config snapshot, log, and command, then `bench_finish $MINI_SWE_OUTPUT_DIR`. | No current suite run dir exists. | Pointer contract is good if the run succeeds; parser still needs score/eval report mapping from predictions to native verifier result. |
+| SWE-agent scaffold | `run_swebench_verified_swe_agent.sh` execs `run_swebench_verified.sh`; `run_swebench_verified.sh:137-160` writes `artifact_manifest.json` with `predictions`, trace root, eval log, and command, then `bench_finish <preds.json>`. | No current suite run dir exists. Static config substitution stores `api_key: $OPENAI_API_KEY` as a placeholder in the generated config, not the value. | Parser can use manifest after success, but current suite does not parse non-RepoZero and does not handle missing/new stale run dirs. |
+| OpenHands scaffold | `run_swebench_verified_openhands.sh:28-71` writes config TOML under `BENCH_RUN_DIR`; the here-doc expands `api_key = "$OPENAI_API_KEY"`. `run_swebench_verified_openhands.sh:135-163` writes `artifact_manifest.json`, then `bench_finish <output.jsonl>`. | No current suite run dir exists. | Strong secret-sidecar risk in config snapshot plus need to parse output/eval logs. Parser must not copy config TOML and must redact any config-derived fields. |
+| Terminal-Bench 2.1 image smoke | repo wrapper `scripts/run_terminal_bench_2_1_smoke.sh:124-132` prints `run_dir`, image, runner, and docker host. Shared runner writes `artifact_manifest.json` at `run_terminal_bench_2_1.sh:119-136`, exits nonzero before `bench_finish` when `tb_rc != 0`, and only calls `bench_finish $artifact` at line 141 on success. | Enabled suite row is `terminal_bench_2_1_image_smoke`, but `adapter_status=pending_adapter`, so `--execute` refuses before adapter launch. Current suite run dir does not exist. | Parser cannot observe TB2.1 native results through suite today. Even after wiring, current `_benchmark_result_for_run()` short-circuits nonzero adapter exits and would ignore a TB `artifact_manifest.json` written before nonzero exit. |
+
+ISSUE-FILED: #10 Secret-bearing adapter sidecars under BENCH_RUN_DIR must be excluded from normalized parser sources
+severity: HIGH
+dedup: filed as #10
+location: `/data/nips/bench/run_vitabench.sh:25-61`, `/data/nips/bench/run_deepswe.sh:147-159`, `/data/nips/bench/run_swebench_verified_qwen_code.sh:42-78`, `/data/nips/bench/run_swebench_verified_openhands.sh:28-71`, `scripts/agentic_bench_suite.py:1206-1228`
+static_repro: Statically inspect the listed wrapper lines, then run a safe key-presence probe over existing artifacts that prints only `secret_pattern_present` booleans for historical `vita_models.yaml`, tau3 command files, DeepSWE `artifact_manifest.json`, and DeepSWE `pier.env`.
+impact: Parser work for #1 will naturally read `BENCH_RUN_DIR` to find logs, manifests, and native result pointers. Several adapters either already persist secret-bearing sidecars under that directory or would do so on their first suite execution. A parser or GitHub issue comment that copies raw `command.sh`, model configs, env files, config snapshots, or raw native metadata can leak live credentials while trying to normalize benchmark results.
+fix: Implement parser source allowlists per adapter. Only read `run.env.summary`, `artifact_manifest.json`, selected native result files, and short safe log excerpts. Add a generic recursive sanitizer before writing `agentic_bench.result.v1` that removes secretish keys/values and refuses to serialize sidecar file contents. Change wrappers over time to write placeholders in `command.sh`/config snapshots instead of values, especially Qwen Code and OpenHands. Keep `pier.env` and Vita model config out of parser-visible artifacts.
+evidence: Safe probe returned `secret_pattern_present=True` for existing Vita `vita_models.yaml` and existing DeepSWE `pier.env`; DeepSWE `artifact_manifest.json` returned `secret_pattern_present=False` and safe keys only; tau3 verification command files had API-key assignment placeholders with `nonplaceholder_count=0`. Static code shows Qwen Code writes an expanded `--api-key` argument to `command.sh`, and OpenHands writes expanded `api_key` into `config.toml`. No secret value was printed.
+
+COMMENT-READY for #1: Adapter result discovery needs a first-class pointer contract, not only legacy artifact lines
+severity: HIGH
+dedup: comment-on-#1
+location: `scripts/agentic_bench_suite.py:1176-1203`, `/data/nips/bench/lib/bench_common.sh:223-227`, `/data/nips/bench/run_tau3_bench.sh:86-94`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh:117-141`
+static_repro: Build a dry-run plan for `manifests/suite.example.yaml`, inspect enabled runs for `result_parser` and `artifact_hints`, then inspect adapter wrappers for `bench_finish`, `artifact_manifest.json`, and nonzero-exit behavior.
+impact: Legacy `artifact=` and `done:` lines give parsers a starting point, but they do not distinguish native score artifacts from skipped setup artifacts, nor do they survive all failure modes. tau3 can exit 0 with `artifact=<dataset_dir>` when Harbor execution is skipped; Terminal-Bench writes an `artifact_manifest.json` before returning `tb_rc`, but the suite currently classifies any nonzero adapter exit as `parser_status=not_run` and never attempts to parse that manifest. Downstream aggregation will keep mixing setup success, native score absence, infra failure, and benchmark failure.
+fix: Add `result_parser` and `artifact_hints` to run plans or require `AGENTIC_RESULT_JSON` from adapters. Parser execution should run even on nonzero adapter exits in a read-only mode, so infra/result artifacts can classify `infra_error`, `parse_error`, or partial benchmark status. Each adapter should emit a structured pointer with `artifact_kind` such as `native_score`, `native_result_dir`, `setup_dataset_only`, `trace_root`, or `image_preflight_only`.
+evidence: Dry-run probe returned `has_result_parser_field=False` and `has_artifact_hints=False` for all inspected rows. `bench_common.sh` only emits text `artifact=`/`done:`. Existing tau3 verification summaries have `tau3_harbor_run=skipped` and `artifact=<dataset_dir>`. The TB2.1 shared runner writes manifest pointers before nonzero exit, but `scripts/agentic_bench_suite.py:1176-1187` returns `parser_status=not_run` for any nonzero execution result.
+
+COMMENT-READY for #2: Fixed BENCH_RUN_DIR makes adapter pointer files stale or overwritten across invocations
+severity: HIGH
+dedup: comment-on-#2
+location: `scripts/agentic_bench_suite.py:788-789`
+static_repro: Build a dry-run plan and inspect `runtime_env.BENCH_RUN_DIR`; each bench resolves to `<run_root>/<suite_id>/<bench_id>` with `RUN_TAG=<suite_id>`, not an invocation-unique path.
+impact: Adapter pointer files such as `run.env.summary`, `artifact_manifest.json`, command logs, and native symlinks are overwritten or left stale across repeated `--execute` attempts for the same suite/bench. Parser discovery from `BENCH_RUN_DIR` can silently parse an earlier run after a failed launch, or concurrent agents can race on the same pointer file.
+fix: Implement #2 before broad parser rollout: add an invocation id or timestamp under `BENCH_RUN_DIR` and make summary/result artifacts point at the exact invocation directory. Keep a stable latest symlink only as convenience, never as parser source of truth.
+evidence: Dry-run table showed stable paths like `/mnt/.../runs/dev_worker_smoke_dryrun/repozero_py2js_smoke`, `/mnt/.../runs/dev_worker_smoke_dryrun/cocoabench`, and `/mnt/.../runs/dev_worker_smoke_dryrun/deepswe` for every invocation of the same suite row.
+
+COMMENT-READY for #9: Vita redaction must cover both native result headers and wrapper model config
+severity: HIGH
+dedup: comment-on-#9
+location: `/data/nips/bench/run_vitabench.sh:25-61`, `/data/nips/bench/run_vitabench.sh:101-106`
+static_repro: Inspect `run_vitabench.sh` model-config generation and safely check existing `vita_models.yaml` for token-pattern presence without printing the value.
+impact: #9 already covers `info.user_info.llm_args.headers.Authorization` inside the native VitaBench simulation JSON. The wrapper also writes `vita_models.yaml` under `BENCH_RUN_DIR` with an Authorization header when `OPENAI_API_KEY` is set. A future parser that scans the entire run dir or embeds command/config sidecars can leak the same credential even if the native simulation parser is allowlisted.
+fix: Extend #9 acceptance criteria: Vita parser may read `run.env.summary`, `vitabench.log` excerpts, and the native simulation JSON through a strict allowlist, but must never copy `vita_models.yaml` or raw `info.user_info.llm_args.headers`. Add a fixture asserting both native JSON and wrapper config secret carriers are excluded from normalized output.
+evidence: Safe probe found existing `vita_models.yaml` with `secret_pattern_present=True`; prior #9 evidence found native key path `info.user_info.llm_args.headers.Authorization`. No secret value was printed.
+
+### Round 5 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; output read before remote work, tool truncated display.
+- Memory quick search in `/Users/Zhuanz1/.codex/memories/MEMORY.md`: rc 0; no actionable current repo note was used.
+- `ssh dev 'cd <image-warmup-policy> && pwd && git rev-parse --short HEAD && git status --short && git log --oneline -5 && sed ... HANDOFF.md && sed ... DRIVER.md'`: rc 0; head `edae6f2`.
+- `rg --files` for repo run scripts and pointer search over scripts/manifests/reports/coordination: rc 0; repo has suite launcher plus TB smoke wrapper, while legacy adapters are under `/data/nips/bench`.
+- Read runtime lane and current runner-results ledger tail: rc 0.
+- Inspect suite command construction and local wrappers with `nl`/`sed`: rc 0.
+- First dry-run JSON parser probe: rc 1 due shell quoting; no files changed.
+- Re-run dry-run JSON probe via SSH stdin: rc 0; enabled rows have `BENCH_RUN_DIR` but no `result_parser` or `artifact_hints`.
+- List `/data/nips/bench` and run scripts: rc 0.
+- Read `/data/nips/bench/run_repozero_py2js.sh`, `run_vitabench.sh`, `run_cocoabench.sh`, `run_tau3_bench.sh`, `run_deepswe.sh`, SWE-bench wrappers, `lib/bench_common.sh`, and shared TB2.1 runner: rc 0.
+- Existing run artifact presence probe first attempt: rc 127 due shell quoting; rerun via SSH stdin rc 0.
+- Bounded `find` for relevant summaries/artifact manifests under shared `nips2026`: rc 0; found historical Vita, tau3, and DeepSWE run summaries/manifests.
+- Safe secret-pattern probe over selected existing artifacts: rc 0; printed only booleans/counts, not values.
+- Two safe summary/manifest probes first attempts: rc 1 due shell quoting; rerun via SSH stdin rc 0.
+- `rg -n "result_parser|artifact_hints|AGENTIC_RESULT_JSON|artifact_manifest" manifests scripts reports`: rc 0; only design docs mention parser hints/AGENTIC_RESULT_JSON.
+
+## Next runner/result subdomain
+
+Next loop should inspect normalized result aggregation and summary status when parser artifacts exist but adapter exit is nonzero. Use synthetic/local controller fixtures only; do not run benchmarks. Focus on whether `_attach_benchmark_result()` can parse side artifacts for Terminal-Bench/DeepSWE infra failures without turning them into `adapter_crash`.
+## Round 5 validation evidence
+
+- Append Round 5 ledger section via remote Python over SSH stdin: rc 0.
+- `git status --short && git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; only this lane ledger is modified in the worktree, and diff whitespace check passed.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
+- Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
+- Tail final ledger for sanity: rc 0.

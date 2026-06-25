@@ -276,3 +276,119 @@ evidence: `swe_dev` live image count returned `tb2_offline=89`, `swebench=500`, 
 ## Next loop target
 
 Next runtime/image subdomain: build the minimal selected-image manifest proposal for TB2.1 plus SWE-bench Verified multi without editing manifests. For TB2.1, start with `gcode-to-text` because it now has P0 digest evidence and fallback tar smoke evidence. For SWE-bench, select one exact smoke task per scaffold and map each required `swebench/*` plus `swerex-prebuilt:*` image from `swe_dev` cache before any required preflight is enabled.
+
+## Round 4 SWE-bench Verified multi image mapping
+
+Scope held for this loop:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first and followed the Continuous Multi-Agent Bug-Hunt lane contract.
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, head `edae6f2`, branch `feat/image-warmup-policy` clean relative to origin at start.
+- Wrote only this runtime/images ledger. No production code/manifests, no commit/push, no benchmark execution, no image push/load/pull.
+
+### Selected smoke image matrix
+
+Selection sources:
+
+- Qwen Code suite row uses `QWEN_NATIVE_SUBSET=smoke_n20` with no `QWEN_NATIVE_INSTANCE_IDS`. `run_qwen_code_swebench.py` reads `/data/nips/aci_evolve/experiments/preregistration/verified_subsets_seed42_v1.json` and applies `limit`. On `swe_dev`, `smoke_n20` begins `astropy__astropy-7671 django__django-11087 ...`; on `swe_dev2`, the same absolute subset file is absent.
+- mini-swe-agent suite row uses `MINI_SWE_SLICE: "0:1"`; the shared scaffold config has smoke `0:2`. The local Verified parquet first rows are `astropy__astropy-12907 astropy__astropy-13033 ...`; the suite row's current first task is therefore `astropy__astropy-12907`.
+- SWE-agent config explicitly selects `django__django-10097`.
+- OpenHands config explicitly selects `sphinx-doc__sphinx-8595` and requires runtime target `ghcr.io/all-hands-ai/runtime:oh_v0.54.0_twmj64zvbfnlyth0_se606gwapm7q4m98`, pretagged from `openhands_smoke4_recover:sphinx8595`.
+- swe-agent-runtime config explicitly selects `astropy__astropy-14369` and `astropy__astropy-13033`; this round mapped `astropy__astropy-14369` as the one-task smoke representative.
+- Harness rootless smoke config selects eight Astropy tasks; this round mapped `astropy__astropy-12907` as the first batch representative.
+
+| scaffold | selected smoke task | `swebench/*` ref | `swe_dev` inspect | worker inspect | `swerex-prebuilt:*` candidates |
+| --- | --- | --- | --- | --- | --- |
+| qwen-code | `astropy__astropy-7671` | `swebench/sweb.eval.x86_64.astropy_1776_astropy-7671:latest` | base ID `sha256:03575dfa5837...`, digest `sha256:e00a59320ce1...` | tag exists but ID `sha256:8d93e2be662f...` | 2 candidates; worker tag ID matches `swerex-prebuilt:...-00527122c8e98259` |
+| qwen-code | `django__django-11087` | `swebench/sweb.eval.x86_64.django_1776_django-11087:latest` | base ID `sha256:7e7898eb284c...`, digest `sha256:b552856e03fc...` | tag exists but ID `sha256:8459f3393b37...` | 2 candidates; worker tag ID matches `swerex-prebuilt:...-2d8db77938b386db` |
+| mini-swe-agent | `astropy__astropy-12907` | `swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest` | base ID `sha256:cce639c4d4c4...`, digest `sha256:f3f63bb87d58...` | tag exists but ID `sha256:3bfd24c0b7c2...` | 3 candidates; worker tag ID matches `swerex-prebuilt:...-896d8eb0c3be14d2` |
+| mini-swe-agent | `astropy__astropy-13033` | `swebench/sweb.eval.x86_64.astropy_1776_astropy-13033:latest` | base ID `sha256:bdbc30d363cf...`, digest `sha256:42797a2c686e...` | tag exists but ID `sha256:658a36cc815f...` | 2 candidates; worker tag ID matches `swerex-prebuilt:...-96abc4c7386679ee` |
+| swe-agent | `django__django-10097` | `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` | base ID `sha256:cf945d25ceb6...`, digest `sha256:148894532806...` | tag exists but ID `sha256:3e38b9278651...` | 1 candidate; worker tag ID matches `swerex-prebuilt:...-8be1c797d4885b41` |
+| openhands | `sphinx-doc__sphinx-8595` | `swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8595:latest` | tag exists as ID `sha256:71d1b75dd311...`, no RepoDigest; matches the single `swerex-prebuilt` candidate | missing on worker | 1 candidate on `swe_dev`, missing on worker |
+| swe-agent-runtime | `astropy__astropy-14369` | `swebench/sweb.eval.x86_64.astropy_1776_astropy-14369:latest` | base ID `sha256:1a8a749d6b8e...`, digest `sha256:113488bfd3a6...` | tag exists but ID `sha256:6fd8af0267ac...` | 2 candidates; worker tag ID matches `swerex-prebuilt:...-68211511f3b855f7` |
+| harness | `astropy__astropy-12907` | same as mini first task | same as mini first task | same as mini first task | same as mini first task |
+| openhands runtime | `sphinx-doc__sphinx-8595` runtime | `ghcr.io/all-hands-ai/runtime:oh_v0.54.0_twmj64zvbfnlyth0_se606gwapm7q4m98` | missing target tag; source pretag `openhands_smoke4_recover:sphinx8595` exists as ID `sha256:3832f8d74524...` | target and source both missing | no shared tar/P0 digest found |
+
+Shared/P0 state:
+
+- `manifests/images/swebench_verified.yaml` has only two rows: a `django-13810` worker-cache probe and an optional missing OpenHands runtime row. It has no rows for any selected scaffold task above.
+- `manifests/suite.example.yaml` marks Qwen Code, mini-swe-agent, SWE-agent, and OpenHands rows `image_policy: optional`; it has no enabled suite row for `swe-agent-runtime` or the rootless harness scaffold.
+- Shared image migration manifests under `swe-bench-verified/image_migration/manifests/*` are tag lists only. `find .../image_migration -type f -name '*.tar*'` printed no tar/sha artifacts.
+- P0 registry catalog currently returned only `swe-data-harness/repo2env-pallets-click-f6299c4` and `swe-data-harness/terminal-bench-2-1-gcode-to-text`; no SWE-bench or OpenHands runtime repository is present.
+- `reports/swe_dev_docker_cache_inventory_20260626.json` records `digest: ""` for cached images even when live `docker image inspect` on `swe_dev` returns `RepoDigests` for official `swebench/*` base refs.
+
+ISSUE-FILED: #11 SWE-bench image preflight can pass wrong worker images because it verifies tag presence but not expected digest or image ID lineage
+severity: HIGH
+dedup: filed as #11
+location: `scripts/agentic_bench_images.py:351-379`, `manifests/images/swebench_verified.yaml:16-24`, worker rootless Docker cache
+static_repro: On `swe_dev`, inspect `swebench/sweb.eval.x86_64.astropy_1776_astropy-7671:latest` and record official base ID `sha256:03575dfa5837...` plus RepoDigest `sha256:e00a59320ce1...`. On worker with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, inspect the same tag; it exists but returns ID `sha256:8d93e2be662f...`, which matches `swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-astropy-1776-astropy-7671-latest-00527122c8e98259`, not the official base image.
+impact: A tag-only image preflight can report `present` for `swebench/*` refs while the worker actually holds a different prebuilt environment under the same tag. For SWE-bench Verified multi, this can silently change the execution environment, make OpenHands base-image checks meaningless, and prevent reproducible P0 promotion because the manifest does not say whether the official base image or a specific `swerex-prebuilt` variant is required.
+fix: Add expected image identity fields to SWE-bench image rows: `source_repo_digest` for official `swebench/*` base images, `source_image_id` as a fallback identity, and an explicit `swerex_prebuilt_ref` when the scaffold intentionally requires a prebuilt environment. Update `agentic_bench_images.py` to compare inspected `Id`/`RepoDigests` against those fields and return `identity_mismatch` instead of `present` when a tag resolves to the wrong image. Do not mark SWE-bench rows required until each selected scaffold task has a canonical digest/ID and transport path.
+evidence: Worker selected inspect returned tag-present IDs `8d93e2be662f` for `astropy-7671`, `8459f3393b37` for `django-11087`, `3bfd24c0b7c2` for `astropy-12907`, `658a36cc815f` for `astropy-13033`, `3e38b9278651` for `django-10097`, and `6fd8af0267ac` for `astropy-14369`. Each matches a `swerex-prebuilt:*` candidate, while `swe_dev` official base inspect returned different IDs and public RepoDigests for the corresponding `swebench/*` refs.
+
+COMMENT-READY for #6: SWE-bench Verified multi still lacks scaffold-specific required image rows for the actual smoke tasks
+severity: HIGH
+dedup: comment-on-#6
+location: `manifests/images/swebench_verified.yaml:1-35`, `manifests/suite.example.yaml:160-252`, shared scaffold configs under `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified`
+static_repro: Read the six scaffold selection sources listed above, then compare selected refs against `manifests/images/swebench_verified.yaml` and live worker inspect.
+impact: The current manifest cannot warm or gate the actual smoke images for Qwen Code, mini-swe-agent, SWE-agent, OpenHands, swe-agent-runtime, or the harness. The one cache-probe row targets `django-13810`, which is not any selected smoke task in the current suite/configs. Because suite rows are optional, worker scheduling can proceed with missing or identity-mismatched images.
+fix: Replace the generic worker-cache probe with per-scaffold rows keyed by selected task and scaffold role. Each row should include `local_ref`, expected digest/image ID, exact `swerex-prebuilt` variant if required, fallback tar path/sha when available, and `required: true` for enabled smoke rows. Add suite/image rows for `swe-agent-runtime` and `harness` or explicitly mark them out of scope for SWE-bench Verified multi.
+evidence: Selected task matrix above maps at least one smoke task per scaffold. `swebench_verified.yaml` contains only `django-13810` and the optional missing OpenHands runtime; no selected task refs appear in it. `suite.example.yaml` uses `image_policy: optional` for Qwen/mini/SWE-agent/OpenHands and has no swe-agent-runtime/harness rows.
+
+COMMENT-READY for #6/#8: OpenHands smoke cannot run on worker from current cache, P0, or fallback artifacts
+severity: HIGH
+dedup: comment-on-#6; overlaps #8 worker transport readiness
+location: `manifests/images/swebench_verified.yaml:29-35`, `swe-bench-verified/openhands/config.yaml:85-132`, P0 registry `https://100.97.118.137:8555`
+static_repro: Inspect `swebench/sweb.eval.x86_64.sphinx-doc_1776_sphinx-8595:latest`, `ghcr.io/all-hands-ai/runtime:oh_v0.54.0_twmj64zvbfnlyth0_se606gwapm7q4m98`, and `openhands_smoke4_recover:sphinx8595` on `swe_dev` and worker; list `image_migration` tars and P0 catalog.
+impact: OpenHands is the hardest SWE-bench scaffold to reproduce offline. Worker lacks both the selected Sphinx base tag and the OpenHands runtime/pretag images. `swe_dev` has the pretag source but not the target `ghcr.io/all-hands-ai/runtime:...` tag, so the manifest target cannot be inspected or pushed by digest as-is. There is no shared tar/sha and P0 has no OpenHands/SWE-bench repo. A required OpenHands image preflight would fail; an optional one can be skipped and hide the blocker.
+fix: Retag the known-good `openhands_smoke4_recover:sphinx8595` source to the exact runtime target on a staging host, inspect ID, then either push to P0 and record digest or save a fallback tar with sha. Also stage the selected Sphinx base/prebuilt image for worker. Make the OpenHands row required only after worker digest pull or fallback load/run smoke succeeds.
+evidence: `swe_dev` inspect: runtime target missing; pretag source exists as `sha256:3832f8d74524...`; selected Sphinx tag exists as `sha256:71d1b75dd311...` with no RepoDigest. Worker inspect: selected Sphinx tag missing, runtime target missing, pretag source missing. P0 catalog returned only repo2env and Terminal-Bench `gcode-to-text`. `image_migration` tar search printed no tar/sha artifacts.
+
+COMMENT-READY for #6: Qwen Code smoke task mapping depends on a host-local subset file that is absent from the shared worktree host
+severity: MEDIUM
+dedup: comment-on-#6
+location: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/scripts/run_qwen_code_swebench.py:33`, `run_qwen_code_swebench.py:159-170`, `manifests/suite.example.yaml:170-175`
+static_repro: On `swe_dev2`, check `/data/nips/aci_evolve/experiments/preregistration/verified_subsets_seed42_v1.json`; it is absent. On `swe_dev`, read the same file and inspect `sets.smoke_n20.instance_ids[:2]`; it returns `astropy__astropy-7671 django__django-11087`.
+impact: The suite row says only `QWEN_NATIVE_SUBSET=smoke_n20`, so a manifest generator running from the shared worktree or `swe_dev2` cannot derive the Qwen smoke image set. Worse, falling back to generic Verified dataset order would choose `astropy__astropy-12907 astropy__astropy-13033`, which are the mini/harness first rows, not Qwen's actual smoke tasks.
+fix: Copy the subset JSON into the durable SWE-bench Verified shared tree or encode explicit `QWEN_NATIVE_INSTANCE_IDS` for smoke rows in the suite/image manifest. The image manifest should record the resolved task IDs, not just the subset name.
+evidence: `swe_dev2` subset probe printed `exists False`; `swe_dev` subset probe printed `exists True` and `smoke_n20 20 astropy__astropy-7671 django__django-11087 ...`. The Qwen script reads `SUBSET_FILE` at line 33 and slices it at lines 166-170.
+
+COMMENT-READY for #6: Current shared/P0 artifacts are not enough to promote selected SWE-bench images without re-exporting from Docker cache
+severity: HIGH
+dedup: comment-on-#6
+location: `reports/swe_dev_docker_cache_inventory_20260626.json`, `swe-bench-verified/image_migration/manifests/*`, P0 registry catalog
+static_repro: Read the cache inventory JSON, inspect selected refs live on `swe_dev`, list `image_migration` tar artifacts, and query `https://100.97.118.137:8555/v2/_catalog?n=100`.
+impact: `swe_dev` has the selected images, but the durable artifacts are only tag lists. There are no shared tars/sha files for selected SWE-bench images, no P0 SWE-bench repositories, and the JSON cache inventory loses RepoDigest values even when live Docker inspect has them. This prevents a safe manifest-only promotion plan: selected images must be re-inspected and exported/pushed from Docker cache before required preflight can be enabled.
+fix: Regenerate the SWE-bench image inventory with `RepoDigests`, full image IDs, and selected scaffold mapping. For each selected task, either push the exact source image to P0 and record the returned digest after consumer smoke, or save a fallback tar with sha256. Keep `swe_dev` Docker cache as the reconstruction source, but do not treat current shared text manifests as transport-complete.
+evidence: P0 catalog returned `repositories=["swe-data-harness/repo2env-pallets-click-f6299c4", "swe-data-harness/terminal-bench-2-1-gcode-to-text"]`. `find <swe-bench-verified>/image_migration -type f -name '*.tar*'` printed no artifacts. Live `swe_dev` inspect for selected official base refs returned RepoDigests, while `reports/swe_dev_docker_cache_inventory_20260626.json` has empty `digest` fields.
+
+### Cross-lane review update
+
+Read `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` after this image-mapping pass.
+
+CONFIRM: runner-results has independent SWE-bench parser findings around missing per-scaffold artifact hints and no parser support. This runtime round is complementary: it maps image/task readiness and does not duplicate parser issue #1.
+DUPLICATE note: OpenHands optional missing evidence remains a #6/#8 image-readiness comment, not a new parser issue. Qwen/OpenHands secret-sidecar findings in runner-results are parser-source issues; this runtime round did not inspect or print secrets.
+
+### Round 4 command evidence
+
+- `sed -n '1,520p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md && sed -n '760,980p' WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` skill: rc 0.
+- Memory quick search for SWE-bench terms: rc 0; no current-runtime evidence used.
+- Remote status/HANDOFF/DRIVER read from active worktree: rc 0; head `edae6f2` and branch clean against `origin/feat/image-warmup-policy`.
+- Read `reports/swe_dev_docker_cache_inventory_20260626.json` schema and `manifests/images/swebench_verified.yaml`: rc 0.
+- Shared tree, suite SWE section, inventory counts, and worker cache prefix counts: rc 0.
+- Scaffold config grep/sed for Qwen, mini-swe-agent, SWE-agent, OpenHands, swe-agent-runtime, and harness: rc 0.
+- Run-dir artifact listing for Qwen/mini 20260626 smoke dirs: rc 1 because some optional globbed files were absent; the directory listings and `suite.env.summary` evidence printed before exit and were used only as context.
+- First selected-map Python probe: rc 1 due shell quoting syntax error; no files changed.
+- Qwen `smoke_n20` broad grep was interrupted after it printed the script pointer: rc 255; replaced by bounded script-line and subset-file probes.
+- `swe_dev` parquet first-row probe: rc 0; `count=500`, first rows include `astropy__astropy-12907 astropy__astropy-13033`.
+- Qwen subset file on `swe_dev2`: rc 0, `exists False`; same file on `swe_dev`: rc 0, `exists True`, `smoke_n20` first IDs printed.
+- Selected mapping from cache inventory for all six scaffolds: rc 0.
+- Live `docker image inspect` for selected refs on `swe_dev`: rc 0 wrapper; individual missing refs were OpenHands runtime target only.
+- Live worker rootless `docker image inspect` for selected refs: rc 0 wrapper; individual missing refs were OpenHands Sphinx base, OpenHands runtime target, and pretag source.
+- `image_migration` tar search and selected manifest grep: rc 0 wrapper; no tar artifacts printed; grep reported a stale `latest` symlink warning but selected tag-list rows printed.
+- P0 catalog raw probe: rc 0; returned only repo2env and Terminal-Bench `gcode-to-text` repositories.
+- Runner-results cross-lane grep: rc 0.
+
+## Next loop target
+
+Next runtime/image subdomain: decide whether to promote one SWE-bench selected image by digest or fallback tar in a future bounded probe. Best candidate is not OpenHands; start with a non-OpenHands selected image after fixing the identity requirement, such as `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` plus its exact `swerex-prebuilt` variant, and verify whether the runner actually requires official base, prebuilt variant, or both.

@@ -48,6 +48,8 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Issue #9 tracks VitaBench parser redaction for native Authorization headers; filed from runner-results lane evidence without printing any secret values.
 - Runtime-images lane comments posted: #6 image warmup cap/dedupe comment and #8 worker rootless P0 pull-vs-fallback evidence comment.
 - Image preflight follow-up: suite plan now carries a separate max concurrency cap and dedupes identical preflight commands so image pull/load does not inherit or stampede at suite concurrency 40.
+- Issue #10 tracks parser source allowlists for secret-bearing adapter sidecars; runner-results lane comments posted to #1/#2/#9 for pointer contract, invocation-unique run dirs, and Vita config redaction.
+- Issue #11 tracks SWE-bench image identity/lineage checks; runtime-images lane comments posted to #6/#8 for scaffold-specific SWE rows and OpenHands transport blockers.
 
 ## Red Lines
 
