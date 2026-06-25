@@ -1,0 +1,275 @@
+schema_version: agentic_bench.suite.v1
+
+suite:
+  id: dev_worker_smoke_dryrun
+  mode: smoke
+  controller_host: dev
+  execution_kind: ssh_worker
+  bench_root: /data/nips/bench
+  default_worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  concurrency: 2
+  run_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs
+  source_env_files:
+    - ~/.bashrc
+    - /data/nips/shared_bench/api_config.env
+  offline_policy:
+    network_policy: offline_or_internal_only
+    forbid_public_internet: true
+    rootless_required: true
+    asset_stage_host: dev
+    downloads_allowed_on_worker: false
+
+worker:
+  id: worker-j9jjd
+  host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  hostname: zwj2-64rlk-3469265-worker-0
+  ssh_from_local: ok
+  ssh_from_dev: blocked_publickey
+  ssh_dispatch_path: local_ok_dev_blocked_publickey
+  ssh_options:
+    - -C
+    - -A
+    - -X
+    - -Y
+    - -o
+    - BatchMode=yes
+    - -o
+    - ConnectTimeout=20
+  rootless: true
+  rootless_caveat: Docker daemon reports name=rootless, but SSH user is root and DOCKER_HOST is not exported by default.
+  container_engine: docker
+  docker_host: unix:///tmp/rl/run/docker.sock
+  compose_version: Docker Compose v2.27.0
+  tmp_root: /data/tmp/agentic-foundation-model-bench
+  shared_root: /mnt/shared-storage-user/mineru2-shared/zengweijun
+  network_policy: offline_or_internal_only
+  offline: true
+  env:
+    BENCH_OFFLINE: "1"
+
+model_profiles:
+  - id: gpt54mini_8130
+    model_name: gpt-5.4-mini
+    litellm_model: openai/gpt-5.4-mini
+    provider: openai_compatible_relay
+    base_url: http://8.130.49.170/v1
+    api_key_env: OPENAI_API_KEY
+    api_key_policy: env_only
+    reasoning_effort: xhigh
+    temperature: "0.0"
+    max_tokens: "4096"
+    max_input_tokens: "128000"
+
+  - id: gpt54_8130
+    model_name: gpt-5.4
+    litellm_model: openai/gpt-5.4
+    provider: openai_compatible_relay
+    base_url: http://8.130.49.170/v1
+    api_key_env: OPENAI_API_KEY
+    api_key_policy: env_only
+    reasoning_effort: xhigh
+    temperature: "0.0"
+    max_tokens: "4096"
+    max_input_tokens: "128000"
+
+  - id: qwen3_coder_30b_a3b_sglang_future
+    model_name: Qwen/Qwen3-Coder-30B-A3B-Instruct
+    litellm_model: openai/Qwen/Qwen3-Coder-30B-A3B-Instruct
+    provider: sglang
+    base_url_env: SGLANG_OPENAI_BASE_URL
+    api_key_env: SGLANG_OPENAI_API_KEY
+    api_key_policy: empty_allowed
+    reasoning_effort: ""
+    temperature: "0.0"
+    max_tokens: "65536"
+    max_input_tokens: "128000"
+
+benches:
+  - id: tau2_paper_core
+    benchmark: tau2
+    adapter: tau2
+    adapter_script: run_tau2_paper_core.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      NUM_TASKS: 1
+      NUM_TRIALS: 1
+      MAX_CONCURRENCY: 1
+      TAU2_TASK_SPLIT_NAME: base
+      TAU2_MAX_STEPS: 60
+
+  - id: vitabench_full
+    benchmark: vitabench
+    adapter: vitabench_full
+    adapter_script: run_vitabench_full.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      NUM_TASKS: 1
+      NUM_TRIALS: 1
+      MAX_CONCURRENCY: 1
+      VITA_DOMAIN: delivery
+      VITA_MAX_STEPS: 120
+      VITA_ENABLE_THINK: 0
+      VITA_LANGUAGE: english
+
+  - id: terminal_bench_2_0
+    benchmark: terminal_bench
+    adapter: terminal_bench
+    adapter_script: run_terminal_bench_2_0.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      NUM_TASKS: 1
+      MAX_CONCURRENCY: 1
+      TB_AGENT: codex
+      TB_N_CONCURRENT: 1
+
+  - id: swebench_verified_qwen_code_smoke
+    benchmark: swe-bench-verified
+    adapter: swebench_verified_qwen_code
+    adapter_script: run_swebench_verified_qwen_code.sh
+    adapter_status: wired_legacy
+    model_profile: qwen3_coder_30b_a3b_sglang_future
+    concurrency: 1
+    params:
+      MAX_CONCURRENCY: 1
+      QWEN_NATIVE_SUBSET: smoke_n20
+      QWEN_NATIVE_MAX_WORKERS: 1
+      QWEN_NATIVE_BUILD_WORKERS: 1
+      QWEN_NATIVE_AGENT_TIMEOUT_S: 3600
+      QWEN_NATIVE_VERIFIER_TIMEOUT_S: 1800
+
+  - id: repozero_py2js_smoke
+    benchmark: repozero_py2js
+    adapter: repozero_py2js
+    adapter_script: run_repozero_py2js.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      REPOZERO_MODE: smoke
+      REPOZERO_WORKERS: 1
+      MAX_CONCURRENCY: 1
+      REPOZERO_TIMEOUT_S: 1200
+      REPOZERO_CODEX_ATTEMPTS: 1
+      REPOZERO_CASES: base58/test1.py
+
+  - id: cocoabench
+    benchmark: cocoabench
+    adapter: cocoabench
+    adapter_script: run_cocoabench.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      MAX_CONCURRENCY: 1
+      COCOA_WORKERS: 1
+      COCOA_TASKS_DIR: cocoabench-example-tasks
+      COCOA_TASKS: linear-regime-estimation
+      COCOA_MAX_ITERATIONS: 20
+
+  - id: swebench_verified_mini_swe_agent
+    benchmark: swe-bench-verified
+    adapter: mini_swe_agent
+    adapter_script: run_swebench_verified_mini_swe_agent.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      MAX_CONCURRENCY: 1
+      MINI_SWE_SUBSET: verified
+      MINI_SWE_SPLIT: test
+      MINI_SWE_WORKERS: 1
+      MINI_SWE_SLICE: "0:1"
+      MINI_SWE_ENVIRONMENT_CLASS: docker
+
+  - id: swebench_verified_swe_agent
+    benchmark: swe-bench-verified
+    adapter: swe_agent
+    adapter_script: run_swebench_verified_swe_agent.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      SWEBENCH_MODE: smoke
+      MAX_CONCURRENCY: 1
+      SWEBENCH_NUM_WORKERS: 1
+      SWEBENCH_EVAL_WORKERS: 1
+
+  - id: swebench_verified_openhands
+    benchmark: swe-bench-verified
+    adapter: openhands
+    adapter_script: run_swebench_verified_openhands.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      MAX_CONCURRENCY: 1
+      OPENHANDS_EVAL_LIMIT: 1
+      OPENHANDS_NUM_WORKERS: 1
+      OPENHANDS_MAX_ITER: 200
+      OPENHANDS_LLM_TIMEOUT_S: 600
+
+  - id: deepswe
+    benchmark: deepswe
+    adapter: deepswe
+    adapter_script: run_deepswe.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      MAX_CONCURRENCY: 1
+      DEEPSWE_MODE: smoke
+      DEEPSWE_MAX_TASKS: 1
+
+  - id: terminal_bench_2_1
+    benchmark: terminal_bench_2_1
+    adapter: terminal_bench_2_1
+    adapter_script: run_terminal_bench_2_1.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false
+
+  - id: mcp_atlas
+    benchmark: MCP-Atlas
+    adapter: mcp_atlas
+    adapter_script: run_mcp_atlas.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false
+
+  - id: tool_decathlon
+    benchmark: Tool-Decathlon
+    adapter: tool_decathlon
+    adapter_script: run_tool_decathlon.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false
+
+  - id: tau3_bench
+    benchmark: tau3-bench
+    adapter: tau3_bench
+    adapter_script: run_tau3_bench.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false
+
+  - id: programbench
+    benchmark: programbench
+    adapter: programbench
+    adapter_script: run_programbench.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false
+
+  - id: nl2repo
+    benchmark: NL2Repo
+    adapter: nl2repo
+    adapter_script: run_nl2repo.sh
+    adapter_status: pending_adapter
+    model_profile: gpt54mini_8130
+    enabled: false

@@ -16,7 +16,17 @@ Key reports:
 - `reports/shared_disk_layout_research_20260625.md` - shared-disk layout research.
 - `reports/rootless_worker_research_20260625.md` - rootless worker architecture research.
 - `reports/deployment_plan_20260625.md` - GitHub/shared-disk deployment plan.
+- `reports/yaml_suite_launcher_plan_20260625.md` - dry-run-first `sh + yaml` suite launcher draft.
+- `reports/worker_j9jjd_preflight_20260625.md` - live worker/rootless/API preflight.
 - `reports/trace_manifest_template.yaml` - per-task trace manifest template.
+
+First runnable suite entrypoint:
+
+```bash
+scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run
+```
+
+The runner is manifest-first and defaults to dry-run. Actual worker execution requires `--execute`; entries marked `adapter_status: wired_legacy` call the existing `/data/nips/bench/run_*.sh` adapters on the worker with the manifest-defined model, rootless Docker socket, offline policy, and smoke env. Current dispatch caveat: local Mac -> `worker-j9jjd` SSH works, but `dev` -> `worker-j9jjd` is blocked by publickey auth until that credential path is fixed.
 
 Current local Qwen score anchor:
 
@@ -40,6 +50,22 @@ Future large artifacts and runnable benchmark state should live under:
 GitHub should contain source, docs, schemas, manifests, and lightweight runner wrappers. Shared storage should contain datasets, harness checkouts, model/runtime pointers, run artifacts, raw traces, and large outputs.
 
 Operational target: orchestrate from `dev`. Rootless workers can be separate SSH targets and may have no public internet access, so downloads, git fetches, image pulls, dependency preparation, and dataset staging should happen on `dev` or through prebuilt shared caches. Offline workers should consume only pre-staged assets.
+
+## New YAML Suite Launcher Draft
+
+Default dry-run from this repository:
+
+```bash
+./scripts/run_suite_from_yaml.sh
+```
+
+Machine-readable plan:
+
+```bash
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --json
+```
+
+The default suite lives at `manifests/suite.example.yaml`. It declares 8.130 relay profiles, a future SGLang profile, suite concurrency, the `worker-j9jjd` SSH target, `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, per-benchmark smoke env, and an offline rootless worker policy. Pending benchmarks remain disabled until adapters are located or written.
 
 ## Existing Local Launchers
 

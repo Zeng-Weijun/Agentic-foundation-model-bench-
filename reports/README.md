@@ -17,11 +17,18 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
   - Distinguishes the older `nips2026/bench` launcher layer from the newer `/mnt/.../swe/bench` benchmark/scaffold layout.
 
 - `rootless_worker_research_20260625.md`
-  - Read-only research on the future `swe_dev` rootless worker testing architecture.
+  - Read-only research on the rootless worker testing architecture.
   - Defines controller/worker/runner layers, benchmark-specific container risks, and smoke order.
+
+- `worker_j9jjd_preflight_20260625.md`
+  - Live lightweight preflight of the `worker-j9jjd` rootless Docker environment.
+  - Confirms cached SWE-bench image container start and bind-mount smoke, and records the current 8.130 relay reachability blocker.
 
 - `deployment_plan_20260625.md`
   - Integrated plan for the GitHub repository, shared-disk project root, rootless worker contract, and milestones.
+
+- `yaml_suite_launcher_plan_20260625.md`
+  - Minimal dry-run-first `sh + yaml` suite launcher design, safety guards, legacy adapter execution status, and pending adapter list.
 
 - `trace_manifest_template.yaml`
   - Per-task trace collection template.
