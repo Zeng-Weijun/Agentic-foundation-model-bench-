@@ -450,3 +450,54 @@ Read `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` for `dja
 ## Next loop target
 
 Next runtime/image subdomain: after #11/#6 comments are consumed, check whether any other non-OpenHands selected SWE-bench smoke task already has both a correct official base digest path and an exact wrapper tar/sha. Prefer a task whose worker `swebench/*` tag does not alias to the wrapper, otherwise keep promotion blocked until identity fields are enforced.
+
+## Round 6 Terminal-Bench 2.1 swe_dev cache vs shared fallback audit
+
+Scope held for this loop:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then `_coordination/20260625_harbor_bench/HANDOFF.md`.
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, observed head `a1984bf`.
+- Wrote only this runtime/images ledger. No production code, manifests, tests, Docker push/pull/load, benchmark execution, or model execution.
+- New evidence source: `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json` vs `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images`.
+
+COMMENT-READY for #6/#8/#11 dedup: TB2.1 full image readiness is still partial; do not treat `manifest.jsonl` or `missing_shard` files as transport-complete source of truth
+severity: HIGH
+dedup: comment-on-#6 for image warmup manifest coverage and tar fallback gating; comment-on-#8 for worker transport/readiness context; not #11 because this is missing transport/sha coverage, not an identity-lineage mismatch. This confirms and sharpens runtime Round 2 rather than opening a new issue.
+location: `manifests/images/terminal_bench_2_1.yaml:11-16`, `manifests/images/terminal_bench_2_1.yaml:18-43`, `manifests/suite.example.yaml:271-296`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json:10152-10158`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json:10280-10286`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json:10440-10446`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/manifest.jsonl:20-34`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/manifest.jsonl:86`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/shards/missing_shard_1.txt:9`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/shards/missing_shard_2.txt:7-11`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/shards/missing_shard_2_retry.txt:4-8`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/failures.log:1-4`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/bench_tb21_prebuild_missing_final_20260603_1546.log:1-2`
+static_repro: Compare the 89 `tb2-offline/*:20260425` tags in the swe_dev cache inventory with the shared fallback tree. The shared tree has 50 `.tar` files, one `headless-terminal.tar.gz`, zero sha sidecars, 86 `manifest.jsonl` rows, 64 unique manifest tasks, and 14 unique manifest tasks whose declared archive path is absent. The shard files list 35 unique tasks; 20 already have tar fallbacks and 15 still have no tar fallback, while all 35 are present in swe_dev cache.
+impact: A full TB2.1 image manifest generated from stale text artifacts can either overstate fallback coverage or understate recovered coverage. If it trusts `manifest.jsonl`, 14 required rows would point at nonexistent tar files. If it trusts `missing_shard_*.txt`, it will mark already-recovered images such as `gcode-to-text` and `fix-git` as missing, while still not producing usable tar coverage for tasks such as `install-windows-3.11`, `mteb-retrieve`, `reshard-c4-data`, and `sam-cell-seg`. Current worker image-smoke preflight is safe only because it is one-task `gcode-to-text`; it is not evidence for full TB2.1 readiness.
+fix: Generate the TB2.1 image manifest from a reconciled table, not directly from `manifest.jsonl` or `missing_shard_*.txt`. Use the 89 swe_dev cache refs as the candidate set, join by exact task id against actual tar file existence, compute/record `fallback_tar_sha256` for each present tar, mark no-tar rows explicitly as `missing_transport`, and keep them out of required worker preflight until either a P0 digest plus consumer smoke or a verified fallback tar/sha exists. Treat `missing_shard_*.txt`, `failures.log`, and `bench_tb21_prebuild_missing_final_*.log` as diagnostic inputs only.
+evidence: The inventory file contains cache-only refs with no shared tar, for example `tb2-offline/install-windows-3.11:20260425` at lines 10152-10158, `tb2-offline/nginx-request-logging:20260425` at lines 10280-10286, and `tb2-offline/reshard-c4-data:20260425` at lines 10440-10446. The shared tree count command returned `tar=50`, `targz=1`, `sha=0`, `missing_shard=6`. Parsed comparison returned `tb_cached=89`, `tar=50`, `cached_no_tar_count=39`, `manifest_rows=86`, `manifest_unique=64`, `manifest_unique_without_tar=14`, and `duplicate_tasks=22`. Current worker read-only cache list has only five TB2 tags, all in the tar subset: `compile-compcert`, `dna-insert`, `gcode-to-text`, `headless-terminal`, and `llm-inference-batching-scheduler`.
+
+No new ISSUE-READY block filed from this loop:
+
+- The current enabled one-command worker image-smoke row is `terminal_bench_2_1_image_smoke`, and it intentionally selects `TB_TASK_IDS=gcode-to-text` with `TB21_IMAGE_ARCHIVE=.../gcode-to-text.tar`; dry-run shows the preflight command uses `manifests/images/terminal_bench_2_1.yaml` with `--load-fallback --run-smoke --json` and the row has a verified fallback sha in `manifests/images/terminal_bench_2_1.yaml:26-31`.
+- The disabled full `terminal_bench_2_1` row has `image_policy: required` but `enabled: false` at `manifests/suite.example.yaml:271-280`, so a current default suite run does not claim full TB2.1 image readiness.
+- The false-full-readiness risk is real for the next manifest-generation step, but it is already covered by #6 and previous runtime Round 2; this loop adds concrete file/path/line evidence for the 89-vs-50-vs-missing-shard reconciliation.
+
+Cross-lane check:
+
+- Read `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` for TB2.1 references. It independently confirms the historical #6/#7/#8 image-preflight and selection issues and does not contradict this runtime finding.
+- Runner-results focuses on parser/native-result observability. This runtime update is limited to Docker image/fallback readiness and should stay as a #6/#8 comment, not a runner parser issue.
+
+### Round 6 command evidence
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` skill instructions; first cached path probe failed because the listed plugin hash was stale, then `find .../systematic-debugging/SKILL.md | xargs sed` succeeded: rc 0.
+- Memory quick search for TB2.1 terms in `MEMORY.md`: rc 0, no hits used.
+- Active worktree status and required file/dir existence check: rc 0; branch `feat/image-warmup-policy`, head `a1984bf`; unrelated local changes observed in `scripts/test_agentic_bench_images.py` and `scripts/__pycache__/`.
+- Parsed `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`: rc 0; `image_count=1320`, `tb2_offline=89`.
+- Listed shared fallback tree and counts: rc 0; `tar=50`, `targz=1`, `sha=0`, `missing_shard=6`.
+- Read `manifests/images/terminal_bench_2_1.yaml:1-46` and `manifests/suite.example.yaml:271-296`: rc 0.
+- Read shared `manifest.jsonl`, `missing_shard_1.txt`, `missing_shard_2.txt`, `missing_shard_2_retry.txt`, `failures.log`, and `bench_tb21_prebuild_missing_final_20260603_1546.log`: rc 0.
+- Set-diff script for swe_dev cache vs shared tar and missing shard files: rc 0; printed `tb_cached 89`, `tar 50`, `missing_unique 35`, `cached_no_tar_count 39`, `missing_with_tar 20`.
+- Read suite/image checker code paths in `scripts/agentic_bench_suite.py` and `scripts/agentic_bench_images.py`: rc 0.
+- Dry-run `python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --only terminal_bench_2_1`: rc 0, selected no runs because full row is disabled.
+- Dry-run `python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --only terminal_bench_2_1_image_smoke --model-profile dev_proxy_gpt54mini_8130`: rc 0, printed the worker image preflight command and `TB_TASK_IDS=gcode-to-text`; no Docker action executed.
+- Worker read-only cache list via explicit worker-j9jjd endpoint and `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`: command wrapper rc 0; printed five `tb2-offline/*` tags, no push/pull/load/run.
+- First manifest-vs-files Python script printed key stats but exited rc 1 due an output-format KeyError after printing; rerun corrected script rc 0 with exact missing archive lines and duplicate task lines.
+- Cross-lane grep of `hunt-runtime-images.md` and `hunt-runner-results.md` for TB2.1/#6/#8/#11 terms: rc 0.
+
+## Next loop target
+
+Next runtime/image subdomain: when manifest generation starts, audit the generated TB2.1 rows before any worker preflight. Required checks: exactly one row per selected task id, no row from stale `manifest.jsonl` without an existing tar or P0 digest, `fallback_tar_sha256` present for every tar row, and explicit `missing_transport` rows for the 39 swe_dev-cache-only tasks.
