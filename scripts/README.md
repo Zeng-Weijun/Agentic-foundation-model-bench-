@@ -120,7 +120,9 @@ Suite `image_preflight` can forward `pull`, `load_fallback`, and `run_smoke` to
 the checker. Use `pull` only for digest-pinned images in the internal P0
 registry. Use `load_fallback` only after the fallback tar checksum is expected to
 match; pair it with `run_smoke` when the manifest contains a container smoke
-command.
+command. `image_preflight.max_concurrency` caps first-time image transport
+separately from model/benchmark suite concurrency; keep it small, normally 2-4
+per worker.
 
 Dry-run the current Terminal-Bench 2.1 one-task smoke wrapper:
 

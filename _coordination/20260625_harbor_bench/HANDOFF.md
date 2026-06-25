@@ -47,6 +47,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Current branch fixes #4/#5/#6/#7 pending commit/push/issue close; #8 remains open.
 - Issue #9 tracks VitaBench parser redaction for native Authorization headers; filed from runner-results lane evidence without printing any secret values.
 - Runtime-images lane comments posted: #6 image warmup cap/dedupe comment and #8 worker rootless P0 pull-vs-fallback evidence comment.
+- Image preflight follow-up: suite plan now carries a separate max concurrency cap so image pull/load does not inherit suite concurrency 40.
 
 ## Red Lines
 

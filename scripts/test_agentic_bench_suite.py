@@ -545,6 +545,82 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(summary["counts"]["pass"], 1)
         self.assertEqual(summary["results"][0]["status"], "pass")
 
+    def test_image_preflight_only_uses_transport_concurrency_cap(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            tracker = root / "active.json"
+            worker = root / "track_preflight.py"
+            worker.write_text(
+                textwrap.dedent(
+                    """
+                    import fcntl
+                    import json
+                    import sys
+                    import time
+                    from pathlib import Path
+
+                    path = Path(sys.argv[1])
+
+                    def update(delta):
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        with path.open("a+", encoding="utf-8") as handle:
+                            fcntl.flock(handle, fcntl.LOCK_EX)
+                            handle.seek(0)
+                            raw = handle.read().strip()
+                            data = json.loads(raw) if raw else {"active": 0, "max": 0}
+                            data["active"] += delta
+                            data["max"] = max(data["max"], data["active"])
+                            handle.seek(0)
+                            handle.truncate()
+                            json.dump(data, handle)
+                            fcntl.flock(handle, fcntl.LOCK_UN)
+
+                    update(1)
+                    time.sleep(0.2)
+                    update(-1)
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+            plan = {
+                "suite_id": "unit_preflight_cap",
+                "suite_concurrency": 40,
+                "image_preflight_concurrency": 2,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "bench_id": f"image_{index}",
+                        "command": "adapter command",
+                        "command_argv": ["bash", "-c", "exit 99"],
+                        "image_preflight": {
+                            "required": True,
+                            "policy": "required",
+                            "commands": [
+                                {
+                                    "command": "tracked preflight",
+                                    "command_argv": [sys.executable, str(worker), str(tracker)],
+                                }
+                            ],
+                        },
+                    }
+                    for index in range(6)
+                ],
+            }
+
+            rc = module._execute_image_preflights(
+                plan,
+                str(root / "controller"),
+                include_optional=False,
+                fail_on_optional=False,
+            )
+            summary = json.loads((root / "controller" / "image_preflight_summary.json").read_text(encoding="utf-8"))
+            observed = json.loads(tracker.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(summary["image_preflight_concurrency"], 2)
+        self.assertLessEqual(observed["max"], 2)
+
     def test_image_preflight_only_skips_optional_by_default_and_can_audit_nonfatal(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

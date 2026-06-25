@@ -556,6 +556,27 @@ def _image_manifest_values(value: Any) -> list[str]:
     return [str(value)]
 
 
+def _positive_int(value: Any, *, default: int, field: str) -> int:
+    if value is None or value == "":
+        return max(1, int(default))
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ConfigError(f"{field} must be a positive integer") from exc
+    if parsed < 1:
+        raise ConfigError(f"{field} must be a positive integer")
+    return parsed
+
+
+def _image_preflight_concurrency(image_config: dict[str, Any], suite_concurrency: int) -> int:
+    configured = image_config.get(
+        "max_concurrency",
+        image_config.get("transport_concurrency", image_config.get("concurrency")),
+    )
+    default = min(max(1, int(suite_concurrency)), 4)
+    return _positive_int(configured, default=default, field="image_preflight.max_concurrency")
+
+
 def _default_project_root_for_suite(suite_path: str | Path) -> Path:
     parent = Path(suite_path).expanduser().resolve().parent
     if parent.name == "manifests":
@@ -750,6 +771,8 @@ def build_run_plan(
     execution_kind = str(suite.get("execution_kind", execution.get("kind", "ssh_worker")))
     ssh_options = _require_list(worker.get("ssh_options", []), "worker.ssh_options")
     worker_env = _worker_runtime_env(worker)
+    suite_concurrency = int(max_concurrency or suite.get("concurrency", 1))
+    image_preflight_concurrency = _image_preflight_concurrency(image_preflight_config, suite_concurrency)
     runs: list[dict[str, Any]] = []
 
     for bench in benches:
@@ -896,7 +919,8 @@ def build_run_plan(
         "dry_run": dry_run,
         "mode": mode,
         "controller_host": suite.get("controller_host", "dev"),
-        "suite_concurrency": int(max_concurrency or suite.get("concurrency", 1)),
+        "suite_concurrency": suite_concurrency,
+        "image_preflight_concurrency": image_preflight_concurrency,
         "run_root": run_root,
         "bench_root": bench_root,
         "execution_kind": execution_kind,
@@ -921,6 +945,7 @@ def _print_human(plan: dict[str, Any]) -> None:
     print(f"controller_host: {plan['controller_host']}")
     print(f"dry_run: {str(plan['dry_run']).lower()}")
     print(f"suite_concurrency: {plan['suite_concurrency']}")
+    print(f"image_preflight_concurrency: {plan.get('image_preflight_concurrency', min(int(plan.get('suite_concurrency', 1)), 4))}")
     print("")
     for run in plan["runs"]:
         print(f"- {run['bench_id']} [{run['adapter_status']}]")
@@ -1083,7 +1108,8 @@ def _execute_image_preflights(
     output_root.mkdir(parents=True, exist_ok=True)
     _write_plan(plan, output_root / "run_manifest.json")
     results: list[dict[str, Any]] = []
-    max_workers = max(1, int(plan.get("suite_concurrency", 1)))
+    suite_workers = max(1, int(plan.get("suite_concurrency", 1)))
+    max_workers = max(1, int(plan.get("image_preflight_concurrency", min(suite_workers, 4))))
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
         future_map = {
             pool.submit(
@@ -1128,6 +1154,7 @@ def _execute_image_preflights(
         "status": status,
         "include_optional": include_optional,
         "fail_on_optional": fail_on_optional,
+        "image_preflight_concurrency": max_workers,
         "counts": counts,
         "results": results,
     }

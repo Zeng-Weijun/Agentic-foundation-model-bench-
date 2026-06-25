@@ -52,6 +52,7 @@ worker:
 
 image_preflight:
   project_root: ..
+  max_concurrency: 4
   asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
   default_policy: optional
   load_fallback: true
