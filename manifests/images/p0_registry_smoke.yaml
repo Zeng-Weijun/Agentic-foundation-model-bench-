@@ -1,0 +1,23 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: p0_registry_smoke
+generated_at: "2026-06-25"
+status: verified_by_workflow_smoke
+evidence:
+  source_manifest: /Users/Zhuanz1/Desktop/ssh_work/paper_reading/swe-data-harness/rl/manifests/shared_registry_smoke.envs.jsonl
+  report: reports/p0_harbor_registry_smoke_20260625.md
+  worker_guard_report: reports/p0_harbor_worker_guard_20260625.md
+
+images:
+  - id: p0_repo2env_pallets_click_smoke
+    role: registry_health_smoke
+    required: true
+    image_transport: registry
+    image_ref: 100.97.118.137:8555/swe-data-harness/repo2env-pallets-click-f6299c4@sha256:739a8078125ff68292ce6886671e7c8fd9b7825c3c8cf7fdccce45d22935d3df
+    local_ref: 100.97.118.137:8555/swe-data-harness/repo2env-pallets-click-f6299c4@sha256:739a8078125ff68292ce6886671e7c8fd9b7825c3c8cf7fdccce45d22935d3df
+    needs_network: false
+    fallback_transport: oci_tar
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/swe-data-harness/tmp/oci_tar_smoke_20260625T130818Z/click-f6299.tar
+    fallback_tar_sha256: e23626bb23be8776ab43eebd22415a20b9fff066ddbada7201643f0f2e9f0be3
+    smoke:
+      network: none
+      command: "python --version 2>/dev/null || python3 --version 2>/dev/null || echo shell-ok"

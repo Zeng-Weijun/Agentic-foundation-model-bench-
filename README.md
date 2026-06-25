@@ -57,6 +57,26 @@ scripts/load_offline_images.sh --check
 
 This checks `manifests/offline_images.example.yaml` against `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` without pulling from the internet. Run without `--check` only after the expected image tar files are staged on shared storage.
 
+P0 Harbor/OCI registry-aware image preflight:
+
+```bash
+python3 scripts/agentic_bench_images.py validate \
+  --registry manifests/bench_registry.yaml \
+  --asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+
+python3 scripts/agentic_bench_images.py check \
+  --image-manifest manifests/images/repozero.yaml \
+  --asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench \
+  --docker-host unix:///tmp/rl/run/docker.sock
+```
+
+`manifests/bench_registry.yaml` is the lightweight Harbor/P0 contract for the
+workspace registry at `100.97.118.137:8555`. Per-bench files under
+`manifests/images/` record digest refs when available, fallback tar paths,
+checksums, and smoke commands. The suite dry-run now emits `image_preflight`
+commands for Docker-backed benches; required preflights run before adapters in
+`--execute` mode.
+
 Terminal-Bench 2.1 one-task dry-run wrapper:
 
 ```bash

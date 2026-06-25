@@ -1,0 +1,43 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: pending_agentic_benches
+generated_at: "2026-06-25"
+status: dataset_and_image_contracts_missing
+evidence:
+  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+  pending_adapter_inventory: reports/pending_adapter_inventory_20260625.md
+
+images:
+  - id: mcp_atlas_images_todo
+    role: placeholder
+    bench: MCP-Atlas
+    required: false
+    image_transport: todo
+    registry_status: missing_checkout_dataset_image_contract
+
+  - id: tool_decathlon_images_todo
+    role: placeholder
+    bench: Tool-Decathlon
+    required: false
+    image_transport: todo
+    registry_status: missing_checkout_dataset_image_contract
+
+  - id: tau3_bench_images_todo
+    role: placeholder
+    bench: tau3-bench
+    required: false
+    image_transport: todo
+    registry_status: adapter_exists_dataset_and_sidecar_image_manifest_missing
+
+  - id: programbench_images_todo
+    role: placeholder
+    bench: ProgramBench
+    required: false
+    image_transport: todo
+    registry_status: missing_checkout_dataset_image_contract
+
+  - id: nl2repo_images_todo
+    role: placeholder
+    bench: NL2Repo
+    required: false
+    image_transport: todo
+    registry_status: missing_checkout_dataset_image_contract

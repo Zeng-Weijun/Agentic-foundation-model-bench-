@@ -548,6 +548,92 @@ def _render_command(argv: list[str]) -> str:
     return " ".join(shlex.quote(part) for part in argv)
 
 
+def _image_manifest_values(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value if item is not None]
+    return [str(value)]
+
+
+def _image_preflight_for_bench(
+    *,
+    bench_map: dict[str, Any],
+    image_config: dict[str, Any],
+    worker: dict[str, Any],
+    bench_root: str,
+    worker_host: str,
+    ssh_options: list[Any],
+    execution_kind: str,
+) -> dict[str, Any] | None:
+    manifests = _image_manifest_values(bench_map.get("image_manifest") or bench_map.get("image_manifests"))
+    if not manifests:
+        return None
+    policy = str(bench_map.get("image_policy", image_config.get("default_policy", "required")))
+    project_root = str(image_config.get("project_root", bench_map.get("image_project_root", bench_root)))
+    asset_root = str(
+        bench_map.get(
+            "image_asset_root",
+            image_config.get(
+                "asset_root",
+                "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+            ),
+        )
+    )
+    docker_host = str(bench_map.get("docker_host", image_config.get("docker_host", worker.get("docker_host", ""))))
+    commands: list[dict[str, Any]] = []
+    for manifest in manifests:
+        check_argv = [
+            "python3",
+            "scripts/agentic_bench_images.py",
+            "check",
+            "--image-manifest",
+            manifest,
+            "--asset-root",
+            asset_root,
+        ]
+        if docker_host:
+            check_argv.extend(["--docker-host", docker_host])
+        if _bool(image_config.get("json"), default=True):
+            check_argv.append("--json")
+        remote_body = "\n".join(
+            [
+                "set -euo pipefail",
+                f"cd {shlex.quote(project_root)}",
+                "exec " + _render_command(check_argv),
+            ]
+        )
+        if execution_kind == "ssh_worker":
+            command_argv = _ssh_command(worker_host, ssh_options, remote_body)
+        elif execution_kind == "local":
+            command_argv = ["bash", "-c", remote_body]
+        else:
+            command_argv = check_argv
+        commands.append(
+            {
+                "manifest": manifest,
+                "check_argv": check_argv,
+                "check_command": _render_command(check_argv),
+                "command_argv": command_argv,
+                "command": _render_command(command_argv),
+            }
+        )
+    required = policy not in {"optional", "none", "disabled", "skip"}
+    return {
+        "schema_version": "agentic_bench.image_preflight.v1",
+        "policy": policy,
+        "required": required,
+        "project_root": project_root,
+        "asset_root": asset_root,
+        "docker_host": docker_host,
+        "manifest": manifests[0],
+        "manifests": manifests,
+        "command_argv": commands[0]["command_argv"],
+        "command": commands[0]["command"],
+        "commands": commands,
+    }
+
+
 def _command_preview(
     *,
     adapter_script: str,
@@ -615,6 +701,7 @@ def build_run_plan(
     source_env_files = _require_list(suite.get("source_env_files", []), "suite.source_env_files")
     bench_root = str(suite.get("bench_root", "/data/nips/bench"))
     run_root = str(suite.get("run_root", suite.get("output_root", "/tmp/agentic-foundation-model-bench/runs")))
+    image_preflight_config = _require_mapping(config.get("image_preflight", {}), "image_preflight")
     execution_kind = str(suite.get("execution_kind", execution.get("kind", "ssh_worker")))
     ssh_options = _require_list(worker.get("ssh_options", []), "worker.ssh_options")
     worker_env = _worker_runtime_env(worker)
@@ -689,55 +776,69 @@ def build_run_plan(
             notes.append(f"adapter {adapter!r} not wired; dry-run records the intended command only")
         if network_policy != "online_allowed":
             notes.append("worker must consume pre-staged assets; no public internet actions are allowed")
+        image_preflight = _image_preflight_for_bench(
+            bench_map=bench_map,
+            image_config=image_preflight_config,
+            worker=worker,
+            bench_root=bench_root,
+            worker_host=worker_host,
+            ssh_options=ssh_options,
+            execution_kind=execution_kind,
+        )
+        if image_preflight and image_preflight["required"]:
+            notes.append("image preflight required before adapter execution")
+        run_manifest = {
+            "schema_version": "agentic_bench.run_manifest.v1",
+            "run_id": run_id,
+            "suite_id": suite_id,
+            "bench": bench_map.get("benchmark", bench_id),
+            "bench_id": bench_id,
+            "mode": mode,
+            "controller_host": suite.get("controller_host", "dev"),
+            "remote_host": remote_host,
+            "execution_host": execution_host,
+            "worker_host": worker_host,
+            "worker_id": bench_map.get("worker_id", worker.get("id", "")),
+            "network_policy": network_policy,
+            "worker_network": network_policy,
+            "rootless_required": rootless_required,
+            "rootless": worker.get("rootless", None),
+            "container_engine": worker.get("container_engine", ""),
+            "docker_host": worker.get("docker_host", ""),
+            "tmp_root": worker.get("tmp_root", ""),
+            "run_root": run_root,
+            "run_dir": run_dir,
+            "bench_root": bench_root,
+            "script_path": adapter_script,
+            "script_sha256": _sha256_file(adapter_path),
+            "created_at": created_at,
+            "status": "planned",
+            "adapter": adapter,
+            "adapter_status": adapter_status,
+            "model": _model_env_state(model_profiles[profile_id]),
+            "runtime_env": _redact_env(runtime_env),
+            "concurrency": int(bench_map.get("concurrency", 1)),
+            "params": params,
+            "command_preview": _command_preview(
+                adapter_script=adapter_script,
+                suite_id=suite_id,
+                run_id=run_id,
+                mode=mode,
+                model_profile=profile_id,
+                worker_host=worker_host,
+                network_policy=network_policy,
+                params=params,
+                runtime_env=_redact_env(runtime_env),
+                dry_run=dry_run,
+            ),
+            "command_argv": command_argv,
+            "command": _render_command(command_argv),
+            "notes": notes,
+        }
+        if image_preflight:
+            run_manifest["image_preflight"] = image_preflight
         runs.append(
-            {
-                "schema_version": "agentic_bench.run_manifest.v1",
-                "run_id": run_id,
-                "suite_id": suite_id,
-                "bench": bench_map.get("benchmark", bench_id),
-                "bench_id": bench_id,
-                "mode": mode,
-                "controller_host": suite.get("controller_host", "dev"),
-                "remote_host": remote_host,
-                "execution_host": execution_host,
-                "worker_host": worker_host,
-                "worker_id": bench_map.get("worker_id", worker.get("id", "")),
-                "network_policy": network_policy,
-                "worker_network": network_policy,
-                "rootless_required": rootless_required,
-                "rootless": worker.get("rootless", None),
-                "container_engine": worker.get("container_engine", ""),
-                "docker_host": worker.get("docker_host", ""),
-                "tmp_root": worker.get("tmp_root", ""),
-                "run_root": run_root,
-                "run_dir": run_dir,
-                "bench_root": bench_root,
-                "script_path": adapter_script,
-                "script_sha256": _sha256_file(adapter_path),
-                "created_at": created_at,
-                "status": "planned",
-                "adapter": adapter,
-                "adapter_status": adapter_status,
-                "model": _model_env_state(model_profiles[profile_id]),
-                "runtime_env": _redact_env(runtime_env),
-                "concurrency": int(bench_map.get("concurrency", 1)),
-                "params": params,
-                "command_preview": _command_preview(
-                    adapter_script=adapter_script,
-                    suite_id=suite_id,
-                    run_id=run_id,
-                    mode=mode,
-                    model_profile=profile_id,
-                    worker_host=worker_host,
-                    network_policy=network_policy,
-                    params=params,
-                    runtime_env=_redact_env(runtime_env),
-                    dry_run=dry_run,
-                ),
-                "command_argv": command_argv,
-                "command": _render_command(command_argv),
-                "notes": notes,
-            }
+            run_manifest
         )
 
     return {
@@ -781,6 +882,8 @@ def _print_human(plan: dict[str, Any]) -> None:
         print(f"  worker_host: {run['worker_host']}")
         print(f"  network_policy: {run['network_policy']}")
         print(f"  docker_host: {run.get('docker_host', '')}")
+        if run.get("image_preflight"):
+            print(f"  image_preflight: {run['image_preflight']['command']}")
         print(f"  command_preview: {run['command_preview']}")
         for note in run["notes"]:
             print(f"  note: {note}")
@@ -810,6 +913,29 @@ def _run_one(run: dict[str, Any], output_root: Path) -> dict[str, Any]:
     started_at = _utc_now()
     with log_path.open("w", encoding="utf-8") as handle:
         handle.write(f"START {bench_id} {started_at}\n")
+        preflight = run.get("image_preflight")
+        if isinstance(preflight, dict) and preflight.get("required"):
+            for command in preflight.get("commands", []):
+                handle.write("[image_preflight] " + str(command.get("command", "")) + "\n")
+                handle.flush()
+                preflight_proc = subprocess.run(
+                    command["command_argv"],
+                    stdout=handle,
+                    stderr=subprocess.STDOUT,
+                    check=False,
+                )
+                if preflight_proc.returncode != 0:
+                    ended_at = _utc_now()
+                    status = f"fail:image_preflight:{preflight_proc.returncode}"
+                    status_path.write_text(status + "\n", encoding="utf-8")
+                    return {
+                        "bench_id": bench_id,
+                        "status": status,
+                        "exit_code": preflight_proc.returncode,
+                        "started_at": started_at,
+                        "ended_at": ended_at,
+                        "log_path": str(log_path),
+                    }
         handle.write(str(run["command"]) + "\n\n")
         handle.flush()
         proc = subprocess.run(run["command_argv"], stdout=handle, stderr=subprocess.STDOUT, check=False)

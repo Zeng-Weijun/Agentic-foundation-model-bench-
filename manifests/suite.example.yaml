@@ -49,6 +49,12 @@ worker:
     NO_PROXY: "127.0.0.1,localhost,100.96.1.101,100.96.0.0/12,.pjlab.org.cn"
     no_proxy: "127.0.0.1,localhost,100.96.1.101,100.96.0.0/12,.pjlab.org.cn"
 
+image_preflight:
+  project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+  asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+  default_policy: optional
+  json: true
+
 model_profiles:
   - id: gpt54mini_8130
     model_name: gpt-5.4-mini
@@ -166,6 +172,8 @@ benches:
     adapter: swebench_verified_qwen_code
     adapter_script: run_swebench_verified_qwen_code.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/swebench_verified.yaml
+    image_policy: optional
     model_profile: qwen3_coder_30b_a3b_sglang_future
     concurrency: 1
     params:
@@ -181,6 +189,8 @@ benches:
     adapter: repozero_py2js
     adapter_script: run_repozero_py2js.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/repozero.yaml
+    image_policy: required
     model_profile: gpt54mini_8130
     concurrency: 1
     params:
@@ -211,6 +221,8 @@ benches:
     adapter: mini_swe_agent
     adapter_script: run_swebench_verified_mini_swe_agent.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/swebench_verified.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     concurrency: 1
     params:
@@ -226,6 +238,8 @@ benches:
     adapter: swe_agent
     adapter_script: run_swebench_verified_swe_agent.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/swebench_verified.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     concurrency: 1
     params:
@@ -239,6 +253,8 @@ benches:
     adapter: openhands
     adapter_script: run_swebench_verified_openhands.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/swebench_verified.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     concurrency: 1
     params:
@@ -253,6 +269,8 @@ benches:
     adapter: deepswe
     adapter_script: run_deepswe.sh
     adapter_status: wired_legacy
+    image_manifest: manifests/images/deepswe.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     concurrency: 1
     params:
@@ -265,6 +283,8 @@ benches:
     adapter: terminal_bench_2_1
     adapter_script: run_terminal_bench_2_1.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/terminal_bench_2_1.yaml
+    image_policy: required
     model_profile: gpt54mini_8130
     enabled: false
 
@@ -273,6 +293,8 @@ benches:
     adapter: mcp_atlas
     adapter_script: run_mcp_atlas.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/pending_benches.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false
 
@@ -281,6 +303,8 @@ benches:
     adapter: tool_decathlon
     adapter_script: run_tool_decathlon.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/pending_benches.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false
 
@@ -289,6 +313,8 @@ benches:
     adapter: tau3_bench
     adapter_script: run_tau3_bench.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/pending_benches.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false
 
@@ -297,6 +323,8 @@ benches:
     adapter: programbench
     adapter_script: run_programbench.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/pending_benches.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false
 
@@ -305,5 +333,7 @@ benches:
     adapter: nl2repo
     adapter_script: run_nl2repo.sh
     adapter_status: pending_adapter
+    image_manifest: manifests/images/pending_benches.yaml
+    image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false

@@ -230,6 +230,65 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(run["runtime_env"]["BENCH_MODEL_PROFILE"], "gpt54mini_8130")
         self.assertEqual(run["runtime_env"]["OPENAI_BASE_URL"], "http://100.96.1.101:18540/v1")
 
+    def test_image_manifest_adds_explicit_preflight_command_to_run_plan(self):
+        module = load_module()
+        suite_yaml = SUITE_YAML + textwrap.dedent(
+            """
+
+            image_preflight:
+              project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+              asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+              default_policy: required
+            worker:
+              docker_host: unix:///tmp/rl/run/docker.sock
+            """
+        )
+        suite_yaml = suite_yaml.replace(
+            "    concurrency: 1\n    params:",
+            "    image_manifest: manifests/images/repozero.yaml\n"
+            "    concurrency: 1\n    params:",
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True)
+
+        run = plan["runs"][0]
+        self.assertEqual(run["image_preflight"]["policy"], "required")
+        self.assertTrue(run["image_preflight"]["required"])
+        self.assertEqual(run["image_preflight"]["manifest"], "manifests/images/repozero.yaml")
+        self.assertIn("scripts/agentic_bench_images.py", run["image_preflight"]["command"])
+        self.assertIn("--docker-host unix:///tmp/rl/run/docker.sock", run["image_preflight"]["command"])
+        self.assertIn("--asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench", run["image_preflight"]["command"])
+        self.assertIn("image preflight required before adapter execution", run["notes"])
+
+    def test_execute_run_blocks_adapter_when_required_image_preflight_fails(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            adapter_marker = root / "adapter-ran"
+            run = {
+                "bench_id": "repozero_py2js_smoke",
+                "command": "adapter command",
+                "command_argv": ["bash", "-c", f"touch {adapter_marker}"],
+                "image_preflight": {
+                    "required": True,
+                    "commands": [
+                        {
+                            "command": "preflight command",
+                            "command_argv": ["bash", "-c", "echo preflight failed; exit 7"],
+                        }
+                    ],
+                },
+            }
+
+            result = module._run_one(run, root / "controller")
+
+        self.assertEqual(result["exit_code"], 7)
+        self.assertEqual(result["status"], "fail:image_preflight:7")
+        self.assertFalse(adapter_marker.exists())
+
     def test_example_manifest_vitabench_one_task_smoke_uses_verified_runner(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

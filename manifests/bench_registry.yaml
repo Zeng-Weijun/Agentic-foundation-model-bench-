@@ -1,0 +1,63 @@
+schema_version: agentic_bench.registry.v1
+generated_at: "2026-06-25"
+
+registry:
+  name: swe_data_harness_p0_oci_registry
+  kind: distribution_registry_p0
+  url: https://100.97.118.137:8555
+  domain: 100.97.118.137:8555
+  host: swe_dev2
+  container: swe-dh-shared-registry
+  backend_storage: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/swe-data-harness/registry/data
+  cert_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/swe-data-harness/registry/certs/domain.crt
+  p0_limits:
+    - no_auth
+    - self_signed_tls
+    - no_retention_gc_policy
+    - worker_fresh_pull_not_currently_proven_for_active_rootless_daemon
+
+worker_defaults:
+  worker_id: worker-j9jjd
+  worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  docker_host: unix:///tmp/rl/run/docker.sock
+  cert_targets:
+    - /etc/docker/certs.d/100.97.118.137:8555/ca.crt
+    - /root/.config/docker/certs.d/100.97.118.137:8555/ca.crt
+    - /tmp/rl/data/certs.d/100.97.118.137:8555/ca.crt
+  required_guard:
+    script: scripts/check_rootless_docker_worker.sh
+    active_daemon_must_include:
+      - --config-file=/dev/null
+
+asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+
+image_manifests:
+  - id: p0_registry_smoke
+    path: images/p0_registry_smoke.yaml
+    status: verified_cached_and_pull_smoke_seen
+    policy: required_for_registry_health
+
+  - id: repozero_py2js
+    path: images/repozero.yaml
+    status: worker_image_present_with_shared_tar_fallback
+    policy: required_for_repozero_smoke
+
+  - id: terminal_bench_2_1
+    path: images/terminal_bench_2_1.yaml
+    status: partial_shared_tars_known_bad_fix_git
+    policy: disabled_until_rebuilt
+
+  - id: swebench_verified_multi
+    path: images/swebench_verified.yaml
+    status: partial_worker_cache_missing_exact_task_map
+    policy: optional_until_task_image_map_frozen
+
+  - id: deepswe
+    path: images/deepswe.yaml
+    status: missing_r2e_image_enumeration
+    policy: optional_until_r2e_manifest_exists
+
+  - id: pending_agentic_benches
+    path: images/pending_benches.yaml
+    status: manifest_gap_inventory
+    policy: disabled_until_assets_staged

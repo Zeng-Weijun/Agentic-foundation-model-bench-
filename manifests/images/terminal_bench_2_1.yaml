@@ -1,0 +1,29 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: terminal_bench_2_1
+generated_at: "2026-06-25"
+status: partial_not_image_ready
+evidence:
+  image_debug_report: reports/terminal_bench_2_1_image_load_debug_20260625.md
+  rebuild_report: reports/terminal_bench_fix_git_rebuild_execution_20260625.md
+  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+known_blockers:
+  - fix_git_tar_fails_worker_rootless_load
+  - rebuild_retry_blocked_by_apt_egress_inside_dev_docker_build
+  - no_registry_digest_manifest
+  - manifest_jsonl_has_86_rows_but_bounded_tar_count_is_50
+
+images:
+  - id: terminal_bench_2_1_fix_git
+    role: one_task_smoke_image
+    required: true
+    image_transport: shared_tar_known_bad
+    registry_status: p0_push_blocked_until_rebuild
+    local_ref: tb2-offline/fix-git:20260425
+    fallback_transport: oci_tar
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/fix-git.tar
+    fallback_tar_sha256: 6e77528d2b758fbb4d6ac1b8ca7528aa0ef79c0626640c8be085ff4a1a8a2511
+    load_status: known_bad_on_worker_rootless
+    known_error: "unlinkat /app/resources/patch_files: input/output error"
+    smoke:
+      network: none
+      command: "git --version && python3 --version"

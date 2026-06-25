@@ -70,6 +70,24 @@ Check offline/rootless Docker image readiness on the worker:
 scripts/load_offline_images.sh --check
 ```
 
+Validate the P0 Harbor/OCI image manifest index:
+
+```bash
+python3 scripts/agentic_bench_images.py validate --registry manifests/bench_registry.yaml
+```
+
+Check one bench image manifest against the worker rootless Docker cache:
+
+```bash
+python3 scripts/agentic_bench_images.py check \
+  --image-manifest manifests/images/repozero.yaml \
+  --asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench \
+  --docker-host unix:///tmp/rl/run/docker.sock
+```
+
+Add `--pull` only for digest-pinned images in the internal P0 registry. Add
+`--load-fallback` only after the fallback tar checksum is expected to match.
+
 Dry-run the current Terminal-Bench 2.1 one-task smoke wrapper:
 
 ```bash

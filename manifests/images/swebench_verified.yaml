@@ -1,0 +1,33 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: swebench_verified_multi
+generated_at: "2026-06-25"
+status: partial_worker_cache_not_full_manifest
+evidence:
+  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+  offline_gap_report: reports/all_bench_offline_gap_matrix_20260625.md
+known_blockers:
+  - exact_task_to_image_digest_map_not_frozen
+  - full_500_verified_image_coverage_not_proven
+  - openhands_runtime_image_missing
+
+images:
+  - id: swebench_verified_worker_cache_probe
+    role: partial_existing_cache_inventory
+    required: false
+    image_transport: worker_cache_partial
+    local_refs:
+      - swebench/sweb.eval.x86_64.django_1776_django-13810:latest
+      - swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-django-1776-django-13810-latest-896d8eb0c3be14d2
+    needs_network: false
+    fallback_transport: none
+    smoke:
+      network: none
+      command: "python --version 2>/dev/null || python3 --version 2>/dev/null || echo shell-ok"
+
+  - id: openhands_0_54_runtime
+    role: openhands_runtime
+    required: false
+    image_transport: missing_runtime_image
+    local_ref: ghcr.io/all-hands-ai/runtime:oh_v0.54.0_twmj64zvbfnlyth0_se606gwapm7q4m98
+    registry_status: missing_tar_and_missing_p0_digest
+    fallback_transport: none

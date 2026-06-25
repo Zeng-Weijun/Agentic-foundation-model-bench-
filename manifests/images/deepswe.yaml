@@ -1,0 +1,19 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: deepswe
+generated_at: "2026-06-25"
+status: missing_r2e_image_manifest
+evidence:
+  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+  offline_gap_report: reports/all_bench_offline_gap_matrix_20260625.md
+known_blockers:
+  - exact_r2e_gym_or_pier_image_tags_not_enumerated
+  - no_deepswe_specific_shared_tar_found
+  - rootless_container_networking_not_proven_for_deepswe
+
+images:
+  - id: deepswe_r2e_images_todo
+    role: placeholder_until_r2e_enumeration
+    required: false
+    image_transport: todo
+    registry_status: missing
+    fallback_transport: none
