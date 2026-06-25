@@ -117,6 +117,54 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][0]["fallback"]["sha256_status"], "match")
         self.assertEqual(docker_calls, [["docker", "image", "inspect", "ghcr.io/jessezzzzz/repoarena-new:latest"]])
 
+
+    def test_check_manifest_rejects_present_tag_with_wrong_image_identity(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "swebench.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: swe_bench_verified_smoke
+                    images:
+                      - id: astropy_1776_astropy-7671
+                        required: true
+                        local_ref: swebench/sweb.eval.x86_64.astropy_1776_astropy-7671:latest
+                        source_image_id: sha256:expected-base
+                        source_repo_digest: swebench/sweb.eval.x86_64.astropy_1776_astropy-7671@sha256:expecteddigest
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            def fake_runner(argv, env):
+                self.assertEqual(argv, ["docker", "image", "inspect", "swebench/sweb.eval.x86_64.astropy_1776_astropy-7671:latest"])
+                return module.CommandResult(
+                    0,
+                    json.dumps(
+                        [
+                            {
+                                "Id": "sha256:wrong-prebuilt",
+                                "RepoDigests": ["swerex-prebuilt@sha256:other"],
+                            }
+                        ]
+                    ),
+                    "",
+                )
+
+            summary = module.check_image_manifest(manifest, asset_root=root, runner=fake_runner)
+
+        self.assertEqual(summary["counts"]["identity_mismatch"], 1)
+        self.assertEqual(summary["counts"]["present"], 0)
+        self.assertEqual(summary["counts"]["missing"], 0)
+        self.assertEqual(summary["images"][0]["status"], "identity_mismatch")
+        self.assertEqual(summary["images"][0]["inspect_attempts"][0]["identity_status"], "mismatch")
+        self.assertEqual(summary["images"][0]["inspect_attempts"][0]["actual_image_id"], "sha256:wrong-prebuilt")
+        self.assertEqual(summary["images"][0]["inspect_attempts"][0]["expected_image_ids"], ["sha256:expected-base"])
+
+
     def test_optional_missing_can_be_fatal_for_optional_audit(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

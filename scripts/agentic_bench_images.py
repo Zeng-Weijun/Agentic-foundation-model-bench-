@@ -147,6 +147,18 @@ def image_entries(config: Any) -> tuple[str, list[dict[str, Any]]]:
         )
         image_refs = _string_list(raw_map.get("image_ref"), raw_map.get("image_refs"), raw_map.get("registry_ref"))
         fallback_tars = _string_list(raw_map.get("fallback_tar"), raw_map.get("fallback_tars"), raw_map.get("tar_paths"))
+        expected_image_ids = _string_list(
+            raw_map.get("expected_image_id"),
+            raw_map.get("expected_image_ids"),
+            raw_map.get("source_image_id"),
+            raw_map.get("source_image_ids"),
+        )
+        expected_repo_digests = _string_list(
+            raw_map.get("expected_repo_digest"),
+            raw_map.get("expected_repo_digests"),
+            raw_map.get("source_repo_digest"),
+            raw_map.get("source_repo_digests"),
+        )
         entries.append(
             {
                 "id": str(raw_map.get("id") or f"image_{index}"),
@@ -158,6 +170,8 @@ def image_entries(config: Any) -> tuple[str, list[dict[str, Any]]]:
                 "fallback_tars": fallback_tars,
                 "fallback_tar_sha256": raw_map.get("fallback_tar_sha256"),
                 "fallback_tar_sha256_path": raw_map.get("fallback_tar_sha256_path"),
+                "expected_image_ids": expected_image_ids,
+                "expected_repo_digests": expected_repo_digests,
                 "smoke": raw_map.get("smoke", {}),
                 "raw": raw_map,
             }
@@ -197,17 +211,100 @@ def _fallback_status(entry: dict[str, Any], manifest_path: Path, asset_root: Pat
     return fallback
 
 
-def _docker_inspect(refs: list[str], env: dict[str, str], runner: Runner) -> tuple[bool, str, list[dict[str, Any]]]:
+def _normalize_digest_like(value: str) -> str:
+    text = str(value).strip()
+    if len(text) == 64 and all(char in "0123456789abcdefABCDEF" for char in text):
+        return f"sha256:{text.lower()}"
+    return text
+
+
+def _identity_tokens(value: str) -> set[str]:
+    text = _normalize_digest_like(value)
+    if not text:
+        return set()
+    tokens = {text}
+    if "@sha256:" in text:
+        tokens.add(text.split("@", 1)[1])
+    return tokens
+
+
+def _inspect_doc(stdout: str) -> tuple[dict[str, Any], str]:
+    try:
+        payload = json.loads(stdout or "null")
+    except json.JSONDecodeError as exc:
+        return {}, f"invalid docker inspect json: {exc}"
+    if isinstance(payload, list):
+        if not payload:
+            return {}, ""
+        payload = payload[0]
+    if isinstance(payload, dict):
+        return payload, ""
+    return {}, "docker inspect json root is not an object or list"
+
+
+def _identity_status(entry: dict[str, Any], stdout: str) -> tuple[bool, dict[str, Any]]:
+    expected_image_ids = [_normalize_digest_like(value) for value in entry.get("expected_image_ids", [])]
+    expected_repo_digests = [_normalize_digest_like(value) for value in entry.get("expected_repo_digests", [])]
+    if not expected_image_ids and not expected_repo_digests:
+        return True, {"identity_status": "not_configured"}
+
+    doc, error = _inspect_doc(stdout)
+    actual_image_id = _normalize_digest_like(str(doc.get("Id") or ""))
+    actual_repo_digests = _string_list(doc.get("RepoDigests"))
+    details: dict[str, Any] = {
+        "identity_status": "mismatch",
+        "expected_image_ids": expected_image_ids,
+        "expected_repo_digests": expected_repo_digests,
+        "actual_image_id": actual_image_id,
+        "actual_repo_digests": actual_repo_digests,
+    }
+    if error:
+        details["identity_error"] = error
+        return False, details
+
+    if actual_image_id and actual_image_id in set(expected_image_ids):
+        details["identity_status"] = "match"
+        return True, details
+
+    expected_digest_tokens: set[str] = set()
+    for digest in expected_repo_digests:
+        expected_digest_tokens.update(_identity_tokens(digest))
+    actual_digest_tokens: set[str] = set()
+    for digest in actual_repo_digests:
+        actual_digest_tokens.update(_identity_tokens(digest))
+    if expected_digest_tokens and expected_digest_tokens.intersection(actual_digest_tokens):
+        details["identity_status"] = "match"
+        return True, details
+
+    return False, details
+
+
+def _docker_inspect(
+    refs: list[str],
+    env: dict[str, str],
+    runner: Runner,
+    entry: dict[str, Any] | None = None,
+) -> tuple[bool, str, list[dict[str, Any]]]:
     attempts: list[dict[str, Any]] = []
+    identity_entry = entry or {}
     for ref in refs:
         result = runner(["docker", "image", "inspect", ref], env)
         attempt = {"ref": ref, "returncode": result.returncode}
         if result.returncode != 0:
             attempt["stderr"] = result.stderr.strip()
+        else:
+            identity_ok, identity_details = _identity_status(identity_entry, result.stdout)
+            attempt.update(identity_details)
+            attempts.append(attempt)
+            if identity_ok:
+                return True, ref, attempts
+            continue
         attempts.append(attempt)
-        if result.returncode == 0:
-            return True, ref, attempts
     return False, "", attempts
+
+
+def _has_identity_mismatch(attempts: list[dict[str, Any]]) -> bool:
+    return any(attempt.get("returncode") == 0 and attempt.get("identity_status") == "mismatch" for attempt in attempts)
 
 
 def _is_internal_ref(ref: str) -> bool:
@@ -319,6 +416,7 @@ def check_image_manifest(
         "pulled": 0,
         "smoke_passed": 0,
         "optional_missing": 0,
+        "identity_mismatch": 0,
     }
     results: list[dict[str, Any]] = []
 
@@ -337,6 +435,8 @@ def check_image_manifest(
             "required": entry["required"],
             "local_refs": entry["local_refs"],
             "image_refs": entry["image_refs"],
+            "expected_image_ids": entry["expected_image_ids"],
+            "expected_repo_digests": entry["expected_repo_digests"],
             "inspect_attempts": [],
             "fallback": fallback,
             "status": "",
@@ -348,7 +448,7 @@ def check_image_manifest(
             results.append(result)
             continue
 
-        present, present_ref, attempts = _docker_inspect(entry["inspect_refs"], env, runner)
+        present, present_ref, attempts = _docker_inspect(entry["inspect_refs"], env, runner, entry)
         result["inspect_attempts"] = attempts
         if not present and allow_pull and entry["image_refs"]:
             pull_ref = entry["image_refs"][0]
@@ -359,7 +459,7 @@ def check_image_manifest(
                 result["pull_status"] = "pulled" if pull_result.returncode == 0 else "failed"
                 if pull_result.returncode == 0:
                     counts["pulled"] += 1
-                    present, present_ref, attempts = _docker_inspect([pull_ref], env, runner)
+                    present, present_ref, attempts = _docker_inspect([pull_ref], env, runner, entry)
                     result["inspect_attempts"].extend(attempts)
                 else:
                     result["pull_stderr"] = pull_result.stderr.strip()
@@ -369,7 +469,7 @@ def check_image_manifest(
             result["load_status"] = "loaded" if load_result.returncode == 0 else "failed"
             if load_result.returncode == 0:
                 counts["loaded"] += 1
-                present, present_ref, attempts = _docker_inspect(entry["inspect_refs"], env, runner)
+                present, present_ref, attempts = _docker_inspect(entry["inspect_refs"], env, runner, entry)
                 result["inspect_attempts"].extend(attempts)
             else:
                 result["load_stderr"] = load_result.stderr.strip()
@@ -390,7 +490,10 @@ def check_image_manifest(
             results.append(result)
             continue
 
-        if entry["required"]:
+        if _has_identity_mismatch(result["inspect_attempts"]):
+            counts["identity_mismatch"] += 1
+            result["status"] = "identity_mismatch"
+        elif entry["required"]:
             counts["missing"] += 1
             result["status"] = "missing"
         else:
@@ -460,6 +563,8 @@ def validate_registry(registry_path: str | Path, *, asset_root: str | Path = DEF
                         "local_refs": image["local_refs"],
                         "image_refs": image["image_refs"],
                         "fallback_tars": image["fallback_tars"],
+                        "expected_image_ids": image["expected_image_ids"],
+                        "expected_repo_digests": image["expected_repo_digests"],
                     }
                     for image in images
                 ],
@@ -487,6 +592,7 @@ def _print_check(summary: dict[str, Any]) -> None:
         f"unchecked={counts['unchecked']} "
         f"tar_verified={counts['tar_verified']} "
         f"tar_missing={counts['tar_missing']} "
+        f"identity_mismatch={counts['identity_mismatch']} "
         f"errors={counts['errors']}"
     )
     for image in summary["images"]:
@@ -594,7 +700,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         _print_check(summary)
     counts = summary["counts"]
-    if counts["errors"] or counts["tar_mismatch"]:
+    if counts["errors"] or counts["tar_mismatch"] or counts["identity_mismatch"]:
         return 2
     if counts["missing"] or counts["tar_missing"]:
         return 1
