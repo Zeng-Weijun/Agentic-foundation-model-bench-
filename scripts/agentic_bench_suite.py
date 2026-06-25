@@ -436,6 +436,9 @@ def _model_runtime_env(profile: dict[str, Any]) -> dict[str, str]:
     max_input_tokens = profile.get("max_input_tokens", profile.get("MAX_INPUT_TOKENS"))
     if max_input_tokens is not None:
         env["MAX_INPUT_TOKENS"] = str(max_input_tokens)
+    legacy_profile = profile.get("bench_model_profile", profile.get("BENCH_MODEL_PROFILE"))
+    if legacy_profile:
+        env["BENCH_MODEL_PROFILE"] = str(legacy_profile)
     return env
 
 
@@ -538,7 +541,7 @@ def _remote_body(*, bench_root: str, source_env_files: list[Any], runtime_env: d
 
 
 def _ssh_command(worker_host: str, ssh_options: list[Any], remote_body: str) -> list[str]:
-    return ["ssh", *[str(item) for item in ssh_options], worker_host, "bash -lc " + shlex.quote(remote_body)]
+    return ["ssh", *[str(item) for item in ssh_options], worker_host, "bash -c " + shlex.quote(remote_body)]
 
 
 def _render_command(argv: list[str]) -> str:
@@ -678,7 +681,7 @@ def build_run_plan(
         if execution_kind == "ssh_worker":
             command_argv = _ssh_command(worker_host, ssh_options, remote)
         elif execution_kind == "local":
-            command_argv = ["bash", "-lc", remote]
+            command_argv = ["bash", "-c", remote]
         else:
             raise ConfigError(f"suite.execution_kind must be ssh_worker or local, got {execution_kind!r}")
         notes: list[str] = []

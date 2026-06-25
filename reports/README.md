@@ -30,6 +30,10 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
 - `yaml_suite_launcher_plan_20260625.md`
   - Minimal dry-run-first `sh + yaml` suite launcher design, safety guards, legacy adapter execution status, and pending adapter list.
 
+- `tau2_proxy_smoke_20260625.md`
+  - First executable worker smoke through the `dev` relay proxy.
+  - Confirms tau2 harness completion via YAML suite, records the proxy topology, and distinguishes infra pass from sampled task reward `0.0`.
+
 - `trace_manifest_template.yaml`
   - Per-task trace collection template.
   - Copy this next to each raw trace/result directory before citing a run.

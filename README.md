@@ -18,6 +18,7 @@ Key reports:
 - `reports/deployment_plan_20260625.md` - GitHub/shared-disk deployment plan.
 - `reports/yaml_suite_launcher_plan_20260625.md` - dry-run-first `sh + yaml` suite launcher draft.
 - `reports/worker_j9jjd_preflight_20260625.md` - live worker/rootless/API preflight.
+- `reports/tau2_proxy_smoke_20260625.md` - first worker tau2 smoke through the `dev` relay proxy.
 - `reports/trace_manifest_template.yaml` - per-task trace manifest template.
 
 First runnable suite entrypoint:
@@ -27,6 +28,18 @@ scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run
 ```
 
 The runner is manifest-first and defaults to dry-run. Actual worker execution requires `--execute`; entries marked `adapter_status: wired_legacy` call the existing `/data/nips/bench/run_*.sh` adapters on the worker with the manifest-defined model, rootless Docker socket, offline policy, and smoke env. Current dispatch caveat: local Mac -> `worker-j9jjd` SSH works, but `dev` -> `worker-j9jjd` is blocked by publickey auth until that credential path is fixed.
+
+Current executable smoke:
+
+```bash
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml \
+  --execute \
+  --only tau2_paper_core \
+  --model-profile dev_proxy_gpt54mini_8130 \
+  --max-concurrency 1
+```
+
+This uses worker -> `dev` proxy -> 8.130 relay for model traffic. The 2026-06-25 run completed the tau2 harness and wrote artifacts; sampled task reward was `0.0`, so treat it as infrastructure proof only.
 
 Current local Qwen score anchor:
 

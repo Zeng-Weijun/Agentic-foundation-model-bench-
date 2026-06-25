@@ -93,6 +93,11 @@ WORKER_STYLE_YAML = textwrap.dedent(
         MODEL_NAME: Qwen/Qwen3-Coder-30B-A3B-Instruct
         OPENAI_BASE_URL: http://100.103.11.77:8503/v1
         OPENAI_API_KEY: EMPTY
+      dev_proxy_gpt54mini_8130:
+        MODEL_NAME: gpt-5.4-mini
+        OPENAI_BASE_URL: http://100.96.1.101:18540/v1
+        OPENAI_API_KEY: env:OPENAI_API_KEY
+        BENCH_MODEL_PROFILE: gpt54mini_8130
     benchmarks:
       - id: tau2_paper_core
         script: run_tau2_paper_core.sh
@@ -203,7 +208,27 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(plan["runs"][0]["worker_host"], "worker")
         self.assertEqual(plan["runs"][0]["model"]["profile_id"], "relay_gpt54mini_8130")
         self.assertEqual(plan["runs"][0]["params"]["NUM_TASKS"], "1")
+        self.assertIn("bash -c ", plan["runs"][0]["command"])
+        self.assertNotIn("bash -lc ", plan["runs"][0]["command"])
         self.assertIn("OPENAI_API_KEY", json.dumps(plan, sort_keys=True))
+
+    def test_model_profile_can_override_legacy_bench_profile_name(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "worker_suite.yaml"
+            suite_path.write_text(WORKER_STYLE_YAML, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(
+                config,
+                suite_path=suite_path,
+                dry_run=True,
+                model_profile_override="dev_proxy_gpt54mini_8130",
+                only={"tau2_paper_core"},
+            )
+        run = plan["runs"][0]
+        self.assertEqual(run["model"]["profile_id"], "dev_proxy_gpt54mini_8130")
+        self.assertEqual(run["runtime_env"]["BENCH_MODEL_PROFILE"], "gpt54mini_8130")
+        self.assertEqual(run["runtime_env"]["OPENAI_BASE_URL"], "http://100.96.1.101:18540/v1")
 
 
 if __name__ == "__main__":

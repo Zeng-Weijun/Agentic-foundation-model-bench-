@@ -1,0 +1,209 @@
+schema_version: agentic_bench.offline_images.v1
+generated_at: "2026-06-25"
+scope:
+  check_mode: lightweight_read_only
+  controller_host: dev
+  worker_id: worker-j9jjd
+  worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  worker_hostname: zwj2-64rlk-3469265-worker-0
+  docker_host: unix:///tmp/rl/run/docker.sock
+  docker_root_dir: /tmp/rl/data
+  rootless_security_options:
+    - name=seccomp,profile=builtin
+    - name=rootless
+  worker_network_policy: offline_or_internal_only
+  public_internet_on_worker: forbidden_for_runs
+  dev_to_worker_ssh: blocked_publickey
+  direct_local_to_worker_ssh: ok_for_inventory_only
+  mutation_policy:
+    - no_image_pull
+    - no_package_install
+    - no_benchmark_run
+    - no_model_call
+
+worker_cache_summary:
+  observed_at: "2026-06-25T20:44:42+08:00"
+  docker_system_df:
+    images: 237
+    containers: 0
+    local_volumes: 0
+    build_cache: 0
+    image_size: 133.1GB
+  image_tags:
+    total_tags: 371
+    unique_image_ids: 237
+    swebench_repo_tags: 134
+    swerex_prebuilt_tags: 237
+    terminal_bench_tags: 0
+    openhands_tags: 0
+    repozero_repoarena_tags: 0
+    tau_vita_cocoa_deepswe_tags: 0
+
+shared_asset_summary:
+  observed_from: dev
+  observed_at: "2026-06-25T20:45:02+08:00"
+  image_roots:
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images
+      status: exists_empty
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/image_migration
+      status: manifests_and_logs_only_no_tars_in_bounded_check
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.0/offline/first4/images
+      status: tar_available
+      tar_count: 1
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images
+      status: tar_manifest_available
+      tar_count: 51
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/repozero
+      status: no_image_tar_found_in_bounded_check
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/tau2-bench
+      status: no_image_tar_found_in_bounded_check
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/vitabench
+      status: no_image_tar_found_in_bounded_check
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/cocoabench
+      status: no_image_tar_found_in_bounded_check
+      tar_count: 0
+    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/deepswe
+      status: no_image_tar_found_in_bounded_check
+      tar_count: 0
+
+images:
+  - bench: swebench/swerex
+    id: swebench_verified_base_and_swerex_cache
+    required_images:
+      - swebench/sweb.eval.x86_64.*:latest
+      - swerex-prebuilt:*
+    present_on_worker:
+      status: partial_present
+      observed_tags:
+        swebench_repo_tags: 134
+        swerex_prebuilt_tags: 237
+      examples:
+        - swebench/sweb.eval.x86_64.django_1776_django-13810:latest
+        - swebench/sweb.eval.x86_64.astropy_1776_astropy-12907:latest
+        - swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-astropy-1776-astropy-12907-latest-896d8eb0c3be14d2
+    missing:
+      - full_500_verified_swebench_base_image_coverage_not_proven
+      - exact_subset_mapping_not_frozen_for_all_swebench_scaffolds
+    preload_method:
+      - freeze_exact_task_subset_image_list
+      - load_missing_tars_with_rootless_docker_load
+      - use_approved_internal_registry_only_if_available
+      - never_pull_from_worker_public_internet
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/image_migration
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/qwen-code/runs/manual_transfer_astropy_7671_20260613_220547/astropy_7671.image.tar
+    status: partial_worker_cache_preload_missing_exact_subset_before_offline_run
+
+  - bench: terminal-bench
+    id: terminal_bench_2_0_2_1_prebuilt_images
+    required_images:
+      - tb2-offline/<task>:20260425
+    present_on_worker:
+      status: absent
+      observed_tags: 0
+      examples: []
+    missing:
+      - all_terminal_bench_images_from_worker_rootless_store
+    preload_method:
+      - rootless_docker_load_from_shared_tar
+      - load_manifest_jsonl_archives_before_task_execution
+      - never_build_or_pull_on_worker
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/manifest.jsonl
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/*.tar
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.0/offline/first4/images/tb2_offline_first4_20260425.tar
+    status: shared_tar_available_worker_missing
+
+  - bench: openhands
+    id: swebench_verified_openhands_0_54_runtime
+    required_images:
+      - ghcr.io/all-hands-ai/runtime:oh_v0.54.0_twmj64zvbfnlyth0_se606gwapm7q4m98
+      - ghcr.io/all-hands-ai/runtime:oh_v0.54.*
+      - swebench/sweb.eval.x86_64.*:latest
+    present_on_worker:
+      status: base_images_partial_runtime_absent
+      observed_tags:
+        openhands_runtime_tags: 0
+        swebench_repo_tags: 134
+      examples:
+        - swebench/sweb.eval.x86_64.django_1776_django-13810:latest
+    missing:
+      - smoke_runtime_tag
+      - full_per_instance_openhands_runtime_tags
+      - full_500_verified_swebench_base_image_coverage_not_proven
+    preload_method:
+      - prebuild_runtime_images_on_staging_host_or_internal_builder
+      - save_runtime_images_to_shared_tar_with_sha256
+      - rootless_docker_load_on_worker
+      - do_not_rebuild_runtime_from_worker_public_internet
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0.tar.gz
+      - no_openhands_runtime_image_tar_found_in_bounded_check
+    status: missing_runtime_images_source_checkout_only
+
+  - bench: repozero/repoarena
+    id: repozero_py2js_repoarena_runtime
+    required_images:
+      - ghcr.io/jessezzzzz/repoarena-new:latest
+    present_on_worker:
+      status: absent
+      observed_tags: 0
+      examples: []
+    missing:
+      - ghcr.io/jessezzzzz/repoarena-new:latest
+    preload_method:
+      - save_image_from_internet_enabled_staging_host_or_internal_registry
+      - place_tar_under_shared_images_with_sha256
+      - rootless_docker_load_on_worker
+      - never_pull_from_worker_public_internet
+    source_path:
+      - no_repoarena_image_tar_found_in_bounded_check
+    status: missing_image_and_missing_shared_tar
+
+  - bench: tau/vita/cocoa
+    id: tau2_vitabench_cocoabench_python_harnesses
+    required_images: []
+    present_on_worker:
+      status: not_applicable_for_current_bounded_docker_inventory
+      observed_tags: 0
+      examples: []
+    missing:
+      - no_docker_image_requirement_identified_in_current_runner_configs
+      - python_env_wheels_datasets_still_need_offline_asset_manifest
+    preload_method:
+      - stage_python_env_wheelhouse_and_datasets_from_dev
+      - keep_worker_offline
+      - add_docker_images_here_if_future_adapter_introduces_container_tasks
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/tau2-bench
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/vitabench
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/cocoabench
+    status: no_required_docker_image_found_in_bounded_check
+
+  - bench: deepswe
+    id: deepswe_r2e_gym_docker_backend
+    required_images:
+      - R2E-Gym/SWE-Bench-Verified docker gym images
+    present_on_worker:
+      status: not_proven
+      observed_tags: 0
+      examples: []
+    missing:
+      - exact_r2e_gym_image_tag_manifest
+      - deepswe_specific_shared_image_tars
+      - rootless_host_docker_internal_smoke
+    preload_method:
+      - enumerate_exact_r2e_gym_images_from_deepswe_dataset_manifest
+      - save_or_reuse_matching_tars_from_staging_host
+      - rootless_docker_load_on_worker
+      - verify_host_docker_internal_or_internal_model_endpoint_after_images_are_loaded
+    source_path:
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/deepswe
+      - /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/deep-swe
+      - no_deepswe_image_tar_found_in_bounded_check
+    status: missing_exact_image_manifest_and_preload_source

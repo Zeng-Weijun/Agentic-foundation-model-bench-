@@ -55,7 +55,14 @@ Defaults:
 - the worker is treated as `offline_or_internal_only`;
 - `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` is injected for worker jobs;
 - model profile defaults to the 8.130 relay `gpt-5.4-mini`;
+- `dev_proxy_gpt54mini_8130` points workers at a `dev`-hosted internal proxy on `http://100.96.1.101:18540/v1`;
 - SGLang/Qwen is present as a future profile and can be selected in YAML after serving is opened.
+
+Start the `dev` relay proxy from the shared checkout on `dev`:
+
+```bash
+BENCH_PROXY_PORT=18540 scripts/start_dev_relay_proxy.sh
+```
 
 Run a narrow executable legacy smoke:
 
