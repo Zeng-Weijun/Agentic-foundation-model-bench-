@@ -117,6 +117,14 @@ Run a narrow executable legacy smoke:
 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --execute --only tau2_paper_core --output-dir /tmp/agentic_bench_tau2_smoke
 ```
 
+`--execute` writes process-level adapter status plus a normalized result artifact
+per run under `results/<bench>.result.json`. The controller `summary.json`
+keeps the historical `status`/`exit_code` fields and adds
+`execution_status`, `benchmark_status`, `score_claim_valid`, and `result_path`.
+RepoZero Py2JS has the first parser, based on native `ALL_PASS_CASES` and
+`TESTS` lines, so an adapter exit 0 can still be recorded as
+`benchmark_status: fail`.
+
 This command should be run from `dev` after `dev` can SSH to `worker-j9jjd`. At the time of the preflight, local Mac -> worker SSH works, but `dev` -> worker SSH returns `Permission denied (publickey)`.
 
 Use `--only tau2_paper_core,repozero_py2js` for a narrow smoke and `--max-concurrency N` to override suite-level benchmark concurrency. Per-benchmark worker counts remain in YAML so large runs can be reviewed before execution.

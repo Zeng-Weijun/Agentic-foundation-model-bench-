@@ -1089,6 +1089,111 @@ def _execute_image_preflights(
     return status
 
 
+def _read_text_if_present(path: str | Path) -> str:
+    try:
+        return Path(path).read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+
+
+def _repozero_benchmark_result(log_text: str) -> dict[str, Any] | None:
+    all_pass_match = re.search(r"ALL_PASS_CASES\s+(\d+)\s*/\s*(\d+)", log_text)
+    tests_match = re.search(r"TESTS\s+(\d+)\s*/\s*(\d+)", log_text)
+    if not all_pass_match and not tests_match:
+        return None
+    tasks_passed = int(all_pass_match.group(1)) if all_pass_match else 0
+    tasks_total = int(all_pass_match.group(2)) if all_pass_match else 0
+    tests_passed = int(tests_match.group(1)) if tests_match else 0
+    tests_total = int(tests_match.group(2)) if tests_match else 0
+    passed = bool(tasks_total and tasks_passed == tasks_total and (not tests_total or tests_passed == tests_total))
+    failure_note = ""
+    failure_match = re.search(r"fail_example[:=]\s*(.+)", log_text)
+    if failure_match:
+        failure_note = failure_match.group(1).strip()
+    elif not passed:
+        failure_note = "RepoZero selected case did not pass native tests."
+    return {
+        "parser_status": "parsed",
+        "status": "pass" if passed else "fail",
+        "metric": "tests_passed",
+        "passed": passed,
+        "tasks_passed": tasks_passed,
+        "tasks_total": tasks_total,
+        "tests_passed": tests_passed,
+        "tests_total": tests_total,
+        "score_claim_valid": False,
+        "failure_category": "" if passed else "agent_generation_failed",
+        "short_failure_note": failure_note,
+    }
+
+
+def _benchmark_result_for_run(run: dict[str, Any], execution_result: dict[str, Any]) -> dict[str, Any]:
+    execution_status = "pass" if execution_result.get("exit_code") == 0 else "fail"
+    if execution_status != "pass":
+        return {
+            "parser_status": "not_run",
+            "status": "infra_error",
+            "metric": "adapter_exit_code",
+            "passed": False,
+            "score_claim_valid": False,
+            "failure_category": "adapter_crash",
+            "short_failure_note": f"adapter exited {execution_result.get('exit_code')}",
+        }
+    adapter = str(run.get("adapter", run.get("bench", run.get("bench_id", "")))).lower()
+    bench_id = str(run.get("bench_id", "")).lower()
+    log_text = _read_text_if_present(str(execution_result.get("log_path", "")))
+    if "repozero" in adapter or "repozero" in bench_id:
+        parsed = _repozero_benchmark_result(log_text)
+        if parsed:
+            return parsed
+    return {
+        "parser_status": "no_parser",
+        "status": "unknown",
+        "metric": "none",
+        "passed": False,
+        "score_claim_valid": False,
+        "failure_category": "native_artifact_missing",
+        "short_failure_note": "no benchmark result parser is configured for this adapter",
+    }
+
+
+def _attach_benchmark_result(run: dict[str, Any], execution_result: dict[str, Any], output_root: Path) -> dict[str, Any]:
+    execution_status = "pass" if execution_result.get("exit_code") == 0 else "fail"
+    benchmark_result = _benchmark_result_for_run(run, execution_result)
+    result_doc = {
+        "schema_version": "agentic_bench.result.v1",
+        "suite_id": run.get("suite_id", ""),
+        "run_id": run.get("run_id", ""),
+        "bench_id": run.get("bench_id", ""),
+        "bench": run.get("bench", ""),
+        "adapter": run.get("adapter", ""),
+        "execution": {
+            "status": execution_status,
+            "adapter_status": execution_result.get("status", ""),
+            "exit_code": execution_result.get("exit_code"),
+            "log_path": execution_result.get("log_path", ""),
+            "started_at": execution_result.get("started_at", ""),
+            "ended_at": execution_result.get("ended_at", ""),
+        },
+        "benchmark_result": benchmark_result,
+    }
+    bench_id = _slug(str(run.get("bench_id", "unnamed")))
+    result_path = output_root / "results" / f"{bench_id}.result.json"
+    _write_plan(result_doc, result_path)
+    enriched = dict(execution_result)
+    enriched.update(
+        {
+            "execution_status": execution_status,
+            "benchmark_status": benchmark_result["status"],
+            "score_claim_valid": _bool(benchmark_result.get("score_claim_valid"), default=False),
+            "result_path": str(result_path),
+        }
+    )
+    if benchmark_result.get("failure_category"):
+        enriched["failure_category"] = benchmark_result["failure_category"]
+    return enriched
+
+
 def _execute_plan(plan: dict[str, Any], output_dir: str | None) -> int:
     unwired = [run["bench_id"] for run in plan["runs"] if run["adapter_status"] not in EXECUTABLE_ADAPTER_STATES]
     if unwired:
@@ -1103,7 +1208,8 @@ def _execute_plan(plan: dict[str, Any], output_dir: str | None) -> int:
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as pool:
         future_map = {pool.submit(_run_one, run, output_root): run for run in plan["runs"]}
         for future in concurrent.futures.as_completed(future_map):
-            result = future.result()
+            run = future_map[future]
+            result = _attach_benchmark_result(run, future.result(), output_root)
             results.append(result)
             if result["exit_code"] != 0:
                 status = 1

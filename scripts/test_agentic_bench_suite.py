@@ -289,6 +289,48 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(result["status"], "fail:image_preflight:7")
         self.assertFalse(adapter_marker.exists())
 
+    def test_execute_plan_parses_repozero_benchmark_status_separately(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            command = "printf 'ALL_PASS_CASES 0 / 1\nTESTS 0 / 60\nfail_example: missing generated entry file\n'"
+            plan = {
+                "suite_id": "unit_result_status",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "schema_version": "agentic_bench.run_manifest.v1",
+                        "suite_id": "unit_result_status",
+                        "run_id": "unit_result_status__repozero_py2js_smoke__model",
+                        "bench_id": "repozero_py2js_smoke",
+                        "bench": "repozero_py2js",
+                        "adapter": "repozero_py2js",
+                        "adapter_status": "wired_legacy",
+                        "command": command,
+                        "command_argv": ["bash", "-c", command],
+                    }
+                ],
+            }
+
+            rc = module._execute_plan(plan, str(root / "controller"))
+            summary = json.loads((root / "controller" / "summary.json").read_text(encoding="utf-8"))
+            result_path = Path(summary["results"][0]["result_path"])
+            parsed = json.loads(result_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(summary["results"][0]["status"], "pass")
+        self.assertEqual(summary["results"][0]["execution_status"], "pass")
+        self.assertEqual(summary["results"][0]["benchmark_status"], "fail")
+        self.assertFalse(summary["results"][0]["score_claim_valid"])
+        self.assertEqual(parsed["execution"]["status"], "pass")
+        self.assertEqual(parsed["benchmark_result"]["status"], "fail")
+        self.assertEqual(parsed["benchmark_result"]["tasks_passed"], 0)
+        self.assertEqual(parsed["benchmark_result"]["tasks_total"], 1)
+        self.assertEqual(parsed["benchmark_result"]["tests_passed"], 0)
+        self.assertEqual(parsed["benchmark_result"]["tests_total"], 60)
+        self.assertEqual(parsed["benchmark_result"]["failure_category"], "agent_generation_failed")
+
     def test_execute_plan_writes_summary_results_in_manifest_order(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:

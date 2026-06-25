@@ -49,6 +49,11 @@ Current executable smoke:
 
 This uses worker -> `dev` proxy -> 8.130 relay for model traffic. The 2026-06-25 run completed the tau2 harness and wrote artifacts; sampled task reward was `0.0`, so treat it as infrastructure proof only.
 
+Executable runs now separate adapter/process status from parsed benchmark status
+when a parser is available. The first normalized parser covers RepoZero Py2JS and
+writes `results/<bench>.result.json` plus summary fields such as
+`execution_status`, `benchmark_status`, and `score_claim_valid`.
+
 Offline Docker image preflight for the worker:
 
 ```bash
