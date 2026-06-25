@@ -1,0 +1,67 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "terminal_bench_2_1_swe_dev_cache",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 0,
+    "missing": 1,
+    "optional_missing": 0,
+    "present": 0,
+    "pulled": 0,
+    "smoke_passed": 0,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 1,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/multi-source-data-merger.tar"
+        ],
+        "sha256": "502a8078ee247e5813161e13c03d4e9c69c08da7d685d5a02b0f544f599f1ea7",
+        "sha256_actual": "502a8078ee247e5813161e13c03d4e9c69c08da7d685d5a02b0f544f599f1ea7",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/multi-source-data-merger.tar"
+        ]
+      },
+      "id": "tb2_multi_source_data_merger",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-multi-source-data-merger@sha256:33d33940e4e6207900e23fb0f4232f8607be2357d4d07062a1b3c4088dc927c2"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/multi-source-data-merger:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/multi-source-data-merger:20260425"
+        }
+      ],
+      "load_status": "failed",
+      "load_stderr": "unlinkat /openhands/micromamba/pkgs/cache: input/output error",
+      "local_refs": [
+        "tb2-offline/multi-source-data-merger:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "status": "missing"
+    }
+  ],
+  "manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/tmp/tb2_multisource_batch11_worker_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}
