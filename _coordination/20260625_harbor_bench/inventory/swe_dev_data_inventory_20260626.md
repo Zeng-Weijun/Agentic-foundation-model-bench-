@@ -90,7 +90,7 @@ After adding `--inspect-identities`, a read-only swe_dev run inspected all match
 - rows with `full_image_id`: 1320.
 - rows with non-empty `repo_digests`: 179.
 - Generated manifests from this inventory:
-  - `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`: 89 TB2 cache rows; swe_dev check reported `present=89`, `identity_mismatch=0`.
+  - `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`: 89 TB2 cache rows; 50 fallback tars now have `fallback_tar_sha256`; swe_dev check reported `present=89`, `identity_mismatch=0`, `tar_verified=50`.
   - `manifests/images/swebench_verified_django10097.yaml`: 2 SWE rows; swe_dev check reported `present=2`, `identity_mismatch=0`; worker check reported `present=1`, `identity_mismatch=1`, proving the worker eval-base tag currently aliases to the wrapper image.
 
 ## Immediate action items
