@@ -541,3 +541,79 @@ Next loop should inspect normalized result aggregation and summary status when p
 - `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
 - Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
 - Tail final ledger for sanity: rc 0.
+
+## Round 6 synthetic nonzero exit side-artifact fixtures
+
+Scope for this round:
+
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy` at pushed commit `57eb2ce`.
+- Write set: this ledger only. No production code, manifests, Docker state, benchmark execution, or model calls.
+- Method: static code reads plus temporary controller fixtures under `/tmp`, imported with `PYTHONDONTWRITEBYTECODE=1`.
+- Secret policy: synthetic fixtures used harmless local paths only; no token values were printed or written.
+
+### Confirmed behavior
+
+Current result attachment has an early nonzero-exit guard:
+
+- `_benchmark_result_for_run()` computes `execution_status` from `exit_code`, and for any nonzero value returns `parser_status=not_run`, `status=infra_error`, `metric=adapter_exit_code`, `failure_category=adapter_crash`; see `scripts/agentic_bench_suite.py:1251-1262`.
+- `_attach_benchmark_result()` calls that function before writing `agentic_bench.result.v1`; see `scripts/agentic_bench_suite.py:1281-1315`.
+- `_run_one()` only returns `bench_id`, status, `exit_code`, timestamps, and `log_path`; it does not return `BENCH_RUN_DIR`, `artifact_manifest.json`, `run.env.summary`, or `AGENTIC_RESULT_JSON` pointers; see `scripts/agentic_bench_suite.py:1017-1024`.
+
+Terminal-Bench 2.1 is the concrete side-artifact case:
+
+- The repo wrapper exports `BENCH_RUN_DIR` before launching the shared runner; see `scripts/run_terminal_bench_2_1_smoke.sh:227-253`.
+- The shared runner captures `tb_rc`, writes `artifact_manifest.json` with `artifact`, `results`, `run_metadata`, `terminal_bench_log`, and `exit_status`, then exits with `tb_rc` when nonzero; see `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh:111-141`.
+
+DeepSWE is slightly different today:
+
+- `/data/nips/bench/run_deepswe.sh:247-289` writes `artifact_manifest.json` only after `Pier result.json` exists, so many launcher crashes will still have no manifest.
+- If a DeepSWE adapter variant or partial Pier wrapper does emit a manifest/log pointer before returning nonzero, the suite has the same parser short-circuit and will ignore it.
+
+Synthetic fixture results:
+
+| Case | Side `artifact_manifest.json` existed | Log mentioned manifest | Adapter exit | Normalized parser status | Normalized benchmark status | Failure category | Result recorded manifest/run dir |
+|---|---:|---:|---:|---|---|---|---|
+| `terminal_bench_2_1` | yes | yes | 7 | `not_run` | `infra_error` | `adapter_crash` | no |
+| `deepswe` | yes | yes | 2 | `not_run` | `infra_error` | `adapter_crash` | no |
+
+COMMENT-READY for #1: Nonzero adapter exits skip existing side artifacts and collapse native infra evidence to `adapter_crash`
+severity: HIGH
+dedup: comment-on-#1; not a new issue because #1 already tracks execution-status versus benchmark-status/result parser semantics. Not #2: fixed run dirs can make this worse, but the synthetic fixture reproduces in a fresh temp dir with no staleness. Not #10: any future fix must obey #10 parser source allowlists/redaction, but this finding is about parser non-execution.
+location: `scripts/agentic_bench_suite.py:1017-1024`, `scripts/agentic_bench_suite.py:1251-1262`, `scripts/agentic_bench_suite.py:1281-1315`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh:111-141`, `/data/nips/bench/run_deepswe.sh:247-289`
+static_repro: Import `scripts/agentic_bench_suite.py` with `PYTHONDONTWRITEBYTECODE=1`; create a temp `BENCH_RUN_DIR` containing `artifact_manifest.json` and a temp controller log containing `BENCH_RUN_DIR=...`, `artifact=...`, `done: ...`, and `AGENTIC_RESULT_JSON {"artifact_manifest": ...}`; call `_attach_benchmark_result()` with `exit_code=7` for Terminal-Bench and `exit_code=2` for DeepSWE; inspect the emitted normalized result JSON.
+impact: Terminal-Bench can produce useful native infra evidence before returning nonzero, including the TB output root, `results.json`, run metadata, harness log, and exit-status sidecar. The suite discards that evidence and emits only `adapter_crash`, so aggregation cannot distinguish harness test failure, image/runtime failure, timeout, native parser failure, and wrapper crash. The same contract bug blocks DeepSWE-like partial-result adapters whenever a side artifact exists but the adapter process returns nonzero. Downstream comments and dashboards lose the exact native path needed to reproduce the failure.
+fix: Split execution failure from parser discovery. `_attach_benchmark_result()` should always run a read-only result-discovery phase that can inspect safe pointer sources even when `exit_code != 0`: explicit `AGENTIC_RESULT_JSON`, `BENCH_RUN_DIR` from the run plan, `run.env.summary`, and allowlisted `artifact_manifest.json`. Parser output should preserve `execution.status=fail` while setting `benchmark_result.status` to `infra_error`, `parse_error`, `partial`, or `fail` based on native evidence. If no pointer exists, keep `adapter_crash`; if a pointer exists but parsing fails, use `native_artifact_parse_error` or a bench-specific infra category. Do not copy raw sidecar contents; apply the #10 allowlist/redaction contract before serialization.
+evidence: Synthetic probe returned `side_manifest_exists=true` and `log_mentions_manifest=true` for both Terminal-Bench and DeepSWE cases, but both normalized results had `result_parser_status=not_run`, `benchmark_status=infra_error`, `failure_category=adapter_crash`, `result_mentions_artifact_manifest=false`, and `result_mentions_bench_run_dir=false`.
+
+DUPLICATE note for #2: This round did not open a run-dir uniqueness issue. However, because `_run_one()` does not carry `BENCH_RUN_DIR` into `execution_result`, the eventual #2 fix should also make the exact invocation run directory available to `_attach_benchmark_result()` instead of forcing parsers to recover it from logs.
+
+DUPLICATE note for #10: Nonzero-exit parsing must not broaden parser input to arbitrary `BENCH_RUN_DIR` files. Safe sources for this path are structured pointer lines, `run.env.summary`, and allowlisted `artifact_manifest.json` keys; raw env/config/command sidecars remain excluded by #10.
+
+### Round 6 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; output read before remote work, tool display truncated.
+- Attempted to read the local `superpowers:systematic-debugging` skill because this is a bug-hunt/debugging lane: rc 1, skill file path was absent; continued with the user-mandated workflow and static/synthetic probes.
+- `ssh dev 'cd <image-warmup-policy> && pwd && git rev-parse --short HEAD && git status --short && git log --oneline -5'`: rc 0; head `57eb2ce`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` and `DRIVER.md`: rc 0.
+- Inspect `_benchmark_result_for_run()`, `_attach_benchmark_result()`, and `_run_one()` with `nl`/`sed`: rc 0.
+- Search tests and suite code for `artifact_manifest`, `not_run`, `adapter_crash`, `exit_code`, and `benchmark_result`: rc 0; current tests cover RepoZero status separation and image-preflight failure but not nonzero adapter exits with side artifacts.
+- Initial Terminal-Bench shared-runner path probe used the wrong `nips2026/.../swe` prefix: rc 1; corrected path probe rc 0.
+- Broad shared-storage `find` for Terminal-Bench runners was interrupted after exceeding the bounded-read intent: rc 255; replaced by repo-indexed `git ls-files`/`rg` and direct known-path reads, rc 0.
+- Read `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh:100-141`, `scripts/run_terminal_bench_2_1_smoke.sh:200-253`, and `/data/nips/bench/run_deepswe.sh:230-289`: rc 0.
+- Synthetic `_attach_benchmark_result()` fixture for Terminal-Bench and DeepSWE nonzero exits with existing `artifact_manifest.json`: rc 0; safe JSON output is summarized above.
+- Read existing runner-results ledger tail and dedup markers with `tail`/`rg`: rc 0.
+
+## Next runner/result subdomain
+
+Next loop should inspect summary aggregation semantics when parser output is present but `execution_status=fail`: whether `summary.json` should order, count, and expose `benchmark_status` independently from process status, and whether one-command YAML semantics should allow a suite to return nonzero while still producing parseable normalized results.
+
+## Round 6 validation evidence
+
+- Append Round 6 ledger section via remote Python over SSH stdin: rc 0.
+- `git status --short && git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0 for the ledger whitespace check. Status also showed concurrent/unowned dirty files outside this lane: `scripts/agentic_bench_images.py`, `scripts/test_agentic_bench_images.py`, and untracked `scripts/__pycache__/...`; this lane did not edit or revert them.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
+- Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
+- Tail final ledger for sanity: rc 0.
+- Extra status probe with `git status --short --untracked-files=all` and `find scripts/__pycache__`: rc 0; untracked bytecode files are for image-preflight/test modules, not the suite module imported in this round.
+
+- Final status after validation also showed additional untracked `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc`, `test_agentic_bench_suite.cpython-310.pyc`, and `test_offline_images_manifest.cpython-310.pyc`. They are outside this lane's write scope and were not edited or reverted.

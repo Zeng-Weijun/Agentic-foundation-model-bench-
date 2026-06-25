@@ -392,3 +392,61 @@ DUPLICATE note: OpenHands optional missing evidence remains a #6/#8 image-readin
 ## Next loop target
 
 Next runtime/image subdomain: decide whether to promote one SWE-bench selected image by digest or fallback tar in a future bounded probe. Best candidate is not OpenHands; start with a non-OpenHands selected image after fixing the identity requirement, such as `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` plus its exact `swerex-prebuilt` variant, and verify whether the runner actually requires official base, prebuilt variant, or both.
+
+## Round 5 bounded SWE-agent django-10097 selected-image promotion plan
+
+Scope held for this loop:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first and followed the Continuous Multi-Agent Bug-Hunt lane contract.
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, head `57eb2ce`.
+- Wrote only this runtime/images ledger. No production code/manifests, no commit/push, no full eval, no Docker push/load/pull.
+- Candidate selected task: non-OpenHands SWE-agent smoke task `django__django-10097`.
+
+COMMENT-READY for #11/#6: `django__django-10097` promotion is not one tag; SWE-agent needs distinct wrapper and official eval-image identities
+severity: HIGH
+dedup: comment-on-#11 for identity mismatch; comment-on-#6 for missing required SWE image rows/artifacts
+location: `swe-bench-verified/swe-agent/config.yaml:85-98`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified.sh:116-160`, `/mnt/shared-storage-user/mineru2-shared/zengweijun/conda_envs/sweagent/lib/python3.11/site-packages/swerex/deployment/docker.py:270-309`, `manifests/images/swebench_verified.yaml:15-35`, worker rootless Docker cache
+static_repro: Use the current smoke config to select `django__django-10097`, inspect the runner and `swerex` code, then compare `docker image inspect` for `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` and `swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-django-1776-django-10097-latest-8be1c797d4885b41` on `swe_dev`, `swe_dev2`, and worker rootless Docker.
+impact: A promotion or preflight that records only the `swebench/*` tag can pass the worker while using the wrong image. On worker, both the official-looking `swebench/sweb.eval...django-10097:latest` tag and the exact `swerex-prebuilt:...8be1...` tag resolve to the wrapper image ID `sha256:3e38b9278651...`; the official base image ID `sha256:cf945d25ceb6...` is absent. This hides an eval-time blocker and makes future digest promotion non-reproducible.
+runner_need: Both roles are needed, but for different phases. The SWE-agent phase declares `deployment.image=docker.io/swebench/sweb.eval.x86_64.django_1776_django-10097:latest`, then `swerex` reuses/runs the exact wrapper `swerex-prebuilt:...8be1...` when it exists; if that wrapper is missing, `swerex` falls back to building it from the official base and fails under `pull=never` when the base is not local. The suite then runs `python -m swebench.harness.run_evaluation` by default, which uses the official `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` eval image identity.
+minimal_promotion_plan: Treat `django__django-10097` as a two-artifact image set before enabling required image preflight. Preferred digest path: from `swe_dev`, promote official eval base `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` with source ID `sha256:cf945d25ceb6...` and upstream RepoDigest `sha256:148894532806...` to a P0 digest ref such as `100.97.118.137:8555/swe-data-harness/swebench-django-10097-eval@sha256:<p0_digest>`; separately promote wrapper `swerex-prebuilt:...8be1...` with source ID `sha256:3e38b9278651...` to a P0 digest ref such as `100.97.118.137:8555/swe-data-harness/swerex-django-10097-wrapper@sha256:<p0_digest>`. Consumer verification should pull by digest, tag to the exact local refs required by the runner, inspect `Id` against the source IDs, and run a `--network none` smoke for each image before marking `image_ready`.
+fallback_tar_plan: Existing shared fallback evidence covers only the wrapper: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/swerex_images/chunks/django-1776-django_00.tar` contains `swerex-prebuilt:...8be1...`, and `django-1776-django_00.refs` line 1 lists the exact ref. It has no recorded sha256 sidecar, and it does not contain the official `swebench/sweb.eval...django-10097` base tag. A fallback-only plan therefore still needs a sha256 for the wrapper chunk and a newly exported official-base tar/sha from `swe_dev`, or it should use the P0 digest path for the official base.
+blocker: Current artifacts are insufficient for required preflight. `swe_dev2` Docker cache has neither image; P0 has no `django-10097` SWE repositories; worker has the wrapper and an alias tag that masquerades as the official base; shared tar evidence has wrapper-only coverage without sha and no official-base tar. The JSON inventory also records `digest: ""` for both refs, so live inspect evidence must be used until the inventory is regenerated with RepoDigests and full IDs.
+evidence: `swe_dev` inspect returns two distinct images: official base `swebench/sweb.eval.x86_64.django_1776_django-10097:latest` ID `sha256:cf945d25ceb69a16f1b06ccb38c5772592f6298698ca1a34b794019a4760dba7`, RepoDigest `sha256:148894532806828ddd882c6617387910c1be8d064e2496fbe7ec046a30eff6fb`, size `2811676744`; wrapper `swerex-prebuilt:...8be1...` ID `sha256:3e38b9278651320311a7f805a33f6736b4c09aac22d2ba699afc17f7d0ce0c95`, no RepoDigest, size `3252254988`. Worker rootless inspect returns both tags as the same wrapper ID `sha256:3e38b9278651320311a7f805a33f6736b4c09aac22d2ba699afc17f7d0ce0c95`, no RepoDigests. P0 `/v2/` returns HTTP 200, but catalog contains only `swe-data-harness/repo2env-pallets-click-f6299c4` and `swe-data-harness/terminal-bench-2-1-gcode-to-text`; proposed `swebench-django-10097-base` and `swerex-django-10097-wrapper` probes return HTTP 404.
+
+COMMENT-READY guard change for #11/#6:
+severity: HIGH
+dedup: comment-on-#11/#6, not a new issue
+fix: Add two required manifest rows or one grouped row with two checked identities for `swe_agent/django__django-10097`: `role: swebench_eval_base`, `local_ref: swebench/sweb.eval.x86_64.django_1776_django-10097:latest`, expected source ID/RepoDigest; and `role: swerex_wrapper`, `local_ref: swerex-prebuilt:docker-io-swebench-sweb-eval-x86-64-django-1776-django-10097-latest-8be1c797d4885b41`, expected source ID plus P0 digest or fallback tar/sha. Preflight must fail `identity_mismatch` when a `swebench/*` tag resolves to the wrapper ID, and it must not consider worker tag presence alone sufficient.
+
+### Cross-lane note
+
+Read `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` for `django__django-10097`, `swebench/sweb.eval.x86_64.django_1776_django-10097`, `swerex-prebuilt`, and `#11` references. No peer finding in that ledger contradicted this runtime/image finding; this round is a concrete #11/#6 promotion-plan addendum, not a duplicate new issue.
+
+### Round 5 command evidence
+
+- `sed -n '1,520p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md && sed -n '760,980p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` skill instructions before debugging: rc 0.
+- Memory quick search for `django__django-10097`, `swerex-prebuilt`, `image-warmup-policy`, `57eb2ce`: rc 0, no relevant memory hit used.
+- Active worktree status/HANDOFF/DRIVER read: rc 0; head `57eb2ce`; branch `feat/image-warmup-policy` initially clean against origin for this lane.
+- Read `manifests/suite.example.yaml`, SWE-agent shared entrypoint, and config selection for `django__django-10097`: rc 0 for the config/suite reads; one earlier combined SSH read ended rc 255 after printing useful suite/run.sh context, so it was replaced by bounded reads.
+- Read `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified_swe_agent.sh`: rc 0; it execs `run_swebench_verified.sh`.
+- Read `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_swebench_verified.sh`: rc 0; lines 116-160 run SWE-agent then `swebench.harness.run_evaluation` unless `SWEBENCH_SKIP_EVAL=1`.
+- Read `swerex/deployment/docker.py` lines 180-330: rc 0; wrapper reuse occurs before official-base fallback build.
+- `ssh swe_dev2 docker image inspect official-base swerex-wrapper --format ...`: rc 1; both refs missing from `swe_dev2` Docker cache.
+- `ssh swe_dev docker image inspect official-base swerex-wrapper --format ...`: rc 0; official base and wrapper are distinct images with IDs/digest listed above.
+- `ssh -CAXY ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn 'DOCKER_HOST=unix:///tmp/rl/run/docker.sock docker image inspect official-base swerex-wrapper --format ...'`: rc 0; both tags resolve to wrapper ID `sha256:3e38b9278651...`.
+- P0 read-only probe from `swe_dev2` for `/v2/`, `_catalog?n=200`, and two candidate `django-10097` tag-list URLs: rc 0; HTTP 200 for health/catalog, HTTP 404 for both candidate repos.
+- Shared tar/read-only search under `swe/swerex_images`, `agentic-foundation-model-bench`, `swe-data-harness`, and `shared_bench`: rc 0; found wrapper chunk tar(s), no direct official-base tar evidence.
+- `_all_refs.txt` grep for `django-10097`/`8be1...`: rc 0; exact wrapper ref present, no official base ref printed.
+- `tar -xOf .../django-1776-django_00.tar manifest.json | grep ...`: rc 0; manifest contains exact `swerex-prebuilt:...8be1...` only.
+- `find .../swe/swerex_images -maxdepth 3` for `django-1776-django_00` sidecars: rc 0; found `.tar`, `.refs`, `.done`, no sha256 sidecar.
+- `grep` in `manifests/images/swebench_verified.yaml`, `reports/swe_dev_docker_cache_inventory_20260626.json`, and this ledger for `django__django-10097`/image refs: rc 0.
+- Parsed `reports/swe_dev_docker_cache_inventory_20260626.json` for `django-10097`: rc 0; two refs present but both `digest` fields empty.
+- Read SWE-bench harness code pointers on `swe_dev` for namespace/instance-image construction: rc 0; default namespace is `swebench` and `TestSpec.instance_image_key` builds `swebench/sweb.eval...` refs.
+- Cross-lane grep of `hunt-runner-results.md` for this exact task/image/#11 terms: rc 0; no contradicting exact finding printed.
+- `git status --short --branch && git rev-parse --short HEAD` in worktree: rc 0; showed unrelated changes in `hunt-runner-results.md`, `scripts/test_agentic_bench_images.py`, and `scripts/__pycache__/`; this lane did not touch them.
+
+## Next loop target
+
+Next runtime/image subdomain: after #11/#6 comments are consumed, check whether any other non-OpenHands selected SWE-bench smoke task already has both a correct official base digest path and an exact wrapper tar/sha. Prefer a task whose worker `swebench/*` tag does not alias to the wrapper, otherwise keep promotion blocked until identity fields are enforced.
