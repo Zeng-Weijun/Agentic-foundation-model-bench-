@@ -1,0 +1,226 @@
+{
+  "asset_root": "manifests",
+  "bench_id": "tb2_lowrisk_batch2_worker_smoke",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 4,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 4,
+    "pulled": 0,
+    "smoke_passed": 4,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 4,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/openssl-selfsigned-cert.tar"
+        ],
+        "sha256": "d4e44d371602d9448ae56b275ceddff330fe9de586d80d36ecd625d48a016dca",
+        "sha256_actual": "d4e44d371602d9448ae56b275ceddff330fe9de586d80d36ecd625d48a016dca",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/openssl-selfsigned-cert.tar"
+        ]
+      },
+      "id": "tb2_openssl_selfsigned_cert",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-openssl-selfsigned-cert@sha256:9dcf06c7984424a3aff7573f8478f297a40224c906d232cd92ed6a0ed82e66ca"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/openssl-selfsigned-cert:20260425"
+        },
+        {
+          "actual_image_id": "sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/openssl-selfsigned-cert:20260425"
+      ],
+      "present_ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/regex-chess.tar"
+        ],
+        "sha256": "adc085cdb1756b3281a4683c687a45220dc3045a0b316007df5deb8e646c6173",
+        "sha256_actual": "adc085cdb1756b3281a4683c687a45220dc3045a0b316007df5deb8e646c6173",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/regex-chess.tar"
+        ]
+      },
+      "id": "tb2_regex_chess",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-chess@sha256:900fadda5d2c081be3097cb331bc491f6383a5b68d18b2c560b0999575b3f1ed"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/regex-chess:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/regex-chess:20260425"
+        },
+        {
+          "actual_image_id": "sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/regex-chess:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/regex-chess:20260425"
+      ],
+      "present_ref": "tb2-offline/regex-chess:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/schemelike-metacircular-eval.tar"
+        ],
+        "sha256": "d36d1a0b230542535029a04bc30014aee4c0342c2bfedf50d7e19ce681b8af80",
+        "sha256_actual": "d36d1a0b230542535029a04bc30014aee4c0342c2bfedf50d7e19ce681b8af80",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/schemelike-metacircular-eval.tar"
+        ]
+      },
+      "id": "tb2_schemelike_metacircular_eval",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval@sha256:bb7876fab3240356105f47555f4486229936a4ec70e7df21f40a6b55ad6ad045"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/schemelike-metacircular-eval:20260425"
+        },
+        {
+          "actual_image_id": "sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/schemelike-metacircular-eval:20260425"
+      ],
+      "present_ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    },
+    {
+      "expected_image_ids": [
+        "sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sqlite-db-truncate.tar"
+        ],
+        "sha256": "f6888dfb049cbfa40844b8afc88db76c717ea4378ababdb3b390751369a1f622",
+        "sha256_actual": "f6888dfb049cbfa40844b8afc88db76c717ea4378ababdb3b390751369a1f622",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sqlite-db-truncate.tar"
+        ]
+      },
+      "id": "tb2_sqlite_db_truncate",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-db-truncate@sha256:557afac745d304a2148376470df50b2f8ae1c9543895fcf3ec45240b80beaef5"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/sqlite-db-truncate:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/sqlite-db-truncate:20260425"
+        },
+        {
+          "actual_image_id": "sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/sqlite-db-truncate:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/sqlite-db-truncate:20260425"
+      ],
+      "present_ref": "tb2-offline/sqlite-db-truncate:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "/tmp/tb2_lowrisk_batch2_image_manifest.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

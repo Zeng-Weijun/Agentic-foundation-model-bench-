@@ -1,0 +1,5 @@
+docker_pull_ref=100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval@sha256:bb7876fab3240356105f47555f4486229936a4ec70e7df21f40a6b55ad6ad045
+host_curl_registry=ok
+route=100.97.118.137 dev eth0 src 100.102.19.118 uid 0 
+docker_pull_stdout=
+docker_pull_stderr=Error response from daemon: Get "https://100.97.118.137:8555/v2/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval/manifests/sha256:bb7876fab3240356105f47555f4486229936a4ec70e7df21f40a6b55ad6ad045": dial tcp 100.97.118.137:8555: connect: network is unreachable 

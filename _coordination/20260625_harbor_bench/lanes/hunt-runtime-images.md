@@ -934,3 +934,132 @@ Commands/evidence:
 - SWE django10097 post-fix manifest sanity check: rc 0; both SWE rows now have fallback sha.
 
 Next runtime/image subdomain: after the first five TB2 fallback artifacts are materialized and manifest rows updated by the implementation lane, audit that lint-registry drops from 39 to 34 and then select the next low-risk generic batch before touching service/qemu/torch/large rows.
+
+## Round 12 - TB2 next batch after protein staging (2026-06-26)
+
+Scope: audit only. No Docker save, push, load, run, or benchmark/model execution was performed in this lane.
+
+COMMENT-READY for #6/#8: after `protein-assembly` landed, the next TB2 transport batch should use fresh Docker-inspect identities and the new verified-fallback lint gate
+
+dedup: comment-on-#6 for TB2 transport population and static promotion gating. comment-on-#8 only for the warning that worker-j9jjd should not rely on P0-only transport until digest pull/run smoke stays reliable. Not #11: no SWE image identity issue is inspected in this round. No new ISSUE-READY block.
+
+Current gate state:
+- Observed branch/head: `feat/image-warmup-policy` at `65448e4`, with `12fe709 Verify fallback files in registry lint` in history.
+- `lint-registry --policy audit_manifest_for_tb2_full_image_warmup --require-offline-transport --json` returns rc 1 with `images=89`, `required_with_digest_ref=1`, `required_with_fallback_sha=51`, and `required_without_offline_transport=38`.
+- Adding `--verify-fallback-files` also returns rc 1 with the same 38 missing rows, but now reports `fallback_tar_verified=51`, `fallback_tar_missing=0`, and `fallback_tar_mismatch=0`.
+- Acceptance impact: `--verify-fallback-files` does not change the current missing count because the 51 configured fallback rows all verify and the remaining 38 have no transport fields. It does change the promotion contract: a row with only a stale checksum no longer counts as offline transport unless the tar exists and hashes to the manifest value. The batch update should be accepted only after the verified command drops `required_without_offline_transport` from 38 to 30.
+
+Verified protein staging:
+- Current manifest row `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:812-824`, TSV `_coordination/20260625_harbor_bench/inventory/tb2_p0_protein_assembly_20260626.tsv`, Docker inspect, and fallback tar hash all agree.
+- Protein source image ID: `sha256:c517a0dd99f0991faa3f68ae50943b49a55ca7604abbac6b7d824ed4a71bcd6f`.
+- Protein P0 digest ref: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-protein-assembly@sha256:1144842bb39d1bf67d8925879202101caf6250a8a7a83fcf1e582496991004e9`.
+- Protein fallback tar: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/protein-assembly.tar`, size `185604608`, sha256 `97176112820eb4c1b079878de2cad0aeefa1fd4661da51a42431ac7ce80fa5c1`.
+- Caution: older ledger command drafts are stale and should not be reused. Round 10 line 718 has a typo in protein's full source ID, and lines 734/736 have stale `sparql-university`/`sqlite-with-gcov` IDs. Use the fresh inspect identities below. The current staged protein artifacts are not inconsistent.
+
+### Next batch recommendation
+
+Pick these 8 rows next. They exclude staged protein and skip service-first rows such as `nginx-request-logging` even though that image is small, because later runtime smoke may exercise service assumptions. Total inspected source size is `1870913597` bytes.
+
+| order | row | manifest evidence | local ref | exact Docker inspect source ID | inspect size bytes | inventory size |
+| --- | --- | --- | --- | --- | ---: | --- |
+| 1 | `schemelike-metacircular-eval` | `terminal_bench_2_1_swe_dev_cache.yaml:995-1000` | `tb2-offline/schemelike-metacircular-eval:20260425` | `sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec` | 179580792 | 180MB |
+| 2 | `regex-chess` | `terminal_bench_2_1_swe_dev_cache.yaml:923-928` | `tb2-offline/regex-chess:20260425` | `sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d` | 196599444 | 197MB |
+| 3 | `rstan-to-pystan` | `terminal_bench_2_1_swe_dev_cache.yaml:959-964` | `tb2-offline/rstan-to-pystan:20260425` | `sha256:83b98640ec92a139654122401f56d4f7471d0282ebf006154c406f38ea468eeb` | 205657034 | 206MB |
+| 4 | `sqlite-db-truncate` | `terminal_bench_2_1_swe_dev_cache.yaml:1019-1024` | `tb2-offline/sqlite-db-truncate:20260425` | `sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749` | 229124484 | 229MB |
+| 5 | `openssl-selfsigned-cert` | `terminal_bench_2_1_swe_dev_cache.yaml:716-721` | `tb2-offline/openssl-selfsigned-cert:20260425` | `sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570` | 229125027 | 229MB |
+| 6 | `raman-fitting` | `terminal_bench_2_1_swe_dev_cache.yaml:911-916` | `tb2-offline/raman-fitting:20260425` | `sha256:3ed67c59f865f29e6c9693cf36912da16e978c101e611face59fba70f0afe0a4` | 229209193 | 229MB |
+| 7 | `regex-log` | `terminal_bench_2_1_swe_dev_cache.yaml:935-940` | `tb2-offline/regex-log:20260425` | `sha256:5d9eae30a8a3d2a2853c023bd1f976528c4d7f7a825d926206648aa52d60606e` | 298200058 | 298MB |
+| 8 | `sparql-university` | `terminal_bench_2_1_swe_dev_cache.yaml:1007-1012` | `tb2-offline/sparql-university:20260425` | `sha256:b7c23a59ae22a6ba1f724cdd69b5572d850ba3220f662bed4674bd7a23fafec8` | 303417565 | 303MB |
+
+### Fallback tar+sha commands for implementation lane
+
+These commands are proposed for the implementation lane, not executed here. They intentionally verify source image identity before writing each tar.
+
+```bash
+set -euo pipefail
+TB_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2
+mkdir -p "$TB_ROOT"
+cat >/tmp/tb2_round12_next_batch.tsv <<'EOF'
+schemelike-metacircular-eval tb2-offline/schemelike-metacircular-eval:20260425 sha256:5b6101065623ccb7c6c1e211e51c2e6bb87444cef56e4de18b22f37d0a3a20ec
+regex-chess tb2-offline/regex-chess:20260425 sha256:f30f70838516293594a31f2b7c33b02a3ceb0a75c29bbab922f024531c6a787d
+rstan-to-pystan tb2-offline/rstan-to-pystan:20260425 sha256:83b98640ec92a139654122401f56d4f7471d0282ebf006154c406f38ea468eeb
+sqlite-db-truncate tb2-offline/sqlite-db-truncate:20260425 sha256:62dc8a21604c99b5c8a00d0f45575072e413625e4265bf6000ecca3bd0206749
+openssl-selfsigned-cert tb2-offline/openssl-selfsigned-cert:20260425 sha256:81d7d202b4706d4c8f726b38c55eedf6cb52c1a8553324cff5b3d56ab379d570
+raman-fitting tb2-offline/raman-fitting:20260425 sha256:3ed67c59f865f29e6c9693cf36912da16e978c101e611face59fba70f0afe0a4
+regex-log tb2-offline/regex-log:20260425 sha256:5d9eae30a8a3d2a2853c023bd1f976528c4d7f7a825d926206648aa52d60606e
+sparql-university tb2-offline/sparql-university:20260425 sha256:b7c23a59ae22a6ba1f724cdd69b5572d850ba3220f662bed4674bd7a23fafec8
+EOF
+while read -r slug ref expected_id; do
+  out="$TB_ROOT/${slug}.tar"
+  tmp="$out.tmp.$$"
+  actual_id=$(docker image inspect --format '{{.Id}}' "$ref")
+  test "$actual_id" = "$expected_id"
+  test ! -e "$out"
+  docker save -o "$tmp" "$ref"
+  sha256sum "$tmp" > "$tmp.sha256"
+  mv "$tmp" "$out"
+  mv "$tmp.sha256" "$out.sha256"
+done </tmp/tb2_round12_next_batch.tsv
+```
+
+After manifest update, run the verified promotion gate:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py lint-registry \
+  --registry manifests/bench_registry.yaml \
+  --asset-root manifests \
+  --policy audit_manifest_for_tb2_full_image_warmup \
+  --require-offline-transport \
+  --verify-fallback-files \
+  --json
+```
+
+Expected after exactly these 8 rows are materialized and manifest-updated: rc 1 until all TB2 rows are populated, but `required_without_offline_transport` should drop from `38` to `30`, `fallback_tar_verified` should rise from `51` to `59`, and `fallback_tar_missing/fallback_tar_mismatch` should remain `0`.
+
+### P0 digest publication commands for implementation lane
+
+Use the current protein naming convention (`terminal-bench-2-1-${slug}`), not the older `tb2-${slug}` sketch. Keep fallback tar+sha even if P0 succeeds, until worker-j9jjd digest pull+run smoke is reliable.
+
+```bash
+set -euo pipefail
+REG=100.97.118.137:8555
+: >/tmp/tb2_round12_next_batch_p0_digests.tsv
+while read -r slug ref expected_id; do
+  actual_id=$(docker image inspect --format '{{.Id}}' "$ref")
+  test "$actual_id" = "$expected_id"
+  tag="$REG/swe-data-harness/terminal-bench-2-1-${slug}:20260425"
+  docker tag "$ref" "$tag"
+  docker push "$tag"
+  digest_ref=$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$tag" | grep "^$REG/swe-data-harness/terminal-bench-2-1-${slug}@sha256:" | tail -n 1)
+  test -n "$digest_ref"
+  printf '%s\t%s\t%s\t%s\n' "$slug" "$ref" "$expected_id" "$digest_ref" >>/tmp/tb2_round12_next_batch_p0_digests.tsv
+done </tmp/tb2_round12_next_batch.tsv
+```
+
+### Risk notes for later rows
+
+- Large write/push risk remains deferred: `pytorch-model-recovery(19.2GB)`, `torch-pipeline-parallelism(11.3GB)`, `torch-tensor-parallelism(11GB)`, `multi-source-data-merger(6.2GB)`.
+- Special runtime smoke should be isolated: `qemu-alpine-ssh`, `qemu-startup`, all torch/pytorch rows, and service rows `nginx-request-logging`/`pypi-server`.
+- `vulnerable-secret` can be saved/tagged like any other Docker image, but do not use it as the first runtime-log smoke because task-level output may invite unsafe log inspection.
+- `sqlite-with-gcov` is the next low-risk alternate after the selected batch, with fresh inspect ID `sha256:3a0432d8b6977202c755a01b0d3050ef8908f4d6a0c4337c8a13e2925b76d9fa`; ignore the stale Round 10 typo.
+
+Cross-lane check:
+- `hunt-runner-results.md` has no contradictory TB2 transport finding. Its current image-related comments focus on preserving fallback-load/image-check provenance and parser classification after preflight failures. That is compatible with this #6/#8 transport-population follow-up.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions: rc 0.
+- Memory quick search for TB2/lint-registry/image-warmup terms: rc 0, no relevant hits used.
+- Remote status/head/file check on `swe_dev`: rc 0; observed branch/head `feat/image-warmup-policy` / `65448e4`, with `12fe709` in history.
+- Read `scripts/agentic_bench_images.py` lint-registry/fallback verification lines, tests, and README promotion-gate docs: rc 0.
+- `lint-registry --help`: rc 0.
+- Registry policy lookup for TB2 manifest: rc 0; selected policy is `audit_manifest_for_tb2_full_image_warmup`.
+- TB2 lint without verify and with `--verify-fallback-files`: command outer rc 0, inner lint rc values `RC_LINT_NOVERIFY=1`, `RC_LINT_VERIFY=1`, parse rc 0; counts quoted above.
+- Docker inspect over all 38 no-transport TB2 rows: rc 0; all inspected image IDs matched manifest `source_image_id`.
+- Manifest/inventory line grep for selected rows and protein: rc 0.
+- Protein manifest/TSV/fallback tar hash/tar manifest probe: rc 0.
+- Protein local Docker inspect: rc 0; P0 digest ref is present in Docker metadata.
+- Dedup grep over runtime and runner ledgers for #6/#8/#11/TB2 transport terms: rc 0.
+- Stale ID grep for old draft commands and fresh `sparql-university`/`sqlite-with-gcov` identities: rc 0.
+
+Next runtime/image subdomain: after batch2 artifacts and manifest rows are materialized by the implementation lane, audit the verified lint drop from 38 to 30 and then pick the next batch from `sqlite-with-gcov`, `password-recovery`, `path-tracing-reverse`, `query-optimize`, and `sanitize-git-repo`, before service/qemu/torch/large rows.

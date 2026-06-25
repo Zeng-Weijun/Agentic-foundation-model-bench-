@@ -1108,3 +1108,362 @@ Next runner/results subdomain: specify the exact JSON parser for image-check std
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
 - `git diff --stat --` and `git diff --numstat --` for this ledger after the Round 11 append: rc 0, `85 insertions` before this validation block.
+
+## Round 12 image-preflight provenance fixture-ready tests
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Active branch/head observed: `feat/image-warmup-policy` / `65448e4 Record verify fallback follow-up dispatch`; recent history includes `12fe709 Verify fallback files in registry lint`.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker, benchmark execution, or model requests.
+- Focus: turn the image-preflight provenance gap into fixture-ready parser tests for identity-mismatch repaired by fallback load and image smoke failure.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: this is test-spec detail for #12 result provenance, #6 image warmup evidence, #11 image identity evidence, #10 redaction, and #1 execution-vs-benchmark split for preflight-blocked runs. It is not a new issue because Round 11 already confirmed checker evidence exists and the suite/result layer drops it. The previous static-lint fallback-file caveat is now superseded by `--verify-fallback-files` in `12fe709` and should remain a closed #6 follow-up, not a reopened finding.
+
+Static root-cause evidence refreshed:
+
+- `scripts/agentic_bench_images.py:328-411` now supports `verify_fallback_files`; when enabled, lint counts `fallback_tar_verified`, `fallback_tar_missing`, and `fallback_tar_mismatch`, and treats missing/mismatched fallback files as missing offline transport.
+- `scripts/agentic_bench_images.py:600-613` records `smoke_status` and increments `counts.errors` on smoke failure, but also stores raw `smoke_stderr` in the native checker JSON. That makes a parser allowlist mandatory; raw checker JSON must not be copied wholesale into normalized results.
+- `scripts/agentic_bench_images.py:628-643` emits the rich `agentic_bench.image_check.v1` payload with manifest, bench id, mode, counts, and per-image records.
+- `scripts/agentic_bench_images.py:1022-1029` returns rc `2` for checker `errors`, `tar_mismatch`, or `identity_mismatch`, rc `1` for `missing` or `tar_missing`, and rc `1` for optional missing only when requested. The checker itself does not fake-green smoke failure.
+- `scripts/agentic_bench_suite.py:1027-1057` streams checker stdout/stderr into preflight logs and writes only cached command rc for deduped waiters.
+- `scripts/agentic_bench_suite.py:1079-1139` records only coarse per-bench preflight `status`, `exit_code`, `fatal`, timestamps, and `log_path`.
+- `scripts/agentic_bench_suite.py:1198-1209` writes `agentic_bench.image_preflight_summary.v1` with coarse pass/fail counts and result rows; it does not parse or promote `agentic_bench.image_check.v1` from logs.
+- `scripts/agentic_bench_suite.py:1251-1262` still short-circuits any nonzero execution into `parser_status=not_run`, `status=infra_error`, `failure_category=adapter_crash`; this is the existing #1 interaction for required image-preflight failures.
+- `scripts/agentic_bench_suite.py:1281-1300` writes `agentic_bench.result.v1` without `source`, `image_preflight`, `image_preflight_summary_path`, or image-check provenance.
+- Existing tests cover required preflight blocking (`scripts/test_agentic_bench_suite.py:404-428`), preflight-only summary output (`scripts/test_agentic_bench_suite.py:502-547`), transport concurrency/dedupe (`scripts/test_agentic_bench_suite.py:548-688`), and fallback-file lint verification (`scripts/test_agentic_bench_images.py:503-543`, `scripts/test_agentic_bench_images.py:546+`). They do not yet assert checker-JSON promotion into summary/result artifacts.
+
+COMMENT-READY fixture contract for #12/#6/#11/#10/#1:
+
+| Fixture | Minimal files | Purpose | Expected parser status | Dedup |
+|---|---|---|---|---|
+| `tests/fixtures/image_preflight/identity_mismatch_repaired_by_fallback/` | `preflight.log`, `checker.json`, `run_manifest.json`, `expected.image_preflight_summary.subset.json`, `expected.result.subset.json` | Proves a stale/wrong local image identity was repaired by verified fallback load, then smoke passed, and this is visible in structured artifacts. | `image_check_parse_status=parsed`, `image_preflight.status=pass`, `benchmark_result` unchanged by image preflight. | #12 provenance with #6/#11 evidence; not a new issue. |
+| `tests/fixtures/image_preflight/smoke_failure/` | `preflight.log`, `checker.json`, `run_manifest.json`, `expected.image_preflight_summary.subset.json`, `expected.result.subset.json` | Proves a required image smoke failure blocks execution while preserving checker evidence and redacting raw stderr. | `image_check_parse_status=parsed`, `image_preflight.status=fail`, `benchmark_result.status=infra_blocked`, `failure_category=image_preflight_failed`. | #1 execution/benchmark split plus #10 redaction; not a new issue. |
+
+### Fixture A: identity mismatch repaired by fallback load
+
+`preflight.log` should contain harmless wrapper text plus exactly one JSON object whose `schema_version` is `agentic_bench.image_check.v1`. The parser should locate the JSON object even if command lines or status text appear before/after it.
+
+Minimal `checker.json` content:
+
+```json
+{
+  "schema_version": "agentic_bench.image_check.v1",
+  "manifest": "manifests/images/unit_identity_repair.yaml",
+  "bench_id": "unit_identity_repair",
+  "asset_root": "/tmp/agentic-bench-fixture/assets",
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "mode": {
+    "skip_docker": false,
+    "allow_pull": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "fail_on_optional_missing": false
+  },
+  "counts": {
+    "present": 1,
+    "missing": 0,
+    "unchecked": 0,
+    "errors": 0,
+    "tar_verified": 1,
+    "tar_missing": 0,
+    "tar_mismatch": 0,
+    "loaded": 1,
+    "pulled": 0,
+    "smoke_passed": 1,
+    "optional_missing": 0,
+    "identity_mismatch": 0
+  },
+  "images": [
+    {
+      "id": "unit_eval_base",
+      "role": "swebench_eval_base",
+      "required": true,
+      "local_refs": ["unit/eval-base:latest"],
+      "image_refs": [],
+      "expected_image_ids": ["sha256:expectedbase"],
+      "expected_repo_digests": ["unit/eval-base@sha256:expectedrepo"],
+      "inspect_attempts": [
+        {
+          "ref": "unit/eval-base:latest",
+          "returncode": 0,
+          "identity_status": "mismatch",
+          "actual_image_id": "sha256:wrongwrapper",
+          "actual_repo_digests": ["unit/wrapper@sha256:wrongrepo"],
+          "expected_image_ids": ["sha256:expectedbase"],
+          "expected_repo_digests": ["unit/eval-base@sha256:expectedrepo"]
+        },
+        {
+          "ref": "unit/eval-base:latest",
+          "returncode": 0,
+          "identity_status": "match",
+          "actual_image_id": "sha256:expectedbase",
+          "actual_repo_digests": ["unit/eval-base@sha256:expectedrepo"],
+          "expected_image_ids": ["sha256:expectedbase"],
+          "expected_repo_digests": ["unit/eval-base@sha256:expectedrepo"]
+        }
+      ],
+      "fallback": {
+        "tar_paths": ["/tmp/agentic-bench-fixture/assets/images/unit/eval-base.tar"],
+        "present_paths": ["/tmp/agentic-bench-fixture/assets/images/unit/eval-base.tar"],
+        "missing_paths": [],
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sha256_actual": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sha256_status": "match"
+      },
+      "status": "present",
+      "load_status": "loaded",
+      "present_ref": "unit/eval-base:latest",
+      "smoke_status": "passed"
+    }
+  ]
+}
+```
+
+Expected `image_preflight_summary.json` subset after parsing:
+
+```json
+{
+  "schema_version": "agentic_bench.image_preflight_summary.v1",
+  "status": 0,
+  "counts": {"pass": 1, "fail": 0, "optional_fail": 0},
+  "results": [
+    {
+      "bench_id": "unit_identity_repair",
+      "status": "pass",
+      "exit_code": 0,
+      "fatal": false,
+      "policy": "required",
+      "required": true,
+      "image_check_parse_status": "parsed",
+      "image_check_counts": {
+        "present": 1,
+        "errors": 0,
+        "tar_verified": 1,
+        "loaded": 1,
+        "smoke_passed": 1,
+        "identity_mismatch": 0
+      },
+      "image_checks": [
+        {
+          "command_index": 0,
+          "schema_version": "agentic_bench.image_check.v1",
+          "manifest": "manifests/images/unit_identity_repair.yaml",
+          "bench_id": "unit_identity_repair",
+          "parse_status": "parsed",
+          "counts": {"tar_verified": 1, "loaded": 1, "smoke_passed": 1, "identity_mismatch": 0},
+          "images": [
+            {
+              "id": "unit_eval_base",
+              "role": "swebench_eval_base",
+              "required": true,
+              "status": "present",
+              "present_ref": "unit/eval-base:latest",
+              "load_status": "loaded",
+              "smoke_status": "passed",
+              "fallback": {
+                "sha256_status": "match",
+                "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "tar_basenames": ["eval-base.tar"]
+              },
+              "inspect_attempts": [
+                {"ref": "unit/eval-base:latest", "returncode": 0, "identity_status": "mismatch", "actual_image_id": "sha256:wrongwrapper", "expected_image_ids": ["sha256:expectedbase"]},
+                {"ref": "unit/eval-base:latest", "returncode": 0, "identity_status": "match", "actual_image_id": "sha256:expectedbase", "expected_image_ids": ["sha256:expectedbase"]}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Expected `agentic_bench.result.v1` subset for a full execute run that passed preflight and then ran the adapter:
+
+```json
+{
+  "schema_version": "agentic_bench.result.v1",
+  "bench_id": "unit_identity_repair",
+  "execution": {"status": "pass", "adapter_status": "pass", "exit_code": 0},
+  "source": {
+    "image_preflight_summary_path": "controller/image_preflight_summary.json",
+    "image_preflight_log_path": "controller/logs/unit_identity_repair.image_preflight.log",
+    "image_manifest_paths": ["manifests/images/unit_identity_repair.yaml"],
+    "image_check_artifacts": [
+      {"role": "image_check_stdout_json", "status": "parsed", "path": "controller/logs/unit_identity_repair.image_preflight.log", "json_pointer": "$.results[0].image_checks[0]", "read_policy": "allowlist_json"}
+    ]
+  },
+  "image_preflight": {
+    "status": "pass",
+    "exit_code": 0,
+    "required": true,
+    "policy": "required",
+    "parse_status": "parsed",
+    "counts": {"tar_verified": 1, "loaded": 1, "smoke_passed": 1, "identity_mismatch": 0, "errors": 0},
+    "images": [
+      {"id": "unit_eval_base", "status": "present", "load_status": "loaded", "smoke_status": "passed", "fallback": {"sha256_status": "match"}}
+    ]
+  }
+}
+```
+
+Exact assertions for Fixture A:
+
+- `summary.status == 0`; `summary.results[0].status == "pass"`; `summary.results[0].image_check_parse_status == "parsed"`.
+- `summary.results[0].image_check_counts.loaded == 1`, `tar_verified == 1`, `smoke_passed == 1`, `identity_mismatch == 0`, and `errors == 0`.
+- `summary.results[0].image_checks[0].images[0].inspect_attempts[*].identity_status == ["mismatch", "match"]`.
+- `result.image_preflight.status == "pass"` and `result.source.image_check_artifacts[0].read_policy == "allowlist_json"`.
+- Serialized summary/result do not contain raw Docker load stdout/stderr or full command text; only allowlisted refs, ids, digest/status fields, and safe path basenames are present.
+
+### Fixture B: smoke failure with redacted stderr
+
+Minimal `checker.json` content should be the same outer shape, but with one present image whose smoke fails:
+
+```json
+{
+  "schema_version": "agentic_bench.image_check.v1",
+  "manifest": "manifests/images/unit_smoke_failure.yaml",
+  "bench_id": "unit_smoke_failure",
+  "asset_root": "/tmp/agentic-bench-fixture/assets",
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "mode": {"skip_docker": false, "allow_pull": false, "load_fallback": false, "run_smoke": true, "fail_on_optional_missing": false},
+  "counts": {"present": 1, "missing": 0, "unchecked": 0, "errors": 1, "tar_verified": 0, "tar_missing": 0, "tar_mismatch": 0, "loaded": 0, "pulled": 0, "smoke_passed": 0, "optional_missing": 0, "identity_mismatch": 0},
+  "images": [
+    {
+      "id": "unit_smoke_image",
+      "role": "terminal_bench_task_image",
+      "required": true,
+      "local_refs": ["unit/smoke:latest"],
+      "inspect_attempts": [{"ref": "unit/smoke:latest", "returncode": 0, "identity_status": "not_configured", "actual_image_id": "sha256:smokeimage"}],
+      "status": "present",
+      "present_ref": "unit/smoke:latest",
+      "smoke_status": "failed",
+      "smoke_stderr": "unit smoke failed; AUTH_SENTINEL_SHOULD_NOT_APPEAR"
+    }
+  ]
+}
+```
+
+Expected `image_preflight_summary.json` subset after parsing:
+
+```json
+{
+  "schema_version": "agentic_bench.image_preflight_summary.v1",
+  "status": 1,
+  "counts": {"pass": 0, "fail": 1, "optional_fail": 0},
+  "results": [
+    {
+      "bench_id": "unit_smoke_failure",
+      "status": "fail:2",
+      "exit_code": 2,
+      "fatal": true,
+      "policy": "required",
+      "required": true,
+      "image_check_parse_status": "parsed",
+      "image_check_counts": {"present": 1, "errors": 1, "smoke_passed": 0},
+      "image_checks": [
+        {
+          "command_index": 0,
+          "schema_version": "agentic_bench.image_check.v1",
+          "manifest": "manifests/images/unit_smoke_failure.yaml",
+          "bench_id": "unit_smoke_failure",
+          "parse_status": "parsed",
+          "counts": {"present": 1, "errors": 1, "smoke_passed": 0},
+          "images": [
+            {"id": "unit_smoke_image", "role": "terminal_bench_task_image", "required": true, "status": "present", "present_ref": "unit/smoke:latest", "smoke_status": "failed", "smoke_stderr_redacted": true}
+          ],
+          "redactions": [
+            {"path": "images[0].smoke_stderr", "reason": "raw_smoke_stderr_excluded"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Expected `agentic_bench.result.v1` subset for a full execute run blocked by required preflight:
+
+```json
+{
+  "schema_version": "agentic_bench.result.v1",
+  "bench_id": "unit_smoke_failure",
+  "execution": {"status": "fail", "adapter_status": "fail:image_preflight:2", "exit_code": 2},
+  "benchmark_result": {"parser_status": "not_run", "status": "infra_blocked", "metric": "image_preflight", "passed": false, "score_claim_valid": false, "failure_category": "image_preflight_failed"},
+  "source": {
+    "image_preflight_summary_path": "controller/image_preflight_summary.json",
+    "image_preflight_log_path": "controller/logs/unit_smoke_failure.image_preflight.log",
+    "image_manifest_paths": ["manifests/images/unit_smoke_failure.yaml"],
+    "native_artifacts": [],
+    "image_check_artifacts": [
+      {"role": "image_check_stdout_json", "status": "parsed", "path": "controller/logs/unit_smoke_failure.image_preflight.log", "json_pointer": "$.results[0].image_checks[0]", "read_policy": "allowlist_json"}
+    ]
+  },
+  "image_preflight": {
+    "status": "fail",
+    "exit_code": 2,
+    "required": true,
+    "policy": "required",
+    "parse_status": "parsed",
+    "counts": {"present": 1, "errors": 1, "smoke_passed": 0},
+    "images": [{"id": "unit_smoke_image", "status": "present", "smoke_status": "failed", "smoke_stderr_redacted": true}],
+    "redactions": [{"path": "images[0].smoke_stderr", "reason": "raw_smoke_stderr_excluded"}]
+  }
+}
+```
+
+Exact assertions for Fixture B:
+
+- `summary.status == 1`; `summary.results[0].status == "fail:2"`; `summary.results[0].fatal is True`.
+- `summary.results[0].image_check_parse_status == "parsed"`; `image_check_counts.errors == 1`; `image_check_counts.smoke_passed == 0`.
+- `result.execution.status == "fail"` and `result.execution.adapter_status == "fail:image_preflight:2"`.
+- `result.benchmark_result.status == "infra_blocked"`; `failure_category == "image_preflight_failed"`; `score_claim_valid is False`.
+- `result.image_preflight.images[0].smoke_status == "failed"` and `smoke_stderr_redacted is True`.
+- Serialized summary/result must not contain `AUTH_SENTINEL_SHOULD_NOT_APPEAR`, raw `smoke_stderr`, raw command lines, raw Docker stderr/stdout, raw env values, or any adapter/model transcript text. It may contain the safe redaction key path `images[0].smoke_stderr`.
+
+Parser behavior required by the fixtures:
+
+- Parse only JSON objects with `schema_version == "agentic_bench.image_check.v1"` from preflight logs; ignore command/status lines and malformed surrounding text.
+- If multiple preflight commands exist, preserve all parsed checker payloads as `image_checks[]` with stable `command_index` and aggregate a bounded `image_check_counts` object at the result row level.
+- Treat raw checker fields as untrusted native artifacts. Promote only allowlisted scalar/list fields: schema version, manifest, bench id, mode booleans, counts, image id/role/required/status/present ref, load/pull/smoke statuses, fallback sha status/sha/tar basename, and inspect identity status/id fields.
+- Never copy raw `smoke_stderr`, `load_stderr`, `pull_stderr`, full command strings, env values, or stdout/stderr bodies into `image_preflight_summary.json` or `agentic_bench.result.v1`.
+- A required preflight failure should not become generic `adapter_crash`. It should keep process status in `execution`, classify benchmark status as `infra_blocked`, and preserve parsed image-check evidence under `image_preflight` and `source.image_check_artifacts[]`.
+- A passing preflight that repaired identity through fallback load should be distinguishable from an image that was already correct: the normalized output must preserve at least `loaded=1`, `fallback.sha256_status=match`, and the `inspect_attempts` identity progression.
+
+Minimal tests to add before implementation:
+
+1. `test_image_preflight_log_parser_extracts_identity_repair_check_json`: load Fixture A `preflight.log`, assert exactly one parsed check and identity statuses `["mismatch", "match"]`.
+2. `test_image_preflight_summary_promotes_identity_repair_fields`: synthesize `_execute_image_preflights()` output from Fixture A, assert the expected summary subset above while preserving existing coarse fields.
+3. `test_result_artifact_includes_image_preflight_provenance_on_pass`: attach a synthetic passing execution result plus Fixture A summary, assert `source.image_preflight_summary_path`, `source.image_check_artifacts[]`, and `image_preflight.counts.loaded == 1`.
+4. `test_image_preflight_log_parser_redacts_smoke_stderr`: load Fixture B, assert `smoke_stderr` is excluded and only `smoke_stderr_redacted` plus a redaction key path remain.
+5. `test_preflight_smoke_failure_blocks_benchmark_without_adapter_crash`: attach Fixture B to a synthetic `fail:image_preflight:2` execution and assert `benchmark_result.status == "infra_blocked"`, not `infra_error`/`adapter_crash`.
+6. `test_serialized_image_preflight_results_are_secret_clean`: serialize both expected summaries/results and assert absence of `AUTH_SENTINEL_SHOULD_NOT_APPEAR`, raw stderr field names, raw command text, and known secret-bearing env key names except allowed redaction key paths.
+
+Cross-lane runtime/images check:
+
+- Runtime-images latest ledger remains focused on concrete TB2/SWE transport population and worker image readiness. It does not contradict this runner/results contract.
+- `12fe709` closes the static `fallback_tar_sha256`-without-file gap by adding `--verify-fallback-files`; Round 12 should therefore focus on making the existing runtime checker proof machine-readable, not on another transport gate.
+- The fixture expectations above are compatible with future P0 digest-only or fallback-tar transport. The result layer should report what the checker observed (`pulled`, `loaded`, `tar_verified`, `smoke_passed`, identity statuses), independent of how the manifest row was statically linted.
+
+### Round 12 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first before remote work.
+- Read `superpowers:using-superpowers` and `superpowers:systematic-debugging` instructions: rc 0.
+- Remote status/head/history check on `swe_dev`: rc 0; branch `feat/image-warmup-policy`, observed head `65448e4`, with `12fe709` in history, status output empty at that moment.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read current runner ledger tail: rc 0.
+- Grep for `verify_fallback`, `fallback_sha`, `image_preflight`, and `agentic_bench.image_check`: rc 0.
+- `nl`/`sed` reads for `scripts/agentic_bench_images.py`, `scripts/agentic_bench_suite.py`, `scripts/test_agentic_bench_images.py`, and `scripts/test_agentic_bench_suite.py`: rc 0.
+- Read current runtime-images lane tail for cross-lane dedup: rc 0.
+- First append attempt failed locally due shell quoting before remote write: rc 1; no ledger write occurred.
+- Pre-append `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+
+## Round 12 validation evidence
+
+- `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch2_20260626.tsv` and `scripts/__pycache__/check_offline_images_manifest.cpython-310.pyc` were present and left untouched.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
