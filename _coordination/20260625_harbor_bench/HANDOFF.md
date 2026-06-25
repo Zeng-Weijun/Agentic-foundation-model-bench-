@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 00:01 Asia/Shanghai
+Updated: 2026-06-26 00:05 Asia/Shanghai
 
 ## Objective
 
@@ -32,7 +32,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
   - #1 Separate adapter execution status from benchmark result status.
   - #2 Make suite run output directories invocation-unique.
   - #3 Persist execute summary results in manifest order.
-- Issue #3 is fixed in this worktree by sorting persisted `_execute_plan` summary results back to manifest order; #1 and #2 remain open follow-up implementation items.
+- Issue #3 is fixed in commit `933544e` by sorting persisted `_execute_plan` summary results back to manifest order, commented, and closed. #1 and #2 remain open follow-up implementation items.
 
 ## Red Lines
 
@@ -54,4 +54,4 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Full unittest/py_compile/diff-check: done after issue #3 fix; 16 unittest pass, py_compile rc 0, `git diff --check` rc 0.
 - Local no-image preflight-only CLI smoke on `swe_dev`: done; `tau2_paper_core` recorded `skipped_no_preflight`, summary status 0.
 - Worker RepoZero image-preflight-only smoke: done through local control-plane SSH to worker with a temporary local-execution suite; summary status 0, required preflight pass, RepoZero image present and fallback tar sha256 match. Direct `swe_dev -> worker` remains blocked by publickey.
-- Merge/push/sync shared main checkout: pending.
+- Merge/push/sync shared main checkout: done; `main` and worker-visible shared checkout are at `933544e`.
