@@ -731,12 +731,15 @@ images:
   - id: tb2_overfull_hbox
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/overfull-hbox:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-overfull-hbox@sha256:20e76797505baeb57f693c8778496b912d390a6afe68975f5e4dd5fd49db06d3
     source_image_id: sha256:a58256eef1e4e2fb761e753180d216e3edbd0fb79dc3e4b65a7b8c1a16ebb168
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/overfull-hbox.tar
+    fallback_tar_sha256: 50e36c20e4a23291ad0b0d9af527cf4046964cab5d3ee07a025308de8eba38ee
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -785,24 +788,30 @@ images:
   - id: tb2_polyglot_c_py
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/polyglot-c-py:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-c-py@sha256:f31972c9fe30b7997df06bd448294d54779e861a61e15f2a7cf353dc8f009f6b
     source_image_id: sha256:34f1e78e9e23c8c9cc5954a4c235d9b5eb432db89c8c1322c36b13aefa3b4222
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/polyglot-c-py.tar
+    fallback_tar_sha256: 7dd9938b6fec77ada6dd73a82c5acb76bd0fc4824565975214c72f8ad6de27bf
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
   - id: tb2_polyglot_rust_c
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/polyglot-rust-c:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-rust-c@sha256:608ae734f32f04a7b5013bf5607b890d1f9222bc2f6934d615b765cf8776d064
     source_image_id: sha256:a4b68e06827a2ace4a21b98b63872ed9c31183c213cf19e214bde116250394c3
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/polyglot-rust-c.tar
+    fallback_tar_sha256: 3b5f188592e3f6d4b9bbfa235bbe83e644843c27947e248dbbc2f7af9679dd2a
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -1157,24 +1166,30 @@ images:
   - id: tb2_winning_avg_corewars
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/winning-avg-corewars:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-winning-avg-corewars@sha256:ea41cba6fb9a2f72e4647bb578bc08241979ac241a07b24b2342d0c2c7a8befd
     source_image_id: sha256:3cb6bfd6a3a6db04aa52a00b5eeb2eab71ba1fc4a83c69802126411324ecd892
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/winning-avg-corewars.tar
+    fallback_tar_sha256: bd8b9926953684737f69cacd23e18269d4dccf425429144ec07af6dd523bbd2a
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
   - id: tb2_write_compressor
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/write-compressor:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-write-compressor@sha256:1ab853caf47d81567d48e9f256be114358f6fcfd156d402246ae91fe16c0cd86
     source_image_id: sha256:868491de68ebb7000a47f5ef8fb65ab8f34967d07542310311a7c38a8d6a795d
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/write-compressor.tar
+    fallback_tar_sha256: ec32ea77c1327f6b423312bc42425f8d64b847b2f1839a73e1a1392d7f5602fb
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

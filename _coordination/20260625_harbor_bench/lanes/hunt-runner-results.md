@@ -1749,3 +1749,147 @@ Cross-lane runtime/images check:
 - `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
 - Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
 - Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
+
+## Round 15 one-command runner contract after TB2 batch4
+
+Scope held:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then worked only over `ssh swe_dev` in `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md` before code/evidence inspection.
+- Active branch/head observed: `feat/image-warmup-policy` / `5a4e0a7 Record TB2 batch4 runtime audit`.
+- Wrote only this runner/results/parser ledger. No production code, manifests, tests, Docker, benchmark execution, model requests, commits, or pushes.
+- Focus: after batch4, check whether one-command runner artifacts can consume worker fallback smoke image-check JSON, preserve it in normalized results, and keep invocation-unique run dirs when suite concurrency is 40-50.
+
+No new ISSUE-READY block from this loop.
+
+Dedup judgment: the concrete gaps remain existing issues. Missing image-check promotion and result provenance is #12, with runtime evidence from #6/#11. Required image-preflight failure classification remains #1. Deterministic output roots and `BENCH_RUN_DIR` remain #2. Checker JSON redaction/allowlist remains #10. Worker P0 pull versus fallback readiness remains runtime #8 and is not a runner/results parser bug. Batch4 gives a stronger fixture because the worker fallback-load proof now exists, but it does not add a distinct root cause.
+
+Current batch4 evidence shape:
+
+- Evidence file: `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json`.
+- It is a native checker payload: `schema_version=agentic_bench.image_check.v1`, `bench_id=tb2_lowrisk_batch4_worker_smoke`.
+- Counts: `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, `missing=0`, `pulled=0`.
+- Images: five required `terminal_bench_task_runtime` rows: `tb2_password_recovery`, `tb2_path_tracing_reverse`, `tb2_query_optimize`, `tb2_sanitize_git_repo`, and `tb2_tune_mjcf`.
+- Every row has `status=present`, `load_status=loaded`, `smoke_status=passed`, fallback `sha256_status=match`, and final inspect identity `match`.
+- Important redaction nuance: even this happy-path fallback-load proof has nested `inspect_attempts[].stderr` on the first missing-image probe before `docker load`. The current observed content is a Docker missing-image diagnostic, not a secret, but a future normalizer must not copy nested raw stderr wholesale. Promote status, return code, refs, and identity fields by allowlist; either omit nested stderr or replace it with `stderr_redacted=true` plus a safe key path.
+
+Current-code cross-check:
+
+- `scripts/agentic_bench_suite.py:812-823` still builds `run_id` from `suite_id + bench_id + profile_id`, `run_dir` as `<run_root>/<suite_id>/<bench_id>`, and `RUN_TAG` as `suite_id`. There is no invocation id.
+- `scripts/agentic_bench_suite.py:970-976` still chooses `<run_root>/<suite_id>/_controller` when `--output-dir` is not provided. Repeated one-command executions of the same suite collide even if `suite_concurrency` is 40-50.
+- `scripts/agentic_bench_suite.py:1027-1057` dedupes identical image-preflight commands by returning only the cached return code to waiting rows. The owner log contains checker stdout; cached rows get only `[image_preflight_cached] ... rc=N`. A parser that reads only each row log will lose batch4 proof for cached rows.
+- `scripts/agentic_bench_suite.py:1079-1139` records coarse preflight row fields only: status, exit code, fatality, timestamps, policy, required, and log path.
+- `scripts/agentic_bench_suite.py:1198-1209` writes `agentic_bench.image_preflight_summary.v1` without parsing/promoting `agentic_bench.image_check.v1` into `image_check_counts`, `image_checks`, safe source pointers, checker digest, or redaction metadata.
+- `scripts/agentic_bench_suite.py:1251-1262` still maps every nonzero execution to `benchmark_result.status=infra_error` and `failure_category=adapter_crash`, including `fail:image_preflight:2`.
+- `scripts/agentic_bench_suite.py:1281-1300` writes `agentic_bench.result.v1` without `source`, `image_preflight`, `image_preflight_summary_path`, image-check artifact pointers, invocation id, `run_dir`, model profile, worker id, or parser version.
+- `scripts/agentic_bench_suite.py:1338-1341` still sorts execute summary rows in manifest order, and `scripts/test_agentic_bench_suite.py:472-500` covers that behavior. No summary-order regression found.
+- `scripts/test_agentic_bench_suite.py:548-689` covers image-preflight concurrency cap and command dedupe at suite concurrency 40, but it does not assert parsed image-check provenance for owner or cached rows.
+- `scripts/agentic_bench_images.py:600-613` can emit raw `smoke_stderr` on smoke failure, and batch4 proves nested inspect stderr can exist on a passing fallback-load path. This keeps #10 relevant for both failure and success fixtures.
+- `scripts/agentic_bench_images.py:628-643` already returns enough structured checker data for the runner to preserve safe provenance if a parser/normalizer is added.
+
+Synthetic controller probe at suite concurrency 50:
+
+- A temp helper printed the existing batch4 worker checker JSON; no Docker, benchmark, or model call was made.
+- `_execute_image_preflights()` returned rc 0 with `summary.status=0`, `counts.pass=3`, `image_preflight_concurrency=4`, and `image_preflight_unique_commands=1` for three rows sharing the same preflight command.
+- Persisted result order stayed manifest order: `tb2_a`, `tb2_b`, `tb2_c`.
+- The first summary row keys were only `bench_id`, `ended_at`, `exit_code`, `fatal`, `log_path`, `policy`, `required`, `started_at`, and `status`; `image_check_counts in row == False` and `image_checks in row == False`.
+- `_local_output_root()` returned the same path for repeated plans with the same suite/run root: `/tmp/.../runs/round15_probe/_controller`.
+- A synthetic `fail:image_preflight:2` execution still enriched as `execution_status=fail`, `benchmark_status=infra_error`, and `failure_category=adapter_crash`.
+- The normalized result document keys remained `adapter`, `bench`, `bench_id`, `benchmark_result`, `execution`, `run_id`, `schema_version`, and `suite_id`; it had no `source` and no `image_preflight` object.
+
+### Minimal red-test recommendations after batch4
+
+1. `test_image_preflight_summary_promotes_batch4_worker_check_json_under_concurrency_50`
+
+- Fixture input: distill `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json` into a stable unit fixture. Do not read mutable `_coordination/` at test runtime.
+- Test shape: three plan rows share one preflight command that prints the fixture JSON and exits 0; set `suite_concurrency=50` and `image_preflight_concurrency=4`.
+- Expected current failure: summary rows lack `image_check_counts` and `image_checks`.
+- Required assertions after implementation:
+  - `summary.status == 0`, `summary.counts.pass == 3`, `summary.image_preflight_concurrency == 4`, and `summary.image_preflight_unique_commands == 1`.
+  - Every row, including cached-command rows, has `image_check_parse_status == "parsed"`.
+  - Every row has allowlisted `image_check_counts` with `tar_verified == 5`, `loaded == 5`, `present == 5`, `smoke_passed == 5`, `identity_mismatch == 0`, and `errors == 0`.
+  - Promoted images preserve `id`, `role`, `required`, `status`, `load_status`, `smoke_status`, fallback `sha256_status`, final identity `match`, and safe fallback pointer metadata.
+  - Serialized summary output must not contain nested raw `inspect_attempts[].stderr`, raw Docker stdout/stderr bodies, full command text, env values, or model/adapter transcript text.
+
+2. `test_result_artifact_includes_batch4_image_preflight_provenance_on_pass`
+
+- Fixture input: the batch4 happy-path checker fixture and a synthetic passing adapter execution.
+- Expected current failure: `agentic_bench.result.v1` has no `source`, no `image_preflight`, and no image-check artifact pointer.
+- Required assertions after implementation:
+  - `result.execution.status == "pass"` and existing benchmark parser behavior is unchanged.
+  - `result.source.image_preflight_summary_path` points at `controller/image_preflight_summary.json`.
+  - `result.source.image_preflight_log_path` points at the owner preflight log or shared parsed artifact, not a cached row log that only contains `rc=0`.
+  - `result.source.image_manifest_paths[]` includes the checker manifest path or manifest id from the checker JSON.
+  - `result.source.image_check_artifacts[]` includes `role=image_check_stdout_json`, `status=parsed`, `read_policy=allowlist_json`, and a stable `json_pointer` or shared artifact pointer.
+  - `result.image_preflight.status == "pass"`, `parse_status == "parsed"`, and counts preserve `loaded=5`, `tar_verified=5`, and `smoke_passed=5`.
+
+3. `test_cached_preflight_rows_keep_shared_parsed_provenance`
+
+- Dedup: #12/#6 guard around `scripts/agentic_bench_suite.py:1027-1057`, not a new issue.
+- Test shape: use the same batch4 fixture command for at least two rows, with `image_preflight_concurrency > 1`.
+- Expected current failure: there is no parsed provenance on any row; a naive future parser could also parse only the owner row and leave cached rows with bare return-code evidence.
+- Required assertions after implementation:
+  - `summary.image_preflight_unique_commands == 1` remains true.
+  - Owner and cached rows both get parsed counts and source pointers.
+  - Cached rows identify the shared parsed checker artifact instead of claiming an independent native JSON was read from their per-row cached log.
+
+4. `test_invocation_unique_controller_and_bench_dirs_at_concurrency_50`
+
+- Dedup: #2, not a new issue.
+- Test shape: build or execute two plans with the same `suite_id`, `bench_id`, `profile_id`, and `run_root`, using `suite_concurrency=50`.
+- Expected current failure: `_local_output_root()`, `run_dir`, `BENCH_RUN_DIR`, and `RUN_TAG` repeat.
+- Required assertions after #2 implementation:
+  - Each invocation has a distinct `invocation_id`.
+  - Controller output root and `BENCH_RUN_DIR` include the invocation id or another collision-proof component.
+  - `summary.json` and `agentic_bench.result.v1` persist `invocation_id`, controller output root, remote `BENCH_RUN_DIR`, `run_id`, `suite_id`, `bench_id`, `model_profile`, and worker/execution host.
+  - Any convenience `latest` pointer is not the parser source of truth.
+
+5. `test_required_image_preflight_failure_is_infra_blocked_with_preserved_checker_evidence`
+
+- Dedup: #1/#12/#10.
+- Fixture input: synthetic `fail:image_preflight:2` execution plus a parsed image-check failure fixture with one required image and `smoke_status=failed`.
+- Expected current failure: result uses `benchmark_result.status=infra_error` and `failure_category=adapter_crash`.
+- Required assertions after implementation:
+  - `execution.status == "fail"` and `execution.adapter_status == "fail:image_preflight:2"`.
+  - `benchmark_result.status == "infra_blocked"`, `metric == "image_preflight"`, `score_claim_valid is False`, and `failure_category == "image_preflight_failed"`.
+  - Parsed, redacted image-preflight evidence still appears under `result.image_preflight` and `source.image_check_artifacts[]`.
+
+6. `test_image_check_allowlist_redacts_nested_stderr_on_success_and_smoke_stderr_on_failure`
+
+- Dedup: #10.
+- Fixture input: batch4 success fixture for nested `inspect_attempts[].stderr` plus a small synthetic smoke-failure fixture containing a sentinel in `smoke_stderr`.
+- Expected current failure: there is no positive parsed/redacted output at all.
+- Required assertions after implementation:
+  - The success fixture still reports fallback load and final identity match while omitting nested raw inspect stderr.
+  - The failure fixture still reports `smoke_status=failed`, `errors=1`, and `smoke_stderr_redacted=true`.
+  - Serialized `image_preflight_summary.json`, `summary.json`, and `agentic_bench.result.v1` do not contain the sentinel, raw `smoke_stderr`, raw nested `stderr`, raw Docker stdout/stderr, full command strings, env values, or model/adapter transcript text.
+
+Cross-lane runtime/images check:
+
+- Runtime-images ledger now records that batch4 worker proof exists and reports `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, and `errors=0`.
+- This confirms batch4 is no longer worker-smoke-pending. The runner/results gap is preserving that proof in one-command suite artifacts, not re-running it.
+- No contradiction found with runtime lane #6/#8. The result layer should report what the checker observed from fallback-load/run-smoke. It should not mark worker P0 direct pull ready until runtime #8 says that path works.
+
+### Round 15 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first before remote work in the pre-compaction portion of this round.
+- Remote handoff/head command on `swe_dev`: rc 0; read `_coordination/20260625_harbor_bench/HANDOFF.md`, observed branch `feat/image-warmup-policy`, head `5a4e0a7`.
+- Attempted to read the advertised `superpowers:systematic-debugging` skill path under cache `7fd3161c`: rc 1 because that cache path was absent.
+- `find /Users/Zhuanz1/.codex/plugins/cache/openai-curated/superpowers -path '*/systematic-debugging/SKILL.md'`: rc 0; located current cache path `d08f0354`.
+- Read current `superpowers:systematic-debugging` instructions from cache `d08f0354`: rc 0.
+- Read runner ledger tail: rc 0.
+- Read runtime-images lane tail: rc 0.
+- Bounded Python inspection of `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json`: rc 0; printed schema, counts, row keys, safe row summaries, image ids/statuses, fallback sha statuses, identity sequences, and nested-stderr presence. No secret value was printed.
+- `nl`/`sed` reads for `scripts/agentic_bench_suite.py`, `scripts/agentic_bench_images.py`, `scripts/test_agentic_bench_suite.py`, and `scripts/test_agentic_bench_images.py`: rc 0.
+- Grep for image-check/result provenance/invocation fields across scripts and ledgers: rc 0.
+- `git status --short --untracked-files=all` before append: rc 0; observed untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch5_20260626.tsv`, left untouched.
+- Bounded synthetic controller probe with batch4 JSON, `suite_concurrency=50`, and `image_preflight_concurrency=4`: rc 0; confirmed omitted parsed checker fields, deterministic output root, and generic adapter-crash classification for `fail:image_preflight:2`.
+- First remote append attempt using nested heredocs: rc 127; quoting broke before any successful write, and this corrected stdin append was used instead.
+
+## Round 15 validation evidence
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Token-pattern scan over this ledger using a bounded Python regex scanner: rc 0, `secret_pattern_scan=no_matches`.
+- `git status --short --untracked-files=all`: rc 0. This lane modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; unowned `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` was also modified in the shared worktree, and untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch5_20260626.tsv` plus `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch5_worker_check_20260626.json` were present by final status. They were left untouched.
+- Final `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0; ledger diff was 144 inserted lines.

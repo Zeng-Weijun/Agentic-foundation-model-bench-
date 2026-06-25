@@ -1283,3 +1283,99 @@ Next runtime/image subdomain: after batch4 worker fallback smoke exists, audit t
 ### Orchestrator follow-up after Round 14
 
 After the runtime-images lane finished its read-only audit, the orchestrator completed the batch4 worker proof. `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json` now exists and reports `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, and `errors=0`. Therefore batch4 is no longer worker-smoke-pending; the next runtime/image subdomain should start from the remaining 24-row gap and the next generic export batch described above.
+
+## Round 15 - TB2 remaining 24 audit after batch4 (2026-06-26)
+
+Scope: ledger-only audit. No production code, manifest, test, commit, Docker save/push/load/run, benchmark, or model call was performed by this lane. Read-only Docker `image inspect`, manifest/lint reads, grep/find, fallback tar hash reads, and worker-check JSON reads only.
+
+COMMENT-READY for #6/#8/#12: the next generic batch is valid and now appears materialized by another lane; it drops TB2 from 24 to 19 missing transports, but fallback tar remains required because worker P0 pull readiness is still #8
+
+dedup: comment-on-#6 for TB2 transport population and static promotion gating. comment-on-#8 because worker-j9jjd still must not rely on P0-only transport until direct registry pull is fixed or re-proven. comment-on-#12 because the batch5 worker fallback-load/run-smoke JSON should be preserved as structured image-check provenance. Not #11: all inspected candidate rows matched their manifest `source_image_id`; no identity-lineage bug was found. No new ISSUE-READY block.
+
+Current state and concurrency notes:
+- Observed branch/head: `feat/image-warmup-policy` at `5a4e0a7 Record TB2 batch4 runtime audit`.
+- Initial Round 15 status had no manifest diff and only untracked `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch5_20260626.tsv`; at that moment the TSV had three rows: `overfull-hbox`, `polyglot-c-py`, and `winning-avg-corewars`.
+- Initial TB2-only verified lint returned rc 1 with `images=89`, `required_with_digest_ref=15`, `required_with_fallback_sha=65`, `fallback_tar_verified=65`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=24`.
+- During this audit, another lane expanded batch5 to five rows, modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and created `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch5_worker_check_20260626.json`. This runtime lane did not edit those files.
+- After the concurrent batch5 wiring, verified lint returned rc 1 with `required_with_digest_ref=20`, `required_with_fallback_sha=70`, `fallback_tar_verified=70`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and `required_without_offline_transport=19`.
+- Batch5 worker fallback-load/run-smoke JSON reports `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, `errors=0`, `tar_missing=0`, `tar_mismatch=0`, and `pulled=0`.
+
+### Generic batch audit
+
+The requested generic candidates are safe as the next batch: no service runtime, no secret/log-specific task, no QEMU, no torch/pytorch, and no data/ML-heavy runtime. Hidden risk found during the audit was not a new bug: the untracked TSV briefly lagged behind actual Docker/shared-tar state, listing only three rows while `polyglot-rust-c` and `write-compressor` already had fallback tars and P0 tag metadata. The TSV and manifest were later updated to all five rows, and the worker fallback proof exists.
+
+| row | current manifest line | risk label | exact source image ID | inspect size bytes | fallback tar sha | P0 digest ref |
+| --- | ---: | --- | --- | ---: | --- | --- |
+| `overfull-hbox` | 731 | low-size generic | `sha256:a58256eef1e4e2fb761e753180d216e3edbd0fb79dc3e4b65a7b8c1a16ebb168` | 531075314 | `50e36c20e4a23291ad0b0d9af527cf4046964cab5d3ee07a025308de8eba38ee` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-overfull-hbox@sha256:20e76797505baeb57f693c8778496b912d390a6afe68975f5e4dd5fd49db06d3` |
+| `polyglot-c-py` | 788 | low-size generic | `sha256:34f1e78e9e23c8c9cc5954a4c235d9b5eb432db89c8c1322c36b13aefa3b4222` | 559936028 | `7dd9938b6fec77ada6dd73a82c5acb76bd0fc4824565975214c72f8ad6de27bf` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-c-py@sha256:f31972c9fe30b7997df06bd448294d54779e861a61e15f2a7cf353dc8f009f6b` |
+| `polyglot-rust-c` | 803 | low-size generic, near 1GB | `sha256:a4b68e06827a2ace4a21b98b63872ed9c31183c213cf19e214bde116250394c3` | 995089093 | `3b5f188592e3f6d4b9bbfa235bbe83e644843c27947e248dbbc2f7af9679dd2a` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-rust-c@sha256:608ae734f32f04a7b5013bf5607b890d1f9222bc2f6934d615b765cf8776d064` |
+| `winning-avg-corewars` | 1166 | low-size generic | `sha256:3cb6bfd6a3a6db04aa52a00b5eeb2eab71ba1fc4a83c69802126411324ecd892` | 735891766 | `bd8b9926953684737f69cacd23e18269d4dccf425429144ec07af6dd523bbd2a` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-winning-avg-corewars@sha256:ea41cba6fb9a2f72e4647bb578bc08241979ac241a07b24b2342d0c2c7a8befd` |
+| `write-compressor` | 1181 | low-size generic, near 1GB | `sha256:868491de68ebb7000a47f5ef8fb65ab8f34967d07542310311a7c38a8d6a795d` | 995690686 | `ec32ea77c1327f6b423312bc42425f8d64b847b2f1839a73e1a1392d7f5602fb` | `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-write-compressor@sha256:1ab853caf47d81567d48e9f256be114358f6fcfd156d402246ae91fe16c0cd86` |
+
+Expected and observed gate movement:
+- From committed batch4 state, the five-row batch should move TB2-only `required_without_offline_transport 24 -> 19`.
+- `fallback_tar_verified`, `required_with_fallback_sha`, and `required_with_digest_ref` should move `65 -> 70`, `65 -> 70`, and `15 -> 20`.
+- The observed post-wiring verified lint exactly matches that expected movement and keeps `fallback_tar_missing=0` and `fallback_tar_mismatch=0`.
+- Worker readiness for this batch should be considered fallback-ready, not P0-pull-ready: the worker check loaded fallback tars (`loaded=5`, `pulled=0`) and smoke-passed all five.
+
+### Remaining 19 rows to isolate/defer
+
+After batch5, the remaining static transport gap is 19 rows. These should be batched by isolation class rather than raw size alone.
+
+| row | isolation/defer reason | exact source image ID | inspect size bytes |
+| --- | --- | --- | ---: |
+| `nginx-request-logging` | service smoke isolation | `sha256:e673cf94a1a3263065b9c37d101f8c4b6ed54a2227ba0100e105c5c6b46b15ff` | 268733645 |
+| `pypi-server` | service smoke isolation | `sha256:59e8830ad18ef4a515d968596b38e467a5b6eb018d1536fd9088c5ddca677ea8` | 320922060 |
+| `vulnerable-secret` | secret/log isolation | `sha256:ed187ec826168b02180860a958bca08ea3cae5b871bc3b12d0e026cff218cd74` | 478004753 |
+| `portfolio-optimization` | data/ML runtime caution | `sha256:1fca885f366e54cc7fa1e42c02b22d29ce296a5bf1c7f17e7a9cbbede7ca5614` | 613395442 |
+| `video-processing` | data/ML runtime caution | `sha256:470f922fb58fcc7f66324e9912e31717e0fd07c0468a3ca23f7e2950f27f0fef` | 793327868 |
+| `train-fasttext` | data/ML runtime caution | `sha256:535d3a38744d0b5cf72b033b520132751569231316e134ac6a99cc62e666d13f` | 873782103 |
+| `path-tracing` | medium-size generic, isolate from first service batch | `sha256:49297f60440893098411cba5f167d0ee719dcd5e61adca1b149fa9485d3b3a6b` | 1104154092 |
+| `sam-cell-seg` | data/ML runtime caution | `sha256:dbc5dfcc120fbcf959d3be14d3ae7b0fb71533e8ca4c5c92b40c9c9dd1a3fe27` | 1130941638 |
+| `prove-plus-comm` | medium-size generic, isolate from service/qemu/torch batches | `sha256:c6b448d30a2ca1c7a6c5ea4b05762d85600bc60f562ce382a57673ad8baeaed5` | 1461316125 |
+| `install-windows-3.11` | medium-size special environment | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1629941732 |
+| `qemu-startup` | QEMU isolation | `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444` | 1956605318 |
+| `qemu-alpine-ssh` | QEMU isolation | `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573` | 1956628773 |
+| `mteb-retrieve` | data/ML runtime caution | `sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a` | 2117496845 |
+| `reshard-c4-data` | data/ML runtime caution | `sha256:3151b2371e33c8792274de78add175049aeb6a57b24519842cdea8965a04f879` | 2517145790 |
+| `pytorch-model-cli` | torch/pytorch heavy | `sha256:cb27d97d9314394fec729969e14f6d5580dc0f54bcaaddc87006589f75ebe305` | 2604034114 |
+| `multi-source-data-merger` | large write plus data/ML runtime | `sha256:a961d250435509c57119f29bed2fc480ab5e1459af28803d7f00d373e3cf6d83` | 6203486893 |
+| `torch-tensor-parallelism` | large write plus torch heavy | `sha256:7f0d9bce1454a49b3890a9af55bab21405a4586cb7fe56d941447be303bdbf97` | 11026213679 |
+| `torch-pipeline-parallelism` | large write plus torch heavy | `sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a` | 11315069350 |
+| `pytorch-model-recovery` | largest write plus torch heavy | `sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4` | 19201784321 |
+
+Recommended next split:
+- First isolate the two small service rows (`nginx-request-logging`, `pypi-server`) as their own bounded batch with explicit network-none smoke expectations.
+- Keep `vulnerable-secret` separate from any log-inspection smoke path.
+- Keep QEMU rows separate.
+- Keep torch/pytorch and the four largest rows separate; if P0 publication is used for scale, still keep fallback tar+sha until worker-j9jjd direct registry pull has a passing smoke proof.
+
+Cross-lane check:
+- `hunt-runner-results.md` Round 15 focuses on preserving batch4 image-check evidence under one-command runner artifacts. It does not contradict the runtime/images finding. It explicitly keeps P0 pull readiness as #8/runtime scope and treats fallback-load checker JSON as the evidence the result layer should preserve.
+
+Commands/evidence:
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Read remote `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` instructions and WORKFLOW continuous bug-hunt section: rc 0.
+- Remote head/status command: rc 0; branch/head `feat/image-warmup-policy` / `5a4e0a7`; initial status showed only untracked batch5 TSV.
+- Initial TB2 verified lint command: outer rc 0, inner `LINT_RC=1`, parse rc 0; counts `fallback_tar_verified=65`, `required_without_offline_transport=24`.
+- Remaining-24 Docker inspect derivation: rc 0; every inspected row matched manifest `source_image_id`.
+- Initial batch5 TSV read: rc 0; observed 3 data rows and sha `31e70a6bb23bf6fef4b7724cb26ac9ff5f88ba6e7588a0e5957ca3f1fdefe2d6`.
+- Batch5 TSV/fallback/P0 verification after concurrent expansion: rc 0; observed 5 data rows and sha `302e9a32c4041e255f756d3f1ab449eeeff6a728307f12406e93fe1bed37cea1`.
+- Batch5 read-only Docker inspect for the five P0 tags: rc 0; tag IDs match source IDs and RepoDigests match TSV digest refs.
+- Shared fallback tar search for the five candidates: rc 0; all five `.tar` files exist in `images/terminalbench2.1/20260425_missing_batch1`.
+- Extra fallback tar sha reads for `polyglot-rust-c` and `write-compressor`: rc 0; shas match the concurrent manifest values.
+- Post-batch5 dirty-worktree verified lint: outer rc 0, inner `LINT_RC=1`, parse rc 0; counts `fallback_tar_verified=70`, `required_without_offline_transport=19`, and no fallback missing/mismatch.
+- Batch5 worker-check JSON summary read: rc 0; `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, `errors=0`.
+- Status/diff check after concurrent batch5 wiring: rc 0; observed unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, unowned modified `hunt-runner-results.md`, and untracked batch5 TSV/worker-check JSON. This lane left them untouched.
+- Cross-lane read of `hunt-runner-results.md` tail and diff: rc 0; no contradiction found.
+
+Next runtime/image subdomain: after batch5 is committed or handed off, audit the service pair (`nginx-request-logging`, `pypi-server`) separately from the secret, QEMU, torch, and large data/ML rows, and keep the same verified static lint plus worker fallback-load/run-smoke acceptance pattern.
+
+### Round 15 validation evidence
+
+- Remote hash guard before ledger copy-back: rc 0; pre-edit and remote hashes both matched `24ea298f2c772fc26f105269f7e817e1bd71ad7dd04092f927efb76c858373e1`.
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0.
+- Trailing-whitespace scan with `grep -n "[[:blank:]]$" ...` under inverted check: rc 0, `trailing_whitespace=no_matches`.
+- Final `git status --short --untracked-files=all`: rc 0. This lane modified only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; unowned modified `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`, unowned modified `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and untracked batch5 inventory JSON/TSV were present and left untouched.
+- Final `git diff --stat -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`: rc 0; ledger diff was 96 inserted lines.
