@@ -617,3 +617,96 @@ Next loop should inspect summary aggregation semantics when parser output is pre
 - Extra status probe with `git status --short --untracked-files=all` and `find scripts/__pycache__`: rc 0; untracked bytecode files are for image-preflight/test modules, not the suite module imported in this round.
 
 - Final status after validation also showed additional untracked `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc`, `test_agentic_bench_suite.cpython-310.pyc`, and `test_offline_images_manifest.cpython-310.pyc`. They are outside this lane's write scope and were not edited or reverted.
+
+
+## Round 7 summary aggregation with nonzero execution and parser output
+
+Scope for this round:
+
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, observed head `9dffbe8`.
+- Write set: this ledger only. No production code, manifests, tests, Docker state, benchmark execution, or model calls.
+- Method: static code reads plus temporary synthetic controller fixtures under `/data/tmp` with `PYTHONDONTWRITEBYTECODE=1`.
+- Cross-lane scope: read `hunt-runtime-images.md` for image-preflight interactions. Runtime Round 6 confirms the current enabled TB2.1 one-task smoke is `gcode-to-text`, while full TB2.1 image readiness remains partial and must stay gated by image preflight.
+- Unowned worktree state observed before writing: untracked `_coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv.tmp` and `scripts/__pycache__/check_offline_images_manifest.cpython-310.pyc`. This lane did not edit or revert them.
+
+### Static summary semantics
+
+Current execute summary shape:
+
+- `_attach_benchmark_result()` writes per-run `execution_status`, `benchmark_status`, `score_claim_valid`, `result_path`, and optional `failure_category`; see `scripts/agentic_bench_suite.py:1281-1315`.
+- `_execute_plan()` sets suite `status=1` if any result has `exit_code != 0`, sorts results by manifest order, and writes `summary = {"suite_id", "status", "results"}`; see `scripts/agentic_bench_suite.py:1326-1342`.
+- There are no suite-level `execution_status_counts`, `benchmark_status_counts`, `failure_category_counts`, or `score_claim_counts` in execute `summary.json`.
+- By contrast, `_execute_image_preflights()` writes an explicit `counts` map and image-preflight metadata; see `scripts/agentic_bench_suite.py:1176-1207`.
+
+Synthetic future-parser probe:
+
+- Monkeypatched `_run_one()` to return nonzero execution results for Terminal-Bench 2.1, DeepSWE, tau3, and SWE-bench Qwen Code rows.
+- Monkeypatched `_benchmark_result_for_run()` to simulate future parsers returning benchmark statuses while `exit_code != 0`.
+- `_execute_plan()` returned rc `1`, `summary.status=1`, `summary.keys=[results,status,suite_id]`, `has_counts=false`, and `order_preserved=true`.
+- Per-row and per-result-file fields did preserve the independent status split:
+
+| Bench | Exit | Execution status | Benchmark status | Failure category |
+|---|---:|---|---|---|
+| `terminal_bench_2_1_image_smoke` | 7 | `fail` | `infra_error` | `infra_image_preflight` |
+| `deepswe_smoke` | 2 | `fail` | `partial` | `partial_trace_with_harness_error` |
+| `tau3_smoke` | 5 | `fail` | `infra_error` | `harbor_runtime_error` |
+| `swebench_verified_qwen_code_smoke` | 11 | `fail` | `fail` | `official_eval_failed` |
+
+Interpretation:
+
+- Per-row summary fields can preserve `benchmark_status` independently from process status once a parser is allowed to run on nonzero execution results.
+- Suite-level aggregation still cannot answer basic one-command questions without consumers re-scanning every result row: how many adapter executions failed, how many benchmark statuses are `fail` versus `infra_error` versus `partial`, and whether any score claim is valid.
+
+COMMENT-READY for #1: execute `summary.json` needs status/count maps once parsers can run on nonzero adapter exits
+severity: MEDIUM
+dedup: comment-on-#1. Not #2 because the synthetic probe used fresh temp output dirs and did not depend on invocation uniqueness. Not #10 because no parser sidecar contents or secret-bearing files were read.
+location: `scripts/agentic_bench_suite.py:1281-1315`, `scripts/agentic_bench_suite.py:1326-1342`, `scripts/agentic_bench_suite.py:1176-1207`, `reports/next_result_parser_contract_20260625.md:63-73`, `reports/next_result_parser_contract_20260625.md:218-231`
+static_repro: Import `scripts/agentic_bench_suite.py` with `PYTHONDONTWRITEBYTECODE=1`, monkeypatch `_run_one()` to return nonzero execution results for Terminal-Bench, DeepSWE, tau3, and SWE-bench rows, monkeypatch `_benchmark_result_for_run()` to return parsed benchmark statuses, then call `_execute_plan()` and read `summary.json`.
+impact: A future fixed parser can emit correct per-row `benchmark_status` while the suite process still returns nonzero for failed execution. However, the suite-level summary still exposes only one integer `status` plus raw rows. Dashboards, one-command YAML wrappers, and issue bots must implement their own counting logic and can easily regress to treating `summary.status=1` as a generic adapter failure or treating row `status=fail:<rc>` as the benchmark result. This matters for Terminal-Bench image/runtime errors, DeepSWE partial traces, tau3 Harbor failures, and SWE-bench official eval failures, which need different follow-up actions.
+fix: Keep `summary.status` as the process-return aggregate for CLI compatibility, but add explicit deterministic aggregates: `execution_status_counts`, `benchmark_status_counts`, `parser_status_counts`, `failure_category_counts`, `score_claim_valid_counts`, and optionally `process_failed_count`. Keep `results` sorted by manifest order. Do not make parser output change the CLI rc unless a future explicit gate such as `--require-benchmark-pass` is enabled.
+evidence: Synthetic probe returned `execute_rc=1`, `summary_status=1`, `has_counts=false`, `order_preserved=true`, while each row and result doc preserved `execution_status=fail` with independent parsed `benchmark_status` values `infra_error`, `partial`, `infra_error`, and `fail`.
+
+### Image-preflight interaction inside full execute
+
+Synthetic execute-path preflight probe:
+
+- Built a one-row Terminal-Bench-like plan with a required synthetic image preflight command that exits `7` and an adapter command that would create a marker if launched.
+- `_run_one()` returned `status=fail:image_preflight:7` and the adapter marker was absent, proving the adapter did not run.
+- `_attach_benchmark_result()` still normalized the result as `parser_status=not_run`, `benchmark_status=infra_error`, `failure_category=adapter_crash`, and `short_failure_note=adapter exited 7`.
+- `summary.json` again had no `counts` field.
+
+COMMENT-READY for #1/#6: required image-preflight failure in `--execute` is normalized as `adapter_crash`
+severity: HIGH
+dedup: comment-on-#1 for execution/benchmark/parser status semantics; comment-on-#6 because the concrete trigger is image-preflight warmup/check failure. Related to #8 when the failing preflight is rootless Docker readiness, but this repro does not require Docker. Not #10 because no sidecar content is parsed.
+location: `scripts/agentic_bench_suite.py:986-1010`, `scripts/agentic_bench_suite.py:1251-1262`, `scripts/agentic_bench_suite.py:1281-1315`, `scripts/agentic_bench_suite.py:1326-1342`, `reports/next_result_parser_contract_20260625.md:589-595`
+static_repro: Import `scripts/agentic_bench_suite.py` with `PYTHONDONTWRITEBYTECODE=1`; build a one-run plan for `terminal_bench_2_1_image_smoke` with `image_preflight.required=true` and `command_argv=["bash","-lc","printf preflight_failed; exit 7"]`; set the adapter command to touch a marker; call `_execute_plan()`; inspect `summary.json` and `results/<bench>.result.json`.
+impact: For Terminal-Bench 2.1 and SWE-bench adapters, required image preflight is the gate that should distinguish missing image, bad fallback tar, registry pull failure, rootless Docker readiness, and runnable adapter failure. In full `--execute`, a preflight failure prevents the adapter from launching but is reported as `adapter_crash`. Aggregation and triage lose the fact that this was an image/runtime readiness failure, so the next action can be misrouted to parser/adapter owners instead of image-preflight/runtime owners.
+fix: Carry structured preflight state from `_run_one()` into `_attach_benchmark_result()`, for example `execution_result["preflight_status"]`, `preflight_exit_code`, and `preflight_phase="image_preflight"`. Map `status.startswith("fail:image_preflight:")` to `failure_category=infra_image_preflight`, `parser_status=not_run`, `benchmark_status=infra_error`, and `score_claim_valid=false`. Add execute-summary counts consistent with `image_preflight_summary.json` so full `--execute` and `--image-preflight-only` classify the same failure the same way.
+evidence: Synthetic probe returned `adapter_marker_exists=false`, `row_status=fail:image_preflight:7`, `row_execution_status=fail`, `row_benchmark_status=infra_error`, `row_failure_category=adapter_crash`, `result_parser_status=not_run`, `result_short_failure_note="adapter exited 7"`, and `summary_has_counts=false`.
+
+### Round 7 command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0; read first as required, tool display truncated.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Attempted to read the listed `superpowers:systematic-debugging` skill path: rc 1, file absent; continued with the user-mandated workflow and bounded synthetic probes.
+- Memory quick search in `/Users/Zhuanz1/.codex/memories/MEMORY.md` for current repo/bench terms: rc 0; no actionable current repo note was used.
+- Active worktree status and runtime lane read: rc 0; branch `feat/image-warmup-policy`, head `9dffbe8`; runtime lane Round 6 image-preflight context consumed.
+- Read `_benchmark_result_for_run()`, `_attach_benchmark_result()`, `_execute_plan()`, `_run_one()`, and `_execute_image_preflights()` with `nl`/`sed`: rc 0.
+- Read focused tests and result-parser contract lines for status split and TB2.1 blocked-state expectations: rc 0.
+- Grep for `summary.json`, `benchmark_status`, `execution_status`, `adapter_crash`, and image preflight references across suite/tests/report/current ledger: rc 0.
+- Future-parser nonzero synthetic `_execute_plan()` probe over Terminal-Bench, DeepSWE, tau3, and SWE-bench rows: rc 0; safe JSON output summarized above.
+- Required image-preflight failure synthetic `_execute_plan()` probe: rc 0; safe JSON output summarized above.
+- Pre-append status/dedup grep: rc 0; observed unowned untracked files listed in this section and existing #1/#6/#10 dedup markers in the ledger.
+
+## Next runner/result subdomain
+
+Next loop should inspect whether current normalized result artifacts have enough stable identifiers for cross-run aggregation: `suite_id`, `run_id`, `bench_id`, adapter, model profile, invocation/run directory, native artifact pointer, image preflight summary pointer, and parser version. Focus on what is missing from `agentic_bench.result.v1` before #2 introduces invocation-unique run dirs.
+
+
+## Round 7 validation evidence
+
+- Append Round 7 ledger section via remote Python over SSH stdin: rc 0.
+- `git status --short --untracked-files=all && git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0 for ledger diff whitespace. Status also showed concurrent/unowned changes outside this lane: `_coordination/20260625_harbor_bench/HANDOFF.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, untracked `_coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv`, and untracked `scripts/__pycache__/check_offline_images_manifest.cpython-310.pyc`. This lane did not edit or revert them.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` under an inverted check: rc 0; no trailing whitespace matches.
+- Strict token-pattern scan for token-like values in the ledger under an inverted check: rc 0; no matches printed.
+- Tail final ledger for sanity: rc 0.

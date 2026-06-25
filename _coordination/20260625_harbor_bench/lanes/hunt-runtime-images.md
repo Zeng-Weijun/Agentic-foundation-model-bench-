@@ -501,3 +501,61 @@ Cross-lane check:
 ## Next loop target
 
 Next runtime/image subdomain: when manifest generation starts, audit the generated TB2.1 rows before any worker preflight. Required checks: exactly one row per selected task id, no row from stale `manifest.jsonl` without an existing tar or P0 digest, `fallback_tar_sha256` present for every tar row, and explicit `missing_transport` rows for the 39 swe_dev-cache-only tasks.
+## Round 7 generated manifest audit: TB2.1 cache manifest and SWE django10097 probe
+
+Scope held for this loop:
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first, then `_coordination/20260625_harbor_bench/HANDOFF.md`.
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, observed head `9dffbe8`.
+- Wrote only this runtime/images ledger. No production code, manifests, tests, Docker push/pull/load, benchmark execution, or model execution.
+- Audited generated manifests: `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` and `manifests/images/swebench_verified_django10097.yaml`.
+
+No new ISSUE-READY block filed from this loop.
+
+The generated manifests are useful audit/promotion inputs and do not introduce a distinct new runtime bug. They expose the known #6/#8/#11 blockers more concretely: TB2.1 now has exactly one generated row per swe_dev cache task and no stale `manifest.jsonl`-only rows, while SWE django10097 has the right two-artifact identity split and should fail current worker preflight via `identity_mismatch` rather than tag-presence fake pass.
+
+COMMENT-READY for #6/#8: `terminal_bench_2_1_swe_dev_cache.yaml` is complete as a cache inventory, but still not a full offline transport manifest
+severity: HIGH
+dedup: comment-on-#6 for image warmup/fallback sha gating; comment-on-#8 only for worker readiness context. This is a refinement of Round 6, not a new issue.
+location: `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:1-16`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:17-28`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:465`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:657`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:897`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:989-1084`, `manifests/bench_registry.yaml:51-54`, `manifests/images/README.md:24-29`, `scripts/agentic_bench_images.py:182-210`, `scripts/agentic_bench_images.py:490-498`, `scripts/agentic_bench_images.py:519-521`, `scripts/agentic_bench_images.py:730-734`
+static_repro: Parse the generated TB2.1 manifest and compare it to `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`. It has `rows=89`, `cache_tb=89`, `unique_refs=89`, `dups=0`, `missing_from_manifest=0`, and `extra_rows=0`. It therefore fixed the stale-row/duplicate-row shape from the old shared `manifest.jsonl` source. The remaining transport gap is explicit: `with_tar=50`, `with_p0=0`, `no_transport=39`, `req_no_transport=39`, `no_sha=50`, `tar_missing=0`, `required_false=0`, `id_missing=0`, and `repo_digest_missing=89`.
+impact: A current worker full preflight against this manifest should fail closed, not fake pass, because all 89 rows are `required: true`, current worker has only five TB2 images, and missing required rows become `status=missing` with rc 1. The manifest is still not an offline reproducibility artifact: 39 required rows have neither P0 digest nor fallback tar, and 50 fallback tar rows are marked `oci_tar_unverified_sha` with no `fallback_tar_sha256`. If run with `--load-fallback`, the checker currently permits `sha256_status in {match, not_configured}`, so it can load unverified tars for those 50 rows; that behavior is the same #6 fallback-sha blocker already tracked.
+fix: Keep this manifest as audit-only until every required row has either a digest-pinned internal `image_ref` that has passed worker consumer smoke or a `fallback_tar` plus `fallback_tar_sha256`. For #6, tighten the checker/manifest contract so required fallback loads refuse `sha256_status=not_configured` unless an explicit `allow_unverified_fallback` debug flag is present. For the 39 `fallback_status: missing_shared_tar` rows, keep them required only in an audit manifest; do not wire them into full worker preflight until P0 digest or tar/sha transport exists.
+evidence: The manifest header records `status: materialized_from_swe_dev_cache_partial_tar_coverage`, `cache_image_count: 89`, `shared_tar_count: 50`, and blockers `p0_digest_refs_not_published_for_all_tb2_tasks`, `shared_tar_coverage_is_50_of_89_cached_tasks`, and `fallback_tar_sha256_not_recorded_for_generated_rows`. Example no-transport required rows are `install-windows-3.11` at line 465, `nginx-request-logging` at line 657, `reshard-c4-data` at line 897, and `write-compressor` at line 1077. Current worker read-only cache list shows only five TB2 tags: `compile-compcert`, `dna-insert`, `gcode-to-text`, `headless-terminal`, and `llm-inference-batching-scheduler`.
+
+COMMENT-READY for #11/#6: `swebench_verified_django10097.yaml` encodes the intended identity failure, but still needs transport before promotion
+severity: HIGH
+dedup: comment-on-#11 for correct identity-mismatch behavior; comment-on-#6 for missing P0/fallback transport. This is not a new issue.
+location: `manifests/images/swebench_verified_django10097.yaml:12-17`, `manifests/images/swebench_verified_django10097.yaml:18-29`, `manifests/images/swebench_verified_django10097.yaml:31-42`, `manifests/bench_registry.yaml:56-59`, `manifests/images/README.md:26-29`, `scripts/agentic_bench_images.py:474-523`, `scripts/agentic_bench_images.py:730-734`
+static_repro: Parse `manifests/images/swebench_verified_django10097.yaml`. It has exactly two required rows: `swebench_django10097_eval_base` with local ref `swebench/sweb.eval.x86_64.django_1776_django-10097:latest`, expected image ID `sha256:cf945d25...`, and source repo digest `sha256:148894...`; and `swebench_django10097_swerex_wrapper` with local ref `swerex-prebuilt:...8be1...`, expected image ID `sha256:3e38b927...`, and wrapper tar path `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/swerex_images/chunks/django-1776-django_00.tar`. Current worker read-only image list shows both the `swebench/*` tag and the `swerex-prebuilt:*` tag resolving to short ID `3e38b9278651`.
+impact: This manifest should fail the current worker correctly with `identity_mismatch` for the official eval-base row, rather than fake passing because the tag exists. That closes the #11 fake-green class for this selected task. It is still not a promotion-ready transport manifest: the eval-base row has no `image_ref` and no fallback tar, and the wrapper row has a fallback tar but no `fallback_tar_sha256` or repo digest. A passing swe_dev check only proves source identity; it does not make the active worker reproducible offline.
+fix: Keep the django10097 manifest as an identity probe until both artifacts have transport. Required promotion rows need either P0 digest refs plus consumer pull/run-smoke or fallback tar paths with sha256. Specifically, export or push the official eval base separately from the wrapper, add `fallback_tar_sha256` for `django-1776-django_00.tar` if using it, and keep expected image IDs/source repo digests so worker tag aliases continue to fail as identity mismatches.
+evidence: Manifest blockers explicitly list `p0_digest_refs_not_published`, `worker_current_swebench_tag_aliases_to_wrapper_identity`, `wrapper_fallback_tar_sha256_not_recorded`, and `official_base_fallback_tar_missing`. `manifests/images/README.md:27` states this manifest is expected to pass on swe_dev and fail with `identity_mismatch` on the current worker until the official base is staged correctly. Worker read-only cache evidence matches that expected failure: `swerex-prebuilt:...8be1...` and `swebench/sweb.eval...django-10097:latest` both show image ID prefix `3e38b9278651`.
+
+Cross-lane check:
+
+- Read `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` for #6/#8/#11 and generated-manifest terms. It confirms the existing #6/#8 preflight and rootless-readiness issues and does not contradict the manifest audit.
+- Runner-results remains parser/native-output focused; this round is runtime/image transport and identity evidence only.
+
+### Round 7 command evidence
+
+- Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then `_coordination/20260625_harbor_bench/HANDOFF.md`: rc 0.
+- Read `superpowers:systematic-debugging` skill instructions: rc 0.
+- Memory quick search for `terminal_bench_2_1_swe_dev_cache`, `swebench_verified_django10097`, TB2.1, and django10097 terms: rc 0, no hits used.
+- Active worktree/file existence check: rc 0; branch `feat/image-warmup-policy`, observed head `9dffbe8`; generated manifests exist; an unrelated untracked `_coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv.tmp` was present and not touched.
+- First manifest line-number read command had a shell `printf --` option error and exited rc 2 before printing useful manifest content; rerun with `printf "%s\n"` succeeded rc 0.
+- Static manifest parser for TB2.1 and SWE django10097: rc 0; printed the row/transport/identity counts quoted above.
+- Read manifest examples, no-transport line examples, and SWE django10097 rows with `nl -ba`/`grep`: rc 0.
+- Read checker semantics in `scripts/agentic_bench_images.py:182-210`, `474-523`, and `730-737`: rc 0.
+- Read `manifests/bench_registry.yaml:42-62` and `manifests/images/README.md:20-32`: rc 0.
+- Worker read-only cache list through explicit worker-j9jjd endpoint with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`: rc 0; no Docker inspect/run/pull/load, only `docker image ls`.
+- Two attempted `--skip-docker --json` parse commands were malformed because here-doc stdin consumed the pipe; they exited rc 1 and rc 120 with BrokenPipe, no file or Docker mutation. Corrected `python -c` pipe runs for TB and SWE both exited rc 0 and returned all rows as `unchecked`.
+- Cross-lane grep over runtime and runner ledgers for generated manifests/#6/#8/#11: rc 0.
+
+## Next loop target
+
+Next runtime/image subdomain: audit the static-lint gap for generated image manifests. A useful next check is whether the repo should add a manifest lint mode that fails audit manifests with required rows lacking both digest and verified fallback sha, while keeping runtime worker preflight responsible for Docker presence/identity/smoke.
+
+### Orchestrator reconciliation after `588006f`
+
+After this Round 7 audit was written, the orchestrator computed and committed `fallback_tar_sha256` for all 50 shared TB2.1 tar rows in `588006f Verify terminal bench fallback shas`. The Round 7 `no_sha=50` observation is therefore superseded for current head. The remaining #6/#8 transport blocker is the 39 required TB2 rows with no P0 digest and no shared fallback tar, plus the need to publish/verify registry digests before worker full preflight.
