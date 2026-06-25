@@ -34,6 +34,18 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
   - First executable worker smoke through the `dev` relay proxy.
   - Confirms tau2 harness completion via YAML suite, records the proxy topology, and distinguishes infra pass from sampled task reward `0.0`.
 
+- `offline_image_loader_20260625.md`
+  - Offline/rootless Docker image preload/check helper.
+  - Documents `scripts/load_offline_images.sh --check`, expected rootless Docker socket defaults, and fake-Docker verification.
+
+- `cocoabench_prepare_smoke_20260625.md`
+  - Worker-side CoCoA prepare-only smoke.
+  - Confirms the correct shared `COCOA_ROOT` and records the Python 3.13 environment blocker for full CoCoA runs.
+
+- `terminal_bench_2_1_smoke_plan_20260625.md`
+  - Terminal-Bench 2.1 one-task smoke plan and dry-run wrapper.
+  - Selects `fix-git`, records image/tb CLI blockers, and gives the exact post-unblock execute command.
+
 - `trace_manifest_template.yaml`
   - Per-task trace collection template.
   - Copy this next to each raw trace/result directory before citing a run.

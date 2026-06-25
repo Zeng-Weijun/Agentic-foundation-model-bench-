@@ -19,6 +19,9 @@ Key reports:
 - `reports/yaml_suite_launcher_plan_20260625.md` - dry-run-first `sh + yaml` suite launcher draft.
 - `reports/worker_j9jjd_preflight_20260625.md` - live worker/rootless/API preflight.
 - `reports/tau2_proxy_smoke_20260625.md` - first worker tau2 smoke through the `dev` relay proxy.
+- `reports/offline_image_loader_20260625.md` - offline/rootless Docker image check/load helper.
+- `reports/cocoabench_prepare_smoke_20260625.md` - CoCoA worker prepare-only smoke and env blocker.
+- `reports/terminal_bench_2_1_smoke_plan_20260625.md` - Terminal-Bench 2.1 one-task smoke wrapper plan.
 - `reports/trace_manifest_template.yaml` - per-task trace manifest template.
 
 First runnable suite entrypoint:
@@ -40,6 +43,22 @@ Current executable smoke:
 ```
 
 This uses worker -> `dev` proxy -> 8.130 relay for model traffic. The 2026-06-25 run completed the tau2 harness and wrote artifacts; sampled task reward was `0.0`, so treat it as infrastructure proof only.
+
+Offline Docker image preflight for the worker:
+
+```bash
+scripts/load_offline_images.sh --check
+```
+
+This checks `manifests/offline_images.example.yaml` against `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` without pulling from the internet. Run without `--check` only after the expected image tar files are staged on shared storage.
+
+Terminal-Bench 2.1 one-task dry-run wrapper:
+
+```bash
+scripts/run_terminal_bench_2_1_smoke.sh --dry-run
+```
+
+Execution is fail-closed until the worker has a usable Terminal-Bench Python 3.13 environment and the selected `tb2-offline/fix-git:20260425` image is loaded into rootless Docker.
 
 Current local Qwen score anchor:
 

@@ -183,6 +183,7 @@ benches:
     params:
       MAX_CONCURRENCY: 1
       COCOA_WORKERS: 1
+      COCOA_ROOT: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/cocoabench/source/cocoa-agent
       COCOA_TASKS_DIR: cocoabench-example-tasks
       COCOA_TASKS: linear-regime-estimation
       COCOA_MAX_ITERATIONS: 20

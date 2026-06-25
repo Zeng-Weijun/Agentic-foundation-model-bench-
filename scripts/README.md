@@ -64,6 +64,18 @@ Start the `dev` relay proxy from the shared checkout on `dev`:
 BENCH_PROXY_PORT=18540 scripts/start_dev_relay_proxy.sh
 ```
 
+Check offline/rootless Docker image readiness on the worker:
+
+```bash
+scripts/load_offline_images.sh --check
+```
+
+Dry-run the current Terminal-Bench 2.1 one-task smoke wrapper:
+
+```bash
+scripts/run_terminal_bench_2_1_smoke.sh --dry-run
+```
+
 Run a narrow executable legacy smoke:
 
 ```bash
