@@ -2,19 +2,20 @@
 
 Date: 2026-06-25
 
-This is the integration plan for the new GitHub repository and the future shared-disk deployment on `swe_dev`.
+This is the integration plan for the new GitHub repository and the future shared-disk deployment orchestrated from `dev`. Rootless workers are separate execution nodes and may be offline.
 
 ## Decision Summary
 
 1. GitHub should contain source, docs, manifests, schema, and lightweight runner wrappers.
 2. Shared storage should contain datasets, harness checkouts, model/runtime paths, run artifacts, large traces, and benchmark outputs.
-3. The new shared-disk project should use a clean root:
+3. `dev` is the control/staging host for setup, downloads, manifest creation, queueing, and worker dispatch. Offline workers should only consume pre-staged assets.
+4. The new shared-disk project should use a clean root:
 
 ```text
 /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
 ```
 
-4. The deployment should inherit the proven `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench` layout pattern:
+5. The deployment should inherit the proven `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench` layout pattern:
 
 ```text
 benchmark/scaffold/run.sh
@@ -25,7 +26,7 @@ runs/<suite_id>/script_snapshots/
 runs/<suite_id>/<bench>/artifact_manifest.json
 ```
 
-5. Do not treat current `run_*.sh` scripts as rootless worker infrastructure. They are runner adapters. Add a worker layer above them.
+6. Do not treat current `run_*.sh` scripts as rootless worker infrastructure. They are runner adapters. Add a worker layer above them.
 
 ## GitHub Repository Scope
 
@@ -155,11 +156,11 @@ Large agent-native traces can remain in native paths if every run has a manifest
 ## Worker Architecture
 
 ```text
-local Mac controller
+local Mac control plane
   └── local tmux session
-        └── ssh swe_dev
-              └── controller creates run manifests and worker queue
-                    └── rootless worker process
+        └── ssh dev
+              └── controller creates run manifests, stages assets, and owns the worker queue
+                    └── ssh/offline dispatch to rootless worker process
                           └── existing benchmark runner adapter
                                 └── Docker/Podman rootless container tasks
 ```
@@ -168,12 +169,16 @@ Worker contract:
 
 - non-root user
 - explicit `DOCKER_HOST`
+- explicit `controller_host=dev`
+- explicit `execution_host` / `worker_host`
+- explicit `network_policy`, defaulting to `offline_or_internal_only`
 - unique `worker_id`
 - unique `COMPOSE_PROJECT_NAME`
-- isolated `/data/tmp/bench-rootless/<worker_id>`
+- isolated `<worker_tmp_root>/<worker_id>`
 - artifact root under shared storage
 - no API keys in files
 - no shared mutable checkout config
+- no public internet downloads, git fetches, dependency installs, or image pulls from the worker
 
 ## First Milestones
 
@@ -199,6 +204,7 @@ Goal:
 
 - Create the clean shared root and empty skeleton directories.
 - Add manifests with pointers to existing datasets/harnesses/models.
+- Run this from `dev`.
 
 No benchmark runs.
 
@@ -206,8 +212,9 @@ No benchmark runs.
 
 Goal:
 
-- Prove or disprove usable rootless Docker/Podman on `swe_dev`.
+- Prove or disprove usable rootless Docker/Podman on the offline worker after the user opens it.
 - Record `worker_manifest.json`.
+- Record `controller_host=dev`, `worker_host`, `execution_host`, `worker_network=offline_or_internal_only`, and shared-mount availability.
 
 Checks:
 
@@ -218,6 +225,7 @@ Checks:
 - compose version
 - bind-mount read/write/delete
 - network reachability to internal model endpoint
+- absence of public internet dependency during the smoke
 
 ### M3: No-Model Smoke
 
@@ -257,9 +265,11 @@ Only after M0-M5 are complete.
 
 ## Immediate Risks
 
-- Current `swe_dev` shell appears as root with empty `XDG_RUNTIME_DIR`; rootless availability is unknown.
+- The previous `swe_dev` root/empty-`XDG_RUNTIME_DIR` observation is historical evidence, not the new target. The new worker's user, UID/GID, `XDG_RUNTIME_DIR`, and rootless engine are unknown.
+- Offline workers cannot pull images, fetch repos, install packages, or download datasets at run time; all large assets and dependencies must be staged from `dev`.
 - Rootful Docker image caches may not be visible to rootless engines.
 - `host.docker.internal` may not work in rootless containers; DeepSWE depends on it for API relay.
+- The offline worker may not reach internal model endpoints directly; model traffic may need a `dev`-side relay/proxy if allowed.
 - OpenHands wrapper mutates a shared config path; this is unsafe under concurrent workers.
 - Terminal-Bench tasks may require capabilities unavailable under rootless containers.
 - Qwen native runner internals need inspection for Docker assumptions.
@@ -271,6 +281,8 @@ Only after M0-M5 are complete.
 
 1. Push the dossier-only GitHub repository.
 2. Add `manifests/*.example.yaml` and `runs.schema.json`.
-3. Create the shared-disk skeleton under the clean project root.
-4. Run rootless preflight only after explicit permission.
-5. Convert one existing SWE-bench Verified scaffold into the new manifest contract before expanding to other benchmarks.
+3. Create the shared-disk skeleton under the clean project root from `dev`.
+4. Collect worker facts once the user opens the worker: SSH alias/user, hostname, UID/GID, shared mount, tmp root, rootless engine, `DOCKER_HOST`, `XDG_RUNTIME_DIR`, and model endpoint reachability.
+5. Pre-stage required images/dependencies from `dev`; do not rely on worker internet.
+6. Run rootless preflight only after explicit permission.
+7. Convert one existing SWE-bench Verified scaffold into the new manifest contract before expanding to other benchmarks.

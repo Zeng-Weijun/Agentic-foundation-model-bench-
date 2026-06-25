@@ -2,18 +2,20 @@
 
 Date: 2026-06-25
 
-Research mode: read-only. No files were edited; no benchmark, Docker, Podman, rootless worker, or model-serving job was started.
+Research mode: read-only. No benchmark, Docker, Podman, rootless worker, or model-serving job was started.
+
+2026-06-25 user override: operate from `dev`, not `swe_dev`. A rootless worker may be opened later as a separate SSH target and may have no public internet access. Treat `dev` as the controller/staging host and the worker as an offline execution node unless explicitly proven otherwise.
 
 ## Executive Summary
 
-Existing `run_*.sh` scripts are benchmark adapters, not a rootless worker architecture. Future testing on `swe_dev` should add a dedicated rootless worker layer that wraps the existing runners.
+Existing `run_*.sh` scripts are benchmark adapters, not a rootless worker architecture. Future testing should run a controller on `dev` and dispatch to dedicated offline rootless worker nodes that wrap the existing runners.
 
-Current evidence from the read-only inspection:
+Historical evidence from the earlier read-only `swe_dev` inspection:
 
 - `swe_dev` SSH currently lands as `root` (`uid=0`).
 - `XDG_RUNTIME_DIR` was empty in the inspected shell.
 - Existing DeepSWE artifacts came from ordinary Docker/Pier/compose-style execution.
-- Rootless Docker/Podman availability has not been established.
+- Rootless Docker/Podman availability has not been established on the future worker.
 
 Therefore the correct next step is not to launch full benchmarks. The correct next step is to define and test a rootless worker contract with controlled no-model and one-task smoke checks.
 
@@ -21,18 +23,19 @@ Therefore the correct next step is not to launch full benchmarks. The correct ne
 
 ### Control Plane
 
-Local Mac remains the control plane:
+Local Mac remains the user control plane, but long-running benchmark orchestration should enter `dev` first:
 
 ```text
 local Mac
   └── tmux session
-        └── ssh swe_dev
+        └── ssh dev
               └── controller script
+                    └── ssh/offline dispatch to rootless worker(s)
 ```
 
 Rules:
 
-- Long jobs should start inside a local `tmux` session, then SSH into `swe_dev`.
+- Long jobs should start inside a local `tmux` session, then SSH into `dev`.
 - Do not run long jobs in a plain foreground SSH session.
 - Do not perform ad-hoc resource allocation.
 - Shared paths must resolve under:
@@ -48,10 +51,12 @@ The controller should be responsible for:
 - creating `run_manifest.json`
 - creating job queue entries
 - assigning jobs to workers
+- staging datasets, harnesses, images, wheelhouses, and config snapshots for offline workers
 - recording status transitions
 - writing `controller.log`
 - never calling the Docker socket directly
 - never writing API keys to command manifests
+- never requiring the offline worker to perform public internet downloads, git fetches, or image pulls
 
 The current local sync script points at:
 
@@ -67,7 +72,7 @@ For the new project, use a cleaner root:
 
 ### Worker Layer
 
-Each worker should be a non-root process on `swe_dev` with a controlled rootless container endpoint:
+Each worker should be a non-root process on a concrete `worker_host` with a controlled rootless container endpoint:
 
 ```text
 DOCKER_HOST=unix:///run/user/<uid>/docker.sock
@@ -78,12 +83,15 @@ or a Podman-compatible socket.
 Worker-owned state:
 
 ```text
+controller_host: dev
+execution_host / worker_host
 worker_id
 uid/gid
 rootless container socket
 max_parallel_jobs
-tmp root: /data/tmp/bench-rootless/<worker_id>
+tmp root: <worker_tmp_root>/<worker_id>
 artifact root: /mnt/.../agentic-foundation-model-bench/runs/<bench>/<run_id>
+network_policy: offline_or_internal_only
 ```
 
 Worker-injected environment:
@@ -95,9 +103,12 @@ TMPDIR
 DOCKER_HOST
 COMPOSE_PROJECT_NAME
 NO_PROXY
-OPENAI_BASE_URL or internal model endpoint
+BENCH_OFFLINE=1 when public internet is unavailable
+OPENAI_BASE_URL or internal model endpoint if reachable from the worker
 OPENAI_API_KEY present as env only
 ```
+
+Offline worker rule: the worker must not build by downloading dependencies, pull public container images, fetch GitHub repositories, or install packages from the internet. If a task needs images or wheels, preload them from `dev` through shared storage, `docker save/load`, `podman load`, or an explicitly approved internal registry/cache.
 
 ### Runner Layer
 
@@ -144,7 +155,7 @@ sweagent
 
 Risks:
 
-- Rootless image store may not contain the existing SWE-bench images.
+- Rootless image store may not contain the existing SWE-bench images; offline workers cannot pull them on demand.
 - Rootless bind-mount uid/gid behavior may change file ownership in working trees.
 - OpenHands shared `config.toml` mutation is not worker-safe. It must be copied per run or rewritten to use a per-run config file.
 - Qwen native runner must be checked for rootful Docker assumptions.
@@ -200,7 +211,7 @@ Known requirements:
 
 Risks:
 
-- Image pull/cache under rootless engine.
+- Image pull/cache under rootless engine. Offline workers need preloaded images or shared tarballs.
 - Cross-language test sandbox behavior.
 - Native outputs currently live under RepoZero-specific output paths, not always under `BENCH_RUN_DIR`; a manifest back-reference is required.
 
@@ -237,8 +248,11 @@ Required fields:
   "suite_id": "",
   "bench": "",
   "mode": "",
-  "controller_host": "local-mac",
-  "remote_host": "swe_dev",
+  "controller_host": "dev",
+  "remote_host": "dev",
+  "execution_host": "",
+  "worker_host": "",
+  "worker_network": "offline_or_internal_only",
   "remote_hostname": "",
   "cwd": "",
   "script_path": "",
@@ -264,6 +278,9 @@ Required fields:
 ```json
 {
   "schema_version": "agentic_bench.worker_manifest.v1",
+  "controller_host": "dev",
+  "execution_host": "",
+  "worker_host": "",
   "worker_id": "",
   "uid": null,
   "gid": null,
@@ -273,6 +290,7 @@ Required fields:
   "compose_version": "",
   "storage_root": "",
   "tmp_root": "",
+  "network_policy": "offline_or_internal_only",
   "max_parallel_jobs": null,
   "ports_used": [],
   "no_proxy": "",
@@ -287,11 +305,15 @@ Extend the existing template in `reports/trace_manifest_template.yaml` with:
 
 ```yaml
 worker:
+  controller_host: "dev"
+  execution_host: ""
+  worker_host: ""
   worker_id: ""
   rootless: null
   container_engine: ""
   docker_host: ""
   tmp_root: ""
+  network_policy: "offline_or_internal_only"
 
 container:
   image: ""
@@ -350,9 +372,9 @@ Rules:
 
 Do not start with a full benchmark. Use this order.
 
-### Phase 0: Read-only Preflight
+### Phase 0: `dev` Control-Host Read-only Preflight
 
-Check:
+Check from `dev`:
 
 ```text
 hostname
@@ -365,17 +387,19 @@ find <project_root> -maxdepth 2 -name 'run_*.sh'
 
 Goal:
 
-- confirm host identity
+- confirm `dev` host identity
 - confirm shared path
 - confirm tmp path
 - confirm runner presence
 
-### Phase 1: Rootless Engine Preflight
+### Phase 1: Offline Worker SSH and Rootless Engine Preflight
 
-Only after explicit permission to run rootless checks:
+Only after the worker is opened and explicit permission is given to run rootless checks on that worker:
 
 ```bash
+hostname
 id
+echo "$XDG_RUNTIME_DIR"
 echo "$DOCKER_HOST"
 docker context ls
 docker info --format '{{json .SecurityOptions}}'
@@ -390,6 +414,8 @@ Goal:
 - prove bind mounts work
 - prove cleanup works
 - prove the engine is not rootful by accident
+- confirm whether shared storage is mounted on the worker
+- confirm the worker has no public internet dependency for the smoke
 
 ### Phase 2: No-Model Container Smoke
 
@@ -406,7 +432,7 @@ Goal:
 
 ### Phase 3: API Smoke
 
-Check only `/v1/models` and endpoint reachability. Do not run task generation.
+Check only `/v1/models` and endpoint reachability from the intended execution path. Do not run task generation.
 
 Goal:
 
@@ -435,9 +461,13 @@ After a one-worker run has complete manifests:
 
 ## Open Questions
 
-- Does `swe_dev` have usable rootless Docker or Podman?
-- Is the rootless image store prewarmed with SWE-bench and Terminal-Bench images?
-- Does `host.docker.internal` work from rootless containers on `swe_dev`?
+- What is the new offline worker SSH alias, user, UID/GID, and hostname?
+- Does the worker have usable rootless Docker or Podman, and what is `DOCKER_HOST`?
+- Is `/mnt/shared-storage-user/mineru2-shared/zengweijun` mounted on the worker?
+- What worker tmp root should be used if `/data/tmp` is unavailable?
+- Is the rootless image store prewarmed with SWE-bench and Terminal-Bench images, or do we need `docker save/load` / `podman load` tarballs staged from `dev`?
+- Does `host.docker.internal` work from rootless containers on the worker?
+- Can the offline worker reach the internal model endpoint, or must model traffic proxy through `dev`?
 - Can OpenHands be forced to use a per-run config without mutating a shared checkout?
 - Which Terminal-Bench 2.0/2.1 tasks require capabilities incompatible with rootless containers?
 - Does the Qwen native SWE-bench runner call Docker directly, and can it honor `DOCKER_HOST`?

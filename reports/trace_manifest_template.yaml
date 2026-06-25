@@ -33,6 +33,36 @@ harness:
   metric: ""
   pass_condition: ""
 
+worker:
+  controller_host: "dev"
+  execution_host: ""
+  worker_host: ""
+  worker_id: ""
+  rootless: null
+  container_engine: ""
+  docker_host: ""
+  tmp_root: ""
+  network_policy: "offline_or_internal_only"
+
+container:
+  image: ""
+  compose_files: []
+  project_name: ""
+  network_policy: "offline_or_internal_only"
+  mounts: []
+
+verifier:
+  exit_code: null
+  timeout_s: null
+  stdout_path: ""
+  stderr_path: ""
+  log_path: ""
+
+failure:
+  infra_error: null
+  failure_category: ""
+  retry_of: ""
+
 observations:
   final_status: ""
   score_or_reward: null

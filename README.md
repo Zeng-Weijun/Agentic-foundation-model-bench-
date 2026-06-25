@@ -6,8 +6,8 @@ Current focus:
 
 - organize benchmark definitions, task shapes, harnesses, score anchors, and local Qwen/GPT evidence;
 - preserve the existing SWE-bench Verified lessons from shared storage;
-- design a clean shared-disk layout for `swe_dev`;
-- define a rootless worker contract before running larger benchmark campaigns.
+- use `dev` as the orchestration/control host for shared-disk setup and benchmark staging;
+- define an offline rootless worker contract before running larger benchmark campaigns.
 
 Key reports:
 
@@ -39,11 +39,13 @@ Future large artifacts and runnable benchmark state should live under:
 
 GitHub should contain source, docs, schemas, manifests, and lightweight runner wrappers. Shared storage should contain datasets, harness checkouts, model/runtime pointers, run artifacts, raw traces, and large outputs.
 
+Operational target: orchestrate from `dev`. Rootless workers can be separate SSH targets and may have no public internet access, so downloads, git fetches, image pulls, dependency preparation, and dataset staging should happen on `dev` or through prebuilt shared caches. Offline workers should consume only pre-staged assets.
+
 ## Existing Local Launchers
 
 The rest of this file documents the existing local benchmark launcher directory. These scripts are useful inputs, but they are not yet the final rootless worker architecture.
 
-这个目录是为了把 `swe_dev` 上当前几条能跑的 benchmark 收到一个入口下。每个 benchmark 一个独立 `run_*.sh`，都通过同一套环境变量切模型。
+历史上这个目录是为了把 `swe_dev` 上当前几条能跑的 benchmark 收到一个入口下。每个 benchmark 一个独立 `run_*.sh`，都通过同一套环境变量切模型。后续不要把这段当作新部署目标；新的编排入口应从 `dev` 发起，再调度离线 rootless worker。
 
 目标远端路径建议是：
 
@@ -57,7 +59,7 @@ The rest of this file documents the existing local benchmark launcher directory.
 /Users/Zhuanz1/Desktop/ssh_work/paper_reading/bench
 ```
 
-SSH/DNS 恢复后同步到 `swe_dev`：
+历史同步脚本原先同步到 `swe_dev`，仅作为旧 launcher 记录：
 
 ```bash
 ./sync_to_swe_dev.sh
@@ -250,7 +252,7 @@ The selected full suite is configured in:
 bench/configs/gpt54mini_ab_cocoa_full.yaml
 ```
 
-Run it on `swe_dev` from the shared bench directory:
+Historical command from the old shared bench directory; do not treat this as the new deployment target:
 
 ```bash
 cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench
@@ -279,8 +281,10 @@ cocoabench
 `shared_bench/terminal-bench-2.0` into the local CLI-compatible directory
 `shared_bench/terminal-bench-2.0-yaml`, so this entry runs the 89 raw 2.0 tasks
 rather than the 241-task `original-tasks` directory. The converter defaults to
-the local prebuilt images `tb2-offline/<task>:20260425` on `swe_dev`; set
-`TB2_USE_PREBUILT_IMAGES=0` to force Dockerfile builds. `tau2_paper_core` runs
+local prebuilt images named `tb2-offline/<task>:20260425`; for offline rootless
+workers these images must be preloaded from `dev` or shared storage before a
+task starts. Set `TB2_USE_PREBUILT_IMAGES=0` only on an internet/build-capable
+host. `tau2_paper_core` runs
 only airline, retail, and telecom `base` with 4 trials. `cocoabench` points to
 `cocoabench-head`; the wrapper auto-enables encrypted-task loading and filters to
 the 148 `task.yaml.enc` tasks supported by the current `parallel_inference.py`

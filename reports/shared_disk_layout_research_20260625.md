@@ -4,6 +4,8 @@ Date: 2026-06-25
 
 Research mode: read-only. No files were edited on `swe_dev`; no benchmarks, Docker jobs, or model calls were started.
 
+Note after 2026-06-25 user override: this report preserves observed `swe_dev` paths as historical evidence. Future operations for this project should be orchestrated from `dev`, with separate offline rootless workers as execution nodes.
+
 ## Executive Summary
 
 There are two benchmark layouts on the shared storage:

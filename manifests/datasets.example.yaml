@@ -10,6 +10,7 @@ datasets:
     status: existing_not_rehashed
     notes:
       - Row count and checksum still need verification before final citation.
+      - Path name contains the historical swe_dev shared-bench mount; current orchestration target is dev plus offline workers.
   - id: terminal-bench-2.1
     name: Terminal-Bench 2.1
     local_path: ""

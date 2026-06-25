@@ -39,6 +39,33 @@
     "remote_hostname": {
       "type": "string"
     },
+    "execution_host": {
+      "type": "string"
+    },
+    "worker_host": {
+      "type": "string"
+    },
+    "worker_id": {
+      "type": "string"
+    },
+    "worker_network": {
+      "type": "string"
+    },
+    "network_policy": {
+      "type": "string"
+    },
+    "rootless": {
+      "type": ["boolean", "null"]
+    },
+    "container_engine": {
+      "type": "string"
+    },
+    "docker_host": {
+      "type": "string"
+    },
+    "worker_tmp_root": {
+      "type": "string"
+    },
     "cwd": {
       "type": "string"
     },
