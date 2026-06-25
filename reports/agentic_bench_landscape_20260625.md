@@ -89,7 +89,7 @@ Source: `configs/code_models/swebench_agents/qwen3_coder_30b_a3b_instruct_agent_
 | Terminal-X | Terminal depth/evolution: DeepTerminalBench, EvoCode, RoadmapBench | Harbor Terminus-2 fixed harness, Docker terminal, file editing, code execution | Published blog gives per-task/model maps; cite exact table only after extracting target split | No local Qwen full score yet |
 | MCP-Atlas | MCP tool-use tasks with noisy tool menus and cross-server orchestration | Real MCP servers in Docker, controlled tool exposure, claim-level LLM judge, pass if coverage >= 0.75 | Scale snapshot: top pass rate 83.6%; GPT-5.5 75.3%, GPT-5.4 70.6%, GPT-5.4-mini 56.7 | No local Qwen full score yet |
 | Tool Decathlon / Toolathlon | Long-horizon multi-application tool execution | 32 apps, 604 tools, 108 tasks, dedicated eval scripts | Paper abstract: best Claude-4.5-Sonnet 38.6%; top open-weight DeepSeek-V3.2-Exp 20.1% | No local Qwen full score yet |
-| tau3-bench / tau3-Banking | Customer-support tasks requiring policy retrieval plus backend tool calls | Simulated user-agent interaction; success by backend database state, not conversation quality | Artificial Analysis snapshot: GPT-5.5 xhigh 31.3%, Sonnet 4.6 adaptive max 30.5%, GPT-5.4 xhigh 30.3%; abstract says high-budget frontier around 25.5 pass^1 | Local launcher has tau2/tau family smoke support, but no Qwen3-30B tau3 full score in inspected evidence |
+| tau3-bench / tau3-Banking | Customer-support tasks requiring policy retrieval plus backend tool calls | Simulated user-agent interaction; success by backend database state, not conversation quality | Artificial Analysis snapshot: GPT-5.5 xhigh 31.3%, Sonnet 4.6 adaptive max 30.5%, GPT-5.4 xhigh 30.3%; abstract says high-budget frontier around 25.5 pass^1 | Local tau3 Harbor adapter inventory exists, but no Qwen3-30B tau3 full score in inspected evidence |
 | ProgramBench | Rebuild a program from compiled binary plus docs | Agent gets executable/docs, no source/tests; hidden behavioral tests check reconstructed program | Paper conclusion: no model fully resolves any task; partial progress only | No local Qwen full score yet |
 | RepoZero | Generate a repository from scratch by reimplementing APIs | Black-box output equivalence, cross-language constraints, sandboxed eval | Paper: strongest agents limited, about 30%-55%; conclusion says advanced scaffolds around 40% | Local README has RepoZero Py2JS wrapper and historical smoke support; no Qwen3-30B full score in inspected evidence |
 | NL2Repo | Generate a complete installable Python repo from NL requirements and empty workspace | Upstream pytest suites; long-horizon repo generation | Paper: Claude Sonnet 4.5 about 39.6 pass / 40.2 avg score; all agents struggle | No local Qwen3-30B full score; paper failure modes are relevant to Qwen attribution |
@@ -424,7 +424,7 @@ Task shape:
 
 Harness:
 
-- tau-bench/tau2 is a simulation framework for customer service agents.
+- The tau3-bench source lineage uses the Sierra upstream repository for simulated customer-service agents.
 - Domains specify policy, tools, tasks, and optionally user tools.
 - Available domains include airline, retail, telecom, and banking_knowledge.
 - tau3-Banking / tau-Knowledge requires navigating about 700 policy documents, about 195K tokens, 21 product categories, and 97 tasks.
@@ -442,7 +442,7 @@ Published score anchors:
 
 Local status:
 
-- The bench README has tau2 launcher support and prior smoke verification.
+- The bench README now treats tau3-bench as the tau-family target; legacy tau-family smoke evidence is de-scoped from the active bench list.
 - No local Qwen3-30B-A3B tau3 full score inspected yet.
 
 Trace fields to collect:
@@ -809,7 +809,7 @@ For the Qwen result, keep the statement precise:
 - Terminal-X blog: https://unipat.ai/blog/TerminalX
 - MCP-Atlas leaderboard: https://labs.scale.com/leaderboard/mcp_atlas
 - Tool Decathlon / Toolathlon OpenReview: https://openreview.net/forum?id=z53s5p0qhf
-- tau2/tau3 repository: https://github.com/sierra-research/tau2-bench
+- tau3 upstream source repository: https://github.com/sierra-research/tau2-bench
 - tau3-Banking Artificial Analysis: https://artificialanalysis.ai/evaluations/tau3-banking
 - ProgramBench paper: https://arxiv.org/html/2605.03546v1
 - RepoZero paper: https://arxiv.org/html/2605.07122v1

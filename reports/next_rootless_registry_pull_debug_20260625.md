@@ -434,7 +434,7 @@ export WORKER_SSH=ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-scivers
 ssh -CAXY "$WORKER_SSH" 'set -euo pipefail
 export DOCKER_HOST=unix:///tmp/rl/run/docker.sock
 docker ps -a --no-trunc
-ps -eo pid,ppid,stat,etime,comm,args | grep -Ei "repozero|terminal|cocoa|vita|tau2|agentic|benchmark" | grep -v grep || true'
+ps -eo pid,ppid,stat,etime,comm,args | grep -Ei "repozero|terminal|cocoa|vita|agentic|benchmark" | grep -v grep || true'
 ```
 
 2. Record current daemon identity and image count:

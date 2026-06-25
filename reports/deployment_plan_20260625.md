@@ -247,7 +247,7 @@ Run one task per benchmark family with strict manifest capture.
 
 Suggested order:
 
-1. tau2 or tau3 minimal task if harness is pinned
+1. tau3 minimal task after Harbor dataset/image staging
 2. RepoZero tiny case
 3. Terminal-Bench one rootless-compatible task
 4. SWE-bench Verified one known instance

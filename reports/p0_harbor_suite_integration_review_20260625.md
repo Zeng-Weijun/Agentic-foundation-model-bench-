@@ -60,7 +60,7 @@ point should be the future `--execute` path, before `_run_one()` starts the adap
 ## Suite Manifest Field
 
 Add one optional per-bench field. Omitted means "no Docker image preflight", which
-preserves current dry-run output and behavior for tau2, VitaBench, and other
+preserves current dry-run output and behavior for VitaBench and other
 docker-free rows.
 
 Suggested field shape:
@@ -88,7 +88,7 @@ Field semantics:
 
 Avoid a global suite-level default that applies to every bench. Several enabled rows
 are docker-free or have unproven image inventories; a broad default would make
-`--execute --only tau2_paper_core` or VitaBench surprisingly depend on Docker assets.
+VitaBench or other docker-free rows surprisingly depend on Docker assets.
 
 ## Offline Image Manifest Fields
 

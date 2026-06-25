@@ -37,7 +37,7 @@ worker_cache_summary:
     terminal_bench_tags: 0
     openhands_tags: 0
     repozero_repoarena_tags: 0
-    tau_vita_cocoa_deepswe_tags: 0
+    vita_cocoa_deepswe_tags: 0
 
 shared_asset_summary:
   observed_from: dev
@@ -56,9 +56,6 @@ shared_asset_summary:
       status: tar_manifest_available
       tar_count: 51
     - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/repozero
-      status: no_image_tar_found_in_bounded_check
-      tar_count: 0
-    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/tau2-bench
       status: no_image_tar_found_in_bounded_check
       tar_count: 0
     - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/vitabench
@@ -165,8 +162,8 @@ images:
       - no_repoarena_image_tar_found_in_bounded_check
     status: missing_image_and_missing_shared_tar
 
-  - bench: tau/vita/cocoa
-    id: tau2_vitabench_cocoabench_python_harnesses
+  - bench: vita/cocoa
+    id: vitabench_cocoabench_python_harnesses
     required_images: []
     present_on_worker:
       status: not_applicable_for_current_bounded_docker_inventory
@@ -180,7 +177,6 @@ images:
       - keep_worker_offline
       - add_docker_images_here_if_future_adapter_introduces_container_tasks
     source_path:
-      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/tau2-bench
       - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/vitabench
       - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/cocoabench
     status: no_required_docker_image_found_in_bounded_check

@@ -122,7 +122,6 @@ run_swebench_verified_openhands.sh
 run_terminal_bench.sh
 run_deepswe.sh
 run_repozero_py2js.sh
-run_tau2.sh
 ```
 
 But they should be invoked only by the worker wrapper so that each run receives:
@@ -215,15 +214,9 @@ Risks:
 - Cross-language test sandbox behavior.
 - Native outputs currently live under RepoZero-specific output paths, not always under `BENCH_RUN_DIR`; a manifest back-reference is required.
 
-### MCP / tau / Tool Benchmarks
+### MCP / tau3 / Tool Benchmarks
 
 Known requirements:
-
-- tau2 wrapper is mostly Python CLI + LLM args and writes:
-
-```text
-tau2-bench/data/simulations/<save_to>/results.json
-```
 
 - tau3/MCP/Toolathlon-style runs often require service state, DB snapshots, MCP server reset, and tool exposure manifests.
 
@@ -442,7 +435,7 @@ Goal:
 
 Suggested order:
 
-1. tau2 one task
+1. tau3 one task after Harbor dataset/image staging
 2. RepoZero one tiny case
 3. Terminal-Bench one task
 4. SWE-bench one known instance

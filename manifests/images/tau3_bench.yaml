@@ -13,7 +13,7 @@ evidence:
     retail: 114
     telecom: 114
     banking_knowledge: 97
-  blocker: generated task Dockerfiles clone the tau2/tau3 source during build; worker offline execution requires prebuilt images or rewritten Dockerfiles.
+  blocker: generated task Dockerfiles clone the upstream tau3 source checkout during build; worker offline execution requires prebuilt images or rewritten Dockerfiles.
 
 images:
   - id: tau3_harbor_main_runtime

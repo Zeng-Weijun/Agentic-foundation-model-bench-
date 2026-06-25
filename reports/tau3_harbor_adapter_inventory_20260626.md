@@ -9,10 +9,10 @@
 
 ## Dataset Evidence
 
-Generated from the local tau2/tau3 source checkout:
+Generated from the local upstream tau3 source checkout:
 
 ```text
-TAU2_BENCH_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/paper_reading/external_benchmarks/tau2-bench
+TAU3_SOURCE_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/paper_reading/external_benchmarks/tau2-bench
 ```
 
 Generated datasets:
@@ -63,7 +63,7 @@ The generated Harbor task Dockerfiles currently run `apt-get`, `git clone https:
 
 ## Next Steps
 
-- Build tau3 main/runtime base images without public network dependency, using the local tau2/tau3 checkout baked into the image.
+- Build tau3 main/runtime base images without public network dependency, using the local upstream tau3 checkout baked into the image.
 - Push or tar those images and update `manifests/images/tau3_bench.yaml` with exact local refs, digest refs, fallback tar checksums, and smoke commands.
 - Re-enable `tau3_bench` in `manifests/suite.example.yaml` only after image preflight can pass on worker.
 - Run `run_tau3_bench.sh` first with oracle or one-task `tau3_llm_agent`, then scale `TAU3_N_CONCURRENT` within the 40-50 relay envelope.

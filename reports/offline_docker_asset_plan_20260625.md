@@ -45,7 +45,7 @@ Grouped by benchmark keyword:
 | Terminal-Bench | 0 matching tags | Worker must load prebuilt `tb2-offline/*:20260425` images before offline runs. |
 | OpenHands | 0 matching runtime tags | SWE-bench base images are partly present, but OpenHands 0.54 runtime images are missing. |
 | RepoZero / RepoArena | 0 matching tags | `ghcr.io/jessezzzzz/repoarena-new:latest` must be staged and loaded. |
-| tau / vita / cocoa | 0 matching tags | No Docker image requirement was found in the bounded runner/config check; Python env/data assets still need staging. |
+| vita / cocoa | 0 matching tags | No Docker image requirement was found in the bounded runner/config check; Python env/data assets still need staging. |
 | DeepSWE | 0 matching DeepSWE/R2E tags | Exact R2E-Gym Docker image manifest and tar source are missing. |
 
 Representative present SWE images:
@@ -69,7 +69,7 @@ Bounded checks from `dev` found these image-related assets. No full-tree `du` wa
 | `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/manifest.jsonl` | Present. Maps task archives to `tb2-offline/<task>:20260425` image tags. |
 | `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/*.tar` | 51 Terminal-Bench 2.1 tar archives found. |
 | `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0.tar.gz` | OpenHands source archive exists, but this is not a Docker runtime image tar. |
-| `repozero`, `tau2-bench`, `vitabench`, `cocoabench`, `deepswe` benchmark dirs | No image tar files found in bounded checks. |
+| `repozero`, `vitabench`, `cocoabench`, `deepswe` benchmark dirs | No image tar files found in bounded checks. |
 
 ## Per-Benchmark Gap Plan
 
@@ -132,13 +132,13 @@ Required next asset work:
 3. Load it into rootless Docker on the worker.
 4. Verify the runner does not attempt a pull when `BENCH_OFFLINE=1`.
 
-### tau / vita / cocoa
+### Vita / CoCoA
 
-The bounded runner/config check did not find a required Docker image for tau2, VitaBench, or CoCoA. That does not make these benchmarks offline-ready; it only means the immediate blocker is probably Python environment, dataset, and harness assets rather than Docker images.
+The bounded runner/config check did not find a required Docker image for VitaBench or CoCoA. That does not make these benchmarks offline-ready; it only means the immediate blocker is probably Python environment, dataset, and harness assets rather than Docker images.
 
 Required next asset work:
 
-1. Create an offline wheelhouse/env manifest for the tau2, VitaBench, and CoCoA runner environments.
+1. Create an offline wheelhouse/env manifest for the VitaBench and CoCoA runner environments.
 2. Record dataset and encrypted-task asset paths.
 3. Add Docker image rows later if a future adapter introduces containerized tasks.
 
@@ -167,4 +167,4 @@ Before any benchmark run on `worker-j9jjd`, require all of the following:
 5. The worker does not perform public image pulls, package installs, git fetches, dataset downloads, or model calls during preflight.
 6. A no-model Docker/compose smoke passes per benchmark family before any model-backed run.
 
-The current state is therefore: SWE-bench/SWErex is partially warm on the worker; Terminal-Bench has shared tar assets but is not loaded on the worker; OpenHands, RepoZero, and DeepSWE still need image tar/preload work; tau/vita/cocoa need offline Python/data asset manifests rather than Docker preload rows based on this bounded check.
+The current state is therefore: SWE-bench/SWErex is partially warm on the worker; Terminal-Bench has shared tar assets but is not loaded on the worker; OpenHands, RepoZero, and DeepSWE still need image tar/preload work; VitaBench and CoCoA need offline Python/data asset manifests rather than Docker preload rows based on this bounded check.

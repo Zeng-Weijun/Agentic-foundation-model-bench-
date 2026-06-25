@@ -19,7 +19,7 @@ Make `Agentic-foundation-model-bench-` converge toward one-command, YAML-driven,
 
 ## Current Proven State
 
-- tau2 one-task-per-domain worker smoke passed at suite/harness level through `dev_proxy_gpt54mini_8130`; sampled reward was `0.0`.
+- tau3-bench is now the tau-family target; legacy tau-family smoke evidence is de-scoped from the active bench list.
 - VitaBench one-task worker smoke passed at harness level through the `dev` proxy; reward was `0.0` due capped `VITA_MAX_STEPS=20`.
 - CoCoA Python 3.13 runtime blocker on worker was fixed by a worker-local symlink to the shared `conda_envs/cocoa` env.
 - CoCoA suite entry launches, but task result is `status: error` because sandbox startup hits rootless Docker socket EOF before model calls.

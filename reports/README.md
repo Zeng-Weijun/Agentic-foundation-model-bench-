@@ -30,10 +30,6 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
 - `yaml_suite_launcher_plan_20260625.md`
   - Minimal dry-run-first `sh + yaml` suite launcher design, safety guards, legacy adapter execution status, and pending adapter list.
 
-- `tau2_proxy_smoke_20260625.md`
-  - First executable worker smoke through the `dev` relay proxy.
-  - Confirms tau2 harness completion via YAML suite, records the proxy topology, and distinguishes infra pass from sampled task reward `0.0`.
-
 - `offline_image_loader_20260625.md`
   - Offline/rootless Docker image preload/check helper.
   - Documents `scripts/load_offline_images.sh --check`, expected rootless Docker socket defaults, and fake-Docker verification.

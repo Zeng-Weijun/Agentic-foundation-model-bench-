@@ -12,7 +12,7 @@
 
 ## Executive Result
 
-VitaBench is the next executable candidate after tau2.
+VitaBench remains a docker-free smoke candidate; tau3-bench is the tau-family target after Harbor image staging.
 
 RepoZero is blocked for worker smoke because the required Docker image is not present in the worker rootless image cache and no matching shared tar was found. The RepoZero launcher has no no-model/dry-run mode and the runner invokes host `codex` plus Docker, so it was not run.
 

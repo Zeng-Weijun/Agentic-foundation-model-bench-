@@ -16,9 +16,6 @@ Inspected evidence:
 - `reports/repozero_suite_execute_preflight_smoke_20260625.md`
 - `/tmp/agentic_repozero_exec_74640d5/summary.json`
 - `/tmp/agentic_repozero_exec_74640d5/logs/repozero_py2js_smoke.log`
-- `reports/tau2_proxy_smoke_20260625.md`
-- `/tmp/agentic_tau2_proxy_smoke3/summary.json`
-- `/tmp/agentic_tau2_proxy_smoke3/logs/tau2_paper_core.log`
 - `reports/vitabench_repozero_worker_preflight_20260625.md`
 - `reports/qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
 - `reports/terminal_bench_2_1_smoke_plan_20260625.md`
@@ -390,53 +387,6 @@ For the current smoke, normalized status must be:
 - `failure.infra_error=false`
 - `failure.failure_category=agent_generation_failed`
 
-### tau2
-
-Parser ID: `tau2`
-
-Observed sources:
-
-- Controller log lines:
-  - `artifact=<...>/results.json`
-  - `done: <...>/results.json`
-  - human reward summaries.
-- Native JSON paths:
-  - `tau2-bench/data/simulations/<save_to>/results.json`
-
-Native fields to extract:
-
-- domain or task split from path/config.
-- `tasks` count.
-- `simulations` count.
-- per-simulation task id.
-- reward or score.
-- termination reason.
-- duration if present.
-- step count if present.
-
-Normalized metric:
-
-- `metric=reward`
-- `primary_score=average_reward`
-- `reward_avg`
-- `tasks_total=number of parsed simulations`
-- `tasks_passed=count(reward >= 1.0)` unless native success boolean exists.
-
-Smoke caveat:
-
-- The recorded tau2 smoke completed one simulation per domain with reward `0.0`.
-- Parser should mark `benchmark_result.status=fail` or `partial` for quality, but
-  `execution.adapter_status=pass`.
-- `score_claim.valid_for_leaderboard=false` because it is a three-domain smoke,
-  not a declared full benchmark split.
-
-Failure classification:
-
-- Reward `0.0` with completed simulation: `agent_task_failed`, not infra.
-- Missing `results.json`: `native_artifact_missing`.
-- Runner timeout or no simulation: `timeout` or `adapter_crash` depending on
-  process exit/log evidence.
-
 ### VitaBench
 
 Parser ID: `vitabench`
@@ -683,15 +633,13 @@ fixtures before parser code:
    - benchmark fail.
    - `tests_passed=0`, `tests_total=60`.
    - `score_claim.valid_for_leaderboard=false`.
-2. tau2 log fixture with three `artifact=` lines and synthetic `results.json`
-   files. Expected average reward and per-domain cases.
-3. VitaBench synthetic simulation JSON with `termination_reason=max_steps`.
+2. VitaBench synthetic simulation JSON with `termination_reason=max_steps`.
    Expected `failure_category=capped_steps`.
-4. SWE-bench synthetic corrected score JSON. Expected `245/500` style
+3. SWE-bench synthetic corrected score JSON. Expected `245/500` style
    normalization plus empty-patch count.
-5. Terminal-Bench infra-blocked fixture. Expected `benchmark_status=infra_error`
+4. Terminal-Bench infra-blocked fixture. Expected `benchmark_status=infra_error`
    and no false task pass.
-6. DeepSWE partial-run fixture. Expected `benchmark_status=partial`,
+5. DeepSWE partial-run fixture. Expected `benchmark_status=partial`,
    pending/running counts, timeout exceptions, and invalid leaderboard claim.
 
 ## Immediate Recommendation
@@ -710,7 +658,6 @@ score_claim.valid_for_leaderboard=false
 failure_category=agent_generation_failed
 ```
 
-After that, wire tau2 and VitaBench because both already have successful harness
-smokes with reward `0.0` and native simulation paths. SWE-bench, Terminal-Bench,
-and DeepSWE should follow once their native artifact discovery is explicit enough
-to avoid parsing fragile prose reports.
+After that, wire VitaBench. SWE-bench, Terminal-Bench, and DeepSWE should follow
+once their native artifact discovery is explicit enough to avoid parsing fragile
+prose reports.
