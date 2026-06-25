@@ -1,0 +1,40 @@
+schema_version: agentic_bench.offline_images.v1
+generated_at: "2026-06-25T21:45:00+08:00"
+scope:
+  check_mode: repozero_exact_image_tar
+  controller_host: dev
+  source_image: ghcr.io/jessezzzzz/repoarena-new:latest
+  source_digest_status: unavailable_ghcr_denied_from_dev_as_of_2026_06_25
+  staging_policy:
+    - stage_from_internet_enabled_host_with_ghcr_access
+    - place_tar_under_shared_asset_root
+    - load_on_worker_from_shared_tar_only
+    - never_pull_from_worker_public_internet
+  worker_id: worker-j9jjd
+  worker_host: ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn
+  worker_docker_host: unix:///tmp/rl/run/docker.sock
+  asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+
+images:
+  - bench: repozero/repoarena
+    id: repozero_py2js_repoarena_runtime
+    required_images:
+      - ghcr.io/jessezzzzz/repoarena-new:latest
+    source_path:
+      - images/repozero/repoarena-new_latest.tar
+    sha256_path:
+      - images/repozero/repoarena-new_latest.tar.sha256
+    metadata_path:
+      - images/repozero/repoarena-new_latest.docker-inspect.json
+      - images/repozero/repoarena-new_latest.manifest.json
+    preload_method:
+      - run scripts/stage_repozero_image.sh --execute on dev after GHCR auth is fixed or on another internet-enabled staging host with GHCR access
+      - verify sha256sum -c images/repozero/repoarena-new_latest.tar.sha256
+      - load on worker with DOCKER_HOST=unix:///tmp/rl/run/docker.sock docker load -i images/repozero/repoarena-new_latest.tar
+      - verify docker image inspect ghcr.io/jessezzzzz/repoarena-new:latest on worker
+    staging_status:
+      status: blocked_not_staged
+      reason: dev_docker_can_reach_ghcr_but_current_credentials_are_denied_for_exact_tag
+      dev_tooling: docker_available_skopeo_podman_buildah_missing
+      tar_status: missing
+      worker_image_status: missing

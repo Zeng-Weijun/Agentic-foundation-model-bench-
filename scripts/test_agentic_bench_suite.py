@@ -230,6 +230,43 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(run["runtime_env"]["BENCH_MODEL_PROFILE"], "gpt54mini_8130")
         self.assertEqual(run["runtime_env"]["OPENAI_BASE_URL"], "http://100.96.1.101:18540/v1")
 
+    def test_example_manifest_vitabench_one_task_smoke_uses_verified_runner(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        plan = module.build_run_plan(
+            config,
+            suite_path=suite_path,
+            dry_run=True,
+            only={"vitabench_delivery_one_task_smoke"},
+            model_profile_override="dev_proxy_gpt54mini_8130",
+        )
+
+        self.assertEqual(len(plan["runs"]), 1)
+        run = plan["runs"][0]
+        self.assertEqual(run["bench_id"], "vitabench_delivery_one_task_smoke")
+        self.assertEqual(run["script_path"], "run_vitabench.sh")
+        self.assertNotEqual(run["script_path"], "run_vitabench_full.sh")
+        self.assertEqual(run["model"]["profile_id"], "dev_proxy_gpt54mini_8130")
+        self.assertEqual(run["runtime_env"]["BENCH_MODEL_PROFILE"], "gpt54mini_8130")
+        self.assertEqual(run["runtime_env"]["OPENAI_BASE_URL"], "http://100.96.1.101:18540/v1")
+        self.assertIn("run_vitabench.sh", run["command"])
+        self.assertNotIn("run_vitabench_full.sh", run["command"])
+        expected_params = {
+            "VITA_DOMAIN": "delivery",
+            "VITA_TASK_SET_NAME": "delivery",
+            "VITA_TASK_IDS": 10711001,
+            "NUM_TASKS": 1,
+            "NUM_TRIALS": 1,
+            "MAX_CONCURRENCY": 1,
+            "VITA_MAX_STEPS": 20,
+            "VITA_ENABLE_THINK": 0,
+            "VITA_LANGUAGE": "english",
+        }
+        self.assertEqual(run["params"], expected_params)
+        for key, value in expected_params.items():
+            self.assertIn(f"{key}={value}", run["command_preview"])
+
 
 if __name__ == "__main__":
     unittest.main()

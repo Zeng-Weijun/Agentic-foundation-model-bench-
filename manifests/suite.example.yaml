@@ -130,6 +130,24 @@ benches:
       VITA_ENABLE_THINK: 0
       VITA_LANGUAGE: english
 
+  - id: vitabench_delivery_one_task_smoke
+    benchmark: vitabench
+    adapter: vitabench
+    adapter_script: run_vitabench.sh
+    adapter_status: wired_legacy
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      VITA_DOMAIN: delivery
+      VITA_TASK_SET_NAME: delivery
+      VITA_TASK_IDS: 10711001
+      NUM_TASKS: 1
+      NUM_TRIALS: 1
+      MAX_CONCURRENCY: 1
+      VITA_MAX_STEPS: 20
+      VITA_ENABLE_THINK: 0
+      VITA_LANGUAGE: english
+
   - id: terminal_bench_2_0
     benchmark: terminal_bench
     adapter: terminal_bench
