@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 03:45 Asia/Shanghai
+Updated: 2026-06-26 04:15 Asia/Shanghai
 
 ## Objective
 
@@ -11,7 +11,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Shared repo root: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo`
 - Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
 - Branch: `feat/image-warmup-policy`
-- Latest implementation commit: `12fe709 Verify fallback files in registry lint`; newer handoff-only commits may exist.
+- Latest implementation commit: `c7a0eef Materialize TB2 low-risk transport batch 3`; batch4 is staged in the current worktree pending commit.
 - Original base commit for this workstream: `c42f23c Record runtime image hunt issues`
 - Driver doc: `_coordination/20260625_harbor_bench/DRIVER.md`
 - Remote worker: `worker-j9jjd`
@@ -69,7 +69,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 
 ## Next Wakeup Prompt
 
-Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: publish or record transport for the remaining 29 TB2 cache rows via P0 digest refs plus verified fallback tar sha; SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint with suite concurrency 40-50 and image transport concurrency capped separately at 2-4.
+Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: publish or record transport for the remaining 24 TB2 cache rows via P0 digest refs plus verified fallback tar sha; SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint with suite concurrency 40-50 and image transport concurrency capped separately at 2-4.
 
 ## Acceptance Snapshot
 
@@ -83,9 +83,9 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Direct `swe_dev -> worker` remains blocked by publickey; local Mac -> worker works.
 - Local `worker` SSH alias was observed pointing at stale `worker-pshjt`; use the explicit `worker-j9jjd` endpoint from `WORKFLOW.md` until aliases are corrected.
 - `swe_dev` `/data/swe/SWE-bench` and `/data/tmp/tb2-prebuild-save` are empty; the useful state is Docker local cache plus shared bench trees. swe_dev cache counts: 500 `swebench/sweb.eval...`, 728 `swerex-prebuilt`, 89 `tb2-offline`, 3 `sweb.*` helper images. Shared Terminal-Bench 2.1 has 50 `.tar` fallbacks plus 1 `.tar.gz`, so TB2 full image readiness is still partial relative to swe_dev cache.
-- Generated image manifests now include `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` (89 TB2 rows from swe_dev cache, 60 with verified fallback/P0 transport) and `manifests/images/swebench_verified_django10097.yaml` (official eval base + swerex wrapper identity probe). SWE django10097 now has verified fallback tar sha for both rows; worker-j9jjd `--load-fallback --run-smoke` loaded the official eval base over the prior wrapper alias mismatch and ended with `present=2`, `tar_verified=2`, `loaded=1`, `smoke_passed=2`, `identity_mismatch=0`.
-- Static image manifest lint is available via `python3 scripts/agentic_bench_images.py lint --require-offline-transport`; current expected results: RepoZero/P0 smoke pass, SWE django10097 promotion smoke pass, and TB2 generated cache manifest fails closed with 29 required rows missing offline transport.
-- Registry-selected lint validation: `validate` rc 0 with `manifests=9/images=104/required_images=94`; `lint-registry` for `required_for_registry_health` + `required_for_repozero_smoke` rc 0 with 0 missing transport; `lint-registry` for `required_for_swebench_django10097_promotion_smoke` rc 0 with 0 missing transport; combined TB2+SWE promotion lint now rc 1 with 29 missing transports, all in TB2.
+- Generated image manifests now include `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` (89 TB2 rows from swe_dev cache, 65 with verified fallback/P0 transport) and `manifests/images/swebench_verified_django10097.yaml` (official eval base + swerex wrapper identity probe). SWE django10097 now has verified fallback tar sha for both rows; worker-j9jjd `--load-fallback --run-smoke` loaded the official eval base over the prior wrapper alias mismatch and ended with `present=2`, `tar_verified=2`, `loaded=1`, `smoke_passed=2`, `identity_mismatch=0`.
+- Static image manifest lint is available via `python3 scripts/agentic_bench_images.py lint --require-offline-transport`; current expected results: RepoZero/P0 smoke pass, SWE django10097 promotion smoke pass, and TB2 generated cache manifest fails closed with 24 required rows missing offline transport.
+- Registry-selected lint validation: `validate` rc 0 with `manifests=9/images=104/required_images=94`; `lint-registry` for `required_for_registry_health` + `required_for_repozero_smoke` rc 0 with 0 missing transport; `lint-registry` for `required_for_swebench_django10097_promotion_smoke` rc 0 with 0 missing transport; combined TB2+SWE promotion lint now rc 1 with 24 missing transports, all in TB2.
 - Latest full verification for the lint-registry change: `python3 -m unittest scripts.test_agentic_bench_images scripts.test_agentic_bench_suite scripts.test_offline_images_manifest` passed 34 tests; `py_compile` and `git diff --check` passed.
 - Merge/push/sync shared main checkout: pending for current branch; latest pushed main is `c42f23c` before this warmup-policy commit.
 
@@ -102,14 +102,14 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - P0 digest ref: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-protein-assembly@sha256:1144842bb39d1bf67d8925879202101caf6250a8a7a83fcf1e582496991004e9`.
 - Fallback tar: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/protein-assembly.tar`, sha256 `97176112820eb4c1b079878de2cad0aeefa1fd4661da51a42431ac7ce80fa5c1`.
 - Worker-j9jjd direct P0 consumer smoke passed: `docker pull <digest-ref>` and `docker run --rm --network none <digest-ref> /bin/sh -lc 'echo tb2-protein-assembly-smoke-ok'`.
-- TB2 generated manifest static gate now reports 29 missing offline transports; `check --skip-docker` reports `tar_verified=60`, `tar_mismatch=0`, `tar_missing=0`. `lint-registry --verify-fallback-files` over TB2+SWE reports `fallback_tar_verified=62`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=29`.
+- TB2 generated manifest static gate now reports 24 missing offline transports; `check --skip-docker` reports `tar_verified=65`, `tar_mismatch=0`, `tar_missing=0`. `lint-registry --verify-fallback-files` over TB2+SWE reports `fallback_tar_verified=67`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=24`.
 - Tracked evidence: `_coordination/20260625_harbor_bench/inventory/tb2_p0_protein_assembly_20260626.tsv`.
 
 ## 2026-06-26 verify-fallback-files evidence
 
 - Added `--verify-fallback-files` to `agentic_bench_images.py lint` and `lint-registry`; it verifies configured fallback tar paths and sha256 values during static promotion lint.
 - Regression tests cover direct manifest lint and registry CLI behavior when a row has a sha field but the tar is absent.
-- Initial TB2+SWE promotion gate with `--verify-fallback-files` returned `fallback_tar_verified=53`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=38`; latest batch3 evidence below updates this to 62/29.
+- Initial TB2+SWE promotion gate with `--verify-fallback-files` returned `fallback_tar_verified=53`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=38`; latest batch4 evidence below updates this to 67/24.
 
 ## 2026-06-26 TB2 low-risk batch2 P0/fallback evidence
 
@@ -128,3 +128,12 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Worker fallback-load/run-smoke evidence JSON: `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch3_worker_check_20260626.json`; result counts `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, `errors=0`.
 - Real TB2+SWE promotion gate with `--verify-fallback-files` now returns `fallback_tar_verified=62`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=29`; TB2-only `check --skip-docker` reports `tar_verified=60`, `tar_missing=0`, `tar_mismatch=0`.
 - Issue comment posted after batch3: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4803259395`.
+
+
+## 2026-06-26 TB2 low-risk batch4 P0/fallback evidence
+
+- Added P0 digest plus verified fallback tar transport for five more Terminal-Bench 2.1 rows: `password-recovery`, `path-tracing-reverse`, `query-optimize`, `sanitize-git-repo`, and `tune-mjcf`.
+- Evidence TSV: `_coordination/20260625_harbor_bench/inventory/tb2_p0_lowrisk_batch4_20260626.tsv`.
+- Worker fallback-load/run-smoke evidence JSON: `_coordination/20260625_harbor_bench/inventory/tb2_lowrisk_batch4_worker_check_20260626.json`; result counts `tar_verified=5`, `loaded=5`, `present=5`, `smoke_passed=5`, `identity_mismatch=0`, `errors=0`.
+- Real TB2+SWE promotion gate with `--verify-fallback-files` now returns `fallback_tar_verified=67`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_without_offline_transport=24`; TB2-only `check --skip-docker` reports `tar_verified=65`, `tar_missing=0`, `tar_mismatch=0`.
+- Issue comment posted after batch4: #6 `https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/6#issuecomment-4803343143`.

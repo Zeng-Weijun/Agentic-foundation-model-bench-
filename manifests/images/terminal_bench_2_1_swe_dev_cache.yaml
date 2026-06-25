@@ -743,24 +743,30 @@ images:
   - id: tb2_password_recovery
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/password-recovery:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-password-recovery@sha256:0603131d761eb98a1daee4bf0f98d2a51e2ebc05c3bfd34fffdb10ee753ae6dd
     source_image_id: sha256:8a4a2ba55bfa8edd5dece054d844969a60d1f237ae2e18cf4ce6842fbd1c3465
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/password-recovery.tar
+    fallback_tar_sha256: 8ffc3246f62792f7a9085bf91cf1f01e2d9fcbb7437cce759f98a01048914d4f
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
   - id: tb2_path_tracing_reverse
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/path-tracing-reverse:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing-reverse@sha256:5a530196fedcca1edd0175c9adcb3eb1b5f900ce5b84545467fa87e8f51d7346
     source_image_id: sha256:d0aed029cc004bed222ed1cd39dea1a8a149cd66bb2616354a75e9cb762e6718
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing-reverse.tar
+    fallback_tar_sha256: f6bb157c283b34956069a6dd5800a712b91cf9dc6de99fca341e62f9ac063f4f
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -902,12 +908,15 @@ images:
   - id: tb2_query_optimize
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/query-optimize:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-query-optimize@sha256:41c17768172b7b150ed339831b4103817310a6b9ba098f60b47cb3ab97a2b6ce
     source_image_id: sha256:b7888e243c321aa0c7fa3076325057b9e1d85637f5e9443a7a80cb1494cf152c
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/query-optimize.tar
+    fallback_tar_sha256: 940f201d3d49aff17168b0f686ea90c716379096fb20c9a84497cfe9f37baa44
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -998,12 +1007,15 @@ images:
   - id: tb2_sanitize_git_repo
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/sanitize-git-repo:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sanitize-git-repo@sha256:01c595305cfd9a8204ac172226c050a70b2146754ea4ceaf72b21891b998d162
     source_image_id: sha256:6fb3909be2d3e41fdba90e7aac02bb6e68e2b31485c426f7b9a21cdd6e53e187
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sanitize-git-repo.tar
+    fallback_tar_sha256: a7f05aaaa8c493d3d60c581f687901b86632ca2846a4214f8b52fcf6c7090084
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
@@ -1106,12 +1118,15 @@ images:
   - id: tb2_tune_mjcf
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/tune-mjcf:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-tune-mjcf@sha256:42b5da887fff95421fd422544cc03ed4847919b58d0eb97b03c84a6ce8cae9a7
     source_image_id: sha256:77711f5e2763702941189d7959b99ab7edb1d1a0c9c095fd33c669f6b4fca41e
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/tune-mjcf.tar
+    fallback_tar_sha256: 64c797c13884c38a0089d8e3ebd33907b91a93990ddcb0b1a370b7d1ab3e57dc
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
