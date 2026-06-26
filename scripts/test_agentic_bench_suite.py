@@ -1770,5 +1770,50 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertNotIn("image_manifest_missing", target["blockers"])
 
 
+    def test_example_manifest_deepswe_fails_closed_until_runtime_transport_and_parser(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        deepswe = next(bench for bench in config["benches"] if bench["id"] == "deepswe")
+
+        self.assertFalse(deepswe.get("enabled", True))
+        self.assertEqual(deepswe["adapter_status"], "wired_legacy")
+        self.assertEqual(deepswe["image_manifest"], "manifests/images/deepswe.yaml")
+        self.assertEqual(deepswe["image_policy"], "required")
+        self.assertEqual(deepswe["params"]["MAX_CONCURRENCY"], 1)
+        self.assertEqual(deepswe["params"]["DEEPSWE_MODE"], "smoke")
+        self.assertEqual(deepswe["params"]["DEEPSWE_MAX_TASKS"], 1)
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["DeepSWE"])
+        target = report["targets"][0]
+        entry = target["entries"][0]
+        image_report = entry["image_manifests"][0]
+
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("no_enabled_suite_entry", target["blockers"])
+        self.assertIn("suite_entry_disabled", target["blockers"])
+        self.assertIn("required_image_transport_missing", target["blockers"])
+        self.assertFalse(entry["ready"])
+        self.assertEqual(image_report["manifest"], "manifests/images/deepswe.yaml")
+        self.assertEqual(image_report["counts"]["required_images"], 1)
+        self.assertEqual(image_report["counts"]["required_without_offline_transport"], 1)
+
+    def test_example_manifest_deepswe_disabled_dry_run_selects_no_runs(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+
+        plan = module.build_run_plan(
+            config,
+            suite_path=suite_path,
+            dry_run=True,
+            only={"deepswe"},
+            model_profile_override="dev_proxy_gpt54mini_8130",
+        )
+
+        self.assertEqual(len(plan["runs"]), 0)
+        self.assertEqual(plan["runs"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

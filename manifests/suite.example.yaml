@@ -265,8 +265,9 @@ benches:
     adapter: deepswe
     adapter_script: run_deepswe.sh
     adapter_status: wired_legacy
+    enabled: false
     image_manifest: manifests/images/deepswe.yaml
-    image_policy: optional
+    image_policy: required
     model_profile: gpt54mini_8130
     concurrency: 1
     params:

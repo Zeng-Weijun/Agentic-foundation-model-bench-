@@ -65,8 +65,8 @@ image_manifests:
 
   - id: deepswe
     path: images/deepswe.yaml
-    status: missing_r2e_image_enumeration
-    policy: optional_until_r2e_manifest_exists
+    status: missing_r2e_pier_image_transport_and_rootless_relay_contract
+    policy: disabled_until_r2e_pier_images_dependency_cache_relay_and_parser_are_staged
 
   - id: mcp_atlas
     path: images/mcp_atlas.yaml

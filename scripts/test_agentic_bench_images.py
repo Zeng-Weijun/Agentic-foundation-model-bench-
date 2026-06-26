@@ -1480,5 +1480,19 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["counts"]["images"], 1)
 
 
+    def test_example_deepswe_manifest_lints_as_fail_closed_required_transport_gap(self):
+        module = load_module()
+        manifest = ROOT / "manifests" / "images" / "deepswe.yaml"
+
+        summary = module.lint_image_manifest(manifest, require_offline_transport=True)
+
+        self.assertEqual(summary["bench_id"], "deepswe")
+        self.assertEqual(summary["counts"]["images"], 1)
+        self.assertEqual(summary["counts"]["required_images"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["images"][0]["id"], "deepswe_r2e_task_images_todo")
+        self.assertEqual(summary["images"][0]["lint_status"], "missing_offline_transport")
+
+
 if __name__ == "__main__":
     unittest.main()

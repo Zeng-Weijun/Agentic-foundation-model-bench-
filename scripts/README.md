@@ -244,6 +244,7 @@ Full entries that remain disabled/pending in `manifests/suite.example.yaml`:
 - `tau3_bench`
 - programbench: dedicated fail-closed manifest `manifests/images/programbench.yaml`; keep disabled until checkout/task data/fixture-grader/trace contract and runtime transport are staged.
 - NL2Repo
+- DeepSWE: disabled fail-closed until R2E/Pier task image transport, dependency/cache sidecars, worker rootless relay proof, and a safe result parser contract are staged.
 
 Enabled smoke targets:
 

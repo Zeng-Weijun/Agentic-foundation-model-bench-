@@ -1,19 +1,59 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: deepswe
-generated_at: "2026-06-25"
-status: missing_r2e_image_manifest
+generated_at: "2026-06-26"
+status: missing_r2e_pier_image_transport_and_rootless_relay_contract
+collector: codex-round45
+
 evidence:
-  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
-  offline_gap_report: reports/all_bench_offline_gap_matrix_20260625.md
+  suite_entry: manifests/suite.example.yaml#deepswe
+  prior_inventory:
+    - reports/pending_adapter_inventory_20260625.md
+    - reports/offline_docker_asset_plan_20260625.md
+    - reports/all_bench_offline_gap_matrix_20260625.md
+    - reports/p0_harbor_bench_manifest_inventory_20260625.md
+    - _coordination/20260625_harbor_bench/lanes/swe-deepswe-image-map-round27.md
+    - _coordination/20260625_harbor_bench/lanes/pending-benches-inventory-round34.md
+  located_assets:
+    legacy_dataset_tasks: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/deep-swe/tasks
+    legacy_runner: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_deepswe.sh
+    shared_r2e_runner: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_deepswe.sh
+    projectized_agent: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/deepswe/deepswe-agent
+    r2e_source: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/deepswe/source
+  current_task_inventory:
+    task_toml_count: 113
+    dockerfile_count: 113
+    unique_task_runtime_image_refs: 113
+    unique_public_ecr_image_refs_in_tasks_tree: 114
+    task_source_pattern: public.ecr.aws/d3j8x8q7/swe-bench-202605:<task-tag>
+    shared_base_ref_seen: public.ecr.aws/x8v8d7g8/mars-base:latest
+  missing_transport_evidence:
+    swe_dev_deepswe_r2e_pier_refs: 0
+    deepswe_specific_fallback_tars: 0
+    deepswe_specific_sha256_files: 0
+
 known_blockers:
-  - exact_r2e_gym_or_pier_image_tags_not_enumerated
-  - no_deepswe_specific_shared_tar_found
+  - exact_r2e_gym_or_pier_image_tags_not_materialized_in_manifest
+  - no_deepswe_specific_p0_digest_refs
+  - no_deepswe_specific_fallback_tars_or_sha256
   - rootless_container_networking_not_proven_for_deepswe
+  - host_docker_internal_or_model_relay_route_not_proven_on_worker
+  - pier_runtime_or_r2e_dependency_cache_not_declared_for_worker_offline
+  - deepswe_result_parser_contract_not_wired
+
+next_actions:
+  - Generate the full DeepSWE R2E/Pier image list from the 113 task TOMLs or freeze a smaller smoke subset with explicit task ids.
+  - Stage each selected public ECR task image to P0 by digest and/or fallback tar plus sha256 from an internet-enabled host.
+  - Choose the active runner path, legacy Pier or shared R2E-Gym, and declare any offline wheel/cache/runtime sidecars.
+  - Prove worker rootless Docker can run the selected image with --network none and prove container-to-model relay without secrets.
+  - Add a DeepSWE result parser that consumes safe summary/artifact metadata and never copies pier.env contents.
+  - Enable the suite row only after image transport, rootless relay, dependency cache, and parser contracts are concrete.
 
 images:
-  - id: deepswe_r2e_images_todo
-    role: placeholder_until_r2e_enumeration
-    required: false
-    image_transport: todo
-    registry_status: missing
+  - id: deepswe_r2e_task_images_todo
+    role: required_placeholder_until_r2e_task_image_transport_is_staged
+    bench: DeepSWE
+    required: true
+    image_transport: missing
+    registry_status: missing_p0_digest_refs
     fallback_transport: none
+    offline_blocker: DeepSWE has task data and runners, but no digest-pinned P0 refs, fallback tars, sha256 files, or worker rootless relay proof for the R2E/Pier task images.

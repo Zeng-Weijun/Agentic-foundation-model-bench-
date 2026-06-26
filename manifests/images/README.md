@@ -44,6 +44,8 @@ python3 scripts/agentic_bench_images.py lint-registry \
 
 ## Fail-Closed Pending Manifests
 
+- `deepswe.yaml` is a required but intentionally non-runnable DeepSWE manifest until the R2E/Pier task image set, dependency/cache sidecars, worker rootless relay proof, and parser contract are staged. The suite row is disabled so `--only deepswe` cannot enter worker execution from placeholder image evidence.
 - `mcp_atlas.yaml` is a dedicated MCP-Atlas blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, dataset, runner, trace/result contract, and server/runtime images are staged.
+- `nl2repo.yaml` is a dedicated NL2Repo inventory manifest with an optional placeholder image. It stays disabled until the authoritative dataset, executable runner, and runtime/image contract are staged.
 - `programbench.yaml` is a dedicated ProgramBench blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, task data, fixture/grader contract, runner, trace/result contract, and runtime image or dependency cache are staged.
 - `tool_decathlon.yaml` is a dedicated Tool-Decathlon blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, dataset, runner, trace/result contract, and app/tool-server runtime images are staged.
