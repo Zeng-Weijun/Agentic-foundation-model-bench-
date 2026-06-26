@@ -1399,9 +1399,8 @@ SSH_OPTIONS_WITH_VALUE = {
 }
 
 
-LOCAL_DISPATCH_FORBIDDEN_SSH_OPTION_PREFIXES = (
-    "-D", "-F", "-J", "-L", "-R", "-W", "-o",
-)
+LOCAL_DISPATCH_FORBIDDEN_SSH_OPTION_PREFIXES = ("-D", "-F", "-J", "-L", "-R", "-W")
+LOCAL_DISPATCH_ALLOWED_SSH_O_OPTIONS = ("batchmode=", "connecttimeout=")
 
 FORBIDDEN_DISPATCH_HOST_KEYS = {"dev", "swe_dev", "swe_dev2", "swe_dev_2", "zwj", "zwj3_image"}
 FORBIDDEN_DISPATCH_HOST_FRAGMENTS = ("zwj3-image", "group-ailab-mineruinfra", "group-ailab-sciversealign")
@@ -1437,16 +1436,41 @@ def _ssh_target_from_argv(argv: Any) -> str:
     return ""
 
 
+def _safe_local_dispatch_o_option(value: str) -> bool:
+    lowered = value.lower()
+    return lowered.startswith(LOCAL_DISPATCH_ALLOWED_SSH_O_OPTIONS)
+
+
 def _validate_local_dispatch_ssh_options(command_argv: Any, *, context: str) -> None:
     if not isinstance(command_argv, list):
         return
-    for part in [str(item) for item in command_argv[1:]]:
+    index = 1
+    while index < len(command_argv):
+        part = str(command_argv[index])
         if part == "--":
             return
         if not part.startswith("-") or part == "-":
             return
         if part.startswith(LOCAL_DISPATCH_FORBIDDEN_SSH_OPTION_PREFIXES):
             raise ConfigError(f"{context} uses ssh option {part!r}, which is not allowed for local dispatch")
+        if part == "-o":
+            if index + 1 >= len(command_argv):
+                raise ConfigError(f"{context} has ssh -o without a value")
+            option_value = str(command_argv[index + 1])
+            if not _safe_local_dispatch_o_option(option_value):
+                raise ConfigError(f"{context} uses ssh -o {option_value!r}, which is not allowed for local dispatch")
+            index += 2
+            continue
+        if part.startswith("-o"):
+            option_value = part[2:]
+            if not _safe_local_dispatch_o_option(option_value):
+                raise ConfigError(f"{context} uses ssh option {part!r}, which is not allowed for local dispatch")
+            index += 1
+            continue
+        if part in SSH_OPTIONS_WITH_VALUE:
+            index += 2
+        else:
+            index += 1
 
 
 def _forbidden_dispatch_host(value: str) -> bool:
@@ -1476,15 +1500,23 @@ def _validate_local_dispatch_plan(plan: dict[str, Any], *, dispatch_host: str, a
     for run_index, raw_run in enumerate(runs, start=1):
         run = _require_mapping(raw_run, f"dispatch plan.runs[{run_index}]")
         bench_id = str(run.get("bench_id") or f"run_{run_index}")
-        _validate_local_dispatch_ssh_command(run.get("command_argv"), context=f"run {bench_id}")
+        worker_host = str(run.get("worker_host") or "")
+        target = _validate_local_dispatch_ssh_command(run.get("command_argv"), context=f"run {bench_id}")
+        if worker_host and target != worker_host:
+            raise ConfigError(f"run {bench_id} command_argv target {target!r} does not match worker_host {worker_host!r}")
         preflight = run.get("image_preflight")
         if isinstance(preflight, dict):
             for command_index, command in enumerate(preflight.get("commands", []), start=1):
                 command_map = _require_mapping(command, f"run {bench_id}.image_preflight.commands[{command_index}]")
-                _validate_local_dispatch_ssh_command(
+                preflight_target = _validate_local_dispatch_ssh_command(
                     command_map.get("command_argv"),
                     context=f"run {bench_id}.image_preflight.commands[{command_index}]",
                 )
+                if worker_host and preflight_target != worker_host:
+                    raise ConfigError(
+                        f"run {bench_id}.image_preflight.commands[{command_index}] target {preflight_target!r} "
+                        f"does not match worker_host {worker_host!r}"
+                    )
 
 
 def dispatch_plan_from_local_controller(

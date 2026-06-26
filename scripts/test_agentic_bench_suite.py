@@ -888,7 +888,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
                         "remote_host": "dev",
                         "runtime_env": {"OPENAI_API_KEY": "unit-secret-never-write"},
                         "command": "OPENAI_API_KEY=unit-command-secret ssh worker-j9jjd.example bash -c true",
-                        "command_argv": ["ssh", "-CAXY", "worker-j9jjd.example", "bash -c 'OPENAI_API_KEY=unit-argv-secret true'"],
+                        "command_argv": ["ssh", "-C", "-A", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20", "worker-j9jjd.example", "bash -c 'OPENAI_API_KEY=unit-argv-secret true'"],
                     }
                 ],
             }
@@ -993,6 +993,46 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         module = load_module()
         self.assertTrue(module._forbidden_dispatch_host("zwj3-image"))
         self.assertTrue(module._forbidden_dispatch_host("zwj.group-ailab-mineruinfra-mineruinfra-cpu.ailab-mineruinfra.svc.pjlab.local"))
+
+    def test_local_dispatch_rejects_worker_host_mismatch(self):
+        module = load_module()
+        plan = {
+            "schema_version": "agentic_bench.suite_plan.v1",
+            "suite_id": "unit_worker_mismatch",
+            "execution_kind": "ssh_worker",
+            "suite_concurrency": 1,
+            "runs": [
+                {
+                    "bench_id": "wrong_worker",
+                    "adapter_status": "wired_legacy",
+                    "worker_host": "worker-j9jjd.example",
+                    "command_argv": ["ssh", "other-worker.example", "true"],
+                }
+            ],
+        }
+
+        with self.assertRaisesRegex(module.ConfigError, "does not match worker_host"):
+            module.dispatch_plan_from_local_controller(plan, None, dispatch_host_label="local-mac")
+
+    def test_local_dispatch_rejects_proxy_o_options(self):
+        module = load_module()
+        plan = {
+            "schema_version": "agentic_bench.suite_plan.v1",
+            "suite_id": "unit_proxy_o_dispatch",
+            "execution_kind": "ssh_worker",
+            "suite_concurrency": 1,
+            "runs": [
+                {
+                    "bench_id": "proxy_command",
+                    "adapter_status": "wired_legacy",
+                    "worker_host": "worker-j9jjd.example",
+                    "command_argv": ["ssh", "-o", "ProxyJump=dev", "worker-j9jjd.example", "true"],
+                }
+            ],
+        }
+
+        with self.assertRaisesRegex(module.ConfigError, "not allowed for local dispatch"):
+            module.dispatch_plan_from_local_controller(plan, None, dispatch_host_label="local-mac")
 
     def test_image_preflight_only_runs_required_preflight_without_adapter(self):
         module = load_module()
