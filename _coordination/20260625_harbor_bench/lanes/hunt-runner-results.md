@@ -3050,3 +3050,88 @@ Dry-run probes against the real suite:
 - Initial pycache scan after safe dry-run/unit probes: rc 0, no matches.
 - Initial Round26-only bounded secret scan: rc 0, `round26_secret_scan_hits=0`.
 - Final validation pass is run after recording this validation subsection; results are reported in the final response for this round.
+
+## Round27 readiness gate runner review
+
+### Scope
+
+- Lane: runner/results/provenance adversarial review of `ea24680` / `c95d420` readiness-gate behavior.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `ea24680`.
+- Ledger-only. No production code, manifests, tests, handoff, issue records, Docker save/load/pull/run/build, benchmark runs, model calls, commits, or pushes were performed.
+
+### ISSUE-READY: `--readiness` accepts an over-ceiling `--max-concurrency` override
+
+severity: medium
+
+dedup: Related to #14 but distinct. #14 fixed the dry-run/execute plan path so `suite_concurrency` cannot exceed `suite.proxy_concurrency_ceiling`. The new readiness branch added in `c95d420` returns before that validation path, so this is a readiness-specific bypass/regression candidate rather than a duplicate of the closed dry-run fix.
+
+location:
+
+- `manifests/suite.example.yaml:10-11` sets the current default contract to `concurrency: 40` and `proxy_concurrency_ceiling: 50`.
+- `scripts/agentic_bench_suite.py:1037-1049` enforces the ceiling only while building a run plan, after applying CLI `--max-concurrency`.
+- `scripts/agentic_bench_suite.py:1668-1679` handles `--readiness`, builds a readiness report, prints JSON/human output, and returns before `build_run_plan()` is called.
+- `scripts/run_suite_from_yaml.sh:15-16` forwards args directly to `agentic_bench_suite.py`, so the wrapper inherits the same behavior.
+
+static_repro:
+
+1. Safe readiness probe, no Docker/model/benchmark execution:
+   `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --readiness --json --target-benches RepoZero --max-concurrency 51`
+   Result: rc 0, schema `agentic_bench.readiness_report.v1`, counts `ready=1 blocked=0 missing=0 total=1`.
+2. Same suite override on the dry-run plan path:
+   `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --json --max-concurrency 51`
+   Result: rc 2 with stderr `config error: suite_concurrency 51 exceeds suite.proxy_concurrency_ceiling 50`.
+3. Wrapper confirms the same readiness behavior:
+   `PYTHONDONTWRITEBYTECODE=1 scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches RepoZero --max-concurrency 51`
+   Result: rc 0, human output begins `readiness: ready=1 blocked=0 missing=0 total=1`.
+
+impact:
+
+- A one-command operator or CI gate can attach an invalid execution override to `--readiness` and still receive a green readiness status for RepoZero, even though the actual run plan rejects the same concurrency override.
+- The readiness artifact also omits `suite_concurrency`, `proxy_concurrency_ceiling`, and an explicit `readiness_scope`, so downstream provenance cannot tell whether the green readiness status was evaluated under execution-safe concurrency assumptions or only under static adapter/image checks.
+- This does not by itself launch >50 model-call processes, but it can mislead orchestration into treating a selected target as fully runner-ready while a required suite-level execution invariant is invalid.
+
+fix:
+
+- Factor suite-level runtime invariant validation out of `build_run_plan()` and call it before emitting readiness, after applying `--max-concurrency` if that flag is accepted with `--readiness`.
+- Alternatively, reject execution-only flags such as `--max-concurrency`, `--model-profile`, `--only`, `--execute`, and `--image-preflight-only` when combined with `--readiness`; the safer option is still to include `suite_concurrency`, `proxy_concurrency_ceiling`, and `readiness_scope: static_adapter_image_only` in `agentic_bench.readiness_report.v1`.
+- Add a red test: `test_cli_readiness_rejects_max_concurrency_above_proxy_ceiling` expecting rc 2 and the same ceiling error used by the dry-run path.
+
+evidence:
+
+- Focused direct probe harness rc 0; subcommands recorded default readiness rc 1 for the full tracked set, RepoZero readiness rc 0, Terminal-Bench alias readiness rc 1, unknown target rc 1, and the over-ceiling RepoZero readiness rc 0.
+- Focused dry-run probe harness rc 0; subcommands recorded default dry-run rc 0 with `suite_concurrency=40`, `proxy_concurrency_ceiling=50`, `image_preflight_concurrency=4`; `--max-concurrency 50` rc 0; `--max-concurrency 51` rc 2.
+- Focused existing unit tests for readiness and proxy ceiling all pass, so the gap is currently untested: 6 tests, rc 0.
+
+### No-new-issue checks
+
+- `--target-benches` parsing and dedup: `RepoZero,repozero_py2js,RepoZero` returns a single canonical target `repozero`, rc 0, counts `ready=1 blocked=0 missing=0 total=1`.
+- Unknown target safety: `DefinitelyMissingBench` returns rc 1, target id `definitelymissingbench`, status `missing`, blocker `missing_suite_entry`; no fake-green for typoed target names.
+- Blocked-target safety: `Terminal-Bench-2.1` returns rc 1, status `blocked`, and blockers include `no_enabled_wired_adapter` plus adapter/image blockers.
+- Default readiness safety: default tracked set returns rc 1 with counts `ready=1 blocked=8 missing=0 total=9`, matching `_coordination/20260625_harbor_bench/readiness_20260626.json` and HANDOFF.
+- JSON output is distinct from benchmark result output: top-level schema is `agentic_bench.readiness_report.v1`, not `agentic_bench.result.v1`, and top-level keys are `counts`, `created_at`, `schema_version`, `suite_id`, `suite_path`, and `targets`.
+- Human output for ready RepoZero starts with `readiness: ready=1 blocked=0 missing=0 total=1`, has no benchmark `score` or `pass` wording in the checked first 20 lines, and does not claim task/result success.
+
+### Dedup and issue routing
+
+- #14: related but not duplicate; this is the readiness branch bypassing the closed proxy-ceiling enforcement path.
+- #15: readiness gate and stale TB2 cache metadata were closed by `c95d420` / `ea24680`; this finding is about CLI invariant validation, not TB2 cache counts.
+- #1/#12: readiness output remains a separate report schema, so readiness status was not mistaken for benchmark score/pass in the checked output. The missing concurrency fields are provenance impact from this issue, not a separate normalized-result bug.
+- #6/#8/#13/#10: no Docker/rootless image operation, raw checker log sink, or secret-bearing artifact path was exercised in this round.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Remote branch/head/status through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `ea24680`; initial `git status --short --untracked-files=all` had no output.
+- Grep and line reads for readiness, target parsing, proxy ceiling, README, handoff, suite example, wrapper, and tests: rc 0.
+- Safe readiness CLI probe harness: rc 0; inner subcommands produced rc 1/0/0/1/1/0 for default, RepoZero, alias-dedup, Terminal-Bench alias, unknown target, and RepoZero human output respectively.
+- Safe dry-run/proxy CLI probe harness: rc 0; inner subcommands produced rc 0/0/2/0 for default dry-run, max 50 dry-run, max 51 dry-run, and RepoZero readiness with max 51 respectively.
+- Wrapper readiness probe with RepoZero and `--max-concurrency 51`: rc 0.
+- Focused unit tests: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_cli_readiness_gate_emits_json_and_fails_on_blocked_targets scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_readiness_report_covers_target_benches_and_blocks_unready_assets scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_terminal_bench_full_entry_uses_cache_manifest_with_current_gap_counts scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_readiness_resolves_manifests_from_image_preflight_project_root scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_plan_emits_proxy_concurrency_ceiling scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_cli_rejects_max_concurrency_above_proxy_ceiling`: rc 0, 6 tests passed.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, clean.
+- Round27-only bounded secret scan: rc 0, `round27_secret_scan_hits=0`.
+- Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
+- Final scope check: rc 0; `git status --short --untracked-files=all` and `git diff --name-only` show only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` modified.

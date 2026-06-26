@@ -1,35 +1,61 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: tau3_bench
 generated_at: "2026-06-26"
-status: dataset_ready_offline_images_pending
+status: smoke_images_ready_worker_rootless
+collector: codex-main
+
 evidence:
   harbor_adapter: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/tau3-bench
   full_dataset: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench
   smoke_dataset: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke
   shared_runner: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh
+  smoke_build_artifact_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626
   task_count_total: 375
   task_counts_by_domain:
     airline: 50
     retail: 114
     telecom: 114
     banking_knowledge: 97
-  blocker: generated task Dockerfiles clone the upstream tau3 source checkout during build; worker offline execution requires prebuilt images or rewritten Dockerfiles.
+  p0_registry: 100.97.118.137:8555
+  build_host: swe_dev2
+  worker_host: worker-j9jjd
+  worker_docker_host: unix:///tmp/rl/run/docker.sock
+  worker_docker_api_version: "1.45"
+  rootless_note: Docker CLI default /version panics on this worker daemon; DOCKER_API_VERSION=1.45 is required for CLI operations.
+  r1_rejected_note: 20260626 r1 images upgraded pip during build and failed worker rootless ingest with unlinkat pip-25.0.1.dist-info input/output error; r2 removes pip upgrade.
+  swe_dev2_offline_smoke:
+    main: tau3-main-r2-ok
+    runtime: tau3-runtime-r2-ok
+  worker_rootless_smoke:
+    main: worker-tau3-main-r2-ok
+    runtime: worker-tau3-runtime-r2-ok
+  remaining_blocker: suite adapter is not wired yet; this manifest only proves smoke image transport and import readiness.
 
 images:
   - id: tau3_harbor_main_runtime
     role: harbor_task_main_runtime
     bench: tau3-bench
-    required: false
-    image_transport: todo_prebuild
-    registry_status: pending_p0_push_or_shared_tar
+    required: true
+    image_transport: p0_registry_digest_and_shared_tar
+    registry_status: pushed_to_p0_and_worker_pulled
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-smoke-main@sha256:571aa921fc1eda999b9fc124a266900c6b10a4aceba9283e6f9867f9a44788e4
+    local_ref: tau3-smoke-main:20260626r2
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/tau3-smoke-main_20260626r2.tar
+    fallback_tar_sha256: cfb1207cf33fa152ee99b01b10b7ff229bb2cdcb847a39d0fc47771f891f2b64
     source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/Dockerfile
-    offline_blocker: Dockerfile currently uses apt-get and git clone during build.
+    materialized_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/context/Dockerfile.main
+    smoke_command: "docker run --rm --network none tau3-smoke-main:20260626r2 python3 -c 'import tau2; print(\"worker-tau3-main-r2-ok\")'"
 
   - id: tau3_harbor_mcp_runtime
     role: tau3_runtime_mcp_sidecar
     bench: tau3-bench
-    required: false
-    image_transport: todo_prebuild
-    registry_status: pending_p0_push_or_shared_tar
+    required: true
+    image_transport: p0_registry_digest_and_shared_tar
+    registry_status: pushed_to_p0_and_worker_pulled
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-smoke-runtime@sha256:290a4f09c7ade3a1e7a08dfd3d4c6d0951b4ae519eae12d2fe1ccb99745dc699
+    local_ref: tau3-smoke-runtime:20260626r2
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/tau3-smoke-runtime_20260626r2.tar
+    fallback_tar_sha256: 2503e032377986ffef80b935035e279a52e1a13807a6fa1e7fb65d6033615d85
     source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/runtime-server/Dockerfile
-    offline_blocker: Dockerfile currently uses apt-get, git clone, and pip install during build.
+    materialized_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/context/Dockerfile.runtime
+    smoke_command: "docker run --rm --network none tau3-smoke-runtime:20260626r2 python3 -c 'import fastmcp; import tau2; print(\"worker-tau3-runtime-r2-ok\")'"

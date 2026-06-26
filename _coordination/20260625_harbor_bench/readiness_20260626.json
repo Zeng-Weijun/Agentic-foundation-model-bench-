@@ -5,12 +5,14 @@
     "ready": 1,
     "total": 9
   },
-  "created_at": "2026-06-25T23:49:01Z",
+  "created_at": "2026-06-26T00:23:08Z",
   "schema_version": "agentic_bench.readiness_report.v1",
   "suite_id": "dev_worker_smoke_dryrun",
   "suite_path": "manifests/suite.example.yaml",
   "targets": [
     {
+      "aggregation_entry_count": 4,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "image_manifest_not_materialized"
       ],
@@ -45,6 +47,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         },
         {
@@ -76,6 +79,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         },
         {
@@ -107,6 +111,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         },
         {
@@ -138,6 +143,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -149,13 +155,15 @@
       "wired_entry_count": 4
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
-        "no_enabled_wired_adapter",
+        "no_enabled_suite_entry",
         "suite_entry_disabled",
         "adapter_not_wired",
         "required_image_transport_missing"
       ],
-      "enabled_entry_count": 1,
+      "enabled_entry_count": 0,
       "entries": [
         {
           "adapter": "terminal_bench_2_1",
@@ -188,6 +196,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         },
         {
@@ -217,6 +226,7 @@
               "status": "ready"
             }
           ],
+          "readiness_role": "image_smoke",
           "ready": false
         }
       ],
@@ -228,6 +238,8 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "no_enabled_suite_entry",
         "suite_entry_disabled",
@@ -267,6 +279,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -278,6 +291,8 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "no_enabled_suite_entry",
         "suite_entry_disabled",
@@ -317,6 +332,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -328,45 +344,44 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "no_enabled_suite_entry",
         "suite_entry_disabled",
-        "adapter_not_wired",
-        "image_manifest_not_materialized"
+        "adapter_not_wired"
       ],
       "enabled_entry_count": 0,
       "entries": [
         {
           "adapter": "tau3_bench",
           "adapter_ready": false,
-          "adapter_status": "pending_offline_image",
+          "adapter_status": "pending_adapter",
           "bench_id": "tau3_bench",
           "benchmark": "tau3-bench",
           "blockers": [
             "suite_entry_disabled",
-            "adapter_not_wired",
-            "image_manifest_not_materialized"
+            "adapter_not_wired"
           ],
           "enabled": false,
           "image_manifests": [
             {
               "bench_id": "tau3_bench",
-              "blockers": [
-                "image_manifest_not_materialized"
-              ],
+              "blockers": [],
               "counts": {
                 "images": 2,
-                "optional_placeholders": 2,
-                "required_images": 0,
-                "required_with_offline_transport": 0,
+                "optional_placeholders": 0,
+                "required_images": 2,
+                "required_with_offline_transport": 2,
                 "required_without_offline_transport": 0
               },
               "manifest": "manifests/images/tau3_bench.yaml",
-              "manifest_status": "dataset_ready_offline_images_pending",
+              "manifest_status": "smoke_images_ready_worker_rootless",
               "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/tau3_bench.yaml",
-              "status": "blocked"
+              "status": "ready"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -378,6 +393,8 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "no_enabled_suite_entry",
         "suite_entry_disabled",
@@ -417,6 +434,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -428,6 +446,8 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 1,
       "blockers": [],
       "enabled_entry_count": 1,
       "entries": [
@@ -456,6 +476,7 @@
               "status": "ready"
             }
           ],
+          "readiness_role": "full",
           "ready": true
         }
       ],
@@ -467,6 +488,8 @@
       "wired_entry_count": 1
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "no_enabled_suite_entry",
         "suite_entry_disabled",
@@ -506,6 +529,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],
@@ -517,6 +541,8 @@
       "wired_entry_count": 0
     },
     {
+      "aggregation_entry_count": 1,
+      "aggregation_ready_entry_count": 0,
       "blockers": [
         "image_manifest_not_materialized"
       ],
@@ -551,6 +577,7 @@
               "status": "blocked"
             }
           ],
+          "readiness_role": "full",
           "ready": false
         }
       ],

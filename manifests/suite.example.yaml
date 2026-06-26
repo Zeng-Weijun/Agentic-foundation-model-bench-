@@ -319,7 +319,7 @@ benches:
     benchmark: tau3-bench
     adapter: tau3_bench
     adapter_script: run_tau3_bench.sh
-    adapter_status: pending_offline_image
+    adapter_status: pending_adapter
     image_manifest: manifests/images/tau3_bench.yaml
     image_policy: optional
     model_profile: gpt54mini_8130

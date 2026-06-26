@@ -2216,3 +2216,73 @@ No new ISSUE-READY bug from this lane. The current guard changes fix the highest
 - Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches. The first broad scan rule falsely matched the task name `vulnerable-secret:20260425`; the final stricter scan requires key-like prefixes or bearer/private-key forms.
 - `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no output.
 - `git status --short --untracked-files=all`; rc 0. It shows this lane's modified `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` plus concurrent unrelated modifications to `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` and `scripts/test_agentic_bench_suite.py`; those other files were not edited by this lane.
+
+## Round27 readiness gate image review
+
+Scope: runtime/images adversarial review of `c95d420` / `ea24680` at head `ea24680`. Ledger-only; no production code, manifests, tests, Docker save/load/pull/run/build, benchmark execution, model calls, commits, or pushes were performed.
+
+### ISSUE-READY: readiness target can be marked ready by an image-smoke entry while the full Terminal-Bench 2.1 entry is blocked
+
+severity: high
+
+dedup: Distinct from runner-results Round27, which found `--readiness` accepts an over-ceiling `--max-concurrency` override. Related to #15 only historically because #15 fixed stale TB2 cache metadata and closed after `c95d420`; this bug is the target aggregation rule. Related to #6/#8/#12 because false readiness could bypass image transport/rootless/provenance gates, but the root cause is in readiness target selection/status aggregation.
+
+location:
+
+- `scripts/agentic_bench_suite.py:760-770` lets a readiness target match any suite entry by `id`, `benchmark`, `adapter`, or image-manifest path stem.
+- `scripts/agentic_bench_suite.py:919-926` collects all matched entries and computes `ready_entries`.
+- `scripts/agentic_bench_suite.py:931-932` marks the whole target `ready` when any matched entry is ready.
+- `manifests/suite.example.yaml:271-279` contains the full `terminal_bench_2_1` entry, disabled and `pending_adapter`, pointing at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`.
+- `manifests/suite.example.yaml:281-296` contains the enabled `terminal_bench_2_1_image_smoke` entry with the same `benchmark: terminal_bench_2_1`, so it is matched to the same readiness target even though it points at the one-task smoke manifest.
+- `scripts/test_agentic_bench_suite.py:1014-1036` verifies the full TB2 entry and 81/8 counts, but it does not assert that a ready image-smoke entry cannot satisfy the full `Terminal Bench 2.1` readiness target while the full entry remains blocked.
+
+static_repro:
+
+1. Create a temporary suite outside the repo with two entries for the same readiness target: a disabled/pending full `terminal_bench_2_1` entry pointing at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and an enabled/wired `terminal_bench_2_1_image_smoke` entry sharing `benchmark: terminal_bench_2_1` but pointing at a ready image manifest.
+2. Run `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_suite.py "$tmp/tb2_smoke_masks_full.yaml" --readiness --target-benches Terminal-Bench-2.1 --json`.
+3. Observed rc 0 with `counts {'ready': 1, 'blocked': 0, 'missing': 0, 'total': 1}` and target `terminal_bench_2_1` status `ready`, even though the full entry in the same report is `enabled=False`, `adapter_status=pending_adapter`, `ready=False`, and its image manifest reports `required_images=89`, `required_with_offline_transport=81`, `required_without_offline_transport=8`, blocker `required_image_transport_missing`.
+
+impact:
+
+- Once the one-task image-smoke entry becomes wired, `--readiness --target-benches Terminal-Bench-2.1` can return green while the full Terminal-Bench 2.1 entry remains disabled and has 8 missing offline transports.
+- This can let orchestration treat the full TB2 target as scheduler-ready based on a one-task image smoke. That would overstate image readiness and skip the remaining TB2 transport/rootless ingest work.
+- The current branch does not false-green TB2 only because `terminal_bench_2_1_image_smoke` still has `adapter_status: pending_adapter`; the aggregation rule is already wrong and has a direct no-Docker repro.
+
+fix:
+
+- Add target-level readiness roles or exact entry requirements. For `terminal_bench_2_1`, the full target should require the `terminal_bench_2_1` entry or a `readiness_role: full` entry, not any smoke/helper entry with the same benchmark key.
+- Alternatively, mark helper entries such as `terminal_bench_2_1_image_smoke` with `readiness_role: image_smoke` and exclude them from full-target readiness aggregation unless the requested target explicitly names the smoke entry.
+- Change aggregation from any-ready to a stricter policy for full targets: blocked full entries must remain target blockers even when a helper entry is ready.
+- Add a regression test where a ready `terminal_bench_2_1_image_smoke` entry coexists with a blocked full `terminal_bench_2_1` entry, and assert the target remains blocked with the full entry's `required_image_transport_missing` blocker.
+
+### No-new-issue checks
+
+- Readiness manifest path resolution is behaving correctly in the checked paths. `scripts/agentic_bench_suite.py:773-777` resolves relative image manifests against `project_root`, and `scripts/agentic_bench_suite.py:876-882` passes the suite-level or bench-level project root into static image readiness. Invoking the wrapper from `/tmp` with an absolute suite path still resolved TB2 image manifest paths under the active worktree, not the shell cwd.
+- `image_preflight.project_root` for the worker RepoZero temporary local-execution suite is not drifting to a stale checkout. The recorded `run_manifest.json` has `execution_kind=local`, one run, and `image_preflight.project_root=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy` for `manifests/images/repozero.yaml`.
+- Terminal-Bench 2.1 full entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, and the active readiness report sees the expected full-manifest counts: `required_images=89`, `required_with_offline_transport=81`, `required_without_offline_transport=8`.
+- Static image lint/check agree with the readiness counts. TB2 `check --skip-docker --json` reported `tar_verified=81`, `tar_missing=0`, `tar_mismatch=0`; TB2 `lint --require-offline-transport --verify-fallback-files --json` returned rc 1 with `fallback_tar_verified=81`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, and exactly eight `missing_offline_transport` rows: `install-windows-3.11`, `mteb-retrieve`, `multi-source-data-merger`, `pytorch-model-recovery`, `qemu-alpine-ssh`, `qemu-startup`, `torch-pipeline-parallelism`, and `torch-tensor-parallelism`.
+- Worker RepoZero evidence is not a full benchmark execution artifact. The evidence directory contains `image_preflight_summary.json`, one image-preflight log, one status file, and `run_manifest.json`; parsed summary has schema `agentic_bench.image_preflight_summary.v1`, counts `pass=1`, `fail=0`, `optional_fail=0`, and no benchmark result schema/score. The run manifest still contains the adapter command as a plan field, but this proof is `--image-preflight-only` image readiness, not RepoZero task execution.
+
+### Command evidence
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md && sed -n '260,980p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0, output truncated by terminal but command completed successfully.
+- Skill instruction reads for systematic-debugging and verification-before-completion; rc 0. Memory quick grep for readiness/Round27 terms returned one unrelated generic line and was not used as evidence.
+- Remote head/status/HANDOFF/runtime-ledger read through `ssh dev`; rc 0. Branch/head: `feat/image-warmup-policy` / `ea24680`.
+- `git show --stat --oneline ea24680` and `git show --stat --oneline c95d420`; rc 0.
+- Static reads of `scripts/agentic_bench_suite.py`, `manifests/suite.example.yaml`, `scripts/README.md`, and `scripts/test_agentic_bench_suite.py`; rc 0. Relevant lines are listed above.
+- Default full readiness probe: `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --json`; wrapper rc 0, inner readiness rc 1. Counts `ready=1`, `blocked=8`, `missing=0`, `total=9`.
+- RepoZero readiness subset: `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches RepoZero --json`; wrapper rc 0, inner readiness rc 0. Target `repozero` ready with one entry and `manifests/images/repozero.yaml` ready.
+- Terminal-Bench 2.1 readiness subset: `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches Terminal-Bench-2.1 --json`; wrapper rc 0, inner readiness rc 1. Target has two entries; full entry blocked with 89/81/8 counts, smoke entry image manifest ready but adapter pending.
+- Synthetic no-Docker target-aggregation repro using a temporary suite outside the repo; wrapper rc 0, inner readiness rc 0. The target became ready from the smoke entry while the full entry remained blocked with `required_image_transport_missing`.
+- Absolute-suite path resolution probe from `/tmp`; wrapper rc 0, inner readiness rc 1. TB2 manifest paths resolved under the active worktree and kept the 89/81/8 counts.
+- RepoZero dry-run plan probe: `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run --only repozero_py2js_smoke --json`; wrapper rc 0, inner rc 0. `image_preflight.project_root` resolved to the active worktree.
+- Parsed worker RepoZero evidence directory `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_readiness_gate_20260626_rerun`; rc 0. It contains only image-preflight summary/log/status plus run manifest; no benchmark result artifact was present in the checked file list.
+- Cross-check of runner-results Round27 ledger; rc 0. Runner lane ISSUE-READY is the `--readiness --max-concurrency` ceiling bypass, distinct from this target aggregation finding.
+
+### Validation
+
+- Initial `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 2 due only to a new blank line at EOF from the append. The ledger was normalized to exactly one final newline before the final validation pass.
+- Initial trailing whitespace scan on this ledger: rc 1, interpreted as no matches.
+- Initial bounded key-like secret scan on this ledger: rc 1, interpreted as no matches.
+- Initial pycache scan under `_coordination/20260625_harbor_bench`: rc 0 with no output.
+- `git status --short --untracked-files=all`; rc 0. It showed this lane's runtime ledger plus concurrent unrelated `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; this lane did not edit the runner ledger.

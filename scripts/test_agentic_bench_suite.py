@@ -188,6 +188,34 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("proxy_concurrency_ceiling", proc.stderr)
         self.assertIn("3", proc.stderr)
 
+    def test_cli_readiness_rejects_max_concurrency_above_proxy_ceiling(self):
+        suite_text = SUITE_YAML.replace("  concurrency: 2\n", "  concurrency: 2\n  proxy_concurrency_ceiling: 2\n", 1)
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_text, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--readiness",
+                    "--json",
+                    "--target-benches",
+                    "tau3-bench",
+                    "--max-concurrency",
+                    "3",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 2)
+        self.assertEqual(proc.stdout, "")
+        self.assertIn("proxy_concurrency_ceiling", proc.stderr)
+        self.assertIn("3", proc.stderr)
+
     def test_rejects_swe_dev_controller_for_this_repo_contract(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -800,15 +828,24 @@ class AgenticBenchSuiteTest(unittest.TestCase):
 
         self.assertEqual(active_tau2, [])
 
-    def test_example_manifest_tau3_uses_specific_manifest_but_stays_disabled_until_images(self):
+    def test_example_manifest_tau3_has_worker_ready_images_but_stays_disabled_until_adapter(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
         config = module.load_suite_config(suite_path)
         tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
 
         self.assertEqual(tau3["image_manifest"], "manifests/images/tau3_bench.yaml")
-        self.assertEqual(tau3["adapter_status"], "pending_offline_image")
+        self.assertEqual(tau3["adapter_status"], "pending_adapter")
         self.assertFalse(tau3.get("enabled", True))
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
+        target = report["targets"][0]
+        image_report = target["entries"][0]["image_manifests"][0]
+        self.assertEqual(target["status"], "blocked")
+        self.assertEqual(image_report["status"], "ready")
+        self.assertEqual(image_report["counts"]["required_images"], 2)
+        self.assertEqual(image_report["counts"]["required_without_offline_transport"], 0)
+        self.assertIn("adapter_not_wired", target["blockers"])
 
     def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):
         module = load_module()
@@ -961,6 +998,82 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("no_enabled_suite_entry", by_id["mcp_atlas"]["blockers"])
         self.assertEqual(by_id["nl2repo"]["status"], "missing")
         self.assertEqual(by_id["nl2repo"]["blockers"], ["missing_suite_entry"])
+
+
+    def test_readiness_helper_entry_does_not_satisfy_full_terminal_bench_target(self):
+        module = load_module()
+        suite_yaml = textwrap.dedent(
+            """
+            schema_version: agentic_bench.suite.v1
+            suite:
+              id: readiness_helper_unit
+              controller_host: dev
+            model_profiles:
+              - id: gpt54mini_8130
+                model_name: gpt-5.4-mini
+                provider: openai_compatible_relay
+            benches:
+              - id: terminal_bench_2_1
+                benchmark: terminal_bench_2_1
+                adapter: terminal_bench_2_1
+                adapter_script: run_terminal_bench_2_1.sh
+                adapter_status: pending_adapter
+                image_manifest: manifests/images/terminal_bench_2_1.yaml
+                image_policy: required
+                model_profile: gpt54mini_8130
+              - id: terminal_bench_2_1_image_smoke
+                benchmark: terminal_bench_2_1
+                adapter: terminal_bench_2_1_image_smoke
+                adapter_script: run_terminal_bench_2_1_image_smoke.sh
+                adapter_status: wired_legacy
+                image_manifest: manifests/images/terminal_bench_2_1_image_smoke.yaml
+                image_policy: required
+                model_profile: gpt54mini_8130
+            """
+        ).strip()
+        full_manifest = textwrap.dedent(
+            """
+            schema_version: agentic_bench.image_manifest.v1
+            bench_id: terminal_bench_2_1
+            images:
+              - id: tb2_full_missing_transport
+                required: true
+                local_ref: tb2-offline/full:20260425
+                image_transport: swe_dev_cache_identity
+            """
+        ).strip()
+        smoke_manifest = textwrap.dedent(
+            """
+            schema_version: agentic_bench.image_manifest.v1
+            bench_id: terminal_bench_2_1_image_smoke
+            images:
+              - id: tb2_smoke_ready
+                required: true
+                image_ref: 100.97.118.137:8555/swe-data-harness/tb2-smoke@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                fallback_tar: images/tb2/smoke.tar
+                fallback_tar_sha256: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+            """
+        ).strip()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            suite_path = root / "manifests" / "suite.yaml"
+            suite_path.parent.mkdir(parents=True)
+            (root / "manifests" / "images").mkdir()
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            (root / "manifests" / "images" / "terminal_bench_2_1.yaml").write_text(full_manifest, encoding="utf-8")
+            (root / "manifests" / "images" / "terminal_bench_2_1_image_smoke.yaml").write_text(smoke_manifest, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["Terminal Bench 2.1"])
+
+        target = report["targets"][0]
+        full_entry = next(entry for entry in target["entries"] if entry["bench_id"] == "terminal_bench_2_1")
+        smoke_entry = next(entry for entry in target["entries"] if entry["bench_id"] == "terminal_bench_2_1_image_smoke")
+
+        self.assertFalse(full_entry["ready"])
+        self.assertTrue(smoke_entry["ready"])
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("adapter_not_wired", target["blockers"])
+        self.assertIn("required_image_transport_missing", target["blockers"])
 
 
     def test_cli_readiness_gate_emits_json_and_fails_on_blocked_targets(self):

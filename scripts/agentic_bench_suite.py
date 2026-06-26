@@ -770,6 +770,35 @@ def _bench_readiness_keys(bench: dict[str, Any]) -> set[str]:
     return keys
 
 
+def _bench_readiness_role(bench: dict[str, Any]) -> str:
+    role = str(bench.get("readiness_role", "")).strip().lower()
+    if role:
+        return role
+    bench_id = _readiness_key(bench.get("id", ""))
+    adapter = _readiness_key(bench.get("adapter", ""))
+    if bench_id.endswith("_image_smoke") or adapter.endswith("_image_smoke"):
+        return "image_smoke"
+    return "full"
+
+
+def _suite_concurrency_settings(config: dict[str, Any], *, max_concurrency: int | None = None) -> tuple[int, int | None]:
+    suite = _require_mapping(config.get("suite", {}), "suite")
+    suite_concurrency = _positive_int(
+        max_concurrency if max_concurrency is not None else suite.get("concurrency", 1),
+        default=1,
+        field="suite.concurrency",
+    )
+    proxy_concurrency_ceiling = _optional_positive_int(
+        suite.get("proxy_concurrency_ceiling"),
+        field="suite.proxy_concurrency_ceiling",
+    )
+    if proxy_concurrency_ceiling is not None and suite_concurrency > proxy_concurrency_ceiling:
+        raise ConfigError(
+            f"suite_concurrency {suite_concurrency} exceeds suite.proxy_concurrency_ceiling {proxy_concurrency_ceiling}"
+        )
+    return suite_concurrency, proxy_concurrency_ceiling
+
+
 def _resolve_readiness_manifest_path(manifest: str, *, project_root: str | Path) -> Path:
     path = Path(manifest).expanduser()
     if path.is_absolute():
@@ -894,6 +923,7 @@ def _bench_readiness_entry(
         "bench_id": bench_id,
         "benchmark": bench.get("benchmark", bench_id),
         "adapter": bench.get("adapter", ""),
+        "readiness_role": _bench_readiness_role(bench),
         "enabled": enabled,
         "adapter_status": adapter_status,
         "adapter_ready": adapter_ready,
@@ -921,13 +951,19 @@ def build_readiness_report(
             _bench_readiness_entry(bench, suite_path=suite_path, image_config=image_config)
             for bench in matched
         ]
-        enabled_entries = [entry for entry in entry_reports if entry["enabled"]]
+        full_entry_reports = [entry for entry in entry_reports if entry.get("readiness_role") == "full"]
+        aggregation_entries = full_entry_reports if full_entry_reports else entry_reports
+        enabled_entries = [entry for entry in aggregation_entries if entry["enabled"]]
         wired_entries = [entry for entry in enabled_entries if entry["adapter_ready"]]
-        ready_entries = [entry for entry in entry_reports if entry["ready"]]
+        ready_entries = [entry for entry in aggregation_entries if entry["ready"]]
+        all_ready_entries = [entry for entry in entry_reports if entry["ready"]]
         blockers: list[str] = []
         if not matched:
             status = "missing"
             blockers.append("missing_suite_entry")
+        elif not aggregation_entries:
+            status = "blocked"
+            blockers.append("no_full_readiness_entry")
         elif ready_entries:
             status = "ready"
         else:
@@ -936,7 +972,7 @@ def build_readiness_report(
                 blockers.append("no_enabled_suite_entry")
             if enabled_entries and not wired_entries:
                 blockers.append("no_enabled_wired_adapter")
-            blockers.extend(blocker for entry in entry_reports for blocker in entry["blockers"])
+            blockers.extend(blocker for entry in aggregation_entries for blocker in entry["blockers"])
         blockers = _unique_preserve_order(blockers)
         counts[status] += 1
         target_results.append(
@@ -946,9 +982,11 @@ def build_readiness_report(
                 "status": status,
                 "blockers": blockers,
                 "entry_count": len(entry_reports),
+                "aggregation_entry_count": len(aggregation_entries),
                 "enabled_entry_count": len(enabled_entries),
                 "wired_entry_count": len(wired_entries),
-                "ready_entry_count": len(ready_entries),
+                "ready_entry_count": len(all_ready_entries),
+                "aggregation_ready_entry_count": len(ready_entries),
                 "entries": entry_reports,
             }
         )
@@ -1034,19 +1072,10 @@ def build_run_plan(
     execution_kind = str(suite.get("execution_kind", execution.get("kind", "ssh_worker")))
     ssh_options = _require_list(worker.get("ssh_options", []), "worker.ssh_options")
     worker_env = _worker_runtime_env(worker)
-    suite_concurrency = _positive_int(
-        max_concurrency if max_concurrency is not None else suite.get("concurrency", 1),
-        default=1,
-        field="suite.concurrency",
+    suite_concurrency, proxy_concurrency_ceiling = _suite_concurrency_settings(
+        config,
+        max_concurrency=max_concurrency,
     )
-    proxy_concurrency_ceiling = _optional_positive_int(
-        suite.get("proxy_concurrency_ceiling"),
-        field="suite.proxy_concurrency_ceiling",
-    )
-    if proxy_concurrency_ceiling is not None and suite_concurrency > proxy_concurrency_ceiling:
-        raise ConfigError(
-            f"suite_concurrency {suite_concurrency} exceeds suite.proxy_concurrency_ceiling {proxy_concurrency_ceiling}"
-        )
     image_preflight_concurrency = _image_preflight_concurrency(image_preflight_config, suite_concurrency)
     runs: list[dict[str, Any]] = []
 
@@ -1666,6 +1695,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         config = load_suite_config(args.suite_yaml)
         if args.readiness:
+            _suite_concurrency_settings(config, max_concurrency=args.max_concurrency)
             target_benches = _unique_preserve_order(
                 [item.strip() for item in args.target_benches.split(",") if item.strip()]
             ) if args.target_benches else None
