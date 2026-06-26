@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+real_docker="${TB21_REAL_DOCKER:-/usr/bin/docker}"
+
+if [[ "${1:-}" != "compose" ]]; then
+  exec "$real_docker" "$@"
+fi
+
+shift
+original_args=("$@")
+project=""
+compose_file=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -p|--project-name)
+      project="${2:-}"
+      shift 2
+      ;;
+    -f|--file)
+      compose_file="${2:-}"
+      shift 2
+      ;;
+    --ansi|--progress|--env-file)
+      shift 2
+      ;;
+    --compatibility)
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+cmd="${1:-}"
+[[ -n "$cmd" ]] || exec "$real_docker" compose "${original_args[@]}"
+shift || true
+
+compose_image() {
+  python3 - "$compose_file" <<'PYIMG'
+from pathlib import Path
+import re
+import sys
+
+path = Path(sys.argv[1])
+for line in path.read_text(encoding="utf-8").splitlines():
+    match = re.match(r"\s+image:\s*(.+?)\s*$", line)
+    if match:
+        print(match.group(1).strip().strip("\"'"))
+        raise SystemExit(0)
+raise SystemExit("compose image not found")
+PYIMG
+}
+
+compose_volumes() {
+  python3 - "$compose_file" <<'PYVOL'
+from pathlib import Path
+import os
+import re
+import sys
+
+path = Path(sys.argv[1])
+pattern = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)(:-([^}]*))?\}")
+
+def expand(value: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        name = match.group(1)
+        default = match.group(3) or ""
+        return os.environ.get(name, default)
+    return pattern.sub(replace, value)
+
+in_volumes = False
+for line in path.read_text(encoding="utf-8").splitlines():
+    if re.match(r"\s+volumes:\s*$", line):
+        in_volumes = True
+        continue
+    if not in_volumes:
+        continue
+    match = re.match(r"\s+-\s*(.+?)\s*$", line)
+    if not match:
+        if line.startswith("      ") or not line.strip():
+            continue
+        break
+    volume = expand(match.group(1).strip().strip("\"'"))
+    if ":" not in volume or volume.startswith(":") or volume.endswith(":"):
+        continue
+    print(volume)
+PYVOL
+}
+
+add_env() {
+  local name="$1"
+  docker_run_args+=(-e "$name=${!name-}")
+}
+
+record_cleanup_failure() {
+  local message="$1"
+  cleanup_failed=1
+  if [[ -n "${BENCH_RUN_DIR:-}" ]]; then
+    mkdir -p "$BENCH_RUN_DIR" 2>/dev/null || true
+    printf '%s\n' "$message" >> "$BENCH_RUN_DIR/tb2_compose_shim_cleanup_failed.log" 2>/dev/null || true
+  fi
+}
+
+container_still_exists() {
+  local names
+  if ! names="$(timeout 8s "$real_docker" ps -a --format '{{.Names}}' 2>/dev/null)"; then
+    return 2
+  fi
+  grep -Fx "$container_name" <<<"$names" >/dev/null
+}
+
+check_container_exists() {
+  container_still_exists
+  local state_rc="$?"
+  if [[ "$state_rc" == "2" ]]; then
+    record_cleanup_failure "docker ps failed while checking $container_name"
+  fi
+  return "$state_rc"
+}
+
+case "$cmd" in
+  build)
+    exit 0
+    ;;
+  up)
+    image="$(compose_image)"
+    container_name="${T_BENCH_TASK_DOCKER_CLIENT_CONTAINER_NAME:-${project:-tb2-client}}"
+    network_mode="${TB2_DOCKER_NETWORK_MODE:-none}"
+    timeout 8s "$real_docker" rm -f "$container_name" >/dev/null 2>&1 || true
+    docker_run_args=(run --rm -d --name "$container_name" --network "$network_mode")
+    docker_run_args+=(-e "TEST_DIR=${T_BENCH_TEST_DIR:-}")
+    for env_name in http_proxy https_proxy HTTP_PROXY HTTPS_PROXY no_proxy NO_PROXY UV_HTTP_TIMEOUT UV_INDEX_URL UV_DEFAULT_INDEX PIP_INDEX_URL PIP_DEFAULT_TIMEOUT PIP_RETRIES; do
+      add_env "$env_name"
+    done
+    while IFS= read -r volume; do
+      host_path="${volume%%:*}"
+      if [[ "$host_path" == /* ]]; then
+        mkdir -p "$host_path" 2>/dev/null || true
+      fi
+      docker_run_args+=(-v "$volume")
+    done < <(compose_volumes)
+    exec "$real_docker" "${docker_run_args[@]}" "$image" sh -c 'trap "exit 0" TERM INT; while :; do sleep 3600 & wait "$!"; done'
+    ;;
+  down)
+    container_name="${T_BENCH_TASK_DOCKER_CLIENT_CONTAINER_NAME:-${project:-tb2-client}}"
+    cleanup_failed=0
+    if check_container_exists; then
+      timeout 8s "$real_docker" exec "$container_name" sh -lc 'kill -TERM 1' >/dev/null 2>&1 \
+        || record_cleanup_failure "docker exec TERM failed for $container_name"
+      sleep 1
+    fi
+    if check_container_exists; then
+      timeout 8s "$real_docker" kill "$container_name" >/dev/null 2>&1 \
+        || record_cleanup_failure "docker kill failed for $container_name"
+    fi
+    if check_container_exists; then
+      timeout 8s "$real_docker" rm -f "$container_name" >/dev/null 2>&1 \
+        || record_cleanup_failure "docker rm -f failed for $container_name"
+    fi
+    if check_container_exists; then
+      record_cleanup_failure "container still exists after cleanup: $container_name"
+    fi
+    if [[ "$cleanup_failed" == "1" ]]; then
+      exit 1
+    fi
+    exit 0
+    ;;
+  *)
+    exec "$real_docker" compose "${original_args[@]}"
+    ;;
+esac

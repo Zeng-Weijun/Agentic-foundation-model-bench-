@@ -142,6 +142,121 @@ class RootlessWorkerHealthScriptTest(unittest.TestCase):
         self.assertNotIn("status=1", sdk_version_section)
 
 
+class TerminalBenchSmokeWrapperTest(unittest.TestCase):
+    def test_tb21_smoke_wrapper_falls_back_to_valid_shared_bench_root(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+
+        self.assertIn('fallback_bench_root="$shared_root/swe/bench"', script)
+        self.assertIn('if [[ ! -x "$bench_root/shared/runners/run_terminal_bench_2_1.sh"', script)
+        self.assertIn('bench_root="$fallback_bench_root"', script)
+
+    def test_tb21_smoke_wrapper_defaults_to_terminus2_agent(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+
+        self.assertIn('tb_agent="${TB_AGENT:-terminus-2}"', script)
+        self.assertIn('print_export TB_AGENT "$tb_agent"', script)
+        self.assertIn('export TB_AGENT="$tb_agent"', script)
+
+    def test_tb21_smoke_wrapper_pins_docker_py_api_version(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+        sitecustomize = (ROOT / "scripts" / "python_sitecustomize" / "sitecustomize.py").read_text(encoding="utf-8")
+
+        self.assertIn('docker_api_version="${DOCKER_API_VERSION:-1.45}"', script)
+        self.assertIn('print_export DOCKER_API_VERSION "$docker_api_version"', script)
+        self.assertIn('print_export DOCKER_PY_API_VERSION "$docker_api_version"', script)
+        self.assertIn('print_export PYTHONPATH "$python_path_value"', script)
+        self.assertIn('export DOCKER_PY_API_VERSION="$docker_api_version"', script)
+        self.assertIn('export PYTHONPATH="$python_path_value"', script)
+        self.assertIn('kwargs.setdefault("version", docker_api_version)', sitecustomize)
+        self.assertIn('docker.from_env = docker.client.DockerClient.from_env', sitecustomize)
+
+    def test_tb21_smoke_wrapper_uses_no_rebuild_for_prebuilt_images(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+
+        self.assertIn('tb_extra_args="${TB_EXTRA_ARGS:-}"', script)
+        self.assertIn('tb_extra_args="${tb_extra_args:+$tb_extra_args }--no-rebuild"', script)
+        self.assertIn('print_export TB_EXTRA_ARGS "$tb_extra_args"', script)
+        self.assertIn('export TB_EXTRA_ARGS="$tb_extra_args"', script)
+
+    def test_tb21_smoke_wrapper_sets_compose_safe_job_components(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+
+        self.assertIn('safe_compose_value()', script)
+        self.assertIn('raw_run_tag="${RUN_TAG:-$(date -u +%Y%m%dT%H%M%SZ)}"', script)
+        self.assertIn('run_tag="$(safe_compose_value "$raw_run_tag")"', script)
+        self.assertIn('model_slug="${MODEL_SLUG:-$(safe_compose_value "$model_name")}"', script)
+        self.assertIn('print_export RUN_TAG "$run_tag"', script)
+        self.assertIn('print_export MODEL_SLUG "$model_slug"', script)
+        self.assertIn('export RUN_TAG="$run_tag"', script)
+        self.assertIn('export MODEL_SLUG="$model_slug"', script)
+
+    def test_tb21_smoke_wrapper_verifies_image_archive_before_load(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+
+        self.assertIn('image_archive_sha256="${TB21_IMAGE_ARCHIVE_SHA256:-}"', script)
+        self.assertIn('allow_unverified_load="${TB21_ALLOW_UNVERIFIED_LOAD:-0}"', script)
+        self.assertIn('verify_image_archive_sha()', script)
+        self.assertIn('sha256sum "$image_archive"', script)
+        self.assertIn('refusing to load unverified image archive', script)
+        self.assertIn('verify_image_archive_sha', script.split('"$real_docker" load -i "$image_archive"')[0])
+        self.assertIn('print_export TB21_IMAGE_ARCHIVE_SHA256 "$image_archive_sha256"', script)
+        self.assertIn('export TB21_IMAGE_ARCHIVE_SHA256="$image_archive_sha256"', script)
+
+    def test_tb21_smoke_wrapper_injects_compose_shim(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+        sitecustomize = (ROOT / "scripts" / "python_sitecustomize" / "sitecustomize.py").read_text(encoding="utf-8")
+
+        self.assertIn('docker_shim_dir="${TB21_DOCKER_SHIM_DIR:-$script_dir/docker_shims}"', script)
+        self.assertIn('real_docker="${TB21_REAL_DOCKER:-$(command -v docker || true)}"', script)
+        self.assertIn('print_export TB21_REAL_DOCKER "$real_docker"', script)
+        self.assertIn('print_export TB21_DOCKER_SHIM_DIR "$docker_shim_dir"', script)
+        self.assertIn('print_export TB2_DOCKER_NETWORK_MODE "$docker_network_mode"', script)
+        self.assertIn('print_export PATH "$path_value"', script)
+        self.assertIn('export TB21_REAL_DOCKER="$real_docker"', script)
+        self.assertIn('export TB21_DOCKER_SHIM_DIR="$docker_shim_dir"', script)
+        self.assertIn('export TB2_DOCKER_NETWORK_MODE="$docker_network_mode"', script)
+        self.assertIn('export PATH="$path_value"', script)
+        self.assertIn('TB21_DOCKER_SHIM_DIR', sitecustomize)
+        self.assertIn('os.environ["PATH"]', sitecustomize)
+
+    def test_tb21_smoke_wrapper_keeps_dry_run_non_executing(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+        dry_run_print_index = script.index("printf \'%q\\n\' \"$runner\"")
+        dry_run_exit_index = script.index('if [[ "$dry_run" == 1 ]]; then\n  exit 0', dry_run_print_index)
+        execute_index = script.rindex('set +e\n"$runner"')
+
+        self.assertLess(dry_run_print_index, dry_run_exit_index)
+        self.assertGreater(execute_index, dry_run_exit_index)
+        self.assertNotIn("printf '%q\\n' set +e", script)
+
+    def test_tb21_smoke_wrapper_fails_closed_on_compose_shim_cleanup_marker(self):
+        script = (ROOT / "scripts" / "run_terminal_bench_2_1_smoke.sh").read_text(encoding="utf-8")
+        shim = (ROOT / "scripts" / "docker_shims" / "docker").read_text(encoding="utf-8")
+
+        self.assertIn('cleanup_marker="$bench_run_dir/tb2_compose_shim_cleanup_failed.log"', script)
+        self.assertIn('rm -f "$cleanup_marker"', script)
+        self.assertIn('runner_rc="$?"', script)
+        self.assertIn('if [[ -s "$cleanup_marker" ]]', script)
+        self.assertIn('exit 1', script.split('if [[ -s "$cleanup_marker" ]]', 1)[1])
+        self.assertIn('tb2_compose_shim_cleanup_failed.log', shim)
+        self.assertIn('cleanup_failed=1', shim)
+        self.assertIn('exit 1', shim.split('cleanup_failed', 1)[1])
+
+    def test_tb21_docker_compose_shim_covers_terminal_bench_commands(self):
+        shim = (ROOT / "scripts" / "docker_shims" / "docker").read_text(encoding="utf-8")
+
+        self.assertIn('if [[ "${1:-}" != "compose" ]]', shim)
+        self.assertIn('cmd="${1:-}"', shim)
+        self.assertIn('build)', shim)
+        self.assertIn('up)', shim)
+        self.assertIn('down)', shim)
+        self.assertIn('docker_run_args=(run --rm -d', shim)
+        self.assertIn('--network "$network_mode"', shim)
+        self.assertIn('TB2_DOCKER_NETWORK_MODE', shim)
+        self.assertIn('T_BENCH_TASK_DOCKER_CLIENT_CONTAINER_NAME', shim)
+        self.assertIn('trap "exit 0" TERM INT', shim)
+
+
 class AgenticBenchSuiteTest(unittest.TestCase):
     def test_default_plan_is_dry_run_and_secret_safe(self):
         module = load_module()
@@ -1566,6 +1681,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertTrue(tb_smoke.get("enabled", True))
         self.assertEqual(tb_smoke["image_manifest"], "manifests/images/terminal_bench_2_1.yaml")
         self.assertEqual(tb_smoke["image_policy"], "required")
+        self.assertEqual(tb_smoke["adapter_status"], "wired_legacy")
         self.assertEqual(tb_smoke["params"]["TB_TASK_IDS"], "gcode-to-text")
 
         manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1.yaml").read_text(encoding="utf-8"))
@@ -1895,15 +2011,15 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         manifest_counts = full_entry["image_manifests"][0]["counts"]
 
         self.assertEqual(manifest_counts["required_images"], 89)
-        self.assertEqual(manifest_counts["required_with_offline_transport"], 87)
-        self.assertEqual(manifest_counts["required_without_offline_transport"], 2)
-        self.assertIn("required_image_transport_missing", full_entry["blockers"])
+        self.assertEqual(manifest_counts["required_with_offline_transport"], 89)
+        self.assertEqual(manifest_counts["required_without_offline_transport"], 0)
+        self.assertNotIn("required_image_transport_missing", full_entry["blockers"])
 
         cache_manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1_swe_dev_cache.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 87)
-        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 2)
+        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 89)
+        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 0)
         blockers = cache_manifest["known_blockers"]
-        self.assertIn("missing_transport_for_2_cache_tasks", blockers)
+        self.assertNotIn("missing_transport_for_2_cache_tasks", blockers)
         self.assertNotIn("missing_transport_for_39_cache_only_tasks", blockers)
 
 

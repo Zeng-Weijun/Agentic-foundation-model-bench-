@@ -289,7 +289,7 @@ benches:
     benchmark: terminal_bench_2_1
     adapter: terminal_bench_2_1
     adapter_script: run_terminal_bench_2_1_smoke.sh
-    adapter_status: pending_adapter
+    adapter_status: wired_legacy
     image_manifest: manifests/images/terminal_bench_2_1.yaml
     image_policy: required
     model_profile: gpt54mini_8130
