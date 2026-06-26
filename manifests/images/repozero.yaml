@@ -1,19 +1,24 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: repozero_py2js_smoke
 generated_at: "2026-06-25"
-status: image_ready_from_shared_tar_and_worker_cache
+status: image_ready_from_p0_digest_shared_tar_and_worker_cache
 evidence:
   staging_report: reports/repozero_image_staging_20260625.md
   worker_load_report: reports/repozero_worker_load_verification_20260625.md
   p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+  p0_push_tsv: _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/repozero_p0_push_round47_20260626_163910.tsv
+  worker_p0_pull_status: rootless_docker_network_unreachable_as_of_2026_06_26
 
 images:
   - id: repozero_py2js_repoarena_runtime
     role: repoarena_runtime
     required: true
-    image_transport: external_source_plus_shared_tar
-    registry_status: p0_push_pending
+    image_transport: p0_digest_plus_shared_tar_fallback
+    registry_status: p0_pushed_worker_pull_blocked
     source_image_ref: ghcr.io/jessezzzzz/repoarena-new@sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+    registry_ref: 100.97.118.137:8555/swe-data-harness/repozero-repoarena-new@sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
+    p0_tag: 100.97.118.137:8555/swe-data-harness/repozero-repoarena-new:20260625-ghcr-b3ced2dc
+    p0_digest_ref: 100.97.118.137:8555/swe-data-harness/repozero-repoarena-new@sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3
     source_image_id: sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c
     local_ref: ghcr.io/jessezzzzz/repoarena-new:latest
     needs_network: false
