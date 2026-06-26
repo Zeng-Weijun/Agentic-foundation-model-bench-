@@ -120,6 +120,54 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][0]["fallback"]["sha256_status"], "match")
         self.assertEqual(docker_calls, [["docker", "image", "inspect", "ghcr.io/jessezzzzz/repoarena-new:latest"]])
 
+    def test_load_fallback_refuses_tar_without_configured_sha(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            tar_path = root / "images" / "runtime.tar"
+            tar_path.parent.mkdir(parents=True)
+            tar_path.write_bytes(b"unverified docker tar")
+            manifest = root / "unverified.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    """
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: unverified_fallback_probe
+                    images:
+                      - id: unverified_runtime
+                        required: true
+                        local_ref: example/unverified:latest
+                        fallback_tar: images/runtime.tar
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            calls = []
+
+            def fake_runner(argv, env):
+                calls.append(argv)
+                if argv == ["docker", "image", "inspect", "example/unverified:latest"]:
+                    return module.CommandResult(1, "", "No such image")
+                if argv[:2] == ["docker", "load"]:
+                    raise AssertionError("docker load must not run for unverified fallback tar")
+                raise AssertionError(f"unexpected docker command: {argv!r}")
+
+            summary = module.check_image_manifest(
+                manifest,
+                asset_root=root,
+                runner=fake_runner,
+                load_fallback=True,
+            )
+
+        image = summary["images"][0]
+        self.assertEqual(image["fallback"]["sha256_status"], "not_configured")
+        self.assertEqual(image["load_status"], "refused_unverified_fallback")
+        self.assertEqual(summary["counts"]["loaded"], 0)
+        self.assertEqual(summary["counts"]["errors"], 1)
+        self.assertEqual(summary["counts"]["present"], 0)
+        self.assertEqual(calls, [["docker", "image", "inspect", "example/unverified:latest"]])
+
     def test_check_manifest_tags_pulled_digest_to_local_ref(self):
         module = load_module()
         digest_ref = "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"

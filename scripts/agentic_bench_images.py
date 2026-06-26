@@ -1005,7 +1005,10 @@ def check_image_manifest(
                 else:
                     result["pull_stderr"] = pull_result.stderr.strip()
 
-        if not present and load_fallback and fallback["present_paths"] and fallback["sha256_status"] in {"match", "not_configured"}:
+        if not present and load_fallback and fallback["present_paths"] and fallback["sha256_status"] == "not_configured":
+            result["load_status"] = "refused_unverified_fallback"
+            counts["errors"] += 1
+        if not present and load_fallback and fallback["present_paths"] and fallback["sha256_status"] == "match":
             load_result = _docker_load(str(fallback["present_paths"][0]), env, runner)
             result["load_status"] = "loaded" if load_result.returncode == 0 else "failed"
             if load_result.returncode == 0:
