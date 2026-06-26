@@ -2408,3 +2408,65 @@ fix:
 - Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches.
 - `find . -path "*/__pycache__*" -print`; rc 0 with no output in this final scan, so no pycache was present at validation time.
 - `git status --short --untracked-files=all`; rc 0. Final status showed only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` modified by this lane.
+
+
+## Round32 tau3 direct manifest and TB2 QEMU transport review
+
+Scope: runtime/images ledger-only review at head `1a722d6`. I read `WORKFLOW.md` first, then worked through `ssh dev` in the shared worktree. I did not edit production code, manifests, HANDOFF, tests, commits, GitHub issues, or Docker state. Docker usage was limited to read-only `docker image inspect` / `docker image ls` on `swe_dev`; no Docker pull/load/save/build/prune/restart and no public download was run.
+
+### Findings
+
+No new ISSUE-READY runtime/image bug confirmed in this pass.
+
+- #20 appears fixed. `manifests/suite.example.yaml:335-353` now points the enabled helper `tau3_bench_oracle_direct_smoke` at `manifests/images/tau3_oracle_direct_smoke.yaml` instead of the two-image full tau3 manifest.
+- The new `manifests/images/tau3_oracle_direct_smoke.yaml:1-28` contains exactly one required image row, `tau3_oracle_direct_main_runtime`, with the P0 digest ref, local tag `tau3-smoke-main:20260626r2`, `source_image_id`, fallback tar, and fallback tar sha for the main runtime only. Its evidence note says oracle-direct does not use the runtime sidecar.
+- Static lint for `tau3_oracle_direct_smoke.yaml` returned rc 0 with `images=1`, `required_images=1`, `required_with_digest_ref=1`, `required_with_fallback_sha=1`, `fallback_tar_verified=1`, and `required_without_offline_transport=0`.
+- Static check with `--skip-docker` for `tau3_oracle_direct_smoke.yaml` returned rc 0 with `tar_verified=1`, `unchecked=1`, no missing/tar mismatch.
+- In-memory fake checker repro from Round31 is now fixed for the direct helper: with main image present and sidecar image absent, `check_image_manifest('manifests/images/tau3_oracle_direct_smoke.yaml')` returns `present=1`, `missing=0`. The same fake state against full `manifests/images/tau3_bench.yaml` still returns `present=1`, `missing=1`, which is correct for the Harbor/compose path.
+- Dry-run for `tau3_bench_oracle_direct_smoke` returned rc 0 and resolves required image preflight to `manifests/images/tau3_oracle_direct_smoke.yaml`, with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `DOCKER_API_VERSION=1.45`, and `TAU3_DIRECT_IMAGE=tau3-smoke-main:20260626r2`.
+- Full tau3 readiness remains fail-closed. `--readiness --target-benches tau3-bench --json` returned rc 1: the full `tau3_bench` entry is disabled and `pending_adapter`, while the oracle-direct helper is `readiness_role=image_smoke` and does not make the full target ready.
+
+### TB2 QEMU status and risk
+
+No new QEMU-specific bug is confirmed. The current branch still correctly treats both QEMU rows as missing offline transport, and the staged plan is source-cache evidence only.
+
+- Active TB2 manifest `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` remains `82/89` offline-transport ready with 7 required gaps: `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_qemu_alpine_ssh`, `tb2_qemu_startup`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`.
+- QEMU active rows have `fallback_status=missing_shared_tar`, `fallback_transport=none`, no `image_ref`, no `fallback_tar`, and no `fallback_tar_sha256`. Their smoke command is the generic `python3 --version ... || echo tb2-smoke-ok` under `network: none`, so planned image warmup should not launch QEMU, SSH, supervisord, or task behavior.
+- `tb2_missing_transport_stage_plan.json` has both QEMU rows matched from `swe_dev` and planned to write batch2 fallback tars, but those planned tar files do not exist yet. Planned P0 tags also have no digest refs.
+- Internal P0 manifest checks returned HTTP `404` for both `terminal-bench-2-1-qemu-alpine-ssh:20260425` and `terminal-bench-2-1-qemu-startup:20260425`, matching the absence of digest refs in the plan.
+- Live read-only `swe_dev` Docker inspect confirms source-cache identity and size match the manifest/plan: `qemu-alpine-ssh` image id `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573`, size `1956628773`, default command `bash`; `qemu-startup` image id `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444`, size `1956605318`, default command `bash`. Both show no exposed ports or declared volumes in inspect metadata.
+- `swe_dev` `/data` state remains tight but usable for small isolated QEMU staging: `/data` reported 1.0T total, 907G used, 117G free, 89% used; `/data/docker` exists. `/data/swe/SWE-bench` and `/data/tmp/tb2-prebuild-save` have zero top-level files, so the useful source is Docker cache, not loose tars.
+
+### COMMENT-READY / next candidates
+
+- Keep QEMU staging isolated and fallback-first. The next safe implementation candidate is a two-row QEMU batch only if the operator runs source-side staging from `swe_dev` with source-host and identity guards, then proves worker fallback-load/run-smoke. Do not mix with giant torch/pytorch rows.
+- Suggested source-side materialization commands for the implementation owner, not executed in this lane:
+  - `scripts/stage_cache_images_from_plan.sh --plan _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv --only qemu-alpine-ssh --source-host-label swe_dev --execute --push`
+  - `scripts/stage_cache_images_from_plan.sh --plan _coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_plan.tsv --only qemu-startup --source-host-label swe_dev --execute --push`
+- After each row is staged, require active manifest metadata with P0 digest and fallback sha, then worker-j9jjd `check --load-fallback --run-smoke --json` using `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` and `DOCKER_API_VERSION=1.45`. If P0 pull or fallback load hits rootless network/EIO failures, quarantine under #8 like `mteb-retrieve` and `multi-source-data-merger`.
+- Dedup: QEMU rootless ingest/network risk belongs to #8 unless a new row-specific failure shows a distinct archive corruption or manifest/source identity mismatch. The current evidence is COMMENT-READY for #6/#8/#12/#13, not a new issue.
+
+### Command evidence
+
+- `sed -n '1,620p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0.
+- Read systematic-debugging and verification-before-completion skill files; rc 0. Memory quick grep for Round32/tau3/QEMU terms returned rc 0 with no relevant hits used.
+- Remote head/status/log read through `ssh dev`; rc 0. Branch/head `feat/image-warmup-policy` / `1a722d6`; initial status output was clean.
+- Grep for `#20`, tau3 direct helper, and QEMU context across HANDOFF/runtime/runner ledgers and inventory paths; rc 0.
+- Static line reads for `manifests/images/tau3_oracle_direct_smoke.yaml`, `manifests/images/tau3_bench.yaml`, `manifests/suite.example.yaml`, and `scripts/test_agentic_bench_suite.py`; rc 0.
+- `git show --stat --oneline 1a722d6` and related commit file list; rc 0. Confirmed #20 fix touched the direct image manifest, suite helper manifest pointer, tests, ledgers, readiness snapshot, and handoff.
+- Tau3 direct/full lint, skip-docker check, fake sidecar-absent checker repro, dry-run, and readiness probe in one Python wrapper; wrapper rc 0. Inner results are summarized above: direct lint rc 0, direct skip-check rc 0, full lint rc 0, fake direct sidecar-absent present/missing `1/0`, fake full sidecar-absent present/missing `1/1`, helper dry-run rc 0, tau3 readiness rc 1.
+- Parsed active TB2 manifest and remote-cache staging plan; rc 0. Current gaps and QEMU plan rows are summarized above.
+- Grep for QEMU rows across active manifest and remote-cache artifacts; rc 0. It found the active manifest rows, staging plan TSV/JSON rows, stale dry-run rows, and cache-match artifacts.
+- Internal P0 manifest check from `dev` with `curl -k` and Docker manifest accept header; rc 0. HTTP codes were `404` for `qemu-alpine-ssh` and `qemu-startup` tags.
+- Parsed stale/non-identity and identity cache inventories for QEMU rows; rc 0. The identity inventory has full image IDs matching active manifest source IDs; the stale remote-cache inventory has only short IDs and no repo digests.
+- First live `swe_dev` inspect command had rc 1 because a Go template referenced missing `.Config.ExposedPorts`; discarded except as operator error. Second live `swe_dev` JSON inspect printed `docker_inspect_rc 0` and the QEMU image metadata, but the wrapper exited rc 1 because a later `docker image ls` call used two repository args. Final corrected `docker image ls`/`df`/path-count command returned rc 0 and recorded cache/storage evidence above.
+- TB2 static lint without fallback rehashing; wrapper rc 0, inner lint rc 1. Counts: `images=89`, `required_images=89`, `required_with_fallback_sha=82`, `required_without_offline_transport=7`; QEMU rows have `lint_status=missing_offline_transport`, no digest ref, and no fallback sha.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace matches.
+- Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches.
+- `find . -path "*/__pycache__*" -print`; rc 0 with no output, so no pycache was present at validation time.
+- Final `git status --short --untracked-files=all`; rc 0. It showed this lane's modified `hunt-runtime-images.md`, plus concurrent unrelated changes to `hunt-runner-results.md` and untracked `tb2_qemu_alpine_stage_20260626.{log,tsv}`. I did not edit the runner ledger or create the QEMU artifacts.
+- Read-only follow-up on those concurrent QEMU artifacts; rc 0 for `ls/sed`, and the corrected tar-existence probe rc 0. The TSV had only a header, the log had a single `ROW tb2_qemu_alpine_ssh ...` line, and both planned QEMU fallback tar paths were still absent. One intermediate tar-existence probe had a shell quoting SyntaxError and rc 1; discarded as operator error.

@@ -1,0 +1,32 @@
+ROW tb2_qemu_alpine_ssh local_ref=tb2-offline/qemu-alpine-ssh:20260425 fallback_tar=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-alpine-ssh.tar p0_tag=100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh:20260425
+The push refers to repository [100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh]
+0110a23bad8a: Preparing
+43c3cd33d8b4: Preparing
+5f70bf18a086: Preparing
+5bba40e4a2c0: Preparing
+a38b7ba50684: Preparing
+464f1edcf371: Preparing
+75bf4969696d: Preparing
+d10ee47214d3: Preparing
+b2211716e8a4: Preparing
+4366053a6974: Preparing
+584a83027a87: Preparing
+4366053a6974: Waiting
+b2211716e8a4: Waiting
+d10ee47214d3: Waiting
+75bf4969696d: Waiting
+464f1edcf371: Waiting
+584a83027a87: Waiting
+5f70bf18a086: Mounted from swe-data-harness/terminal-bench-2-1-install-windows-3.11
+5bba40e4a2c0: Pushed
+75bf4969696d: Pushed
+464f1edcf371: Pushed
+b2211716e8a4: Pushed
+a38b7ba50684: Pushed
+43c3cd33d8b4: Pushed
+0110a23bad8a: Pushed
+584a83027a87: Pushed
+4366053a6974: Pushed
+d10ee47214d3: Pushed
+20260425: digest: sha256:df4efa529fc2ad4d5c312723c14c4fa9b275ba83bee451046d6d966df19aff54 size: 2633
+stage_cache_images_from_plan: rows=1 staged=1 skipped=7 failed=0

@@ -288,12 +288,12 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Current ready target: RepoZero. `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches RepoZero` returns ready.
 - Current blocked targets and dominant blockers:
   - SWE-bench Verified multi: image manifest is still not materialized for full multi-agent coverage.
-  - Terminal Bench 2.1: full adapter is disabled/pending and the 89-row cache manifest still has `required_image_transport_missing` for 7 rows.
+  - Terminal Bench 2.1: full adapter is disabled/pending and the 89-row cache manifest still has `required_image_transport_missing` for 6 rows.
   - MCP-Atlas, Tool-Decathlon, programbench, NL2Repo: disabled/pending adapters and placeholder image contracts.
-  - tau3-bench: dataset exists but offline runtime images are still pending; tau2 remains de-scoped.
+  - tau3-bench: offline runtime images and the oracle-direct helper are ready, but the full benchmark remains disabled/pending adapter and rootless/offline hardening; tau2 remains de-scoped.
   - DeepSWE: adapter smoke is wired, but the image manifest is still a placeholder without R2E/Pier runtime enumeration.
 - GitHub issue #15 tracks the stale TB2 cache metadata bug and was closed after `c95d420`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15; close comment https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15#issuecomment-4805168157
-- Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=82`, and `remaining_transport_gap_count=7`; only the 82 promoted/worker-proven rows are treated as offline-transport ready.
+- Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=83`, and `remaining_transport_gap_count=6`; only the 83 promoted/worker-proven rows are treated as offline-transport ready.
 - Worker-j9jjd RepoZero proof: using a temporary local-execution suite on worker with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, RepoZero readiness returned ready and `--image-preflight-only --only repozero_py2js_smoke` passed. Output: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_readiness_gate_20260626_rerun`; summary `status=0`, counts `pass=1`, `fail=0`, `optional_fail=0`.
 - Round26 bug-hunt ledgers:
   - `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: #14 proxy ceiling enforcement re-review found no new ISSUE-READY bug.
@@ -362,9 +362,19 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Pull failed inside the rootless Docker daemon with `connect: network is unreachable` to P0, even though worker host `curl -k -I https://100.97.118.137:8555/v2/` returned HTTP 200 and `ip route get 100.97.118.137` succeeded.
 - Fallback tar load failed with `unlinkat /usr/local/lib/python3.10/site-packages/pip-23.0.1.dist-info: input/output error`.
 - Docker inspect after the retry confirmed neither the P0 digest ref nor `tb2-offline/mteb-retrieve:20260425` is present locally.
-- Conclusion: do not promote `mteb-retrieve`; keep it under #8 rootless Docker network/ingest quarantine. Active Terminal-Bench 2.1 remains `82/89` offline-transport ready with `7` remaining gaps.
+- Conclusion at retry time: do not promote `mteb-retrieve`; keep it under #8 rootless Docker network/ingest quarantine. At that point active Terminal-Bench 2.1 remained `82/89` offline-transport ready with `7` remaining gaps; the later qemu-alpine proof below supersedes the current active count to `83/89` with `6` remaining gaps.
 - #8 comment posted with this evidence: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4805539733
 - Round29 runner-results bug hunt found no new ISSUE-READY bug after #18/#19 and install-windows promotion; it recommends parsing allowlisted checker JSON into image-preflight summaries as a #12/#13 follow-up, not as a new issue.
+
+## 2026-06-26 TB2 qemu-alpine fallback/P0 worker proof
+
+- Staged and pushed Terminal-Bench 2.1 `qemu-alpine-ssh` from `swe_dev` using `scripts/stage_cache_images_from_plan.sh --execute --push --only qemu-alpine-ssh`. Result artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_stage_20260626.tsv`; log artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_stage_20260626.log`; rc artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_stage_20260626.rc`.
+- P0 digest: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh@sha256:df4efa529fc2ad4d5c312723c14c4fa9b275ba83bee451046d6d966df19aff54`.
+- Shared fallback tar: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-alpine-ssh.tar`, sha256 `583a166245327f970231ce00cc3f3308a3d0c4466113a2e0a9e70b7b8127d435`.
+- Worker-j9jjd proof used explicit endpoint from `WORKFLOW.md`, `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, and `DOCKER_API_VERSION=1.45` with one-row manifest `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_worker_check_manifest_20260626.yaml`. Result artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_worker_check_20260626.json`; rc artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_worker_check_20260626.rc`; stderr artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_worker_check_20260626.stderr`.
+- Worker check returned rc 0 with counts `present=1`, `tar_verified=1`, `loaded=1`, `smoke_passed=1`, `pulled=0`, `missing=0`, `errors=0`, and `identity_mismatch=0`; `present_ref` is the local tag `tb2-offline/qemu-alpine-ssh:20260425`. This is a fallback-load proof, not a worker direct-P0 pull proof.
+- Active TB2 cache manifest now records `qemu-alpine-ssh` as `p0_digest_plus_fallback_tar`. TB2 offline transport readiness moved from `82/89` to `83/89`, with `remaining_transport_gap_count=6`. Remaining transport gaps are `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_qemu_startup`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`.
+- Rootless worker direct-P0 behavior remains under #8; do not remove fallback tar requirements from promoted TB2 rows until digest-pull consumer smoke is reliable on worker.
 
 ## 2026-06-26 tau3 Round29 runner contract and worker blocker
 
