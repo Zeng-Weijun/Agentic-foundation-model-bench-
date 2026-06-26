@@ -1,0 +1,98 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "tb2_install_windows_3_11_worker_probe",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 0,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 1,
+    "pulled": 1,
+    "smoke_passed": 1,
+    "tagged": 1,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 1,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar"
+        ],
+        "sha256": "3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6",
+        "sha256_actual": "3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar"
+        ]
+      },
+      "id": "tb2_install_windows_3_11",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/install-windows-3.11:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/install-windows-3.11:20260425"
+        },
+        {
+          "actual_image_id": "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b",
+          "actual_repo_digests": [
+            "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"
+          ],
+          "expected_image_ids": [
+            "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265",
+          "returncode": 0
+        },
+        {
+          "actual_image_id": "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b",
+          "actual_repo_digests": [
+            "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"
+          ],
+          "expected_image_ids": [
+            "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/install-windows-3.11:20260425",
+          "returncode": 0
+        }
+      ],
+      "local_refs": [
+        "tb2-offline/install-windows-3.11:20260425"
+      ],
+      "local_tag_ref": "tb2-offline/install-windows-3.11:20260425",
+      "local_tag_source_ref": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265",
+      "local_tag_status": "tagged",
+      "present_ref": "tb2-offline/install-windows-3.11:20260425",
+      "pull_status": "pulled",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_worker_check_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": true,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

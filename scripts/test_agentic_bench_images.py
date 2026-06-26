@@ -120,6 +120,68 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][0]["fallback"]["sha256_status"], "match")
         self.assertEqual(docker_calls, [["docker", "image", "inspect", "ghcr.io/jessezzzzz/repoarena-new:latest"]])
 
+    def test_check_manifest_tags_pulled_digest_to_local_ref(self):
+        module = load_module()
+        digest_ref = "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"
+        local_ref = "tb2-offline/install-windows-3.11:20260425"
+        image_id = "sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            manifest = root / "tb2-install-windows.yaml"
+            manifest.write_text(
+                textwrap.dedent(
+                    f"""
+                    schema_version: agentic_bench.image_manifest.v1
+                    bench_id: tb2_install_windows_probe
+                    images:
+                      - id: tb2_install_windows_3_11
+                        required: true
+                        local_ref: {local_ref}
+                        image_ref: {digest_ref}
+                        source_image_id: {image_id}
+                    """
+                ).strip(),
+                encoding="utf-8",
+            )
+
+            calls = []
+
+            def fake_runner(argv, env):
+                calls.append(argv)
+                if argv == ["docker", "image", "inspect", local_ref]:
+                    if calls.count(argv) == 1:
+                        return module.CommandResult(1, "", "No such image")
+                    return module.CommandResult(
+                        0,
+                        json.dumps([{"Id": image_id, "RepoDigests": [digest_ref]}]),
+                        "",
+                    )
+                if argv == ["docker", "pull", digest_ref]:
+                    return module.CommandResult(0, "pulled", "")
+                if argv == ["docker", "image", "inspect", digest_ref]:
+                    return module.CommandResult(
+                        0,
+                        json.dumps([{"Id": image_id, "RepoDigests": [digest_ref]}]),
+                        "",
+                    )
+                if argv == ["docker", "tag", digest_ref, local_ref]:
+                    return module.CommandResult(0, "", "")
+                raise AssertionError(f"unexpected docker command: {argv!r}")
+
+            summary = module.check_image_manifest(
+                manifest,
+                asset_root=root,
+                runner=fake_runner,
+                allow_pull=True,
+            )
+
+        self.assertEqual(summary["counts"]["present"], 1)
+        self.assertEqual(summary["counts"]["pulled"], 1)
+        self.assertEqual(summary["counts"]["tagged"], 1)
+        self.assertEqual(summary["images"][0]["present_ref"], local_ref)
+        self.assertEqual(summary["images"][0]["local_tag_status"], "tagged")
+        self.assertIn(["docker", "tag", digest_ref, local_ref], calls)
+
 
     def test_check_manifest_rejects_present_tag_with_wrong_image_identity(self):
         module = load_module()

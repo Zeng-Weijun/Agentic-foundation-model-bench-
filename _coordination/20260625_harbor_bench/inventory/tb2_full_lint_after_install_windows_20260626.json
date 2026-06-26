@@ -1,0 +1,1497 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "terminal_bench_2_1_swe_dev_cache",
+  "counts": {
+    "fallback_tar_mismatch": 0,
+    "fallback_tar_missing": 0,
+    "fallback_tar_verified": 82,
+    "images": 89,
+    "optional_images": 0,
+    "required_images": 89,
+    "required_with_digest_ref": 32,
+    "required_with_fallback_sha": 82,
+    "required_without_offline_transport": 7
+  },
+  "images": [
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/adaptive-rejection-sampler.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_adaptive_rejection_sampler",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/adaptive-rejection-sampler:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/bn-fit-modify.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_bn_fit_modify",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/bn-fit-modify:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/break-filter-js-from-html.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_break_filter_js_from_html",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/break-filter-js-from-html:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/build-cython-ext.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_build_cython_ext",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/build-cython-ext:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/build-pmars.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_build_pmars",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/build-pmars:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/build-pov-ray.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_build_pov_ray",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/build-pov-ray:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/caffe-cifar-10.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_caffe_cifar_10",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/caffe-cifar-10:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/cancel-async-tasks.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_cancel_async_tasks",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/cancel-async-tasks:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/chess-best-move.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_chess_best_move",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/chess-best-move:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/circuit-fibsqrt.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_circuit_fibsqrt",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/circuit-fibsqrt:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/cobol-modernization.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_cobol_modernization",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/cobol-modernization:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/code-from-image.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_code_from_image",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/code-from-image:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/compile-compcert.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_compile_compcert",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/compile-compcert:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/configure-git-webserver.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_configure_git_webserver",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/configure-git-webserver:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/constraints-scheduling.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_constraints_scheduling",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/constraints-scheduling:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/count-dataset-tokens.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_count_dataset_tokens",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/count-dataset-tokens:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/crack-7z-hash.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_crack_7z_hash",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/crack-7z-hash:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/custom-memory-heap-crash.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_custom_memory_heap_crash",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/custom-memory-heap-crash:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/db-wal-recovery.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_db_wal_recovery",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/db-wal-recovery:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/distribution-search.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_distribution_search",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/distribution-search:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/dna-assembly.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_dna_assembly",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/dna-assembly:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/dna-insert.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_dna_insert",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/dna-insert:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/extract-elf.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_extract_elf",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/extract-elf:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/extract-moves-from-video.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_extract_moves_from_video",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/extract-moves-from-video:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/feal-differential-cryptanalysis.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_feal_differential_cryptanalysis",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/feal-differential-cryptanalysis:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/feal-linear-cryptanalysis.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_feal_linear_cryptanalysis",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/feal-linear-cryptanalysis:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/filter-js-from-html.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_filter_js_from_html",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/filter-js-from-html:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/financial-document-processor.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_financial_document_processor",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/financial-document-processor:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/fix-code-vulnerability.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_fix_code_vulnerability",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/fix-code-vulnerability:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/fix-git.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_fix_git",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/fix-git:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/fix-ocaml-gc.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_fix_ocaml_gc",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/fix-ocaml-gc:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/gcode-to-text.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_gcode_to_text",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/gcode-to-text:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/git-leak-recovery.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_git_leak_recovery",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/git-leak-recovery:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/git-multibranch.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_git_multibranch",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/git-multibranch:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/gpt2-codegolf.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_gpt2_codegolf",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/gpt2-codegolf:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/headless-terminal.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_headless_terminal",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/headless-terminal:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/hf-model-inference.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_hf_model_inference",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/hf-model-inference:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_install_windows_3_11",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/install-windows-3.11:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/kv-store-grpc.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_kv_store_grpc",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/kv-store-grpc:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/large-scale-text-editing.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_large_scale_text_editing",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/large-scale-text-editing:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/largest-eigenval.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_largest_eigenval",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/largest-eigenval:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/llm-inference-batching-scheduler.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_llm_inference_batching_scheduler",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/llm-inference-batching-scheduler:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/log-summary-date-ranges.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_log_summary_date_ranges",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/log-summary-date-ranges:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/mailman.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_mailman",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/mailman:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/make-doom-for-mips.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_make_doom_for_mips",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/make-doom-for-mips:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/make-mips-interpreter.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_make_mips_interpreter",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/make-mips-interpreter:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/mcmc-sampling-stan.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_mcmc_sampling_stan",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/mcmc-sampling-stan:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/merge-diff-arc-agi-task.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_merge_diff_arc_agi_task",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/merge-diff-arc-agi-task:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/model-extraction-relu-logits.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_model_extraction_relu_logits",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/model-extraction-relu-logits:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/modernize-scientific-stack.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_modernize_scientific_stack",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/modernize-scientific-stack:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/mteb-leaderboard.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": false,
+      "id": "tb2_mteb_leaderboard",
+      "image_refs": [],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/mteb-leaderboard:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_mteb_retrieve",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/mteb-retrieve:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_multi_source_data_merger",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/multi-source-data-merger:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/nginx-request-logging.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_nginx_request_logging",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-nginx-request-logging@sha256:d4509a957929e8e9be7779bf0a114b374bb7d6685f972e1da172a16d8f627a08"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/nginx-request-logging:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/openssl-selfsigned-cert.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_openssl_selfsigned_cert",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-openssl-selfsigned-cert@sha256:9dcf06c7984424a3aff7573f8478f297a40224c906d232cd92ed6a0ed82e66ca"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/openssl-selfsigned-cert:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/overfull-hbox.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_overfull_hbox",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-overfull-hbox@sha256:20e76797505baeb57f693c8778496b912d390a6afe68975f5e4dd5fd49db06d3"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/overfull-hbox:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/password-recovery.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_password_recovery",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-password-recovery@sha256:0603131d761eb98a1daee4bf0f98d2a51e2ebc05c3bfd34fffdb10ee753ae6dd"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/password-recovery:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing-reverse.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_path_tracing_reverse",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing-reverse@sha256:5a530196fedcca1edd0175c9adcb3eb1b5f900ce5b84545467fa87e8f51d7346"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/path-tracing-reverse:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/path-tracing.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_path_tracing",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing@sha256:07659e59709c19d41fc10f2e824f2645736a3751733b72837733f088ab9724ba"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/path-tracing:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/polyglot-c-py.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_polyglot_c_py",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-c-py@sha256:f31972c9fe30b7997df06bd448294d54779e861a61e15f2a7cf353dc8f009f6b"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/polyglot-c-py:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/polyglot-rust-c.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_polyglot_rust_c",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-rust-c@sha256:608ae734f32f04a7b5013bf5607b890d1f9222bc2f6934d615b765cf8776d064"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/polyglot-rust-c:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/portfolio-optimization.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_portfolio_optimization",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-portfolio-optimization@sha256:e49c81136737cfcddd8c31b2b6525cd0a42688a91808a1d425a7e103803e76c0"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/portfolio-optimization:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/protein-assembly.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_protein_assembly",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-protein-assembly@sha256:1144842bb39d1bf67d8925879202101caf6250a8a7a83fcf1e582496991004e9"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/protein-assembly:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/prove-plus-comm.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_prove_plus_comm",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-prove-plus-comm@sha256:70b7a8e1e4ad02ac01dc434585c6167b936078680c0c6ae64084be096efc6748"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/prove-plus-comm:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pypi-server.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_pypi_server",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pypi-server@sha256:18aaa082c92c40a5188fabe4637f2384e4d2d8b94a2d64874d12faea08aab38e"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/pypi-server:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/pytorch-model-cli.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_pytorch_model_cli",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-cli@sha256:708e27b09487fbfed9176182bbad343ce2c15fba3294dad910a98726851f1aec"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/pytorch-model-cli:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_pytorch_model_recovery",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/pytorch-model-recovery:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_qemu_alpine_ssh",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/qemu-alpine-ssh:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_qemu_startup",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/qemu-startup:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/query-optimize.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_query_optimize",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-query-optimize@sha256:41c17768172b7b150ed339831b4103817310a6b9ba098f60b47cb3ab97a2b6ce"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/query-optimize:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/raman-fitting.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_raman_fitting",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-raman-fitting@sha256:9fb585481eae2918c1dc0a437c2e6efad84d8329c884b2ff4e272337ab1e3976"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/raman-fitting:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/regex-chess.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_regex_chess",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-chess@sha256:900fadda5d2c081be3097cb331bc491f6383a5b68d18b2c560b0999575b3f1ed"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/regex-chess:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/regex-log.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_regex_log",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-log@sha256:938819cbbfc8663ea5063cea6688c56aca9f8e8f1524ab1792b338a7de6698bd"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/regex-log:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/reshard-c4-data.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_reshard_c4_data",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-reshard-c4-data@sha256:4ab395e621f6fbd1ecf4433ea20f5ad8a7d3d3be989bb14ef4c049428a7eaa59"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/reshard-c4-data:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/rstan-to-pystan.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_rstan_to_pystan",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-rstan-to-pystan@sha256:a1ab447e9bc4e894c9f6026f091f7011a8932fcf0e88fcc706abd6123f67f0d4"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/rstan-to-pystan:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sam-cell-seg.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_sam_cell_seg",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sam-cell-seg@sha256:9a84f14ac1bb630fc1d8d1eb0276e4c03432f4bb6735abd9789a369bafbbbab8"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/sam-cell-seg:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sanitize-git-repo.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_sanitize_git_repo",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sanitize-git-repo@sha256:01c595305cfd9a8204ac172226c050a70b2146754ea4ceaf72b21891b998d162"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/sanitize-git-repo:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/schemelike-metacircular-eval.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_schemelike_metacircular_eval",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval@sha256:bb7876fab3240356105f47555f4486229936a4ec70e7df21f40a6b55ad6ad045"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/schemelike-metacircular-eval:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sparql-university.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_sparql_university",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sparql-university@sha256:7179cb4ba6cec9cf48e7204fd07cdbd4b9393d7335c4e69c5c15e91c6d452e14"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/sparql-university:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sqlite-db-truncate.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_sqlite_db_truncate",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-db-truncate@sha256:557afac745d304a2148376470df50b2f8ae1c9543895fcf3ec45240b80beaef5"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/sqlite-db-truncate:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/sqlite-with-gcov.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_sqlite_with_gcov",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-with-gcov@sha256:efe2293e732832ffa3d19d82ee8a03beb2f9d809b0248f73ea93491fd4d87f47"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/sqlite-with-gcov:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_torch_pipeline_parallelism",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/torch-pipeline-parallelism:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "not_checked",
+      "fallback_tars": [],
+      "has_fallback_sha": false,
+      "has_internal_digest_ref": false,
+      "id": "tb2_torch_tensor_parallelism",
+      "image_refs": [],
+      "lint_status": "missing_offline_transport",
+      "local_refs": [
+        "tb2-offline/torch-tensor-parallelism:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/train-fasttext.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_train_fasttext",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-train-fasttext@sha256:0611d34b94140683d27a859e29e5567080d24d91646137531dae02e14cc4fbd9"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/train-fasttext:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/tune-mjcf.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_tune_mjcf",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-tune-mjcf@sha256:42b5da887fff95421fd422544cc03ed4847919b58d0eb97b03c84a6ce8cae9a7"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/tune-mjcf:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/video-processing.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_video_processing",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-video-processing@sha256:dd6c7305b82e6cd9f99a2c862401b5648cd650abd414769bd51251fbf2c589e3"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/video-processing:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/vulnerable-secret.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_vulnerable_secret",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-vulnerable-secret@sha256:b57851ef57bb7d00d05f38ac73ccda754851d5cac5fafa3a728b65afddd31ee3"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/vulnerable-secret:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/winning-avg-corewars.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_winning_avg_corewars",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-winning-avg-corewars@sha256:ea41cba6fb9a2f72e4647bb578bc08241979ac241a07b24b2342d0c2c7a8befd"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/winning-avg-corewars:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    },
+    {
+      "fallback_sha256_status": "match",
+      "fallback_tars": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/write-compressor.tar"
+      ],
+      "has_fallback_sha": true,
+      "has_internal_digest_ref": true,
+      "id": "tb2_write_compressor",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-write-compressor@sha256:1ab853caf47d81567d48e9f256be114358f6fcfd156d402246ae91fe16c0cd86"
+      ],
+      "lint_status": "ok",
+      "local_refs": [
+        "tb2-offline/write-compressor:20260425"
+      ],
+      "required": true,
+      "role": "terminal_bench_task_runtime"
+    }
+  ],
+  "manifest": "manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
+  "mode": {
+    "require_offline_transport": true,
+    "verify_fallback_files": true
+  },
+  "schema_version": "agentic_bench.image_lint.v1"
+}

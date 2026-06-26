@@ -1,0 +1,44 @@
+ROW tb2_install_windows_3_11 local_ref=tb2-offline/install-windows-3.11:20260425 fallback_tar=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar p0_tag=100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11:20260425
+The push refers to repository [100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11]
+57eec16f72c9: Preparing
+5f70bf18a086: Preparing
+770bf725baf5: Preparing
+990a224ca39b: Preparing
+90a52e09cc76: Preparing
+09ff0829d964: Preparing
+fa01348936d1: Preparing
+dd1706dfdeec: Preparing
+e83151aba1cf: Preparing
+dd85ecbc2a54: Preparing
+f2ec2354a9a5: Preparing
+7b0b69882a1c: Preparing
+9e02d77d8906: Preparing
+6396dab1f6c4: Preparing
+538812a4b9bd: Preparing
+09ff0829d964: Waiting
+fa01348936d1: Waiting
+dd1706dfdeec: Waiting
+f2ec2354a9a5: Waiting
+7b0b69882a1c: Waiting
+e83151aba1cf: Waiting
+9e02d77d8906: Waiting
+6396dab1f6c4: Waiting
+538812a4b9bd: Waiting
+dd85ecbc2a54: Waiting
+5f70bf18a086: Mounted from swe-data-harness/terminal-bench-2-1-multi-source-data-merger
+990a224ca39b: Pushed
+90a52e09cc76: Pushed
+57eec16f72c9: Pushed
+09ff0829d964: Pushed
+fa01348936d1: Pushed
+dd1706dfdeec: Pushed
+e83151aba1cf: Pushed
+dd85ecbc2a54: Pushed
+f2ec2354a9a5: Pushed
+7b0b69882a1c: Pushed
+6396dab1f6c4: Mounted from swe-data-harness/terminal-bench-2-1-path-tracing
+538812a4b9bd: Mounted from swe-data-harness/terminal-bench-2-1-path-tracing
+770bf725baf5: Pushed
+9e02d77d8906: Pushed
+20260425: digest: sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265 size: 3447
+stage_cache_images_from_plan: rows=1 staged=1 skipped=7 failed=0

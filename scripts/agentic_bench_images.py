@@ -421,6 +421,10 @@ def _docker_pull(ref: str, env: dict[str, str], runner: Runner) -> CommandResult
     return runner(["docker", "pull", ref], env)
 
 
+def _docker_tag(source_ref: str, target_ref: str, env: dict[str, str], runner: Runner) -> CommandResult:
+    return runner(["docker", "tag", source_ref, target_ref], env)
+
+
 def docker_cache_inventory(
     *,
     prefixes: list[str] | None = None,
@@ -934,6 +938,7 @@ def check_image_manifest(
         "tar_mismatch": 0,
         "loaded": 0,
         "pulled": 0,
+        "tagged": 0,
         "smoke_passed": 0,
         "optional_missing": 0,
         "identity_mismatch": 0,
@@ -981,6 +986,22 @@ def check_image_manifest(
                     counts["pulled"] += 1
                     present, present_ref, attempts = _docker_inspect([pull_ref], env, runner, entry)
                     result["inspect_attempts"].extend(attempts)
+                    if present and entry["local_refs"] and present_ref not in entry["local_refs"]:
+                        local_ref = entry["local_refs"][0]
+                        tag_result = _docker_tag(present_ref, local_ref, env, runner)
+                        result["local_tag_ref"] = local_ref
+                        result["local_tag_source_ref"] = present_ref
+                        result["local_tag_status"] = "tagged" if tag_result.returncode == 0 else "failed"
+                        if tag_result.returncode == 0:
+                            counts["tagged"] += 1
+                            present, present_ref, attempts = _docker_inspect([local_ref], env, runner, entry)
+                            result["inspect_attempts"].extend(attempts)
+                            if not present:
+                                result["local_tag_status"] = "inspect_failed"
+                                counts["errors"] += 1
+                        else:
+                            counts["errors"] += 1
+                            result["local_tag_stderr"] = tag_result.stderr.strip()
                 else:
                     result["pull_stderr"] = pull_result.stderr.strip()
 

@@ -288,12 +288,12 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Current ready target: RepoZero. `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches RepoZero` returns ready.
 - Current blocked targets and dominant blockers:
   - SWE-bench Verified multi: image manifest is still not materialized for full multi-agent coverage.
-  - Terminal Bench 2.1: full adapter is disabled/pending and the 89-row cache manifest still has `required_image_transport_missing` for 8 rows.
+  - Terminal Bench 2.1: full adapter is disabled/pending and the 89-row cache manifest still has `required_image_transport_missing` for 7 rows.
   - MCP-Atlas, Tool-Decathlon, programbench, NL2Repo: disabled/pending adapters and placeholder image contracts.
   - tau3-bench: dataset exists but offline runtime images are still pending; tau2 remains de-scoped.
   - DeepSWE: adapter smoke is wired, but the image manifest is still a placeholder without R2E/Pier runtime enumeration.
 - GitHub issue #15 tracks the stale TB2 cache metadata bug and was closed after `c95d420`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15; close comment https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/15#issuecomment-4805168157
-- Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=81`, and `remaining_transport_gap_count=8`; only the 81 promoted/worker-proven rows are treated as offline-transport ready.
+- Terminal-Bench 2.1 full suite entry now points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` rather than the old one-task smoke manifest. The cache manifest metadata now records `cache_image_count=89`, `shared_tar_count=84`, `offline_transport_ready_count=82`, and `remaining_transport_gap_count=7`; only the 82 promoted/worker-proven rows are treated as offline-transport ready.
 - Worker-j9jjd RepoZero proof: using a temporary local-execution suite on worker with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, RepoZero readiness returned ready and `--image-preflight-only --only repozero_py2js_smoke` passed. Output: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/verification/repozero_readiness_gate_20260626_rerun`; summary `status=0`, counts `pass=1`, `fail=0`, `optional_fail=0`.
 - Round26 bug-hunt ledgers:
   - `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: #14 proxy ceiling enforcement re-review found no new ISSUE-READY bug.
@@ -333,3 +333,17 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Worker-j9jjd tau3 image-preflight proof returned rc 0 with `present=2`, `tar_verified=2`, `missing=0`, `errors=0` for `manifests/images/tau3_bench.yaml` using `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` and `DOCKER_API_VERSION=1.45`.
 - Dry-run plan proof for `terminal_bench_2_1_image_smoke` returned one run with `image_preflight.environment.DOCKER_API_VERSION=1.45`, and the rendered command contains both `export DOCKER_API_VERSION=1.45` and `export DOCKER_HOST=unix:///tmp/rl/run/docker.sock`.
 - Verification after this round: full unit suite passed `57 tests`; Python py_compile passed; shell `bash -n` passed for launcher/image helper scripts; `git diff --check` passed; worker health script returned rc 0; worker tau3 image checker returned rc 0.
+
+
+## 2026-06-26 TB2 install-windows promotion and digest retag fix
+
+- GitHub issue opened from the install-windows worker proof:
+  - #19 `Image checker digest pull leaves required local_ref tag absent`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/19
+- Implemented #19 by teaching `scripts/agentic_bench_images.py check` to tag a successfully pulled internal digest ref to the first configured `local_ref`, then inspect that local ref and record `local_tag_status`, `local_tag_ref`, `local_tag_source_ref`, and count `tagged` in the image-check summary.
+- Staged and pushed Terminal-Bench 2.1 `install-windows-3.11` from `swe_dev` using `scripts/stage_cache_images_from_plan.sh --execute --push --only install-windows-3.11`. Result artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_p0_push_20260626.tsv`.
+- P0 digest: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265`.
+- Shared fallback tar: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar`, sha256 `3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6` after the final save/push pass.
+- Worker-j9jjd proof used `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` and `DOCKER_API_VERSION=1.45` with one-row manifest `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_worker_check_manifest_20260626.yaml`. Result artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_worker_check_20260626.json`.
+- Worker check returned rc 0 with counts `present=1`, `pulled=1`, `tagged=1`, `smoke_passed=1`, `tar_verified=1`, `missing=0`, `errors=0`; `present_ref` is now the local tag `tb2-offline/install-windows-3.11:20260425`.
+- Active TB2 cache manifest now records install-windows as `p0_digest_plus_fallback_tar`. TB2 offline transport readiness moved from `81/89` to `82/89`, with `remaining_transport_gap_count=7`.
+- Verification after this promotion: full unit suite passed `58 tests`; Python py_compile passed; shell `bash -n` passed for launcher/image helper scripts; `git diff --check` passed; worker local `docker image inspect tb2-offline/install-windows-3.11:20260425` returns image id `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b`.

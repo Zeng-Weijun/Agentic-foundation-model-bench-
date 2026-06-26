@@ -6,7 +6,7 @@ Scope: report-only inventory. No production code, manifest, Docker, benchmark, m
 
 ## Bottom line
 
-The active Terminal-Bench 2.1 full image manifest still has 8 rows with `fallback_status: missing_shared_tar`. The next lowest-risk closure candidate is `tb2_install_windows_3_11`: it is the smallest remaining source image at 1.63GB and already has a saved shared tar with sha256 evidence. It still needs P0 digest publication and a single-image worker ingest/smoke proof before promotion into `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`.
+The active Terminal-Bench 2.1 full image manifest still has 8 rows with `fallback_status: missing_shared_tar`. The next lowest-risk closure candidate, `tb2_install_windows_3_11`, has now been promoted after this support note: P0 digest publication, worker local-tag proof, and network-none smoke all passed. The remaining TB2 transport gap is 7 rows.
 
 Do not use `tb2_multi_source_data_merger` as the next closure probe even though it has a tar and P0 digest evidence: prior worker artifacts record both P0 pull and fallback load failures for that image, so it belongs to the rootless-storage diagnostic lane, not the low-risk closure lane.
 
@@ -26,7 +26,7 @@ These are the rows where the active manifest records `fallback_status: missing_s
 
 | Rank | Row | Local ref | Source image id | Source size | Current evidence | Recommendation |
 | --- | --- | --- | --- | ---: | --- | --- |
-| 1 | `tb2_install_windows_3_11` | `tb2-offline/install-windows-3.11:20260425` | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1.63GB | Shared tar saved at `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar`, sha256 `eabcacaa81ada0061dc6b08c825a74287cb83da38c0a4cdf91a802edb5510c54`; no P0 digest recorded in `tb2_missing_transport_stage_install_windows_result.tsv`. | Next low-risk candidate: publish P0 digest, then run one-image worker proof. |
+| 1 | `tb2_install_windows_3_11` | `tb2-offline/install-windows-3.11:20260425` | `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b` | 1.63GB | Shared tar saved at `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/install-windows-3.11.tar`, sha256 `3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6`; P0 digest `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265`; worker check passed with local retag and smoke. | Promoted in active manifest; no longer a remaining gap. |
 | 2 | `tb2_mteb_retrieve` | `tb2-offline/mteb-retrieve:20260425` | `sha256:153b4c97f2654e9f04d3908edcf02dd89a4e76081c5985e6bfc901caf936670a` | 2.12GB | Batch1 tar exists at `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/mteb-retrieve.tar`, sha256 `f80be41fc1360f33926c4ceaf572eff8963455f7bf44d3544454d4c6fb3eda2d`; no committed P0 digest evidence found. | Second candidate after install-windows, but verify why it stayed unpromoted. |
 | 3 | `tb2_qemu_alpine_ssh` | `tb2-offline/qemu-alpine-ssh:20260425` | `sha256:53987a31bb5efeed33dbc4ef0e0d1dd9a5a3c46ed2978bb3ccef9734c46d7573` | 1.96GB | Stage plan exists, but no confirmed tar/P0 evidence in the active committed inventory. | Stage one QEMU image at a time only after a non-QEMU row proves worker path. |
 | 4 | `tb2_qemu_startup` | `tb2-offline/qemu-startup:20260425` | `sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444` | 1.96GB | Stage plan exists, but no confirmed tar/P0 evidence in the active committed inventory. | Same as QEMU alpine; do not batch both together. |
@@ -58,7 +58,7 @@ python3 scripts/agentic_bench_images.py check   --image-manifest /path/to/one-ro
 Acceptance criteria before manifest promotion:
 
 - checker status is present/pulled/loaded with `errors=0`;
-- tar sha256 remains `eabcacaa81ada0061dc6b08c825a74287cb83da38c0a4cdf91a802edb5510c54` if fallback load is used;
+- tar sha256 remains `3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6` if fallback load is used;
 - Docker inspect identity matches `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b`;
 - no-network smoke passes;
 - no `unlinkat`, `input/output error`, or registry EOF appears.
@@ -67,7 +67,7 @@ Acceptance criteria before manifest promotion:
 
 Read-only evidence used for this report:
 
-- Parsed `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` for the 8 `fallback_status: missing_shared_tar` rows.
+- Parsed `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml` for the 7 `fallback_status: missing_shared_tar` rows after install-windows promotion.
 - Parsed `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json` for source sizes and image ids.
 - Read `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_missing_transport_stage_install_windows_result.tsv` for the saved install-windows tar evidence.
 - Read `_coordination/20260625_harbor_bench/inventory/tb2_p0_multisource_batch11_20260626.tsv` and `tb2_multisource_batch11_worker_*_failed_20260626.json` for the multi-source hold decision.
