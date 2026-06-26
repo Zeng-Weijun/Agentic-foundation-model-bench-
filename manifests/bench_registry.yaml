@@ -70,8 +70,8 @@ image_manifests:
 
   - id: tau3_bench
     path: images/tau3_bench.yaml
-    status: dataset_ready_offline_images_pending
-    policy: disabled_until_runtime_images_prebuilt
+    status: smoke_oracle_direct_worker_ready
+    policy: enabled_oracle_direct_smoke_full_harbor_still_pending
 
   - id: pending_agentic_benches
     path: images/pending_benches.yaml

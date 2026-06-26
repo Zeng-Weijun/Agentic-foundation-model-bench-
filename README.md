@@ -43,12 +43,12 @@ Current executable smoke:
 ```bash
 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml \
   --execute \
-  --only repozero_py2js_smoke \
+  --only tau3_bench \
   --model-profile dev_proxy_gpt54mini_8130 \
   --max-concurrency 1
 ```
 
-This uses worker -> `dev` proxy -> 8.130 relay for model traffic. RepoZero is the current verified executable smoke while tau3-bench is being wired through the Harbor adapter and offline image path. The example suite is staged for 8.130 relay concurrency 40 with a documented ceiling of 50.
+This uses worker -> `dev` proxy -> 8.130 relay for model traffic when a model-backed adapter is selected. `tau3_bench` is the canonical enabled tau3-bench one-task smoke; it runs the staged oracle-direct path with offline image preflight and does not use `tau2` as an active suite target. Dry-run/readiness are green for this row. Real `--execute` still requires the controller to SSH to worker-j9jjd; the current suite YAML records `ssh_from_dev: blocked_publickey`, so local Mac -> worker direct smoke is the verified execution proof until that key path is fixed. The example suite is staged for 8.130 relay concurrency 40 with a documented ceiling of 50.
 
 Executable runs now separate adapter/process status from parsed benchmark status
 when a parser is available. The first normalized parser covers RepoZero Py2JS and
@@ -109,10 +109,10 @@ Run image checks without starting benchmark adapters:
 ```bash
 python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
   --image-preflight-only \
-  --only repozero_py2js_smoke \
+  --only tau3_bench \
   --model-profile dev_proxy_gpt54mini_8130 \
   --max-concurrency 1 \
-  --output-dir /tmp/agentic_repozero_preflight
+  --output-dir /tmp/agentic_tau3_preflight
 ```
 
 This writes `run_manifest.json`, `image_preflight_summary.json`, and per-bench
@@ -253,7 +253,7 @@ bench/.env
 
 ## 单独跑
 
-tau3-bench smoke is routed through the shared suite once `run_tau3_bench.sh` is present under `/data/nips/bench`; the old customer-service smoke path is removed from the active suite.
+tau3-bench smoke is routed through the shared suite as `tau3_bench` once `run_tau3_bench.sh` is present under `/data/nips/bench`; the old customer-service/tau2 smoke target and the temporary tau3 helper alias are not active suite entries.
 
 VitaBench smoke：
 
@@ -372,7 +372,7 @@ runs/<bench>/<model>_<timestamp>/
 
 ## 当前确认程度
 
-- `tau3-bench`：Harbor adapter 和 1-task dataset 生成路径已验证；当前 smoke/oracle-direct 镜像 transport 已具备 P0 digest 与 fallback tar，full target 仍因 suite entry disabled、adapter pending 和 rootless CLI/API caveat 保持 blocked。
+- `tau3-bench`：active suite target is `tau3_bench`。Harbor adapter、1-task dataset、oracle-direct smoke runner、P0 digest 与 fallback tar 已接入；full Harbor/sidecar evaluation 仍需单独验证，不能由当前 smoke 结果代替。
 - `vitabench`：`.venv/bin/vita` 已验证可启动，已有 gpt-5.4 smoke 结果。
 - `terminal_bench`：`.venv/bin/tb --help` 已验证可启动，历史有 89 task full run。
 - `swebench_verified`：镜像和历史 eval report 足够；脚本依赖 `/data/swe/SWE-agent` 和 conda env。

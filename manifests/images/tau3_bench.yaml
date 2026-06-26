@@ -29,7 +29,7 @@ evidence:
   worker_rootless_smoke:
     main: worker-tau3-main-r2-ok
     runtime: worker-tau3-runtime-r2-ok
-  remaining_blocker: suite adapter is not wired yet; this manifest only proves smoke image transport and import readiness.
+  suite_smoke_status: tau3_bench is wired for oracle-direct one-task smoke; full Harbor sidecar execution remains pending separate validation.
 
 images:
   - id: tau3_harbor_main_runtime

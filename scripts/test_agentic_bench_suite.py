@@ -1119,41 +1119,73 @@ class AgenticBenchSuiteTest(unittest.TestCase):
 
         self.assertEqual(active_legacy, [])
 
-    def test_example_manifest_tau3_has_worker_ready_images_but_stays_disabled_until_adapter(self):
+    def test_example_manifest_tau3_bench_is_enabled_oracle_direct_smoke(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
         config = module.load_suite_config(suite_path)
         tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
 
+        self.assertTrue(tau3.get("enabled", True))
+        self.assertEqual(tau3["adapter_status"], "wired_legacy")
+        self.assertEqual(tau3["readiness_role"], "image_smoke")
         self.assertEqual(tau3["image_manifest"], "manifests/images/tau3_bench.yaml")
-        self.assertEqual(tau3["adapter_status"], "pending_adapter")
-        self.assertFalse(tau3.get("enabled", True))
+        self.assertEqual(tau3["image_policy"], "required")
+        self.assertEqual(tau3["params"]["TAU3_AGENT"], "oracle_direct")
+        self.assertEqual(str(tau3["params"]["TAU3_GENERATE_DATASET"]), "0")
+        self.assertEqual(str(tau3["params"]["TAU3_RUN_HARBOR"]), "1")
+        self.assertIn("tau3-bench-oracle-direct-smoke", tau3["params"]["TAU3_DATASET_DIR"])
+        self.assertEqual(tau3["params"]["TAU3_DIRECT_IMAGE"], "tau3-smoke-main:20260626r2")
+
+        plan = module.build_run_plan(
+            config,
+            suite_path=suite_path,
+            dry_run=True,
+            only={"tau3_bench"},
+            model_profile_override="dev_proxy_gpt54mini_8130",
+        )
+        self.assertEqual(len(plan["runs"]), 1)
+        run = plan["runs"][0]
+        self.assertEqual(run["bench_id"], "tau3_bench")
+        self.assertEqual(run["adapter_status"], "wired_legacy")
+        self.assertEqual(run["image_preflight"]["policy"], "required")
+        self.assertTrue(run["image_preflight"]["required"])
+        self.assertEqual(run["runtime_env"]["TAU3_AGENT"], "oracle_direct")
+        self.assertEqual(run["runtime_env"]["TAU3_GENERATE_DATASET"], "0")
+        self.assertIn("tau3-bench-oracle-direct-smoke", run["runtime_env"]["TAU3_DATASET_DIR"])
 
         report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
         target = report["targets"][0]
-        image_report = target["entries"][0]["image_manifests"][0]
-        self.assertEqual(target["status"], "blocked")
-        self.assertEqual(image_report["status"], "ready")
+        self.assertEqual(target["status"], "ready")
+        self.assertEqual(target["aggregation_entry_count"], 1)
+        entry = next(entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench")
+        self.assertTrue(entry["ready"])
+        self.assertEqual(entry["readiness_role"], "image_smoke")
+        self.assertEqual(entry["blockers"], [])
+        image_report = entry["image_manifests"][0]
+        self.assertEqual(image_report["manifest"], "manifests/images/tau3_bench.yaml")
         self.assertEqual(image_report["counts"]["required_images"], 2)
         self.assertEqual(image_report["counts"]["required_without_offline_transport"], 0)
-        self.assertIn("adapter_not_wired", target["blockers"])
-        image_manifest = module._load_yaml(
+
+        manifest = module._load_yaml(
             (ROOT / "manifests" / "images" / "tau3_bench.yaml").read_text(encoding="utf-8")
         )
-        source_ids = {image["id"]: image.get("source_image_id") for image in image_manifest["images"]}
-        expected_ids = {
-            "tau3_harbor_main_runtime": "sha256:80c0d9453584d67f4fd89f53f6f47e2503870f7663d3615384f6e23f6dcc0e78",
-            "tau3_harbor_mcp_runtime": "sha256:b06571be24cf17bb4d04f4f0c76e7209ed112e2bfde48923477d34999581aefb",
-        }
-        self.assertEqual(source_ids, expected_ids)
+        source_ids = {image["id"]: image["source_image_id"] for image in manifest["images"]}
+        self.assertEqual(
+            source_ids,
+            {
+                "tau3_harbor_main_runtime": "sha256:80c0d9453584d67f4fd89f53f6f47e2503870f7663d3615384f6e23f6dcc0e78",
+                "tau3_harbor_mcp_runtime": "sha256:b06571be24cf17bb4d04f4f0c76e7209ed112e2bfde48923477d34999581aefb",
+            },
+        )
 
-    def test_tau3_full_entry_stays_blocked_when_enabled_with_smoke_params(self):
+    def test_tau3_full_readiness_stays_blocked_when_forced_with_smoke_params(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
         config = module.load_suite_config(suite_path)
         tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
         tau3["enabled"] = True
         tau3["adapter_status"] = "wired_legacy"
+        tau3["readiness_role"] = "full"
 
         report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
         target = report["targets"][0]
@@ -1163,7 +1195,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(target["status"], "blocked")
         self.assertIn("tau3_full_smoke_mode", full_entry["blockers"])
         self.assertIn("tau3_full_limit_set", full_entry["blockers"])
-        self.assertIn("tau3_full_image_policy_not_required", full_entry["blockers"])
+        self.assertNotIn("tau3_full_image_policy_not_required", full_entry["blockers"])
         self.assertIn("tau3_full_smoke_mode", target["blockers"])
 
     def test_tau3_full_entry_requires_explicit_full_mode_and_disabled_limit(self):
@@ -1173,6 +1205,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
         tau3["enabled"] = True
         tau3["adapter_status"] = "wired_legacy"
+        tau3["readiness_role"] = "full"
         tau3["image_policy"] = "required"
         tau3["params"] = {}
 
@@ -1185,46 +1218,13 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("tau3_full_smoke_mode", full_entry["blockers"])
         self.assertIn("tau3_full_limit_not_disabled", full_entry["blockers"])
 
-    def test_example_manifest_has_enabled_tau3_oracle_direct_smoke_without_full_readiness(self):
+    def test_example_manifest_has_no_enabled_tau3_helper_alias(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
         config = module.load_suite_config(suite_path)
-        tau3_smoke = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench_oracle_direct_smoke")
 
-        self.assertTrue(tau3_smoke.get("enabled", True))
-        self.assertEqual(tau3_smoke["adapter_status"], "wired_legacy")
-        self.assertEqual(tau3_smoke["readiness_role"], "image_smoke")
-        self.assertEqual(tau3_smoke["image_policy"], "required")
-        self.assertEqual(tau3_smoke["image_manifest"], "manifests/images/tau3_oracle_direct_smoke.yaml")
-        self.assertEqual(tau3_smoke["params"]["TAU3_AGENT"], "oracle_direct")
-        self.assertEqual(tau3_smoke["params"]["TAU3_DIRECT_IMAGE"], "tau3-smoke-main:20260626r2")
-
-        plan = module.build_run_plan(
-            config,
-            suite_path=suite_path,
-            dry_run=True,
-            only={"tau3_bench_oracle_direct_smoke"},
-            model_profile_override="dev_proxy_gpt54mini_8130",
-        )
-        self.assertEqual(len(plan["runs"]), 1)
-        run = plan["runs"][0]
-        self.assertEqual(run["runtime_env"]["TAU3_AGENT"], "oracle_direct")
-        self.assertEqual(run["runtime_env"]["TAU3_GENERATE_DATASET"], "0")
-        self.assertIn("tau3-bench-oracle-direct-smoke", run["runtime_env"]["TAU3_DATASET_DIR"])
-
-        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
-        target = report["targets"][0]
-        full_entries = [entry for entry in target["entries"] if entry["readiness_role"] == "full"]
-        helper_entries = [entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench_oracle_direct_smoke"]
-        self.assertEqual(target["status"], "blocked")
-        self.assertEqual(target["aggregation_entry_count"], 1)
-        self.assertEqual(full_entries[0]["adapter_status"], "pending_adapter")
-        self.assertEqual(helper_entries[0]["readiness_role"], "image_smoke")
-        helper_image_report = helper_entries[0]["image_manifests"][0]
-        self.assertEqual(helper_image_report["manifest"], "manifests/images/tau3_oracle_direct_smoke.yaml")
-        self.assertEqual(helper_image_report["counts"]["required_images"], 1)
-        self.assertEqual(helper_image_report["counts"]["required_without_offline_transport"], 0)
-        self.assertTrue(helper_entries[0]["ready"])
+        helpers = [bench for bench in config["benches"] if bench["id"] == "tau3_bench_oracle_direct_smoke"]
+        self.assertEqual(helpers, [])
 
     def test_example_manifest_has_enabled_swebench_verified_django10097_image_smoke_without_full_readiness(self):
         module = load_module()
