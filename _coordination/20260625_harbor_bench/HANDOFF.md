@@ -326,6 +326,7 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 
 - GitHub issue opened from Round28 runner-results bug-hunt:
   - #18 `Image preflight drops worker DOCKER_API_VERSION for rootless worker`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/18
+- #18 fixed in commit `4a12b0a` and closed with comment: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/18#issuecomment-4805425029
 - Implemented #18 by adding worker `DOCKER_API_VERSION: "1.45"` to `manifests/suite.example.yaml`, exporting redacted worker env before every generated image-preflight checker command, and recording that env under `image_preflight.environment` and each preflight command entry.
 - `scripts/check_rootless_docker_worker.sh` now passes `REMOTE_DOCKER_API_VERSION` into the worker and prints `docker_api_version=$DOCKER_API_VERSION`. The known rootless `/v1.45/version` panic/EOF path is retained as a diagnostic (`known_rootless_version_endpoint_unstable`) but no longer makes health fail when operational checks pass.
 - Worker-j9jjd health proof through the local control plane returned rc 0 with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `docker_info_rc=0`, `docker_ps_rc=0`, `docker_images_rc=0`, `compose_version_rc=0`, and diagnostic-only failures for `docker version`, raw `/v1.45/version`, and Python Docker SDK version negotiation.
