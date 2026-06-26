@@ -320,3 +320,15 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Refreshed `_coordination/20260625_harbor_bench/readiness_20260626.json`. Overall counts remain `ready=1`, `blocked=8`, `missing=0`, `total=9`; the tau3 target blocker changed from image transport pending to adapter wiring pending.
 - `/data` source-cache note from this round: `swe_dev` local Docker has `tb2-offline/*=89`, Terminal-Bench 2.1 P0-tagged rows visible locally at `33`, SWE eval images around `501`, and `swerex-prebuilt=728`. This confirms Terminal-Bench 2.1 full source images exist on `swe_dev:/data/docker`; the remaining work is safe staging/promotion under the worker rootless ingest constraints.
 - Verification after this round: full unit suite passed `54 tests`; Python py_compile passed; shell `bash -n` passed for launcher/image helper scripts; `git diff --check` passed; tau3 `agentic_bench_images.py --skip-docker` verified both r2 fallback tars; worker-j9jjd P0 pull and `--network none` smoke passed for both tau3 r2 images.
+
+
+## 2026-06-26 Round28 worker image preflight API env fix
+
+- GitHub issue opened from Round28 runner-results bug-hunt:
+  - #18 `Image preflight drops worker DOCKER_API_VERSION for rootless worker`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/18
+- Implemented #18 by adding worker `DOCKER_API_VERSION: "1.45"` to `manifests/suite.example.yaml`, exporting redacted worker env before every generated image-preflight checker command, and recording that env under `image_preflight.environment` and each preflight command entry.
+- `scripts/check_rootless_docker_worker.sh` now passes `REMOTE_DOCKER_API_VERSION` into the worker and prints `docker_api_version=$DOCKER_API_VERSION`. The known rootless `/v1.45/version` panic/EOF path is retained as a diagnostic (`known_rootless_version_endpoint_unstable`) but no longer makes health fail when operational checks pass.
+- Worker-j9jjd health proof through the local control plane returned rc 0 with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `docker_info_rc=0`, `docker_ps_rc=0`, `docker_images_rc=0`, `compose_version_rc=0`, and diagnostic-only failures for `docker version`, raw `/v1.45/version`, and Python Docker SDK version negotiation.
+- Worker-j9jjd tau3 image-preflight proof returned rc 0 with `present=2`, `tar_verified=2`, `missing=0`, `errors=0` for `manifests/images/tau3_bench.yaml` using `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` and `DOCKER_API_VERSION=1.45`.
+- Dry-run plan proof for `terminal_bench_2_1_image_smoke` returned one run with `image_preflight.environment.DOCKER_API_VERSION=1.45`, and the rendered command contains both `export DOCKER_API_VERSION=1.45` and `export DOCKER_HOST=unix:///tmp/rl/run/docker.sock`.
+- Verification after this round: full unit suite passed `57 tests`; Python py_compile passed; shell `bash -n` passed for launcher/image helper scripts; `git diff --check` passed; worker health script returned rc 0; worker tau3 image checker returned rc 0.

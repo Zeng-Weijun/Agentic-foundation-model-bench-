@@ -3135,3 +3135,82 @@ evidence:
 - Round27-only bounded secret scan: rc 0, `round27_secret_scan_hits=0`.
 - Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
 - Final scope check: rc 0; `git status --short --untracked-files=all` and `git diff --name-only` show only `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md` modified.
+
+## Round28 worker runner API review
+
+### Scope
+
+- Lane: runner/results/provenance review of one-command suite and image-preflight behavior after `a7db7d1` / `dce3191`.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `dce3191`.
+- Ledger-only intent. No production code, manifests, tests, handoff, issue records, Docker save/load/pull/run/build, benchmark runs, model calls, commits, pushes, or GitHub issue edits were performed by this lane.
+- Initial remote status already had untracked `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc` before this round. After read/test probes, `scripts/test_agentic_bench_suite.py` also appeared modified in the shared worktree; I did not edit or revert it.
+
+### ISSUE-READY: image preflight does not propagate or record required worker `DOCKER_API_VERSION=1.45`
+
+severity: high
+
+dedup: New runner/preflight contract bug. Related to #8 because the rootless daemon has the `/v1.45/version` failure mode, and related to #12 because normalized provenance should preserve worker runtime environment evidence. It is not a duplicate of #8: this finding is that the one-command suite/preflight runner drops the documented compatibility env and even the new regression test for that env fails in current head. It is not #16/#17: readiness-role and proxy-ceiling fixes are present.
+
+location:
+
+- `manifests/images/tau3_bench.yaml:22-24` records `worker_docker_host: unix:///tmp/rl/run/docker.sock`, `worker_docker_api_version: "1.45"`, and says `DOCKER_API_VERSION=1.45` is required for CLI operations on the current rootless worker.
+- `manifests/suite.example.yaml:48-51` worker env does not include `DOCKER_API_VERSION`, so adapter run environments do not receive it from the real suite config.
+- `scripts/agentic_bench_suite.py:470-482` can read `worker.env`, but only if the suite config supplies it.
+- `scripts/agentic_bench_suite.py:632-731` builds image-preflight commands with `set -euo pipefail`, `cd`, and `exec python3 scripts/agentic_bench_images.py check ...`; it does not export worker env and does not include an `environment` field in the preflight manifest.
+- `scripts/agentic_bench_images.py:925-927` and `scripts/agentic_bench_images.py:1327-1336` set/accept only `DOCKER_HOST` for `check`; there is no checker CLI/provenance field for `DOCKER_API_VERSION` beyond inheriting ambient process env.
+- `scripts/test_agentic_bench_suite.py:337-365` expects image preflight to export `DOCKER_API_VERSION=1.45` and expose `preflight["environment"]`, but that focused test currently errors with `KeyError: 'environment'`.
+
+static_repro:
+
+1. Safe focused test, no Docker/model/benchmark execution:
+   `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_image_preflight_remote_command_exports_worker_env`
+   Result: rc 1, `KeyError: 'environment'` at `scripts/test_agentic_bench_suite.py:364`.
+2. Safe TB2 dry-run plan probe:
+   `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml --dry-run --json --only terminal_bench_2_1_image_smoke --model-profile dev_proxy_gpt54mini_8130`
+   Parsed result: rc 0, one run, `runtime_env` has `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, but `runtime_env` lacks `DOCKER_API_VERSION`; image-preflight command has `--docker-host` but no `DOCKER_API_VERSION` export.
+3. Safe synthetic tau3 plan probe with only in-memory config mutation to enable `tau3_bench`:
+   `build_run_plan(... only={"tau3_bench"})` produced one planned run with `runtime_env` lacking `DOCKER_API_VERSION`, `image_preflight.required=false`, `load_fallback=true`, `run_smoke=true`, manifest `manifests/images/tau3_bench.yaml`, and no `DOCKER_API_VERSION` in the preflight command.
+4. Runtime lane already records the worker symptom: `hunt-runtime-images.md:47-54` shows `docker info` rc 0 but `docker version` and Docker SDK negotiation fail on `/v1.45/version`; `:203-208` records the same rootless worker `/v1.45/version` EOF while fallback tar/run smoke for TB2 gcode was viable.
+
+impact:
+
+- A one-command image warmup or suite execution can run the checker on worker-j9jjd without the required Docker API compatibility env, so tau3/TB2 image-preflight can fail or behave differently than the manual worker proof that used `DOCKER_API_VERSION=1.45`.
+- Current tau3 readiness says the image manifest is ready and the target is blocked only by disabled/pending adapter state. A synthetic in-memory flip to `enabled=true` and `adapter_status=wired_legacy` makes tau3 readiness return `ready` with no blockers even though the one-command preflight/run provenance does not carry the required worker API env.
+- Because image-preflight output lacks an allowlisted `environment`/`worker_docker_api_version` field, downstream `image_preflight_summary.json` or `agentic_bench.result.v1` cannot distinguish `image transport is ready under DOCKER_API_VERSION=1.45` from `checker ran with ambient/default Docker API negotiation`.
+
+fix:
+
+- Add `DOCKER_API_VERSION: "1.45"` to the real worker env in `manifests/suite.example.yaml` if this is a worker-wide invariant.
+- Pass a redacted/allowlisted worker image-preflight environment from `_worker_runtime_env(worker)` into `_image_preflight_for_bench()`, export it before the checker command, and include it under `image_preflight.environment` in the run manifest. Keep secret redaction in place; `DOCKER_API_VERSION`, `DOCKER_HOST`, `BENCH_OFFLINE`, `NO_PROXY`, and `TMPDIR` are safe allowlist candidates.
+- Consider teaching `agentic_bench_images.py check` an explicit `--docker-api-version` option or standardized env propagation so direct checker invocations and suite-generated checker commands are equivalent.
+- Keep the existing failing regression `test_image_preflight_remote_command_exports_worker_env`; after implementation it should pass and assert both command export and manifest provenance.
+
+### No-new-issue checks
+
+- #17 proxy-ceiling closure is effective in current head: `--readiness --target-benches RepoZero --max-concurrency 51` now returns rc 2 with `suite_concurrency 51 exceeds suite.proxy_concurrency_ceiling 50` and stdout empty.
+- #16 readiness-role closure is effective for Terminal-Bench 2.1: current readiness for `Terminal-Bench-2.1` returns rc 1, status `blocked`, `aggregation_entry_count=1`, `aggregation_ready_entry_count=0`; the full entry is role `full`, disabled/pending/blocked, and the helper `terminal_bench_2_1_image_smoke` is role `image_smoke` with image status ready but does not satisfy the full target.
+- Current tau3 target is not green: readiness for `tau3-bench` returns rc 1, target status `blocked`, blockers `no_enabled_suite_entry`, `suite_entry_disabled`, and `adapter_not_wired`; its image manifest status is ready, matching the handoff statement that the remaining blocker is adapter wiring.
+- Existing regression tests for the fixed readiness behavior pass: focused tests for readiness max-concurrency rejection, helper image-smoke not satisfying full Terminal-Bench, tau3 images staying disabled until adapter, and enabled TB2 image smoke returned rc 0 with 4 tests passed.
+- The only confirmed overclaim risk is conditional/future-facing: if tau3 is enabled/wired without fixing env propagation, static readiness will report `ready` while one-command preflight/run lacks the required worker Docker API env.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote branch/head/status through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `dce3191`; initial status showed pre-existing untracked `scripts/__pycache__/agentic_bench_suite.cpython-310.pyc`.
+- Grep and line reads for `DOCKER_API_VERSION`, worker env, image-preflight generation, readiness roles, tau3/TB2 manifests, tests, handoff, and runtime lane: rc 0.
+- `git show --stat --oneline --decorate dce3191` and `git show --stat --oneline --decorate a7db7d1`: rc 0.
+- TB2 smoke dry-run JSON probe: rc 0; parsed absence/presence fields recorded above.
+- Synthetic tau3 plan probe with in-memory `enabled=true`: rc 0; parsed absence/presence fields recorded above.
+- Readiness probe for `tau3-bench` and `Terminal-Bench-2.1`: rc 0 for the harness; inner CLI return codes were rc 1 and rc 1 respectively, with statuses/blockers recorded above.
+- Focused test `test_image_preflight_remote_command_exports_worker_env`: rc 1, `KeyError: 'environment'`.
+- Focused readiness regression tests for #16/#17/tau3/TB2: rc 0, 4 tests passed.
+- Synthetic tau3 enabled+wired readiness probe: rc 0; target became `ready`, blockers `[]`, report does not mention Docker API version.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, clean.
+- Round28-only bounded secret scan: rc 0, `round28_secret_scan_hits=0`.
+- Final scope check: rc 0; current shared worktree status includes this ledger plus concurrent non-ledger modifications in `manifests/suite.example.yaml`, `scripts/agentic_bench_suite.py`, `scripts/check_rootless_docker_worker.sh`, and `scripts/test_agentic_bench_suite.py`. This lane did not edit or revert those non-ledger files. Initial status had a pre-existing untracked pycache file, but it was absent from the final status output.

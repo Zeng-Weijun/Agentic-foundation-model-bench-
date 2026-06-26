@@ -660,6 +660,9 @@ def _image_preflight_for_bench(
         )
     )
     docker_host = str(bench_map.get("docker_host", image_config.get("docker_host", worker.get("docker_host", ""))))
+    preflight_env = _worker_runtime_env(worker)
+    if docker_host:
+        preflight_env["DOCKER_HOST"] = docker_host
     allow_pull = _image_preflight_bool(bench_map, image_config, "image_pull", "pull")
     load_fallback = _image_preflight_bool(bench_map, image_config, "image_load_fallback", "load_fallback")
     run_smoke = _image_preflight_bool(bench_map, image_config, "image_run_smoke", "run_smoke")
@@ -691,11 +694,14 @@ def _image_preflight_for_bench(
         if _bool(image_config.get("json"), default=True):
             check_argv.append("--json")
         remote_body = "\n".join(
-            [
+            part
+            for part in [
                 "set -euo pipefail",
+                _shell_exports(preflight_env),
                 f"cd {shlex.quote(project_root)}",
                 "exec " + _render_command(check_argv),
             ]
+            if part
         )
         if execution_kind == "ssh_worker":
             command_argv = _ssh_command(worker_host, ssh_options, remote_body)
@@ -710,6 +716,7 @@ def _image_preflight_for_bench(
                 "check_command": _render_command(check_argv),
                 "command_argv": command_argv,
                 "command": _render_command(command_argv),
+                "environment": _redact_env(preflight_env),
             }
         )
     return {
@@ -719,6 +726,7 @@ def _image_preflight_for_bench(
         "project_root": project_root,
         "asset_root": asset_root,
         "docker_host": docker_host,
+        "environment": _redact_env(preflight_env),
         "allow_pull": allow_pull,
         "load_fallback": load_fallback,
         "run_smoke": run_smoke,

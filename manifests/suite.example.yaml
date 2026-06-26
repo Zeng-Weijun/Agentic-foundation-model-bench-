@@ -47,6 +47,7 @@ worker:
   offline: true
   env:
     BENCH_OFFLINE: "1"
+    DOCKER_API_VERSION: "1.45"
     NO_PROXY: "127.0.0.1,localhost,100.96.1.101,100.96.0.0/12,.pjlab.org.cn"
     no_proxy: "127.0.0.1,localhost,100.96.1.101,100.96.0.0/12,.pjlab.org.cn"
 

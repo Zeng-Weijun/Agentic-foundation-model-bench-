@@ -3,6 +3,7 @@ set -euo pipefail
 
 WORKER_SSH="${WORKER_SSH:-ws-4d5210c60d64c583-worker-j9jjd.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn}"
 REMOTE_DOCKER_HOST="${REMOTE_DOCKER_HOST:-unix:///tmp/rl/run/docker.sock}"
+REMOTE_DOCKER_API_VERSION="${REMOTE_DOCKER_API_VERSION:-1.45}"
 HEALTH_SMOKE_IMAGE="${HEALTH_SMOKE_IMAGE:-}"
 MODE="${1:-check}"
 
@@ -22,6 +23,7 @@ Checks rootless Docker health on worker-j9jjd.
 Environment:
   WORKER_SSH          SSH target for the worker.
   REMOTE_DOCKER_HOST Rootless Docker socket URI.
+  REMOTE_DOCKER_API_VERSION Docker API version for worker CLI calls.
   HEALTH_SMOKE_IMAGE Optional cached image ref to run with --network none.
 
 The default mode is read-only. --restart-if-down starts the daemon only when no
@@ -36,13 +38,15 @@ USAGE
     ;;
 esac
 
-ssh -o BatchMode=yes -o ConnectTimeout=12 "$WORKER_SSH" 'bash -s' -- "$MODE" "$REMOTE_DOCKER_HOST" "$HEALTH_SMOKE_IMAGE" <<'REMOTE'
+ssh -o BatchMode=yes -o ConnectTimeout=12 "$WORKER_SSH" 'bash -s' -- "$MODE" "$REMOTE_DOCKER_HOST" "$REMOTE_DOCKER_API_VERSION" "$HEALTH_SMOKE_IMAGE" <<'REMOTE'
 set -u
 
 mode="$1"
 docker_host="$2"
-health_smoke_image="${3:-}"
+docker_api_version="$3"
+health_smoke_image="${4:-}"
 export DOCKER_HOST="$docker_host"
+export DOCKER_API_VERSION="$docker_api_version"
 
 engine_comm_re='^(dockerd|rootlesskit|containerd|containerd-shim|containerd-shim-runc-v2|runc|docker-proxy|slirp4netns|vpnkit)$'
 bench_re='cocoa|terminal-bench|terminal_bench|repozero|vita|tau3|agentic|benchmark'
@@ -117,6 +121,7 @@ echo "date=$(date -Is)"
 echo "host=$(hostname)"
 echo "mode=$mode"
 echo "docker_host=$DOCKER_HOST"
+echo "docker_api_version=$DOCKER_API_VERSION"
 echo "health_smoke_image=${health_smoke_image:-}"
 
 echo "--- socket ---"
@@ -156,7 +161,9 @@ echo "--- docker version ---"
 timeout 30 docker version 2>&1
 rc=$?
 echo "docker_version_rc=$rc"
-[ "$rc" -eq 0 ] || status=1
+if [ "$rc" -ne 0 ]; then
+  echo "docker_version_diagnostic=known_rootless_version_endpoint_unstable"
+fi
 
 echo "--- raw version endpoint ---"
 curl --silent --show-error --max-time 5 \
@@ -164,7 +171,9 @@ curl --silent --show-error --max-time 5 \
   http://docker/v1.45/version 2>&1
 rc=$?
 echo "raw_version_rc=$rc"
-[ "$rc" -eq 0 ] || status=1
+if [ "$rc" -ne 0 ]; then
+  echo "raw_version_diagnostic=known_rootless_version_endpoint_unstable"
+fi
 
 echo "--- docker ps ---"
 timeout 30 docker ps -a --no-trunc 2>&1
@@ -231,7 +240,9 @@ else
   rc=0
 fi
 echo "python_docker_version_rc=$rc"
-[ "$rc" -eq 0 ] || status=1
+if [ "$rc" -ne 0 ]; then
+  echo "python_docker_version_diagnostic=known_rootless_version_endpoint_unstable"
+fi
 
 echo "--- non-host rootless network prerequisites ---"
 command -v pasta || true

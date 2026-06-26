@@ -119,6 +119,28 @@ class RootlessWorkerHealthScriptTest(unittest.TestCase):
         self.assertIn("docker system df", script)
         self.assertIn("--- cached run smoke ---", script)
 
+    def test_health_script_exports_worker_docker_api_version(self):
+        script = (ROOT / "scripts" / "check_rootless_docker_worker.sh").read_text(encoding="utf-8")
+        self.assertIn("REMOTE_DOCKER_API_VERSION", script)
+        self.assertIn("export DOCKER_API_VERSION=", script)
+        self.assertIn("docker_api_version=$DOCKER_API_VERSION", script)
+
+    def test_health_script_treats_version_endpoint_as_diagnostic(self):
+        script = (ROOT / "scripts" / "check_rootless_docker_worker.sh").read_text(encoding="utf-8")
+        docker_version_section = script.split("echo \"--- docker version ---\"", 1)[1].split(
+            "echo \"--- raw version endpoint ---\"", 1
+        )[0]
+        raw_version_section = script.split("echo \"--- raw version endpoint ---\"", 1)[1].split(
+            "echo \"--- docker ps ---\"", 1
+        )[0]
+        sdk_version_section = script.split("echo \"--- python docker sdk version ---\"", 1)[1].split(
+            "echo \"--- non-host rootless network prerequisites ---\"", 1
+        )[0]
+        self.assertIn("known_rootless_version_endpoint_unstable", script)
+        self.assertNotIn("status=1", docker_version_section)
+        self.assertNotIn("status=1", raw_version_section)
+        self.assertNotIn("status=1", sdk_version_section)
+
 
 class AgenticBenchSuiteTest(unittest.TestCase):
     def test_default_plan_is_dry_run_and_secret_safe(self):
@@ -327,6 +349,36 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("--docker-host unix:///tmp/rl/run/docker.sock", run["image_preflight"]["command"])
         self.assertIn("--asset-root /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench", run["image_preflight"]["command"])
         self.assertIn("image preflight required before adapter execution", run["notes"])
+
+    def test_image_preflight_remote_command_exports_worker_env(self):
+        module = load_module()
+        suite_yaml = SUITE_YAML + textwrap.dedent(
+            """
+
+            image_preflight:
+              project_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+              asset_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench
+              default_policy: required
+            worker:
+              docker_host: unix:///tmp/rl/run/docker.sock
+              env:
+                DOCKER_API_VERSION: "1.45"
+            """
+        )
+        suite_yaml = suite_yaml.replace(
+            "    concurrency: 1\n    params:",
+            "    image_manifest: manifests/images/repozero.yaml\n"
+            "    concurrency: 1\n    params:",
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            config = module.load_suite_config(suite_path)
+            plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True)
+
+        preflight = plan["runs"][0]["image_preflight"]
+        self.assertEqual(preflight["environment"]["DOCKER_API_VERSION"], "1.45")
+        self.assertIn("export DOCKER_API_VERSION=1.45", preflight["command"])
 
     def test_image_preflight_warmup_flags_are_forwarded_to_checker(self):
         module = load_module()
