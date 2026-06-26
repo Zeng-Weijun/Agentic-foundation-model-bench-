@@ -693,6 +693,72 @@ class AgenticBenchImagesTest(unittest.TestCase):
             self.assertIn(hashlib.sha256(b"fake docker tar bytes").hexdigest(), result_text)
 
 
+    def test_stage_cache_images_script_times_out_hung_docker_save(self):
+        script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_docker = fakebin / "docker"
+            fake_docker.write_text(
+                textwrap.dedent(
+                    """
+                    #!/usr/bin/env bash
+                    set -euo pipefail
+                    printf '%s\n' "$*" >> "$FAKE_DOCKER_LOG"
+                    if [ "$1 $2" = "image inspect" ]; then
+                      printf '[{"Id":"sha256:fake"}]\n'
+                      exit 0
+                    fi
+                    if [ "$1" = "save" ]; then
+                      sleep 30
+                      exit 0
+                    fi
+                    echo "unexpected docker $*" >&2
+                    exit 9
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+            fake_docker.chmod(0o755)
+            plan = root / "plan.tsv"
+            tar_path = root / "images" / "hung.tar"
+            plan.write_text(
+                "id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tp0_tag\tmatch_status\n"
+                f"tb2_hung\thung\ttb2-offline/hung:20260425\tsha256:fake\tswe_dev\ttb2-offline/hung:20260425\tfake\t1GB\t{tar_path}\t100.97.118.137:8555/swe-data-harness/hung:20260425\tmatched\n",
+                encoding="utf-8",
+            )
+            out_tsv = root / "result.tsv"
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            env["FAKE_DOCKER_LOG"] = str(root / "docker.log")
+            proc = subprocess.run(
+                [
+                    "bash",
+                    str(script),
+                    "--plan",
+                    str(plan),
+                    "--execute",
+                    "--save-timeout-seconds",
+                    "1",
+                    "--output-tsv",
+                    str(out_tsv),
+                ],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("docker save timeout", proc.stderr)
+            self.assertFalse(tar_path.exists())
+            result_text = out_tsv.read_text(encoding="utf-8")
+            self.assertIn("save_timeout", result_text)
+            docker_log = (root / "docker.log").read_text(encoding="utf-8")
+            self.assertIn("save -o", docker_log)
+
     def test_stage_cache_images_script_rejects_wrong_source_image_id(self):
         script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
         with tempfile.TemporaryDirectory() as tmpdir:

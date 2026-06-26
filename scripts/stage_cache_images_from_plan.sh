@@ -3,10 +3,10 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: stage_cache_images_from_plan.sh --plan PLAN.tsv [--execute] [--push] [--source-host-label HOST] [--output-tsv OUT.tsv] [--only ID_OR_SLUG]
+Usage: stage_cache_images_from_plan.sh --plan PLAN.tsv [--execute] [--push] [--source-host-label HOST] [--output-tsv OUT.tsv] [--only ID_OR_SLUG] [--save-timeout-seconds SECONDS]
 
 Dry-run by default. With --execute, docker-save matched rows from PLAN.tsv to
-fallback_tar. With --push, also docker tag/push p0_tag after saving. The script
+fallback_tar. Use --save-timeout-seconds to bound docker save on large or stuck images. With --push, also docker tag/push p0_tag after saving. The script
 must run on the source Docker host named by the staging plan, for example
 swe_dev for Terminal-Bench cache rows.
 EOF
@@ -18,6 +18,7 @@ PUSH=0
 OUTPUT_TSV=""
 SOURCE_HOST_LABEL=""
 ONLY_VALUES=()
+SAVE_TIMEOUT_SECONDS=0
 
 while [ "$#" -gt 0 ]; do
   case "$1" in
@@ -45,6 +46,10 @@ while [ "$#" -gt 0 ]; do
       ONLY_VALUES+=("$2")
       shift 2
       ;;
+    --save-timeout-seconds)
+      SAVE_TIMEOUT_SECONDS="$2"
+      shift 2
+      ;;
     -h|--help)
       usage
       exit 0
@@ -70,6 +75,12 @@ if [ "$PUSH" -eq 1 ] && [ "$EXECUTE" -ne 1 ]; then
   echo "--push requires --execute" >&2
   exit 2
 fi
+case "$SAVE_TIMEOUT_SECONDS" in
+  ''|*[!0-9]*)
+    echo "--save-timeout-seconds must be a non-negative integer" >&2
+    exit 2
+    ;;
+esac
 
 selected() {
   local id="$1"
@@ -157,7 +168,30 @@ while IFS=$'\t' read -r id slug local_ref source_image_id source_host source_ref
     mkdir -p "$(dirname "$fallback_tar")"
     tmp_tar="${fallback_tar}.tmp.$$"
     rm -f "$tmp_tar"
-    docker save -o "$tmp_tar" "$local_ref"
+    if [ "$SAVE_TIMEOUT_SECONDS" -gt 0 ]; then
+      set +e
+      timeout "$SAVE_TIMEOUT_SECONDS" docker save -o "$tmp_tar" "$local_ref"
+      save_rc=$?
+      set -e
+    else
+      set +e
+      docker save -o "$tmp_tar" "$local_ref"
+      save_rc=$?
+      set -e
+    fi
+    if [ "$save_rc" -ne 0 ]; then
+      rm -f "$tmp_tar"
+      if [ "$SAVE_TIMEOUT_SECONDS" -gt 0 ] && [ "$save_rc" -eq 124 ]; then
+        echo "FAIL docker save timeout $id after ${SAVE_TIMEOUT_SECONDS}s" >&2
+        status="save_timeout"
+      else
+        echo "FAIL docker save failed $id rc=$save_rc" >&2
+        status="save_failed"
+      fi
+      failed=$((failed + 1))
+      write_result_row "$status"
+      continue
+    fi
     mv "$tmp_tar" "$fallback_tar"
     chmod 0644 "$fallback_tar"
     fallback_sha="$(sha256sum "$fallback_tar" | awk '{print $1}')"
