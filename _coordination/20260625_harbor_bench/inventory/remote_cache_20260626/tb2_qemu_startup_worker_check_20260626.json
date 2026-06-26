@@ -1,0 +1,80 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "tb2_qemu_startup_worker_probe",
+  "counts": {
+    "errors": 0,
+    "identity_mismatch": 0,
+    "loaded": 1,
+    "missing": 0,
+    "optional_missing": 0,
+    "present": 1,
+    "pulled": 0,
+    "smoke_passed": 1,
+    "tagged": 0,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 1,
+    "unchecked": 0
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "expected_image_ids": [
+        "sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444"
+      ],
+      "expected_repo_digests": [],
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-startup.tar"
+        ],
+        "sha256": "9dfff44089db02e89f770f29f0581db2ebf497ae05dc6b4a30f4b7b8e9083883",
+        "sha256_actual": "9dfff44089db02e89f770f29f0581db2ebf497ae05dc6b4a30f4b7b8e9083883",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-startup.tar"
+        ]
+      },
+      "id": "tb2_qemu_startup",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup@sha256:87e1d470d7259159dee9961f0ff2d496472fc0a55d56df9abd997c34721d16a3"
+      ],
+      "inspect_attempts": [
+        {
+          "ref": "tb2-offline/qemu-startup:20260425",
+          "returncode": 1,
+          "stderr": "Error response from daemon: No such image: tb2-offline/qemu-startup:20260425"
+        },
+        {
+          "actual_image_id": "sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444",
+          "actual_repo_digests": [],
+          "expected_image_ids": [
+            "sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444"
+          ],
+          "expected_repo_digests": [],
+          "identity_status": "match",
+          "ref": "tb2-offline/qemu-startup:20260425",
+          "returncode": 0
+        }
+      ],
+      "load_status": "loaded",
+      "local_refs": [
+        "tb2-offline/qemu-startup:20260425"
+      ],
+      "present_ref": "tb2-offline/qemu-startup:20260425",
+      "required": true,
+      "role": "terminal_bench_task_runtime",
+      "smoke_status": "passed",
+      "status": "present"
+    }
+  ],
+  "manifest": "_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_startup_worker_check_manifest_20260626.yaml",
+  "mode": {
+    "allow_pull": false,
+    "fail_on_optional_missing": false,
+    "load_fallback": true,
+    "run_smoke": true,
+    "skip_docker": false
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}

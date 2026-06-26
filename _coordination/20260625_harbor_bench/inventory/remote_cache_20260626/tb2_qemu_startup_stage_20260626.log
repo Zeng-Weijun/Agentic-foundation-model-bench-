@@ -1,0 +1,32 @@
+ROW tb2_qemu_startup local_ref=tb2-offline/qemu-startup:20260425 fallback_tar=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-startup.tar p0_tag=100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup:20260425
+The push refers to repository [100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup]
+e710701537b1: Preparing
+a4c12d95c780: Preparing
+5f70bf18a086: Preparing
+f3062a152e34: Preparing
+a38b7ba50684: Preparing
+464f1edcf371: Preparing
+75bf4969696d: Preparing
+d10ee47214d3: Preparing
+b2211716e8a4: Preparing
+4366053a6974: Preparing
+584a83027a87: Preparing
+d10ee47214d3: Waiting
+b2211716e8a4: Waiting
+464f1edcf371: Waiting
+75bf4969696d: Waiting
+584a83027a87: Waiting
+4366053a6974: Waiting
+a38b7ba50684: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+5f70bf18a086: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+f3062a152e34: Pushed
+464f1edcf371: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+75bf4969696d: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+d10ee47214d3: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+b2211716e8a4: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+4366053a6974: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+584a83027a87: Mounted from swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh
+a4c12d95c780: Pushed
+e710701537b1: Pushed
+20260425: digest: sha256:87e1d470d7259159dee9961f0ff2d496472fc0a55d56df9abd997c34721d16a3 size: 2633
+stage_cache_images_from_plan: rows=1 staged=1 skipped=7 failed=0

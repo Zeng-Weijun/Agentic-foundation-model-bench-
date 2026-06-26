@@ -1,7 +1,7 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: terminal_bench_2_1_swe_dev_cache
 generated_at: "2026-06-26"
-status: materialized_from_swe_dev_cache_83_of_89_offline_transport_ready
+status: materialized_from_swe_dev_cache_84_of_89_offline_transport_ready
 evidence:
   source_inventory: _coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json
   fallback_tar_sha256_table: _coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv
@@ -10,12 +10,12 @@ evidence:
   shared_tar_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425
   cache_image_count: 89
   shared_tar_count: 84
-  offline_transport_ready_count: 83
-  remaining_transport_gap_count: 6
+  offline_transport_ready_count: 84
+  remaining_transport_gap_count: 5
 known_blockers:
   - p0_digest_refs_not_published_for_all_tb2_tasks
-  - worker_promoted_offline_transport_is_83_of_89_cached_tasks
-  - missing_transport_for_6_cache_tasks
+  - worker_promoted_offline_transport_is_84_of_89_cached_tasks
+  - missing_transport_for_5_cache_tasks
   - remaining_unpromoted_rows_require_worker_ingest_proof
 images:
   - id: tb2_adaptive_rejection_sampler
@@ -932,12 +932,15 @@ images:
   - id: tb2_qemu_startup
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/qemu-startup:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup@sha256:87e1d470d7259159dee9961f0ff2d496472fc0a55d56df9abd997c34721d16a3
     source_image_id: sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-startup.tar
+    fallback_tar_sha256: 9dfff44089db02e89f770f29f0581db2ebf497ae05dc6b4a30f4b7b8e9083883
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

@@ -1,0 +1,18 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tb2_qemu_startup_worker_probe
+images:
+  - id: tb2_qemu_startup
+    role: terminal_bench_task_runtime
+    required: true
+    image_transport: p0_digest_plus_fallback_tar
+    local_ref: tb2-offline/qemu-startup:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup@sha256:87e1d470d7259159dee9961f0ff2d496472fc0a55d56df9abd997c34721d16a3
+    source_image_id: sha256:5814c86fde20a77a5aa139697de684a25657b71422f797f6fe272bd94e732444
+    needs_network: false
+    fallback_transport: oci_tar
+    fallback_status: staged_p0_digest_and_fallback_tar_pending_worker_proof
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/qemu-startup.tar
+    fallback_tar_sha256: 9dfff44089db02e89f770f29f0581db2ebf497ae05dc6b4a30f4b7b8e9083883
+    smoke:
+      network: none
+      command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

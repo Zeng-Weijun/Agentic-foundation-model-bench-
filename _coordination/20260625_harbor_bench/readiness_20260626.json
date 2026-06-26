@@ -5,7 +5,7 @@
     "ready": 1,
     "total": 9
   },
-  "created_at": "2026-06-26T02:14:34Z",
+  "created_at": "2026-06-26T03:09:03Z",
   "schema_version": "agentic_bench.readiness_report.v1",
   "suite_id": "dev_worker_smoke_dryrun",
   "suite_path": "manifests/suite.example.yaml",
@@ -187,11 +187,11 @@
                 "images": 89,
                 "optional_placeholders": 0,
                 "required_images": 89,
-                "required_with_offline_transport": 83,
-                "required_without_offline_transport": 6
+                "required_with_offline_transport": 84,
+                "required_without_offline_transport": 5
               },
               "manifest": "manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
-              "manifest_status": "materialized_from_swe_dev_cache_83_of_89_offline_transport_ready",
+              "manifest_status": "materialized_from_swe_dev_cache_84_of_89_offline_transport_ready",
               "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/terminal_bench_2_1_swe_dev_cache.yaml",
               "status": "blocked"
             }
