@@ -909,6 +909,7 @@ def _static_image_manifest_readiness(manifest: str, *, project_root: str | Path)
             "required_without_offline_transport": 0,
             "optional_placeholders": 0,
         },
+        "required_without_offline_transport_images": [],
     }
     if not path.is_file():
         return result
@@ -919,6 +920,7 @@ def _static_image_manifest_readiness(manifest: str, *, project_root: str | Path)
     counts["images"] = len(images)
     for raw_image in images:
         image = _require_mapping(raw_image, f"image manifest {manifest}.images")
+        image_id = str(image.get("id") or "")
         required = _bool(image.get("required"), default=True)
         transport_text = " ".join(
             str(image.get(key, ""))
@@ -930,6 +932,17 @@ def _static_image_manifest_readiness(manifest: str, *, project_root: str | Path)
                 counts["required_with_offline_transport"] += 1
             else:
                 counts["required_without_offline_transport"] += 1
+                result["required_without_offline_transport_images"].append(
+                    {
+                        "id": image_id,
+                        "role": image.get("role", ""),
+                        "local_refs": _readiness_list(image.get("local_ref"))
+                        + _readiness_list(image.get("local_refs")),
+                        "image_transport": image.get("image_transport", ""),
+                        "fallback_transport": image.get("fallback_transport", ""),
+                        "offline_blocker": image.get("offline_blocker", ""),
+                    }
+                )
         elif any(token in transport_text for token in ("todo", "missing", "pending", "none")):
             counts["optional_placeholders"] += 1
     if counts["required_without_offline_transport"]:

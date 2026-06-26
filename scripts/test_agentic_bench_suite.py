@@ -1739,6 +1739,13 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(by_id["terminal_bench_2_1"]["status"], "blocked")
         self.assertIn("no_enabled_wired_adapter", by_id["terminal_bench_2_1"]["blockers"])
         self.assertIn("required_image_transport_missing", by_id["terminal_bench_2_1"]["blockers"])
+        terminal_manifest = by_id["terminal_bench_2_1"]["entries"][0]["image_manifests"][0]
+        missing_images = terminal_manifest["required_without_offline_transport_images"]
+        self.assertEqual(missing_images[0]["id"], "tb2_runtime_missing_transport")
+        self.assertEqual(missing_images[0]["local_refs"], ["tb2-offline/example:20260425"])
+        self.assertEqual(missing_images[0]["image_transport"], "swe_dev_cache_identity")
+        self.assertEqual(missing_images[0]["fallback_transport"], "")
+        self.assertEqual(missing_images[0]["offline_blocker"], "")
         self.assertEqual(by_id["mcp_atlas"]["status"], "blocked")
         self.assertIn("no_enabled_suite_entry", by_id["mcp_atlas"]["blockers"])
         self.assertEqual(by_id["nl2repo"]["status"], "missing")
@@ -1819,6 +1826,12 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(target["status"], "blocked")
         self.assertIn("adapter_not_wired", target["blockers"])
         self.assertIn("required_image_transport_missing", target["blockers"])
+        full_manifest_report = full_entry["image_manifests"][0]
+        full_missing = full_manifest_report["required_without_offline_transport_images"]
+        self.assertEqual(full_missing[0]["id"], "tb2_full_missing_transport")
+        self.assertEqual(full_missing[0]["local_refs"], ["tb2-offline/full:20260425"])
+        self.assertEqual(full_missing[0]["image_transport"], "swe_dev_cache_identity")
+        self.assertEqual(full_missing[0]["fallback_transport"], "")
 
 
     def test_cli_readiness_gate_emits_json_and_fails_on_blocked_targets(self):
@@ -1882,15 +1895,15 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         manifest_counts = full_entry["image_manifests"][0]["counts"]
 
         self.assertEqual(manifest_counts["required_images"], 89)
-        self.assertEqual(manifest_counts["required_with_offline_transport"], 86)
-        self.assertEqual(manifest_counts["required_without_offline_transport"], 3)
+        self.assertEqual(manifest_counts["required_with_offline_transport"], 87)
+        self.assertEqual(manifest_counts["required_without_offline_transport"], 2)
         self.assertIn("required_image_transport_missing", full_entry["blockers"])
 
         cache_manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1_swe_dev_cache.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 86)
-        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 3)
+        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 87)
+        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 2)
         blockers = cache_manifest["known_blockers"]
-        self.assertIn("missing_transport_for_3_cache_tasks", blockers)
+        self.assertIn("missing_transport_for_2_cache_tasks", blockers)
         self.assertNotIn("missing_transport_for_39_cache_only_tasks", blockers)
 
 

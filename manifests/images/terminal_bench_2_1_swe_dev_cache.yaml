@@ -1,7 +1,7 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: terminal_bench_2_1_swe_dev_cache
 generated_at: "2026-06-26"
-status: materialized_from_swe_dev_cache_86_of_89_offline_transport_ready
+status: materialized_from_swe_dev_cache_87_of_89_offline_transport_ready
 evidence:
   source_inventory: _coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json
   fallback_tar_sha256_table: _coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv
@@ -10,12 +10,12 @@ evidence:
   shared_tar_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425
   cache_image_count: 89
   shared_tar_count: 86
-  offline_transport_ready_count: 86
-  remaining_transport_gap_count: 3
+  offline_transport_ready_count: 87
+  remaining_transport_gap_count: 2
 known_blockers:
   - p0_digest_refs_not_published_for_all_tb2_tasks
-  - worker_promoted_offline_transport_is_86_of_89_cached_tasks
-  - missing_transport_for_3_cache_tasks
+  - worker_promoted_offline_transport_is_87_of_89_cached_tasks
+  - missing_transport_for_2_cache_tasks
   - remaining_unpromoted_rows_require_worker_ingest_proof
 images:
   - id: tb2_adaptive_rejection_sampler
