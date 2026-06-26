@@ -37,6 +37,30 @@ Write an audit plan without launching benchmark adapters:
 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --json --emit-plan /tmp/agentic_bench_suite_plan.json
 ```
 
+Dispatch a reviewed plan from the local Mac control plane:
+
+```bash
+scripts/dispatch_suite_plan_from_local.sh /tmp/agentic_bench_suite_plan.json \
+  --local-dispatch-host "$(hostname)" \
+  --output-dir /tmp/agentic_bench_local_dispatch
+```
+
+The dispatch wrapper is a thin convenience entrypoint for:
+
+```bash
+python3 scripts/agentic_bench_suite.py \
+  --dispatch-plan /tmp/agentic_bench_suite_plan.json \
+  --local-dispatch-host "$(hostname)" \
+  --output-dir /tmp/agentic_bench_local_dispatch
+```
+
+`--dispatch-plan` requires the JSON plan to contain direct worker `ssh`
+`command_argv` arrays. It records `dispatch.mode: local_controller`, rewrites
+`controller_host` to the local label, preserves the original dry-run controller
+as `source_plan_controller_host`, and redacts secret-shaped keys before writing
+`run_manifest.json`. It refuses a `dev`-labeled dispatch host unless
+`--allow-dev-dispatch` is supplied for diagnostics.
+
 The wrapper defaults to dry-run. `--execute` is guarded: it refuses to proceed while any selected suite entry is not marked `adapter_status: wired` or `adapter_status: wired_legacy`. This keeps the one-key entry reviewable before real benchmark adapters are wired.
 
 The Python implementation has no required third-party dependency. If PyYAML is installed it uses `yaml.safe_load`; otherwise it accepts the restricted YAML subset used by `manifests/suite.example.yaml`.
@@ -228,9 +252,8 @@ keeps the historical `status`/`exit_code` fields and adds
 `execution_status`, `benchmark_status`, `score_claim_valid`, and `result_path`.
 RepoZero Py2JS has the first parser, based on native `ALL_PASS_CASES` and
 `TESTS` lines, so an adapter exit 0 can still be recorded as
-`benchmark_status: fail`.
-
-This command should be run from `dev` after `dev` can SSH to `worker-j9jjd`. At the time of the preflight, local Mac -> worker SSH works, but `dev` -> worker SSH returns `Permission denied (publickey)`.
+`benchmark_status: fail`. Use local dispatch for hosts where Mac -> worker SSH
+is available but `dev` -> worker SSH is not.
 
 Use `--only tau3_bench,repozero_py2js_smoke,vitabench_delivery_one_task_smoke` for a narrow smoke and `--max-concurrency N` to override suite-level benchmark concurrency. Per-benchmark worker counts remain in YAML so large runs can be reviewed before execution. The 8.130 relay profile is staged for suite-level concurrency 40 and should stay at or below 50 unless the relay capacity changes.
 

@@ -36,7 +36,7 @@ First runnable suite entrypoint:
 scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run
 ```
 
-The runner is manifest-first and defaults to dry-run. Actual worker execution requires `--execute`; entries marked `adapter_status: wired_legacy` call the existing `/data/nips/bench/run_*.sh` adapters on the worker with the manifest-defined model, rootless Docker socket, offline policy, and smoke env. Current dispatch caveat: local Mac -> `worker-j9jjd` SSH works, but `dev` -> `worker-j9jjd` is blocked by publickey auth until that credential path is fixed.
+The runner is manifest-first and defaults to dry-run. Actual worker execution requires either `--execute` from a host with direct worker SSH, or local control-plane dispatch from an emitted JSON plan. Entries marked `adapter_status: wired_legacy` call the existing `/data/nips/bench/run_*.sh` adapters on the worker with the manifest-defined model, rootless Docker socket, offline policy, and smoke env.
 
 Current executable smoke:
 
@@ -48,7 +48,24 @@ Current executable smoke:
   --max-concurrency 1
 ```
 
-This uses worker -> `dev` proxy -> 8.130 relay for model traffic when a model-backed adapter is selected. `tau3_bench` is the canonical enabled tau3-bench one-task smoke; it runs the staged oracle-direct path with offline image preflight and does not use `tau2` as an active suite target. Dry-run/readiness are green for this row. Real `--execute` still requires the controller to SSH to worker-j9jjd; the current suite YAML records `ssh_from_dev: blocked_publickey`, so local Mac -> worker direct smoke is the verified execution proof until that key path is fixed. The example suite is staged for 8.130 relay concurrency 40 with a documented ceiling of 50.
+For the local Mac control plane, first emit the reviewed dry-run plan from the
+shared checkout so worker commands keep shared-storage paths:
+
+```bash
+python3 scripts/agentic_bench_suite.py manifests/suite.example.yaml \
+  --dry-run --json --only tau3_bench \
+  --emit-plan /tmp/agentic_bench_suite_plan.json
+```
+
+Then run the plan from the local Mac checkout, not from `dev`:
+
+```bash
+scripts/dispatch_suite_plan_from_local.sh /tmp/agentic_bench_suite_plan.json \
+  --local-dispatch-host "$(hostname)" \
+  --output-dir /tmp/agentic_bench_local_dispatch
+```
+
+This uses worker -> `dev` proxy -> 8.130 relay for model traffic when a model-backed adapter is selected. `tau3_bench` is the canonical enabled tau3-bench one-task smoke; it runs the staged oracle-direct path with offline image preflight and does not use `tau2` as an active suite target. Dry-run/readiness are green for this row. The example suite is staged for 8.130 relay concurrency 40 with a documented ceiling of 50.
 
 Executable runs now separate adapter/process status from parsed benchmark status
 when a parser is available. The first normalized parser covers RepoZero Py2JS and
@@ -178,6 +195,19 @@ Machine-readable plan:
 ```bash
 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --json
 ```
+
+Emit and dispatch a worker plan from the local control plane:
+
+```bash
+./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml \
+  --json --emit-plan /tmp/agentic_bench_suite_plan.json
+
+scripts/dispatch_suite_plan_from_local.sh /tmp/agentic_bench_suite_plan.json \
+  --local-dispatch-host "$(hostname)" \
+  --output-dir /tmp/agentic_bench_local_dispatch
+```
+
+`--dispatch-plan` refuses dry-run plans that do not contain direct worker `ssh` command arrays, and it refuses to run from a `dev`-labeled controller unless `--allow-dev-dispatch` is passed for diagnostics.
 
 The default suite lives at `manifests/suite.example.yaml`. It declares 8.130 relay profiles, a future SGLang profile, suite concurrency, the `worker-j9jjd` SSH target, `DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, per-benchmark smoke env, and an offline rootless worker policy. Pending benchmarks remain disabled until adapters are located or written.
 

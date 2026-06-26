@@ -11,6 +11,7 @@ import json
 import os
 import re
 import shlex
+import socket
 import subprocess
 import sys
 import threading
@@ -502,18 +503,21 @@ def _bench_runtime_env(bench: dict[str, Any]) -> dict[str, str]:
     return env
 
 
+def _secretish_key(key: Any) -> bool:
+    lowered = str(key).lower()
+    return (
+        lowered in {"api_key", "openai_api_key", "token", "secret", "password"}
+        or lowered.endswith("_api_key")
+        or lowered.endswith("_token")
+        or lowered.endswith("_secret")
+        or lowered.endswith("_password")
+    )
+
+
 def _redact_env(env: dict[str, str]) -> dict[str, str]:
     redacted: dict[str, str] = {}
     for key, value in env.items():
-        lowered = key.lower()
-        secretish = (
-            lowered in {"api_key", "openai_api_key", "token", "secret", "password"}
-            or lowered.endswith("_api_key")
-            or lowered.endswith("_token")
-            or lowered.endswith("_secret")
-            or lowered.endswith("_password")
-        )
-        if secretish:
+        if _secretish_key(key):
             if value.startswith("${") and value.endswith("}"):
                 redacted[key] = value
             else:
@@ -521,6 +525,21 @@ def _redact_env(env: dict[str, str]) -> dict[str, str]:
         else:
             redacted[key] = value
     return redacted
+
+
+def _redact_secret_values(value: Any, key: str = "") -> Any:
+    if isinstance(value, dict):
+        return {
+            str(child_key): _redact_secret_values(child_value, str(child_key))
+            for child_key, child_value in value.items()
+        }
+    if isinstance(value, list):
+        return [_redact_secret_values(item, key) for item in value]
+    if _secretish_key(key):
+        if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
+            return value
+        return "<redacted>"
+    return value
 
 
 def _shell_exports(env: dict[str, str]) -> str:
@@ -1334,6 +1353,120 @@ def _local_output_root(plan: dict[str, Any], output_dir: str | None) -> Path:
     return Path("/tmp/agentic-foundation-model-bench/runs") / str(plan["suite_id"]) / "_controller"
 
 
+SSH_OPTIONS_WITH_VALUE = {
+    "-b",
+    "-c",
+    "-D",
+    "-E",
+    "-F",
+    "-I",
+    "-i",
+    "-J",
+    "-L",
+    "-l",
+    "-m",
+    "-O",
+    "-o",
+    "-p",
+    "-Q",
+    "-R",
+    "-S",
+    "-W",
+    "-w",
+}
+
+
+def _load_json_plan(path: str | Path) -> dict[str, Any]:
+    plan_path = Path(path).expanduser()
+    try:
+        payload = json.loads(plan_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ConfigError(f"could not read dispatch plan {plan_path}: {exc}") from exc
+    return _require_mapping(payload, "dispatch plan")
+
+
+def _ssh_target_from_argv(argv: Any) -> str:
+    if not isinstance(argv, list) or not argv or str(argv[0]) != "ssh":
+        return ""
+    index = 1
+    while index < len(argv):
+        part = str(argv[index])
+        if part == "--":
+            index += 1
+            break
+        if part.startswith("-") and part != "-":
+            if part in SSH_OPTIONS_WITH_VALUE:
+                index += 2
+            else:
+                index += 1
+            continue
+        return part
+    if index < len(argv):
+        return str(argv[index])
+    return ""
+
+
+def _forbidden_dispatch_host(value: str) -> bool:
+    key = _readiness_key(value)
+    return key in {"dev", "swe_dev", "swe_dev2", "swe_dev_2"}
+
+
+def _validate_local_dispatch_ssh_command(command_argv: Any, *, context: str) -> str:
+    target = _ssh_target_from_argv(command_argv)
+    if not target:
+        raise ConfigError(f"{context} must be a direct worker ssh command_argv")
+    if _forbidden_dispatch_host(target):
+        raise ConfigError(f"{context} must target a worker directly; got {target!r}, not dev")
+    return target
+
+
+def _validate_local_dispatch_plan(plan: dict[str, Any], *, dispatch_host: str, allow_dev_dispatch: bool) -> None:
+    if plan.get("schema_version") != "agentic_bench.suite_plan.v1":
+        raise ConfigError("dispatch plan must have schema_version 'agentic_bench.suite_plan.v1'")
+    if not allow_dev_dispatch and _forbidden_dispatch_host(dispatch_host):
+        raise ConfigError("local dispatch must be started from the Mac/control plane, not dev")
+    if str(plan.get("execution_kind", "ssh_worker")) != "ssh_worker":
+        raise ConfigError("local dispatch requires an ssh_worker suite plan")
+    runs = _require_list(plan.get("runs"), "dispatch plan.runs")
+    for run_index, raw_run in enumerate(runs, start=1):
+        run = _require_mapping(raw_run, f"dispatch plan.runs[{run_index}]")
+        bench_id = str(run.get("bench_id") or f"run_{run_index}")
+        _validate_local_dispatch_ssh_command(run.get("command_argv"), context=f"run {bench_id}")
+        preflight = run.get("image_preflight")
+        if isinstance(preflight, dict):
+            for command_index, command in enumerate(preflight.get("commands", []), start=1):
+                command_map = _require_mapping(command, f"run {bench_id}.image_preflight.commands[{command_index}]")
+                _validate_local_dispatch_ssh_command(
+                    command_map.get("command_argv"),
+                    context=f"run {bench_id}.image_preflight.commands[{command_index}]",
+                )
+
+
+def dispatch_plan_from_local_controller(
+    plan: dict[str, Any],
+    output_dir: str | None,
+    *,
+    dispatch_host_label: str = "",
+    allow_dev_dispatch: bool = False,
+) -> int:
+    dispatch_host = dispatch_host_label or os.environ.get("AGENTIC_BENCH_LOCAL_DISPATCH_HOST") or socket.gethostname()
+    dispatch_plan = _redact_secret_values(plan)
+    _validate_local_dispatch_plan(dispatch_plan, dispatch_host=dispatch_host, allow_dev_dispatch=allow_dev_dispatch)
+    source_controller_host = dispatch_plan.get("controller_host")
+    if source_controller_host and str(source_controller_host) != dispatch_host:
+        dispatch_plan["source_plan_controller_host"] = source_controller_host
+    dispatch_plan["controller_host"] = dispatch_host
+    dispatch_plan["dispatch"] = {
+        "schema_version": "agentic_bench.local_dispatch.v1",
+        "mode": "local_controller",
+        "host": dispatch_host,
+        "created_at": _utc_now(),
+        "requires_direct_worker_ssh": True,
+    }
+    dispatch_plan["dry_run"] = False
+    return _execute_plan(dispatch_plan, output_dir)
+
+
 def _run_one(run: dict[str, Any], output_root: Path) -> dict[str, Any]:
     bench_id = str(run["bench_id"])
     log_path = output_root / "logs" / f"{bench_id}.log"
@@ -1815,6 +1948,8 @@ def _execute_plan(plan: dict[str, Any], output_dir: str | None) -> int:
     order = {str(run["bench_id"]): idx for idx, run in enumerate(plan["runs"])}
     results.sort(key=lambda item: order.get(str(item["bench_id"]), len(order)))
     summary = {"suite_id": plan["suite_id"], "status": status, "results": results}
+    if plan.get("dispatch"):
+        summary["dispatch"] = plan["dispatch"]
     _write_plan(summary, output_root / "summary.json")
     return status
 
@@ -1838,6 +1973,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--image-preflight-only", action="store_true", help="run image preflight commands only; never launch adapters")
     parser.add_argument("--include-optional-image-preflight", action="store_true", help="include optional image preflights in --image-preflight-only")
     parser.add_argument("--fail-on-optional-image-preflight", action="store_true", help="make optional image preflight failures fatal when included")
+    parser.add_argument("--dispatch-plan", help="execute a dry-run JSON suite plan from the local control plane using its direct worker ssh command_argv values")
+    parser.add_argument("--local-dispatch-host", default="", help="operator-visible local control-plane host label for --dispatch-plan artifacts")
+    parser.add_argument("--allow-dev-dispatch", action="store_true", help="override the fail-closed guard that prevents running --dispatch-plan on dev")
     parser.add_argument("--allow-empty-plan", action="store_true", help="allow filters that select zero runs")
     return parser.parse_args(argv)
 
@@ -1845,6 +1983,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(sys.argv[1:] if argv is None else argv)
     try:
+        if args.dispatch_plan:
+            plan = _load_json_plan(args.dispatch_plan)
+            return dispatch_plan_from_local_controller(
+                plan,
+                args.output_dir,
+                dispatch_host_label=args.local_dispatch_host,
+                allow_dev_dispatch=args.allow_dev_dispatch,
+            )
         config = load_suite_config(args.suite_yaml)
         if args.readiness:
             _suite_concurrency_settings(config, max_concurrency=args.max_concurrency)

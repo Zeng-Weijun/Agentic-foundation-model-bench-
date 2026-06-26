@@ -852,6 +852,103 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertEqual([item["bench_id"] for item in summary["results"]], ["slow_first", "fast_second"])
 
+    def test_cli_dispatch_plan_runs_worker_ssh_from_local_controller_and_redacts_secrets(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_ssh = fakebin / "ssh"
+            fake_ssh.write_text(
+                "#!/usr/bin/env bash\n"
+                "set -euo pipefail\n"
+                "printf '%s\\n' \"$@\" >> \"$FAKE_SSH_LOG\"\n"
+                "printf 'worker command executed\\n'\n",
+                encoding="utf-8",
+            )
+            fake_ssh.chmod(0o755)
+            plan_path = root / "plan.json"
+            output_dir = root / "controller"
+            plan = {
+                "schema_version": "agentic_bench.suite_plan.v1",
+                "suite_id": "unit_local_dispatch",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "execution_kind": "ssh_worker",
+                "controller_host": "dev",
+                "runs": [
+                    {
+                        "schema_version": "agentic_bench.run_manifest.v1",
+                        "suite_id": "unit_local_dispatch",
+                        "run_id": "unit_local_dispatch__worker_fake__model",
+                        "bench_id": "worker_fake",
+                        "bench": "worker_fake",
+                        "adapter": "worker_fake",
+                        "adapter_status": "wired_legacy",
+                        "worker_host": "worker-j9jjd.example",
+                        "remote_host": "dev",
+                        "runtime_env": {"OPENAI_API_KEY": "unit-secret-never-write"},
+                        "command": "ssh worker-j9jjd.example bash -c true",
+                        "command_argv": ["ssh", "-CAXY", "worker-j9jjd.example", "bash -c 'true'"],
+                    }
+                ],
+            }
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            env["FAKE_SSH_LOG"] = str(root / "ssh.log")
+            env["OPENAI_API_KEY"] = "env-secret-never-write"
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    "--dispatch-plan",
+                    str(plan_path),
+                    "--local-dispatch-host",
+                    "local-mac",
+                    "--output-dir",
+                    str(output_dir),
+                ],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            ssh_log = (root / "ssh.log").read_text(encoding="utf-8")
+            self.assertIn("worker-j9jjd.example", ssh_log)
+            self.assertNotIn("dev\n", ssh_log)
+            manifest_text = (output_dir / "run_manifest.json").read_text(encoding="utf-8")
+            manifest = json.loads(manifest_text)
+            self.assertEqual(manifest["dispatch"]["mode"], "local_controller")
+            self.assertEqual(manifest["controller_host"], "local-mac")
+            self.assertEqual(manifest["source_plan_controller_host"], "dev")
+            self.assertEqual(manifest["dispatch"]["host"], "local-mac")
+            self.assertNotIn("unit-secret-never-write", manifest_text)
+            self.assertNotIn("env-secret-never-write", manifest_text)
+
+    def test_local_dispatch_rejects_dev_hop_command(self):
+        module = load_module()
+        plan = {
+            "schema_version": "agentic_bench.suite_plan.v1",
+            "suite_id": "unit_bad_dispatch",
+            "execution_kind": "ssh_worker",
+            "suite_concurrency": 1,
+            "runs": [
+                {
+                    "bench_id": "bad_dev_hop",
+                    "adapter_status": "wired_legacy",
+                    "worker_host": "worker-j9jjd.example",
+                    "command": "ssh dev ssh worker-j9jjd.example true",
+                    "command_argv": ["ssh", "dev", "ssh worker-j9jjd.example true"],
+                }
+            ],
+        }
+
+        with self.assertRaisesRegex(module.ConfigError, "must target a worker"):
+            module.dispatch_plan_from_local_controller(plan, None, dispatch_host_label="local-mac")
+
     def test_image_preflight_only_runs_required_preflight_without_adapter(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
