@@ -379,6 +379,8 @@ runs/<bench>/<model>_<timestamp>/
 - `repo2env`：保留独立脚本，但不再放进默认 smoke 或 A+B+CoCoA full suite。
 - `cocoabench`：有历史完整 run；脚本走 CocoaAgent 的 `parallel_inference.py`。
 - `repozero_py2js`：远端 runner 已核准为 `repozero_eval/RepoZero/tools_repozero_codex_full.py`，历史 smoke 4/4 通过。
+- `NL2Repo`：已有专用 fail-closed readiness/image manifest；当前因 authoritative dataset、runner adapter、runtime image/P0 digest 均未冻结，suite row 保持 disabled。
+
 ## A+B+CoCoA full suite
 
 The selected full suite is configured in:
@@ -422,3 +424,7 @@ this snapshot that manifest records 84/89 worker-proven offline transports and
 5 remaining image gaps. The legacy pre-2.1 row and runner are not
 active suite targets. `cocoabench` remains historical until its runner and
 rootless image contract are revalidated under the current suite.
+
+NL2Repo is represented by `manifests/images/nl2repo.yaml`; it is intentionally
+fail-closed until an authoritative dataset, executable runner adapter, and
+digest-pinned or checksum-backed offline runtime image are staged.

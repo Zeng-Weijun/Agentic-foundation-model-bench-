@@ -92,3 +92,8 @@ image_manifests:
     path: images/pending_benches.yaml
     status: manifest_gap_inventory
     policy: disabled_until_assets_staged
+
+  - id: nl2repo
+    path: images/nl2repo.yaml
+    status: dataset_runner_image_contract_missing
+    policy: disabled_until_authoritative_dataset_runner_and_runtime_image_staged

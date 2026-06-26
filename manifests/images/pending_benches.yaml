@@ -27,10 +27,3 @@ images:
     required: false
     image_transport: todo
     registry_status: missing_checkout_dataset_image_contract
-
-  - id: nl2repo_images_todo
-    role: placeholder
-    bench: NL2Repo
-    required: false
-    image_transport: todo
-    registry_status: missing_checkout_dataset_image_contract

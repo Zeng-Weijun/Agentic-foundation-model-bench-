@@ -1,0 +1,27 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: nl2repo
+generated_at: "2026-06-26"
+status: dataset_runner_image_contract_missing
+evidence:
+  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
+  pending_adapter_inventory: reports/pending_adapter_inventory_20260625.md
+
+known_blockers:
+  - authoritative_dataset_path_missing
+  - executable_adapter_runner_missing
+  - offline_runtime_image_not_identified
+  - p0_digest_or_fallback_tar_not_staged
+
+next_image_action:
+  - locate_or_freeze_authoritative_nl2repo_dataset
+  - locate_or_write_worker_runner_adapter
+  - identify_runtime_dockerfile_or_confirm_docker_free_contract
+  - stage_digest_pinned_p0_image_or_checksum_verified_fallback_tar_before_enabling_suite_row
+
+images:
+  - id: nl2repo_images_todo
+    role: placeholder
+    bench: NL2Repo
+    required: false
+    image_transport: todo
+    registry_status: missing_authoritative_dataset_runner_image_contract

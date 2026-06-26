@@ -358,7 +358,7 @@ benches:
     adapter: nl2repo
     adapter_script: run_nl2repo.sh
     adapter_status: pending_adapter
-    image_manifest: manifests/images/pending_benches.yaml
+    image_manifest: manifests/images/nl2repo.yaml
     image_policy: optional
     model_profile: gpt54mini_8130
     enabled: false

@@ -1396,6 +1396,36 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
         self.assertEqual(summary["manifests"][0]["lint_status"], "fallback_tar_missing")
 
+    def test_example_registry_includes_nl2repo_fail_closed_manifest(self):
+        module = load_module()
+        registry = ROOT / "manifests" / "bench_registry.yaml"
+
+        validation = module.validate_registry(registry, asset_root=ROOT)
+        manifests_by_id = {manifest["id"]: manifest for manifest in validation["manifests"]}
+
+        self.assertIn("nl2repo", manifests_by_id)
+        nl2repo = manifests_by_id["nl2repo"]
+        self.assertEqual(nl2repo["status"], "ok")
+        self.assertEqual(nl2repo["bench_id"], "nl2repo")
+        self.assertEqual(len(nl2repo["images"]), 1)
+        self.assertEqual(nl2repo["images"][0]["id"], "nl2repo_images_todo")
+        self.assertFalse(nl2repo["images"][0]["required"])
+        self.assertEqual(nl2repo["images"][0]["image_refs"], [])
+        self.assertEqual(nl2repo["images"][0]["fallback_tars"], [])
+
+        lint = module.lint_registry_manifests(
+            registry,
+            asset_root=ROOT,
+            manifest_ids=["nl2repo"],
+            require_offline_transport=True,
+        )
+        self.assertEqual(lint["counts"]["selected_manifests"], 1)
+        self.assertEqual(lint["counts"]["required_images"], 0)
+        self.assertEqual(lint["counts"]["optional_images"], 1)
+        self.assertEqual(lint["counts"]["required_without_offline_transport"], 0)
+        self.assertEqual(lint["manifests"][0]["lint_status"], "ok")
+        self.assertEqual(lint["manifests"][0]["images"][0]["lint_status"], "optional_not_required")
+
 
     def test_cli_validate_emits_json(self):
         with tempfile.TemporaryDirectory() as tmpdir:

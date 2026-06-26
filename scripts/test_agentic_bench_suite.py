@@ -1391,6 +1391,41 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertIn("terminal_bench_2_1_gcode_to_text", required_ids)
         self.assertNotIn("terminal_bench_2_1_fix_git", required_ids)
 
+    def test_example_manifest_nl2repo_has_dedicated_fail_closed_contract(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        nl2repo = next(bench for bench in config["benches"] if bench["id"] == "nl2repo")
+
+        self.assertEqual(nl2repo["benchmark"], "NL2Repo")
+        self.assertEqual(nl2repo["adapter_status"], "pending_adapter")
+        self.assertEqual(nl2repo["image_manifest"], "manifests/images/nl2repo.yaml")
+        self.assertEqual(nl2repo["image_policy"], "optional")
+        self.assertFalse(nl2repo.get("enabled", True))
+
+        image_manifest = module._load_yaml((ROOT / "manifests" / "images" / "nl2repo.yaml").read_text(encoding="utf-8"))
+        self.assertEqual(image_manifest["bench_id"], "nl2repo")
+        self.assertEqual(image_manifest["status"], "dataset_runner_image_contract_missing")
+        self.assertEqual(image_manifest["images"][0]["id"], "nl2repo_images_todo")
+        self.assertFalse(image_manifest["images"][0]["required"])
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["NL2Repo"])
+        target = report["targets"][0]
+        entry = target["entries"][0]
+        image_report = entry["image_manifests"][0]
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("no_enabled_suite_entry", target["blockers"])
+        self.assertIn("suite_entry_disabled", entry["blockers"])
+        self.assertIn("adapter_not_wired", entry["blockers"])
+        self.assertIn("image_manifest_not_materialized", entry["blockers"])
+        self.assertEqual(image_report["bench_id"], "nl2repo")
+        self.assertEqual(image_report["counts"]["images"], 1)
+        self.assertEqual(image_report["counts"]["required_images"], 0)
+        self.assertEqual(image_report["counts"]["optional_placeholders"], 1)
+
+        plan = module.build_run_plan(config, suite_path=suite_path, dry_run=True, only={"nl2repo"})
+        self.assertEqual(plan["runs"], [])
+
     def test_example_manifest_vitabench_one_task_smoke_uses_verified_runner(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
