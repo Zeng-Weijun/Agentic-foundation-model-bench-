@@ -804,6 +804,93 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(parsed["benchmark_result"]["tests_total"], 60)
         self.assertEqual(parsed["benchmark_result"]["failure_category"], "agent_generation_failed")
 
+    def test_execute_plan_repozero_summary_requires_clean_agent_execution(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            native = root / "repozero_native"
+            native.mkdir()
+            clean_entry = native / "clean.mjs"
+            clean_entry.write_text("console.log('ok')\n", encoding="utf-8")
+            timeout_entry = native / "timeout.mjs"
+            timeout_entry.write_text("console.log('late ok')\n", encoding="utf-8")
+            summary = {
+                "cases_total": 3,
+                "cases_all_pass": 3,
+                "tests_passed": 180,
+                "tests_total": 180,
+                "results": [
+                    {
+                        "case": "pkg/clean.py",
+                        "all_pass": True,
+                        "passed": 60,
+                        "total": 60,
+                        "codex_returncode": 0,
+                        "codex_timeout": False,
+                        "entry": str(clean_entry),
+                    },
+                    {
+                        "case": "pkg/timeout.py",
+                        "all_pass": True,
+                        "passed": 60,
+                        "total": 60,
+                        "codex_returncode": 124,
+                        "codex_timeout": True,
+                        "entry": str(timeout_entry),
+                    },
+                    {
+                        "case": "pkg/nonzero.py",
+                        "all_pass": True,
+                        "passed": 60,
+                        "total": 60,
+                        "codex_returncode": 1,
+                        "codex_timeout": False,
+                        "entry": str(native / "nonzero.mjs"),
+                    },
+                ],
+            }
+            summary_path = native / "summary.json"
+            summary_path.write_text(json.dumps(summary), encoding="utf-8")
+            command = "printf 'SUMMARY {summary}\nALL_PASS_CASES 3 / 3\nTESTS 180 / 180\n'".format(summary=summary_path)
+            plan = {
+                "suite_id": "unit_repozero_clean_status",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "schema_version": "agentic_bench.run_manifest.v1",
+                        "suite_id": "unit_repozero_clean_status",
+                        "run_id": "unit_repozero_clean_status__repozero_py2js_smoke__model",
+                        "bench_id": "repozero_py2js_smoke",
+                        "bench": "repozero_py2js",
+                        "adapter": "repozero_py2js",
+                        "adapter_status": "wired_legacy",
+                        "command": command,
+                        "command_argv": ["bash", "-c", command],
+                    }
+                ],
+            }
+
+            rc = module._execute_plan(plan, str(root / "controller"))
+            summary_doc = json.loads((root / "controller" / "summary.json").read_text(encoding="utf-8"))
+            result_path = Path(summary_doc["results"][0]["result_path"])
+            parsed = json.loads(result_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(summary_doc["results"][0]["benchmark_status"], "fail")
+        self.assertFalse(summary_doc["results"][0]["score_claim_valid"])
+        benchmark = parsed["benchmark_result"]
+        self.assertEqual(benchmark["status"], "fail")
+        self.assertEqual(benchmark["raw_tasks_passed"], 3)
+        self.assertEqual(benchmark["raw_tasks_total"], 3)
+        self.assertEqual(benchmark["clean_tasks_passed"], 1)
+        self.assertEqual(benchmark["clean_tasks_total"], 3)
+        self.assertEqual(benchmark["timeout_count"], 1)
+        self.assertEqual(benchmark["nonzero_count"], 2)
+        self.assertEqual(benchmark["missing_entry_count"], 1)
+        self.assertEqual(benchmark["failure_category"], "unclean_agent_execution")
+        self.assertIn("native_summary", {artifact["role"] for artifact in parsed["source"]["native_artifacts"]})
+
     def test_tau3_native_summary_parsed_from_bench_run_dir_even_when_adapter_nonzero(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1560,8 +1647,9 @@ class AgenticBenchSuiteTest(unittest.TestCase):
 
         report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
         target = report["targets"][0]
-        self.assertEqual(target["status"], "ready")
-        self.assertEqual(target["aggregation_entry_count"], 1)
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("no_full_readiness_entry", target["blockers"])
+        self.assertEqual(target["aggregation_entry_count"], 0)
         entry = next(entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench")
         self.assertTrue(entry["ready"])
         self.assertEqual(entry["readiness_role"], "image_smoke")
@@ -1671,6 +1759,30 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(helper_image_report["counts"]["required_without_offline_transport"], 0)
         self.assertEqual(target["status"], "blocked")
         self.assertIn("image_manifest_not_materialized", target["blockers"])
+
+    def test_example_suite_has_repozero_full_one_command_entry(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        repozero_smoke = next(bench for bench in config["benches"] if bench["id"] == "repozero_py2js_smoke")
+        repozero_full = next(bench for bench in config["benches"] if bench["id"] == "repozero_py2js_full")
+        params = repozero_full["params"]
+
+        self.assertEqual(repozero_smoke["readiness_role"], "smoke")
+        self.assertEqual(repozero_full["benchmark"], "repozero_py2js")
+        self.assertEqual(repozero_full["adapter"], "repozero_py2js")
+        self.assertEqual(repozero_full["adapter_script"], "run_repozero_py2js.sh")
+        self.assertEqual(repozero_full["adapter_status"], "wired_legacy")
+        self.assertEqual(repozero_full["image_manifest"], "manifests/images/repozero.yaml")
+        self.assertEqual(repozero_full["image_policy"], "required")
+        self.assertEqual(repozero_full["model_profile"], "dev_proxy_gpt54mini_8130")
+        self.assertEqual(str(params["REPOZERO_MODE"]), "full")
+        self.assertEqual(str(params["REPOZERO_WORKERS"]), "100")
+        self.assertEqual(str(params["MAX_CONCURRENCY"]), "100")
+        self.assertEqual(str(params["REPOZERO_TIMEOUT_S"]), "2400")
+        self.assertEqual(str(params["REPOZERO_CODEX_ATTEMPTS"]), "1")
+        self.assertEqual(str(params["REPOZERO_INCLUDE_EXCLUDED"]), "1")
+        self.assertNotIn("REPOZERO_CASES", params)
 
     def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):
         module = load_module()

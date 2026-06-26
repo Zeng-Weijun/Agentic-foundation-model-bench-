@@ -791,7 +791,7 @@ def _readiness_target_specs(target_benches: list[str] | None) -> list[dict[str, 
     for target in READINESS_TARGETS:
         aliases = {_readiness_key(target["target_id"]), _readiness_key(target["label"])}
         aliases.update(_readiness_key(alias) for alias in target.get("aliases", []))
-        spec = {"target_id": target["target_id"], "label": target["label"], "aliases": aliases}
+        spec = {"target_id": target["target_id"], "label": target["label"], "aliases": aliases, "requires_full_readiness": True}
         for alias in aliases:
             known[alias] = spec
     if not target_benches:
@@ -800,7 +800,7 @@ def _readiness_target_specs(target_benches: list[str] | None) -> list[dict[str, 
     seen: set[str] = set()
     for raw in target_benches:
         key = _readiness_key(raw)
-        spec = known.get(key, {"target_id": key, "label": str(raw), "aliases": {key}})
+        spec = known.get(key, {"target_id": key, "label": str(raw), "aliases": {key}, "requires_full_readiness": False})
         if spec["target_id"] not in seen:
             specs.append(spec)
             seen.add(spec["target_id"])
@@ -1040,7 +1040,8 @@ def build_readiness_report(
             for bench in matched
         ]
         full_entry_reports = [entry for entry in entry_reports if entry.get("readiness_role") == "full"]
-        aggregation_entries = full_entry_reports if full_entry_reports else entry_reports
+        requires_full_readiness = _bool(target.get("requires_full_readiness"), default=True)
+        aggregation_entries = full_entry_reports if (full_entry_reports or requires_full_readiness) else entry_reports
         enabled_entries = [entry for entry in aggregation_entries if entry["enabled"]]
         wired_entries = [entry for entry in enabled_entries if entry["adapter_ready"]]
         ready_entries = [entry for entry in aggregation_entries if entry["ready"]]
@@ -1913,7 +1914,148 @@ def _tau3_benchmark_result(run: dict[str, Any]) -> dict[str, Any] | None:
     return result
 
 
+def _repozero_summary_path_from_log(log_text: str) -> Path | None:
+    for match in re.finditer(r"^SUMMARY\s+(.+?summary\.json)\s*$", log_text, flags=re.MULTILINE):
+        candidate = Path(match.group(1)).expanduser()
+        if candidate.is_file():
+            return candidate
+    for match in re.finditer(r"^artifact=(.+)\s*$", log_text, flags=re.MULTILINE):
+        candidate = Path(match.group(1)).expanduser() / "summary.json"
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _repozero_result_rows(summary: dict[str, Any], summary_path: Path) -> list[dict[str, Any]]:
+    raw_rows = summary.get("results")
+    if isinstance(raw_rows, list):
+        return [row for row in raw_rows if isinstance(row, dict)]
+    rows_path = summary_path.parent / "results.jsonl"
+    rows: list[dict[str, Any]] = []
+    try:
+        with rows_path.open(encoding="utf-8") as handle:
+            for line in handle:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(row, dict):
+                    rows.append(row)
+    except OSError:
+        pass
+    return rows
+
+
+def _repozero_entry_exists(row: dict[str, Any]) -> bool:
+    entry = row.get("entry")
+    if not entry:
+        return False
+    try:
+        return Path(str(entry)).expanduser().is_file()
+    except OSError:
+        return False
+
+
+def _repozero_benchmark_result_from_summary(summary_path: Path) -> dict[str, Any] | None:
+    summary = _load_json_file(summary_path)
+    if summary is None:
+        return None
+    rows = _repozero_result_rows(summary, summary_path)
+    raw_tasks_total = _safe_int(summary.get("cases_total"))
+    if raw_tasks_total is None:
+        raw_tasks_total = len(rows)
+    raw_tasks_passed = _safe_int(summary.get("cases_all_pass"))
+    if raw_tasks_passed is None:
+        raw_tasks_passed = sum(1 for row in rows if _bool(row.get("all_pass"), default=False))
+    tests_passed = _safe_int(summary.get("tests_passed")) or 0
+    tests_total = _safe_int(summary.get("tests_total")) or 0
+    clean_tasks_total = raw_tasks_total or len(rows)
+    timeout_count = 0
+    nonzero_count = 0
+    missing_entry_count = 0
+    clean_tasks_passed = 0
+    for row in rows:
+        all_pass = _bool(row.get("all_pass"), default=False)
+        returncode = _safe_int(row.get("codex_returncode"))
+        timed_out = _bool(row.get("codex_timeout"), default=False)
+        entry_exists = _repozero_entry_exists(row)
+        if timed_out:
+            timeout_count += 1
+        if returncode not in (None, 0):
+            nonzero_count += 1
+        if not entry_exists:
+            missing_entry_count += 1
+        if all_pass and returncode == 0 and not timed_out and entry_exists:
+            clean_tasks_passed += 1
+    if not rows and raw_tasks_total:
+        clean_tasks_passed = raw_tasks_passed
+    tests_clean = bool(not tests_total or tests_passed == tests_total)
+    passed = bool(clean_tasks_total and clean_tasks_passed == clean_tasks_total and tests_clean)
+    unclean_agent_execution = bool(timeout_count or nonzero_count or missing_entry_count or clean_tasks_passed != raw_tasks_passed)
+    if passed:
+        failure_category = ""
+        failure_note = ""
+    elif unclean_agent_execution:
+        failure_category = "unclean_agent_execution"
+        failure_note = (
+            "RepoZero native summary has timeout, nonzero, missing-entry, or raw/clean pass mismatches; "
+            "raw all-pass is diagnostic only."
+        )
+    else:
+        failure_category = "agent_generation_failed"
+        failure_note = "RepoZero selected case did not pass native tests."
+    result = {
+        "parser_status": "parsed",
+        "status": "pass" if passed else "fail",
+        "metric": "clean_tasks_passed",
+        "passed": passed,
+        "tasks_passed": clean_tasks_passed,
+        "tasks_total": clean_tasks_total,
+        "raw_tasks_passed": raw_tasks_passed,
+        "raw_tasks_total": raw_tasks_total,
+        "clean_tasks_passed": clean_tasks_passed,
+        "clean_tasks_total": clean_tasks_total,
+        "tests_passed": tests_passed,
+        "tests_total": tests_total,
+        "timeout_count": timeout_count,
+        "nonzero_count": nonzero_count,
+        "missing_entry_count": missing_entry_count,
+        "score_claim_valid": False,
+        "failure_category": failure_category,
+        "short_failure_note": failure_note,
+        "_source": {
+            "native_artifacts": [
+                {
+                    "role": "native_summary",
+                    "path": str(summary_path),
+                    "status": "parsed",
+                    "read_policy": "allowlist_json",
+                }
+            ]
+        },
+    }
+    rows_path = summary_path.parent / "results.jsonl"
+    if rows_path.is_file() and not isinstance(summary.get("results"), list):
+        result["_source"]["native_artifacts"].append(
+            {
+                "role": "native_results_jsonl",
+                "path": str(rows_path),
+                "status": "parsed",
+                "read_policy": "allowlist_jsonl",
+            }
+        )
+    return result
+
+
 def _repozero_benchmark_result(log_text: str) -> dict[str, Any] | None:
+    summary_path = _repozero_summary_path_from_log(log_text)
+    if summary_path is not None:
+        parsed = _repozero_benchmark_result_from_summary(summary_path)
+        if parsed:
+            return parsed
     all_pass_match = re.search(r"ALL_PASS_CASES\s+(\d+)\s*/\s*(\d+)", log_text)
     tests_match = re.search(r"TESTS\s+(\d+)\s*/\s*(\d+)", log_text)
     if not all_pass_match and not tests_match:

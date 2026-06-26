@@ -426,3 +426,63 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Rootless compose remains blocked: a layered `network_mode: none` compose probe and API-version sweep over `1.45`, `1.44`, `1.43`, `1.41`, and unset all failed during compose up at the Docker `/version` EOF path. Artifact: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round30/compose_api_version_probe_20260626.txt`.
 - Offline-clean caveat remains: the direct run uses `--network none` so public egress fails, but tau2/LiteLLM import still attempts the remote model-cost-map fetch before falling back locally. Keep this as an offline-hardening follow-up before calling tau3 fully offline-clean.
 - Conclusion: tau3 has one worker-passing oracle-direct smoke helper, not full Harbor adapter readiness. Keep the full tau3 suite entry disabled/pending adapter until Harbor/compose or a proper non-compose adapter path is implemented for all intended tasks.
+
+
+## 2026-06-26 Round52 Orchestrator Refresh
+
+Updated: 2026-06-26 18:35:53 +0800 Asia/Shanghai by main orchestrator.
+
+Current branch state:
+
+- Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
+- Branch/head: `feat/image-warmup-policy` at `458bde6 Wire TB2 smoke through terminus runner`
+- TB2 smoke wrapper default: `TB_AGENT=terminus-2`; this follows the user request to use Terminal-Bench built-in Terminus/Terminus-2 instead of `qwen-coder`.
+- Worker explicit endpoint probe at Round52: `Permission denied (publickey)`; do not claim any new worker Docker/TB2/tau3 smoke until SSH is restored.
+- Current static readiness from `scripts/agentic_bench_suite.py manifests/suite.example.yaml --readiness --json`: `total=9`, `ready=2`, `blocked=7`, `missing=0`, command rc `1` by fail-closed design.
+- Ready targets in static report: `repozero_py2js_smoke` full and `tau3_bench` image_smoke/helper only.
+- TB2 state: `terminal_bench_2_1_image_smoke` is image-smoke ready with built-in `terminus-2` wrapper, but full `terminal_bench_2_1` remains disabled/pending_adapter and must not be reported full-ready.
+- SWE-bench Verified state: smoke/helper row is image-smoke ready, but full qwen/mini-swe-agent/swe-agent/openhands rows are blocked by `image_manifest_not_materialized` because `manifests/images/swebench_verified.yaml` is only partial worker-cache/placeholder materialization.
+- Additional blocked tracked targets: `mcp_atlas`, `tool_decathlon`, `programbench`, `nl2repo`, and `deepswe`; blockers are pending adapter and/or required image transport missing as shown in the readiness JSON.
+
+Round52 cmux lane map:
+
+- `surface:50`: bug-hunt lane A, suite readiness false-green / adapter gating / result-parser contract. Report-only unless explicitly asked. Write `_coordination/20260625_harbor_bench/lanes/suite-readiness-bughunt-round52.md`.
+- `surface:54`: bug-hunt lane B, image transport/P0 digest/fallback manifest contract, especially SWE-bench Verified and non-TB targets. Report-only unless explicitly asked. Write `_coordination/20260625_harbor_bench/lanes/image-transport-bughunt-round52.md`.
+- `surface:51`: execution lane, inventory and one-command plan for existing shared `/bench` and `/data` end-to-end assets for SWE-bench Verified and Terminal-Bench 2.1. Write `_coordination/20260625_harbor_bench/lanes/shared-bench-inventory-round52.md`.
+- `surface:55`: execution lane, full-run readiness plan for tau3/RepoZero and worker commands under 8.130 relay, respecting current SSH blocker. Write `_coordination/20260625_harbor_bench/lanes/tau3-repozero-execution-round52.md`.
+
+Red lines for Round52:
+
+- All agents read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` first.
+- No `/clear` on working cmux agents.
+- Do not print or commit tokens.
+- Do not use stale worker aliases; only use the explicit worker-j9jjd endpoint if probing worker.
+- Bug-hunt lanes produce issue-ready findings with file:line, repro, impact, fix, and dedup note; file/comment GitHub issues only after dedup and confirmed severity.
+- Execution lanes may write only their lane reports unless the orchestrator explicitly grants production-code edits.
+- Do not report image-smoke/helper readiness as full benchmark readiness.
+
+
+## 2026-06-26 Round53 RepoZero Clean-Score Gate
+
+Updated: 2026-06-26 19:25 +0800 Asia/Shanghai by main orchestrator.
+
+Current code delta awaiting commit:
+
+- `scripts/agentic_bench_suite.py` now parses RepoZero native `summary.json` from `SUMMARY .../summary.json` or `artifact=...`, separates raw all-pass from clean all-pass, and marks timeout/nonzero/missing-entry summaries as `failure_category=unclean_agent_execution` with `score_claim_valid=false`.
+- `manifests/suite.example.yaml` now has `repozero_py2js_full` as a full readiness row using the P0/fallback-ready RepoZero image manifest and `dev_proxy_gpt54mini_8130` profile; the smoke row is explicitly `readiness_role: smoke`.
+- Tracked readiness targets now require at least one full readiness row, so helper-only rows such as tau3 oracle-direct image smoke no longer make a target full-ready.
+
+Fresh verification:
+
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite`: 67 tests OK.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite scripts.test_agentic_bench_images scripts.test_offline_images_manifest`: 101 tests OK.
+- `python3 -m py_compile ...`, shell `bash -n ...`, and `git diff --check`: pass.
+- RepoZero target readiness: `ready=1 blocked=0 missing=0 total=1`; entries are `repozero_py2js_smoke` as smoke and `repozero_py2js_full` as full.
+- Full tracked readiness remains fail-closed: `ready=1 blocked=8 missing=0 total=9`; tau3 is blocked by `no_full_readiness_entry`, not counted from helper/image-smoke.
+- RepoZero image registry lint passes with `required_without_offline_transport=0`, `fallback_tar_verified=1`, no missing or mismatch.
+- Full registry lint currently returns expected rc 1 because `deepswe`, `mcp_atlas`, `programbench`, and `tool_decathlon` still lack required offline transport; it verifies 96 fallback tars with no missing/mismatch.
+
+RepoZero w100 trace-health report:
+- Report path: `_coordination/20260625_harbor_bench/lanes/repozero-w100-trace-health-round53.md`.
+- The w100 artifact is structurally complete but not score-healthy: raw `185/400`, strict clean `131/400`, `timeout_count=119`, `nonzero_count=242`, `missing_entry_count=131`, `score_claim_valid=false`.
+- Worker explicit endpoint probe still fails with `Permission denied (publickey)`; no new worker run/smoke is claimed in Round53.

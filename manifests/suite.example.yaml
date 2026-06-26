@@ -167,6 +167,7 @@ benches:
     adapter: repozero_py2js
     adapter_script: run_repozero_py2js.sh
     adapter_status: wired_legacy
+    readiness_role: smoke
     image_manifest: manifests/images/repozero.yaml
     image_policy: required
     model_profile: gpt54mini_8130
@@ -178,6 +179,25 @@ benches:
       REPOZERO_TIMEOUT_S: 1200
       REPOZERO_CODEX_ATTEMPTS: 1
       REPOZERO_CASES: base58/test1.py
+
+  - id: repozero_py2js_full
+    benchmark: repozero_py2js
+    adapter: repozero_py2js
+    adapter_script: run_repozero_py2js.sh
+    adapter_status: wired_legacy
+    readiness_role: full
+    image_manifest: manifests/images/repozero.yaml
+    image_policy: required
+    model_profile: dev_proxy_gpt54mini_8130
+    concurrency: 1
+    params:
+      REPOZERO_MODE: full
+      REPOZERO_WORKERS: 100
+      MAX_CONCURRENCY: 100
+      REPOZERO_TIMEOUT_S: 2400
+      REPOZERO_CODEX_ATTEMPTS: 1
+      REPOZERO_INCLUDE_EXCLUDED: 1
+      REPOZERO_CASE_SOURCE: official
 
   - id: cocoabench
     benchmark: cocoabench
