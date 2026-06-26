@@ -1557,15 +1557,15 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         manifest_counts = full_entry["image_manifests"][0]["counts"]
 
         self.assertEqual(manifest_counts["required_images"], 89)
-        self.assertEqual(manifest_counts["required_with_offline_transport"], 85)
-        self.assertEqual(manifest_counts["required_without_offline_transport"], 4)
+        self.assertEqual(manifest_counts["required_with_offline_transport"], 86)
+        self.assertEqual(manifest_counts["required_without_offline_transport"], 3)
         self.assertIn("required_image_transport_missing", full_entry["blockers"])
 
         cache_manifest = module._load_yaml((ROOT / "manifests" / "images" / "terminal_bench_2_1_swe_dev_cache.yaml").read_text(encoding="utf-8"))
-        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 85)
-        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 4)
+        self.assertEqual(cache_manifest["evidence"]["offline_transport_ready_count"], 86)
+        self.assertEqual(cache_manifest["evidence"]["remaining_transport_gap_count"], 3)
         blockers = cache_manifest["known_blockers"]
-        self.assertIn("missing_transport_for_4_cache_tasks", blockers)
+        self.assertIn("missing_transport_for_3_cache_tasks", blockers)
         self.assertNotIn("missing_transport_for_39_cache_only_tasks", blockers)
 
 

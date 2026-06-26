@@ -1,7 +1,7 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: terminal_bench_2_1_swe_dev_cache
 generated_at: "2026-06-26"
-status: materialized_from_swe_dev_cache_85_of_89_offline_transport_ready
+status: materialized_from_swe_dev_cache_86_of_89_offline_transport_ready
 evidence:
   source_inventory: _coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json
   fallback_tar_sha256_table: _coordination/20260625_harbor_bench/inventory/tb2_shared_tars_sha256_20260626.tsv
@@ -9,13 +9,13 @@ evidence:
   docker_host: unix:///var/run/docker.sock
   shared_tar_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425
   cache_image_count: 89
-  shared_tar_count: 85
-  offline_transport_ready_count: 85
-  remaining_transport_gap_count: 4
+  shared_tar_count: 86
+  offline_transport_ready_count: 86
+  remaining_transport_gap_count: 3
 known_blockers:
   - p0_digest_refs_not_published_for_all_tb2_tasks
-  - worker_promoted_offline_transport_is_85_of_89_cached_tasks
-  - missing_transport_for_4_cache_tasks
+  - worker_promoted_offline_transport_is_86_of_89_cached_tasks
+  - missing_transport_for_3_cache_tasks
   - remaining_unpromoted_rows_require_worker_ingest_proof
 images:
   - id: tb2_adaptive_rejection_sampler
@@ -1127,12 +1127,15 @@ images:
   - id: tb2_torch_pipeline_parallelism
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/torch-pipeline-parallelism:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-pipeline-parallelism@sha256:177a52868cd51a7195e94696a0468179af0ead577f84188410a17094228db3ad
     source_image_id: sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/torch-pipeline-parallelism.tar
+    fallback_tar_sha256: 2d8ed090bf78b03d4584215604cd9e079dc59eea980751b7794bf8c56186aeb6
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

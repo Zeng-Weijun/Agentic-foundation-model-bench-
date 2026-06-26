@@ -1,0 +1,18 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tb2_torch_pipeline_parallelism_worker_probe
+images:
+  - id: tb2_torch_pipeline_parallelism
+    role: terminal_bench_task_runtime
+    required: true
+    image_transport: p0_digest_plus_fallback_tar
+    local_ref: tb2-offline/torch-pipeline-parallelism:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-pipeline-parallelism@sha256:177a52868cd51a7195e94696a0468179af0ead577f84188410a17094228db3ad
+    source_image_id: sha256:a014da66007ddb4eb52ed23f2cceab716410d4c12475770701f982519543f77a
+    needs_network: false
+    fallback_transport: oci_tar
+    fallback_status: staged_p0_digest_and_fallback_tar_pending_worker_proof
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/torch-pipeline-parallelism.tar
+    fallback_tar_sha256: 2d8ed090bf78b03d4584215604cd9e079dc59eea980751b7794bf8c56186aeb6
+    smoke:
+      network: none
+      command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"

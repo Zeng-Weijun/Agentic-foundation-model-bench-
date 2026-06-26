@@ -1,0 +1,17 @@
+ROW tb2_torch_pipeline_parallelism local_ref=tb2-offline/torch-pipeline-parallelism:20260425 fallback_tar=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/torch-pipeline-parallelism.tar p0_tag=100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-pipeline-parallelism:20260425
+The push refers to repository [100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-pipeline-parallelism]
+657f0c2ff13d: Preparing
+fc14cb923656: Preparing
+5f70bf18a086: Preparing
+fcbf8bb1997f: Preparing
+e54d39dd3577: Preparing
+073ec47a8c22: Preparing
+073ec47a8c22: Waiting
+fcbf8bb1997f: Mounted from swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism
+5f70bf18a086: Mounted from swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism
+e54d39dd3577: Mounted from swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism
+fc14cb923656: Mounted from swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism
+073ec47a8c22: Mounted from swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism
+657f0c2ff13d: Pushed
+20260425: digest: sha256:177a52868cd51a7195e94696a0468179af0ead577f84188410a17094228db3ad size: 1579
+stage_cache_images_from_plan: rows=1 staged=1 skipped=4 failed=0
