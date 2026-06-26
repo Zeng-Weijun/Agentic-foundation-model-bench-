@@ -905,12 +905,15 @@ images:
   - id: tb2_pytorch_model_recovery
     role: terminal_bench_task_runtime
     required: true
-    image_transport: swe_dev_cache_identity
+    image_transport: p0_digest_plus_fallback_tar
     local_ref: tb2-offline/pytorch-model-recovery:20260425
+    image_ref: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-recovery@sha256:0530bdf155b17ac94ee841e7528a86bd83578b9b82472c1f226c45cb74265240
     source_image_id: sha256:3a67ac23a6090b6c83237d1376ba332c355f54884a3c94db367bdc16b52946a4
     needs_network: false
-    fallback_transport: none
-    fallback_status: missing_shared_tar
+    fallback_transport: oci_tar
+    fallback_status: p0_digest_and_fallback_tar_verified
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch2/pytorch-model-recovery.tar
+    fallback_tar_sha256: 972b8e93096fea56558eef458c67649f61195b05b2a75f83873af63af7394019
     smoke:
       network: none
       command: "python3 --version 2>/dev/null || python --version 2>/dev/null || echo tb2-smoke-ok"
