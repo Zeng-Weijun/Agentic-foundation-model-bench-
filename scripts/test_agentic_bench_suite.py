@@ -527,6 +527,69 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(proc.returncode, 2)
         self.assertIn("no runs selected", proc.stderr)
 
+    def test_cli_dry_run_rejects_explicit_empty_plan_without_allow_empty_plan(self):
+        suite_yaml = textwrap.dedent(
+            """
+            schema_version: agentic_bench.suite.v1
+            suite:
+              id: empty_plan_cli
+              controller_host: dev
+              mode: smoke
+            model_profiles:
+              - id: gpt54mini_8130
+                model_name: gpt-5.4-mini
+                provider: openai_compatible_relay
+            benches:
+              - id: mcp_atlas
+                benchmark: MCP-Atlas
+                adapter: mcp_atlas
+                adapter_script: run_mcp_atlas.sh
+                adapter_status: pending_adapter
+                enabled: false
+                model_profile: gpt54mini_8130
+            """
+        ).strip()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            suite_path = Path(tmpdir) / "suite.yaml"
+            suite_path.write_text(suite_yaml, encoding="utf-8")
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--dry-run",
+                    "--json",
+                    "--only",
+                    "mcp_atlas",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            allowed = subprocess.run(
+                [
+                    sys.executable,
+                    str(MODULE_PATH),
+                    str(suite_path),
+                    "--dry-run",
+                    "--json",
+                    "--only",
+                    "mcp_atlas",
+                    "--allow-empty-plan",
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn("no runs selected", proc.stderr)
+        self.assertIn("mcp_atlas", proc.stderr)
+        self.assertEqual(allowed.returncode, 0)
+        self.assertEqual(json.loads(allowed.stdout)["runs"], [])
+
     def test_execute_run_blocks_adapter_when_required_image_preflight_fails(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -920,6 +983,44 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         }
         self.assertEqual(source_ids, expected_ids)
 
+    def test_tau3_full_entry_stays_blocked_when_enabled_with_smoke_params(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
+        tau3["enabled"] = True
+        tau3["adapter_status"] = "wired_legacy"
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
+        target = report["targets"][0]
+        full_entry = next(entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench")
+
+        self.assertFalse(full_entry["ready"])
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("tau3_full_smoke_mode", full_entry["blockers"])
+        self.assertIn("tau3_full_limit_set", full_entry["blockers"])
+        self.assertIn("tau3_full_image_policy_not_required", full_entry["blockers"])
+        self.assertIn("tau3_full_smoke_mode", target["blockers"])
+
+    def test_tau3_full_entry_requires_explicit_full_mode_and_disabled_limit(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tau3 = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench")
+        tau3["enabled"] = True
+        tau3["adapter_status"] = "wired_legacy"
+        tau3["image_policy"] = "required"
+        tau3["params"] = {}
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
+        target = report["targets"][0]
+        full_entry = next(entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench")
+
+        self.assertFalse(full_entry["ready"])
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("tau3_full_smoke_mode", full_entry["blockers"])
+        self.assertIn("tau3_full_limit_not_disabled", full_entry["blockers"])
+
     def test_example_manifest_has_enabled_tau3_oracle_direct_smoke_without_full_readiness(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"
@@ -960,6 +1061,47 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(helper_image_report["counts"]["required_images"], 1)
         self.assertEqual(helper_image_report["counts"]["required_without_offline_transport"], 0)
         self.assertTrue(helper_entries[0]["ready"])
+
+    def test_example_manifest_has_enabled_swebench_verified_django10097_image_smoke_without_full_readiness(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        helper = next(
+            bench for bench in config["benches"]
+            if bench["id"] == "swebench_verified_django10097_swe_agent_image_smoke"
+        )
+
+        self.assertTrue(helper.get("enabled", True))
+        self.assertEqual(helper["adapter_status"], "wired_legacy")
+        self.assertEqual(helper["readiness_role"], "image_smoke")
+        self.assertEqual(helper["image_policy"], "required")
+        self.assertEqual(helper["image_manifest"], "manifests/images/swebench_verified_django10097.yaml")
+        self.assertEqual(helper["params"]["SWEBENCH_INSTANCE_ID"], "django__django-10097")
+
+        plan = module.build_run_plan(
+            config,
+            suite_path=suite_path,
+            dry_run=True,
+            only={"swebench_verified_django10097_swe_agent_image_smoke"},
+            model_profile_override="dev_proxy_gpt54mini_8130",
+        )
+        self.assertEqual(len(plan["runs"]), 1)
+        self.assertEqual(plan["runs"][0]["runtime_env"]["SWEBENCH_INSTANCE_ID"], "django__django-10097")
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["swe-bench-verified"])
+        target = report["targets"][0]
+        helper_entry = next(
+            entry for entry in target["entries"]
+            if entry["bench_id"] == "swebench_verified_django10097_swe_agent_image_smoke"
+        )
+        helper_image_report = helper_entry["image_manifests"][0]
+
+        self.assertTrue(helper_entry["ready"])
+        self.assertEqual(helper_entry["readiness_role"], "image_smoke")
+        self.assertEqual(helper_image_report["counts"]["required_images"], 2)
+        self.assertEqual(helper_image_report["counts"]["required_without_offline_transport"], 0)
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("image_manifest_not_materialized", target["blockers"])
 
     def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):
         module = load_module()

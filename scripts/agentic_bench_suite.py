@@ -789,6 +789,29 @@ def _bench_readiness_role(bench: dict[str, Any]) -> str:
     return "full"
 
 
+def _bench_specific_readiness_blockers(bench: dict[str, Any], image_config: dict[str, Any]) -> list[str]:
+    if _bench_readiness_role(bench) != "full":
+        return []
+    if "tau3_bench" not in _bench_readiness_keys(bench):
+        return []
+    params = bench.get("params") or {}
+    if not isinstance(params, dict):
+        params = {}
+    blockers: list[str] = []
+    tau3_mode = str(params.get("TAU3_MODE", "")).strip().lower()
+    if tau3_mode != "full":
+        blockers.append("tau3_full_smoke_mode")
+    tau3_limit = str(params.get("TAU3_LIMIT", "")).strip()
+    if tau3_limit != "0":
+        if tau3_limit:
+            blockers.append("tau3_full_limit_set")
+        blockers.append("tau3_full_limit_not_disabled")
+    image_policy = str(bench.get("image_policy", image_config.get("default_policy", "required"))).strip().lower()
+    if image_policy != "required":
+        blockers.append("tau3_full_image_policy_not_required")
+    return blockers
+
+
 def _suite_concurrency_settings(config: dict[str, Any], *, max_concurrency: int | None = None) -> tuple[int, int | None]:
     suite = _require_mapping(config.get("suite", {}), "suite")
     suite_concurrency = _positive_int(
@@ -921,12 +944,14 @@ def _bench_readiness_entry(
     image_blockers = _unique_preserve_order(
         [blocker for report in image_reports for blocker in report.get("blockers", [])]
     )
+    bench_blockers = _bench_specific_readiness_blockers(bench, image_config)
     blockers: list[str] = []
     if not enabled:
         blockers.append("suite_entry_disabled")
     if not adapter_ready:
         blockers.append("adapter_not_wired")
     blockers.extend(image_blockers)
+    blockers.extend(bench_blockers)
     return {
         "bench_id": bench_id,
         "benchmark": bench.get("benchmark", bench_id),
@@ -937,7 +962,7 @@ def _bench_readiness_entry(
         "adapter_ready": adapter_ready,
         "image_manifests": image_reports,
         "blockers": _unique_preserve_order(blockers),
-        "ready": enabled and adapter_ready and not image_blockers,
+        "ready": enabled and adapter_ready and not image_blockers and not bench_blockers,
     }
 
 
@@ -1729,9 +1754,13 @@ def main(argv: list[str] | None = None) -> int:
         print(f"config error: {exc}", file=sys.stderr)
         return 2
 
-    if args.image_preflight_only and not plan["runs"] and not args.allow_empty_plan:
-        print("no runs selected for image preflight", file=sys.stderr)
-        return 2
+    if not plan["runs"] and not args.allow_empty_plan:
+        if args.only:
+            print(f"no runs selected for --only {args.only}", file=sys.stderr)
+            return 2
+        if args.image_preflight_only:
+            print("no runs selected for image preflight", file=sys.stderr)
+            return 2
 
     if args.emit_plan:
         _write_plan(plan, args.emit_plan)

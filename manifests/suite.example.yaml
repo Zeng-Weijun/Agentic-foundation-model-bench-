@@ -226,6 +226,24 @@ benches:
       SWEBENCH_NUM_WORKERS: 1
       SWEBENCH_EVAL_WORKERS: 1
 
+  - id: swebench_verified_django10097_swe_agent_image_smoke
+    benchmark: swe-bench-verified
+    adapter: swe_agent
+    adapter_script: run_swebench_verified_swe_agent.sh
+    adapter_status: wired_legacy
+    readiness_role: image_smoke
+    image_manifest: manifests/images/swebench_verified_django10097.yaml
+    image_policy: required
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      SWEBENCH_MODE: smoke
+      SWEBENCH_INSTANCE_ID: django__django-10097
+      MAX_CONCURRENCY: 1
+      SWEBENCH_NUM_WORKERS: 1
+      SWEBENCH_EVAL_WORKERS: 1
+    enabled: true
+
   - id: swebench_verified_openhands
     benchmark: swe-bench-verified
     adapter: openhands
