@@ -1343,6 +1343,20 @@ def _run_one(run: dict[str, Any], output_root: Path) -> dict[str, Any]:
     started_at = _utc_now()
     with log_path.open("w", encoding="utf-8") as handle:
         handle.write(f"START {bench_id} {started_at}\n")
+        adapter_status = str(run.get("adapter_status", "wired_legacy"))
+        if adapter_status not in EXECUTABLE_ADAPTER_STATES:
+            ended_at = _utc_now()
+            status = "fail:adapter_not_wired"
+            handle.write(f"adapter_status {adapter_status} is not executable; use --image-preflight-only for image-only checks\n")
+            status_path.write_text(status + "\n", encoding="utf-8")
+            return {
+                "bench_id": bench_id,
+                "status": status,
+                "exit_code": 2,
+                "started_at": started_at,
+                "ended_at": ended_at,
+                "log_path": str(log_path),
+            }
         preflight = run.get("image_preflight")
         if isinstance(preflight, dict) and preflight.get("required"):
             for command in preflight.get("commands", []):
@@ -1575,6 +1589,104 @@ def _read_text_if_present(path: str | Path) -> str:
         return ""
 
 
+def _run_dir_candidates(run: dict[str, Any]) -> list[Path]:
+    candidates: list[Path] = []
+    for raw in (run.get("run_dir"), _require_mapping(run.get("runtime_env", {}), "runtime_env").get("BENCH_RUN_DIR")):
+        if raw:
+            path = Path(str(raw)).expanduser()
+            if path not in candidates:
+                candidates.append(path)
+    return candidates
+
+
+def _load_json_file(path: Path) -> dict[str, Any] | None:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def _safe_int(value: Any) -> int | None:
+    if value is None or value == "":
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _tau3_benchmark_result(run: dict[str, Any]) -> dict[str, Any] | None:
+    summary_path: Path | None = None
+    summary: dict[str, Any] | None = None
+    for run_dir in _run_dir_candidates(run):
+        candidate = run_dir / "tau3_result_summary.json"
+        loaded = _load_json_file(candidate)
+        if loaded is not None:
+            summary_path = candidate
+            summary = loaded
+            break
+    if summary_path is None or summary is None:
+        return None
+
+    status_text = str(summary.get("status", "")).strip().lower()
+    verifier_status = str(summary.get("verifier_status", "")).strip().lower()
+    reward = summary.get("reward")
+    pass_statuses = {"pass", "passed", "success", "succeeded"}
+    passed = status_text in pass_statuses or (not status_text and verifier_status == "passed")
+    n_total_trials = _safe_int(summary.get("n_total_trials"))
+    n_errors = _safe_int(summary.get("n_errors"))
+    successful_eval_trials = _safe_int(summary.get("successful_eval_trials"))
+    exception_stats = summary.get("exception_stats")
+    if not isinstance(exception_stats, dict):
+        exception_stats = {}
+    safe_exception_stats = {str(key): _safe_int(value) for key, value in sorted(exception_stats.items())[:8]}
+    safe_exception_stats = {key: value for key, value in safe_exception_stats.items() if value is not None}
+
+    result: dict[str, Any] = {
+        "parser_status": "parsed",
+        "status": "pass" if passed else "fail",
+        "metric": "reward" if reward is not None else "native_summary",
+        "passed": passed,
+        "score_claim_valid": bool(passed and reward is not None),
+        "failure_category": "" if passed else "tau3_native_error",
+        "short_failure_note": str(summary.get("short_failure_note") or status_text or "tau3 native summary did not pass")[:240],
+        "tau3_status": status_text,
+        "verifier_status": verifier_status,
+    }
+    if reward is not None:
+        result["reward"] = reward
+    if n_total_trials is not None:
+        result["n_total_trials"] = n_total_trials
+    if n_errors is not None:
+        result["n_errors"] = n_errors
+    if successful_eval_trials is not None:
+        result["successful_eval_trials"] = successful_eval_trials
+    if safe_exception_stats:
+        result["exception_stats"] = safe_exception_stats
+
+    native_artifacts: list[dict[str, str]] = [
+        {
+            "role": "tau3_result_summary",
+            "path": str(summary_path),
+            "status": "parsed",
+            "read_policy": "allowlist_json",
+        }
+    ]
+    artifact_manifest = summary_path.parent / "artifact_manifest.json"
+    if artifact_manifest.is_file():
+        native_artifacts.append(
+            {
+                "role": "artifact_manifest",
+                "path": str(artifact_manifest),
+                "status": "referenced_not_read",
+                "read_policy": "pointer_only",
+            }
+        )
+    result["_source"] = {"native_artifacts": native_artifacts}
+    return result
+
+
 def _repozero_benchmark_result(log_text: str) -> dict[str, Any] | None:
     all_pass_match = re.search(r"ALL_PASS_CASES\s+(\d+)\s*/\s*(\d+)", log_text)
     tests_match = re.search(r"TESTS\s+(\d+)\s*/\s*(\d+)", log_text)
@@ -1608,6 +1720,12 @@ def _repozero_benchmark_result(log_text: str) -> dict[str, Any] | None:
 
 def _benchmark_result_for_run(run: dict[str, Any], execution_result: dict[str, Any]) -> dict[str, Any]:
     execution_status = "pass" if execution_result.get("exit_code") == 0 else "fail"
+    adapter = str(run.get("adapter", run.get("bench", run.get("bench_id", "")))).lower()
+    bench_id = str(run.get("bench_id", "")).lower()
+    if "tau3" in adapter or "tau3" in bench_id:
+        parsed = _tau3_benchmark_result(run)
+        if parsed:
+            return parsed
     if execution_status != "pass":
         return {
             "parser_status": "not_run",
@@ -1618,8 +1736,6 @@ def _benchmark_result_for_run(run: dict[str, Any], execution_result: dict[str, A
             "failure_category": "adapter_crash",
             "short_failure_note": f"adapter exited {execution_result.get('exit_code')}",
         }
-    adapter = str(run.get("adapter", run.get("bench", run.get("bench_id", "")))).lower()
-    bench_id = str(run.get("bench_id", "")).lower()
     log_text = _read_text_if_present(str(execution_result.get("log_path", "")))
     if "repozero" in adapter or "repozero" in bench_id:
         parsed = _repozero_benchmark_result(log_text)
@@ -1639,6 +1755,7 @@ def _benchmark_result_for_run(run: dict[str, Any], execution_result: dict[str, A
 def _attach_benchmark_result(run: dict[str, Any], execution_result: dict[str, Any], output_root: Path) -> dict[str, Any]:
     execution_status = "pass" if execution_result.get("exit_code") == 0 else "fail"
     benchmark_result = _benchmark_result_for_run(run, execution_result)
+    source = benchmark_result.pop("_source", None)
     result_doc = {
         "schema_version": "agentic_bench.result.v1",
         "suite_id": run.get("suite_id", ""),
@@ -1656,6 +1773,8 @@ def _attach_benchmark_result(run: dict[str, Any], execution_result: dict[str, An
         },
         "benchmark_result": benchmark_result,
     }
+    if source:
+        result_doc["source"] = source
     bench_id = _slug(str(run.get("bench_id", "unnamed")))
     result_path = output_root / "results" / f"{bench_id}.result.json"
     _write_plan(result_doc, result_path)

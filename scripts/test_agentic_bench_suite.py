@@ -590,6 +590,37 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(allowed.returncode, 0)
         self.assertEqual(json.loads(allowed.stdout)["runs"], [])
 
+    def test_execute_plan_refuses_unwired_adapter_without_running_preflight_or_command(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            preflight_marker = root / "preflight-ran"
+            adapter_marker = root / "adapter-ran"
+            run = {
+                "bench_id": "terminal_bench_2_1_image_smoke",
+                "adapter_status": "pending_adapter",
+                "command": "adapter command",
+                "command_argv": ["bash", "-c", f"touch {adapter_marker}"],
+                "image_preflight": {
+                    "required": True,
+                    "commands": [
+                        {
+                            "command": "preflight command",
+                            "command_argv": ["bash", "-c", f"touch {preflight_marker}"],
+                        }
+                    ],
+                },
+            }
+
+            result = module._run_one(run, root / "controller")
+            log_text = Path(result["log_path"]).read_text(encoding="utf-8")
+
+        self.assertEqual(result["exit_code"], 2)
+        self.assertEqual(result["status"], "fail:adapter_not_wired")
+        self.assertFalse(preflight_marker.exists())
+        self.assertFalse(adapter_marker.exists())
+        self.assertIn("adapter_status pending_adapter is not executable", log_text)
+
     def test_execute_run_blocks_adapter_when_required_image_preflight_fails(self):
         module = load_module()
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -657,6 +688,139 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(parsed["benchmark_result"]["tests_passed"], 0)
         self.assertEqual(parsed["benchmark_result"]["tests_total"], 60)
         self.assertEqual(parsed["benchmark_result"]["failure_category"], "agent_generation_failed")
+
+    def test_tau3_native_summary_parsed_from_bench_run_dir_even_when_adapter_nonzero(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            run_dir = root / "tau3_run"
+            writer = root / "write_tau3_result.py"
+            writer.write_text(
+                "import json\n"
+                "import sys\n"
+                "from pathlib import Path\n"
+                "run_dir = Path(sys.argv[1])\n"
+                "run_dir.mkdir(parents=True, exist_ok=True)\n"
+                "(run_dir / 'tau3_result_summary.json').write_text(json.dumps({\n"
+                "    'schema_version': 'agentic_bench.tau3_direct_result_summary.v1',\n"
+                "    'status': 'errors',\n"
+                "    'n_total_trials': 1,\n"
+                "    'n_errors': 1,\n"
+                "    'successful_eval_trials': 0,\n"
+                "    'exception_stats': {'DockerComposeError': 1},\n"
+                "    'short_failure_note': 'compose network blocked',\n"
+                "}), encoding='utf-8')\n"
+                "(run_dir / 'artifact_manifest.json').write_text(json.dumps({\n"
+                "    'tau3_result_summary': 'tau3_result_summary.json',\n"
+                "    'unsafe_note': 'UNIT_SENTINEL_TAU3_SECRET',\n"
+                "}), encoding='utf-8')\n"
+                "(run_dir / 'run.env.summary').write_text('OPENAI_API_KEY=UNIT_SENTINEL_TAU3_SECRET\\n', encoding='utf-8')\n"
+                "raise SystemExit(7)\n",
+                encoding="utf-8",
+            )
+            command = f"{sys.executable} {writer} {run_dir}"
+            plan = {
+                "suite_id": "unit_tau3_parser",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "schema_version": "agentic_bench.run_manifest.v1",
+                        "suite_id": "unit_tau3_parser",
+                        "run_id": "unit_tau3_parser__tau3_bench__model",
+                        "bench_id": "tau3_bench",
+                        "bench": "tau3-bench",
+                        "adapter": "tau3_bench",
+                        "adapter_status": "wired_legacy",
+                        "run_dir": str(run_dir),
+                        "command": command,
+                        "command_argv": [sys.executable, str(writer), str(run_dir)],
+                    }
+                ],
+            }
+
+            rc = module._execute_plan(plan, str(root / "controller"))
+            summary = json.loads((root / "controller" / "summary.json").read_text(encoding="utf-8"))
+            result_path = Path(summary["results"][0]["result_path"])
+            parsed = json.loads(result_path.read_text(encoding="utf-8"))
+            serialized = json.dumps(parsed, sort_keys=True)
+
+        self.assertEqual(rc, 1)
+        self.assertEqual(parsed["execution"]["status"], "fail")
+        self.assertEqual(parsed["execution"]["exit_code"], 7)
+        self.assertEqual(parsed["benchmark_result"]["parser_status"], "parsed")
+        self.assertEqual(parsed["benchmark_result"]["status"], "fail")
+        self.assertEqual(parsed["benchmark_result"]["failure_category"], "tau3_native_error")
+        self.assertEqual(parsed["benchmark_result"]["n_total_trials"], 1)
+        self.assertEqual(parsed["benchmark_result"]["n_errors"], 1)
+        self.assertEqual(parsed["benchmark_result"]["successful_eval_trials"], 0)
+        self.assertFalse(parsed["benchmark_result"]["score_claim_valid"])
+        native = parsed["source"]["native_artifacts"]
+        self.assertEqual(native[0]["role"], "tau3_result_summary")
+        self.assertEqual(native[0]["status"], "parsed")
+        self.assertEqual(native[0]["read_policy"], "allowlist_json")
+        self.assertNotIn("UNIT_SENTINEL_TAU3_SECRET", serialized)
+        self.assertNotIn("OPENAI_API_KEY", serialized)
+
+    def test_tau3_native_summary_does_not_claim_pass_when_status_errors_despite_verifier_passed(self):
+        module = load_module()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            run_dir = root / "tau3_run"
+            writer = root / "write_tau3_inconsistent_result.py"
+            writer.write_text(
+                "import json\n"
+                "import sys\n"
+                "from pathlib import Path\n"
+                "run_dir = Path(sys.argv[1])\n"
+                "run_dir.mkdir(parents=True, exist_ok=True)\n"
+                "(run_dir / 'tau3_result_summary.json').write_text(json.dumps({\n"
+                "    'schema_version': 'agentic_bench.tau3_direct_result_summary.v1',\n"
+                "    'status': 'errors',\n"
+                "    'verifier_status': 'passed',\n"
+                "    'reward': 1.0,\n"
+                "    'n_total_trials': 1,\n"
+                "    'n_errors': 1,\n"
+                "    'successful_eval_trials': 0,\n"
+                "    'short_failure_note': 'native wrapper failed after verifier pass',\n"
+                "}), encoding='utf-8')\n"
+                "raise SystemExit(0)\n",
+                encoding="utf-8",
+            )
+            plan = {
+                "suite_id": "unit_tau3_inconsistent_parser",
+                "suite_concurrency": 1,
+                "run_root": str(root / "runs"),
+                "runs": [
+                    {
+                        "schema_version": "agentic_bench.run_manifest.v1",
+                        "suite_id": "unit_tau3_inconsistent_parser",
+                        "run_id": "unit_tau3_inconsistent_parser__tau3_bench__model",
+                        "bench_id": "tau3_bench",
+                        "bench": "tau3-bench",
+                        "adapter": "tau3_bench",
+                        "adapter_status": "wired_legacy",
+                        "run_dir": str(run_dir),
+                        "command": f"{sys.executable} {writer} {run_dir}",
+                        "command_argv": [sys.executable, str(writer), str(run_dir)],
+                    }
+                ],
+            }
+
+            rc = module._execute_plan(plan, str(root / "controller"))
+            summary = json.loads((root / "controller" / "summary.json").read_text(encoding="utf-8"))
+            result_path = Path(summary["results"][0]["result_path"])
+            parsed = json.loads(result_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(parsed["execution"]["status"], "pass")
+        self.assertEqual(parsed["benchmark_result"]["parser_status"], "parsed")
+        self.assertEqual(parsed["benchmark_result"]["status"], "fail")
+        self.assertEqual(parsed["benchmark_result"]["failure_category"], "tau3_native_error")
+        self.assertFalse(parsed["benchmark_result"]["passed"])
+        self.assertFalse(parsed["benchmark_result"]["score_claim_valid"])
+        self.assertEqual(summary["results"][0]["benchmark_status"], "fail")
+        self.assertFalse(summary["results"][0]["score_claim_valid"])
 
     def test_execute_plan_writes_summary_results_in_manifest_order(self):
         module = load_module()

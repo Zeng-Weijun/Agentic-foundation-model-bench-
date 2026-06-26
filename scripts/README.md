@@ -187,7 +187,9 @@ The preflight-only command writes `run_manifest.json`,
 preflights are skipped by default; include them with
 `--include-optional-image-preflight`, and make optional failures fatal with
 `--fail-on-optional-image-preflight`. If a filter selects zero runs, the command
-exits 2 unless `--allow-empty-plan` is set.
+exits 2 unless `--allow-empty-plan` is set. `--execute` fails closed for rows
+whose `adapter_status` is not `wired` or `wired_legacy`; use
+`--image-preflight-only` for image-only helpers and pending adapters.
 
 Suite `image_preflight` can forward `pull`, `load_fallback`, and `run_smoke` to
 the checker. Use `pull` only for digest-pinned images in the internal P0

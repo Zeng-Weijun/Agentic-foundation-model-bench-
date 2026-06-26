@@ -120,7 +120,9 @@ logs under the controller output directory. Optional image preflights are skippe
 unless `--include-optional-image-preflight` is set; add
 `--fail-on-optional-image-preflight` when optional audit failures should fail the
 controller command. If an explicit `--only`/filter selects zero image-preflight
-runs, the command exits 2 unless `--allow-empty-plan` is set.
+runs, the command exits 2 unless `--allow-empty-plan` is set. `--execute` fails
+closed for rows whose `adapter_status` is not `wired` or `wired_legacy`; use
+`--image-preflight-only` for image-only helpers and pending adapters.
 
 Terminal-Bench 2.1 one-task dry-run wrapper:
 

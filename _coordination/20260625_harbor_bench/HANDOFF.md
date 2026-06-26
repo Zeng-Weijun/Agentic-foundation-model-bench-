@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-tau3-round30 oracle-direct smoke Asia/Shanghai
+Updated: 2026-06-26 Round37 tau3 parser review fix Asia/Shanghai
 
 ## Objective
 
@@ -11,7 +11,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Shared repo root: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo`
 - Active worktree: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`
 - Branch: `feat/image-warmup-policy`
-- Current readiness-gate work is recorded in the active branch head; immediate pre-readiness head was `d6bafec Record proxy ceiling issue closure`.
+- Current branch head before Round36 edits: `684b479 Tighten bench readiness guardrails` (pushed to `origin/feat/image-warmup-policy`).
 - Original base commit for this workstream: `c42f23c Record runtime image hunt issues`
 - Driver doc: `_coordination/20260625_harbor_bench/DRIVER.md`
 - Remote worker: `worker-j9jjd`
@@ -32,6 +32,11 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 - Image inventory: `swe_dev` has substantially more SWE-bench/TB2.1 Docker images than worker; shared TB2.1 tars are partial, so worker full runs need staging from `swe_dev` cache. Current inventory artifacts: `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`, and identity-enriched `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
 - Terminal-Bench 2.1: `terminal_bench_2_1_image_smoke` is enabled for image preflight using `gcode-to-text`; worker rootless check passes via cached/verified fallback image, while full TB execution remains pending adapter/runtime result wiring.
 - Bug-hunt pair: only surface:50 and surface:54 produce `_coordination/20260625_harbor_bench/lanes/*.md`; each must cross-check the other's ledger before the orchestrator files issues.
+- Round36 dispatch: surface:50 is report-only `runtime-images-round36.md` for TB2 remaining image/materialization actions; surface:54 is report-only `runner-results-round36.md` for suite execute/parser gaps. Both must not edit production files.
+- Round36 main implementation: `--execute` now fails closed before image preflight or adapter launch when a planned row has `adapter_status` outside `wired`/`wired_legacy`. Use `--image-preflight-only` for image-only helpers or pending adapters such as `terminal_bench_2_1_image_smoke`.
+- Round37 review fix: runner-results review found that tau3 native parsing could overclaim pass when a native summary had `status=errors`, `verifier_status=passed`, and `reward=1.0`. The parser now treats pass-like top-level tau3 status as authoritative; `verifier_status=passed` is only a pass signal when top-level `status` is empty. Regression coverage is in `test_tau3_native_summary_does_not_claim_pass_when_status_errors_despite_verifier_passed`.
+- Current active dry-run has 12 runs and no active tau2/TB2.0 rows. Static readiness is still `ready=1`, `blocked=8`, `missing=0`; RepoZero is the only full ready target. SWE django10097 and tau3 oracle-direct are image-smoke helpers only.
+- Current TB2 generated cache manifest is `84/89` offline-transport ready; remaining gaps are `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`.
 - Current Round 21 completed: surface:50 audited the remaining 8 TB2 rows after batch10 and found no new ISSUE-READY bug. `mteb-retrieve` is the only staged-but-quarantined row: fallback tar exists and P0 HEAD returns 200, but worker fallback load failed, so it remains unpromoted. The other seven remaining rows have no fallback tar hit and P0 HEAD 404. Recommended next implementation order is `multi-source-data-merger` solo after storage/daemon-health checks, then the QEMU/service-like rows, then the giant torch/pytorch rows one by one. surface:54 audited batch10 provenance and the mteb failure, also found no new ISSUE-READY bug, and deduped it to #8/#12/#13/#10. Both hunt lanes stay ledger-only unless explicitly promoted by the orchestrator.
 - GitHub issue filing: runner-results lane filed/deduped through REST API:
   - #1 Separate adapter execution status from benchmark result status.
@@ -70,7 +75,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 
 ## Next Wakeup Prompt
 
-Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect new `ISSUE-READY` blocks from `_coordination/20260625_harbor_bench/lanes/*.md`, cross-check the two ledgers, dedup against GitHub/open reports, file issue/comment if confirmed, and keep the two hunt agents busy. Continue main implementation from the active shared worktree. Next main step: keep `mteb-retrieve` and `multi-source-data-merger` quarantined and diagnose/retry only after a clean worker rootless daemon/storage-health proof; do not promote either row from tar/P0 staging evidence alone. After rootless storage is proven healthy, retry `multi-source-data-merger` first because its tar/P0 artifacts already exist; otherwise move only to smaller isolated QEMU/service-like rows if their worker ingest passes, and keep giant torch/pytorch rows one by one. Keep QEMU, torch/pytorch, largest data rows, and medium generic/data rows separated. SWE django10097 fallback transport is verified and worker-smoked, but P0 digest publication remains preferred for scale when worker rootless Docker can reach the registry. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
+Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux surface-health` and read surfaces 50 and 54 by content as the only continuous bug-hunt pair; read 51/55 only if they were explicitly assigned implementation review or smoke. Collect `runtime-images-round36.md` and `runner-results-round36.md`, cross-check any `ISSUE-READY` blocks, dedup against GitHub/open reports, file issue/comment only after confirmation, and keep both hunt agents busy. Continue main implementation from the active shared worktree. Next main step: verify the execute fail-closed change, then either implement the highest-impact runner/parser fix from surface:54 or update TB2 staging policy from surface:50. Keep `mteb-retrieve` and `multi-source-data-merger` quarantined until clean worker rootless storage/ingest evidence exists; do not promote them from tar/P0 staging evidence alone. Giant torch/pytorch rows remain one-by-one. Run worker runtime `check`/smoke via explicit worker-j9jjd endpoint. Suite/model benchmark concurrency can be 40-50 on the 60-CPU worker when images are warm; image transport load/pull concurrency stays capped separately at 2-4.
 
 ## Acceptance Snapshot
 
