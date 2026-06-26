@@ -693,6 +693,92 @@ class AgenticBenchImagesTest(unittest.TestCase):
             self.assertIn(hashlib.sha256(b"fake docker tar bytes").hexdigest(), result_text)
 
 
+    def test_stage_cache_images_script_rejects_push_without_digest(self):
+        script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            fakebin = root / "bin"
+            fakebin.mkdir()
+            fake_docker = fakebin / "docker"
+            fake_docker.write_text(
+                textwrap.dedent(
+                    """
+                    #!/usr/bin/env bash
+                    set -euo pipefail
+                    printf '%s\n' "$*" >> "$FAKE_DOCKER_LOG"
+                    if [ "$1 $2" = "image inspect" ]; then
+                      printf '[{"Id":"sha256:fake"}]\n'
+                      exit 0
+                    fi
+                    if [ "$1" = "save" ]; then
+                      out=""
+                      while [ "$#" -gt 0 ]; do
+                        if [ "$1" = "-o" ]; then
+                          out="$2"
+                          shift 2
+                          continue
+                        fi
+                        shift
+                      done
+                      printf 'fake docker tar bytes' > "$out"
+                      exit 0
+                    fi
+                    if [ "$1" = "tag" ]; then
+                      exit 0
+                    fi
+                    if [ "$1" = "push" ]; then
+                      printf 'pushed but no digest recorded\n'
+                      exit 0
+                    fi
+                    if [ "$1" = "inspect" ]; then
+                      exit 0
+                    fi
+                    echo "unexpected docker $*" >&2
+                    exit 9
+                    """
+                ).lstrip(),
+                encoding="utf-8",
+            )
+            fake_docker.chmod(0o755)
+            plan = root / "plan.tsv"
+            tar_path = root / "images" / "missing-digest.tar"
+            plan.write_text(
+                "id\tslug\tlocal_ref\tsource_image_id\tsource_host\tsource_ref\tsource_cache_image_id\tsource_size\tfallback_tar\tp0_tag\tmatch_status\n"
+                f"tb2_missing_digest\tmissing-digest\ttb2-offline/missing-digest:20260425\tsha256:fake\tswe_dev\ttb2-offline/missing-digest:20260425\tfake\t1GB\t{tar_path}\t100.97.118.137:8555/swe-data-harness/missing-digest:20260425\tmatched\n",
+                encoding="utf-8",
+            )
+            out_tsv = root / "result.tsv"
+            env = dict(os.environ)
+            env["PATH"] = str(fakebin) + os.pathsep + env.get("PATH", "")
+            env["FAKE_DOCKER_LOG"] = str(root / "docker.log")
+            proc = subprocess.run(
+                [
+                    "bash",
+                    str(script),
+                    "--plan",
+                    str(plan),
+                    "--execute",
+                    "--push",
+                    "--output-tsv",
+                    str(out_tsv),
+                ],
+                cwd=ROOT,
+                env=env,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn("missing p0 digest", proc.stderr)
+            self.assertTrue(tar_path.is_file())
+            result_text = out_tsv.read_text(encoding="utf-8")
+            self.assertIn("push_digest_missing", result_text)
+            self.assertNotIn("saved_pushed", result_text)
+            docker_log = (root / "docker.log").read_text(encoding="utf-8")
+            self.assertIn("push 100.97.118.137:8555/swe-data-harness/missing-digest:20260425", docker_log)
+
+
     def test_stage_cache_images_script_times_out_hung_docker_save(self):
         script = ROOT / "scripts" / "stage_cache_images_from_plan.sh"
         with tempfile.TemporaryDirectory() as tmpdir:

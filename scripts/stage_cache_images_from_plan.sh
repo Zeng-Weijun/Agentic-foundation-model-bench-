@@ -205,6 +205,13 @@ while IFS=$'\t' read -r id slug local_ref source_image_id source_host source_ref
       docker tag "$local_ref" "$p0_tag"
       docker push "$p0_tag"
       p0_digest_ref="$(docker inspect --format='{{index .RepoDigests 0}}' "$p0_tag" 2>/dev/null || true)"
+      if [ -z "$p0_digest_ref" ]; then
+        echo "FAIL missing p0 digest after push $id p0_tag=$p0_tag" >&2
+        failed=$((failed + 1))
+        status="push_digest_missing"
+        write_result_row "$status"
+        continue
+      fi
       status="saved_pushed"
     fi
     staged=$((staged + 1))
