@@ -1,0 +1,24 @@
+2026-06-26T09:07:18+08:00
+zwj2-64rlk-3469265-worker-0
+host_registry_curl_start
+curl: /usr/local/lib/libcurl.so.4: no version information available (required by curl)
+HTTP/1.1 200 OK
+Content-Length: 2
+Content-Type: application/json; charset=utf-8
+Docker-Distribution-Api-Version: registry/2.0
+X-Content-Type-Options: nosniff
+Date: Fri, 26 Jun 2026 01:07:18 GMT
+
+host_registry_curl_rc=0
+host_route_start
+100.97.118.137 dev eth0 src 100.102.19.118 uid 0
+    cache
+host_route_rc=0
+docker_digest_inspect_start
+
+Error response from daemon: No such image: 100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mteb-retrieve@sha256:088c20baec521e159982c27bcdb8a48dda67a15729043a92a86ef27a6472c0a8
+docker_digest_inspect_rc=1
+docker_local_inspect_start
+
+Error response from daemon: No such image: tb2-offline/mteb-retrieve:20260425
+docker_local_inspect_rc=1

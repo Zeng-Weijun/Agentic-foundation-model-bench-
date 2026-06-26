@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-readiness-gate Asia/Shanghai
+Updated: 2026-06-26 post-mteb-retry Asia/Shanghai
 
 ## Objective
 
@@ -348,3 +348,20 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Worker check returned rc 0 with counts `present=1`, `pulled=1`, `tagged=1`, `smoke_passed=1`, `tar_verified=1`, `missing=0`, `errors=0`; `present_ref` is now the local tag `tb2-offline/install-windows-3.11:20260425`.
 - Active TB2 cache manifest now records install-windows as `p0_digest_plus_fallback_tar`. TB2 offline transport readiness moved from `81/89` to `82/89`, with `remaining_transport_gap_count=7`.
 - Verification after this promotion: full unit suite passed `58 tests`; Python py_compile passed; shell `bash -n` passed for launcher/image helper scripts; `git diff --check` passed; worker local `docker image inspect tb2-offline/install-windows-3.11:20260425` returns image id `sha256:2dad545615271e1b9d3d5b818cd2083a330159eba7535122b2c5b660ca57f58b`.
+
+## 2026-06-26 TB2 mteb-retrieve worker retry quarantine
+
+- Retried the quarantined Terminal-Bench 2.1 `mteb-retrieve` row on worker-j9jjd with a one-row manifest instead of promoting it from source/P0 evidence.
+- Retry manifest: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_mteb_retrieve_worker_retry_manifest_20260626.yaml`.
+- Worker retry result: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_mteb_retrieve_worker_retry_20260626.json`; rc file `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_mteb_retrieve_worker_retry_20260626.rc`; stderr file `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_mteb_retrieve_worker_retry_20260626.stderr`.
+- Host-vs-daemon diagnostics: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_mteb_retrieve_worker_retry_diagnostics_20260626.txt`.
+- Static one-row lint with `--require-offline-transport --verify-fallback-files` passed: `required_images=1`, `required_with_digest_ref=1`, `fallback_tar_verified=1`, `required_without_offline_transport=0`.
+- P0 digest ref retried: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mteb-retrieve@sha256:088c20baec521e159982c27bcdb8a48dda67a15729043a92a86ef27a6472c0a8`.
+- Fallback tar retried: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/terminalbench2.1/20260425_missing_batch1/mteb-retrieve.tar`, sha256 `f80be41fc1360f33926c4ceaf572eff8963455f7bf44d3544454d4c6fb3eda2d`.
+- Worker check returned rc 1 with counts `tar_verified=1`, `pulled=0`, `loaded=0`, `present=0`, `smoke_passed=0`, `missing=1`, `errors=0`.
+- Pull failed inside the rootless Docker daemon with `connect: network is unreachable` to P0, even though worker host `curl -k -I https://100.97.118.137:8555/v2/` returned HTTP 200 and `ip route get 100.97.118.137` succeeded.
+- Fallback tar load failed with `unlinkat /usr/local/lib/python3.10/site-packages/pip-23.0.1.dist-info: input/output error`.
+- Docker inspect after the retry confirmed neither the P0 digest ref nor `tb2-offline/mteb-retrieve:20260425` is present locally.
+- Conclusion: do not promote `mteb-retrieve`; keep it under #8 rootless Docker network/ingest quarantine. Active Terminal-Bench 2.1 remains `82/89` offline-transport ready with `7` remaining gaps.
+- #8 comment posted with this evidence: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4805539733
+- Round29 runner-results bug hunt found no new ISSUE-READY bug after #18/#19 and install-windows promotion; it recommends parsing allowlisted checker JSON into image-preflight summaries as a #12/#13 follow-up, not as a new issue.

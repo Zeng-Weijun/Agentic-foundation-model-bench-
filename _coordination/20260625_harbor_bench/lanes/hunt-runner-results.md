@@ -3214,3 +3214,62 @@ fix:
 - Trailing whitespace scan on this ledger: rc 0, clean.
 - Round28-only bounded secret scan: rc 0, `round28_secret_scan_hits=0`.
 - Final scope check: rc 0; current shared worktree status includes this ledger plus concurrent non-ledger modifications in `manifests/suite.example.yaml`, `scripts/agentic_bench_suite.py`, `scripts/check_rootless_docker_worker.sh`, and `scripts/test_agentic_bench_suite.py`. This lane did not edit or revert those non-ledger files. Initial status had a pre-existing untracked pycache file, but it was absent from the final status output.
+
+## Round29 post-install-windows runner review
+
+### Scope
+
+- Lane: runner/results/provenance review after #18/#19 fixes and TB2 `install-windows-3.11` promotion.
+- Worktree verified through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`, branch `feat/image-warmup-policy`, head `6bd03e8`.
+- Ledger-only. No production code, manifests, tests, handoff, issue records, Docker save/load/pull/run/build, benchmark runs, model calls, commits, pushes, or GitHub issue edits were performed.
+
+### Finding
+
+No new ISSUE-READY bug in this round.
+
+The post-install-windows runner/result state is internally consistent for the surfaces checked:
+
+- #18 appears fixed for generated suite/image-preflight commands. `manifests/suite.example.yaml:48-52` now sets worker `DOCKER_API_VERSION: "1.45"`; `scripts/agentic_bench_suite.py:663-720` exports the redacted worker env into each generated image-preflight command and records it as `image_preflight.environment` plus per-command `environment`.
+- Dry-run for `terminal_bench_2_1_image_smoke` returned rc 0 and parsed `runtime_env.DOCKER_API_VERSION=1.45`, `image_preflight.environment.DOCKER_API_VERSION=1.45`, `image_preflight.environment.DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, and rendered command exports for both values.
+- #19 appears fixed at the native checker level. `scripts/agentic_bench_images.py:978-1004` pulls an internal digest ref, tags it to the first configured `local_ref`, records `local_tag_ref`, `local_tag_source_ref`, and `local_tag_status`, and increments `counts.tagged` when successful.
+- The worker proof artifact `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_worker_check_20260626.json` records counts `present=1`, `pulled=1`, `tagged=1`, `smoke_passed=1`, `tar_verified=1`, `missing=0`, `errors=0`; its `tb2_install_windows_3_11` row has `present_ref=tb2-offline/install-windows-3.11:20260425`, `local_tag_status=tagged`, `local_tag_ref=tb2-offline/install-windows-3.11:20260425`, and `local_tag_source_ref` equal to the P0 digest ref.
+- The push TSV has one row for `tb2_install_windows_3_11` with status `saved_pushed`, local ref `tb2-offline/install-windows-3.11:20260425`, fallback tar sha `3c34b88a6c7382e86bed72c517567e1bcc8038e07237f61da5bacc1103fc70b6`, and the same P0 digest ref used by the worker check.
+
+### Stale-count and false-ready review
+
+- Grep across manifests, refreshed readiness, and HANDOFF found no stale `81/89` or `81_of_89` references in active files. Current active TB2 cache manifest status is `materialized_from_swe_dev_cache_82_of_89_offline_transport_ready`.
+- `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:11-18` records `cache_image_count=89`, `offline_transport_ready_count=82`, `remaining_transport_gap_count=7`, `worker_promoted_offline_transport_is_82_of_89_cached_tasks`, and `missing_transport_for_7_cache_tasks`.
+- Tracked static post-promotion artifacts agree: `tb2_full_static_check_after_install_windows_20260626.json` has `tar_verified=82`, `unchecked=89`; `tb2_full_lint_after_install_windows_20260626.json` has `fallback_tar_verified=82`, `required_images=89`, and `required_without_offline_transport=7`.
+- Refreshed readiness artifact still returns overall counts `ready=1`, `blocked=8`, `missing=0`, `total=9`; `Terminal-Bench 2.1` remains blocked with `required_with_offline_transport=82` and `required_without_offline_transport=7` on the full entry.
+- The helper `terminal_bench_2_1_image_smoke` remains role `image_smoke` and does not satisfy the full TB2 readiness target; target aggregation counts show `aggregation_entry_count=1` and `aggregation_ready_entry_count=0`.
+- `tau3-bench` remains blocked by disabled/pending adapter state while its image manifest is ready; this is not a false-ready claim.
+- RepoZero remains the only ready tracked target in the refreshed readiness artifact.
+
+### COMMENT-READY recommendation for #12/#13
+
+- The checker now emits good local-tag provenance, but one-command image-preflight summaries still do not parse checker JSON into structured result fields. `_run_image_preflight_one()` in `scripts/agentic_bench_suite.py:1395-1473` records only status, exit code, fatal flag, and log path; `image_preflight_summary.json` at `:1531-1542` stores those shallow results.
+- This is not a new ISSUE-READY root cause because #12 already tracks normalized result/provenance gaps and #13 tracks raw preflight log safety. It is still the next fixture target: parse allowlisted checker JSON fields into `image_preflight_summary.results[].image_check` and, later, normalized results: `schema_version`, `manifest`, `bench_id`, `counts`, `images[].id`, `status`, `present_ref`, `pull_status`, `local_tag_status`, `local_tag_ref`, `local_tag_source_ref`, `smoke_status`, and redacted/pointer-only raw log metadata.
+- Do not promote raw checker stdout/stderr into benchmark results. Use the parsed allowlist plus `log_path`, byte count, and sha256 pointer for raw logs.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`: rc 0.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for workspace/coordination context: rc 0.
+- Remote branch/head/status through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `6bd03e8`, and initial `git status --short --untracked-files=all` had no output.
+- Grep for #18/#19, install-windows, `82/89`, `remaining_transport_gap_count`, `DOCKER_API_VERSION`, and `local_ref` across HANDOFF, ledger, manifests, and readiness: rc 0.
+- `git show --stat --oneline --decorate 6bd03e8` and `git diff --name-only dce3191..6bd03e8`: rc 0.
+- Line reads for `manifests/suite.example.yaml`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`, `scripts/agentic_bench_suite.py`, `scripts/agentic_bench_images.py`, and focused tests: rc 0.
+- JSON artifact parser over worker check, static check, lint, and readiness artifacts: first attempt rc 1 because it assumed `entries`/`results` instead of `images` for `agentic_bench.image_check.v1`; corrected parser rc 0 and evidence is recorded above.
+- Dry-run JSON probe for `terminal_bench_2_1_image_smoke`: rc 0; parsed env/provenance values recorded above.
+- Long `--skip-docker` TB2 check command finished but the shell-side JSON parser had a quoting error and returned rc 1; not used as product evidence. Tracked post-promotion static artifacts were used instead.
+- Initial focused unittest command used one stale method selector and returned rc 1 after four passing tests; corrected focused unittest command returned rc 0 with 5 tests passed: #18 env export, #17 readiness max-concurrency rejection, #16 TB2 helper role, tau3 disabled-until-adapter, and #19 local tag behavior.
+- Push TSV and worker rc/stderr parser: rc 0; one `saved_pushed` row, worker rc file `0`, stderr bytes `0`.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, clean.
+- Round29-only bounded secret scan: rc 0, `round29_secret_scan_hits=0`.
+- Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
+- Final scope check: rc 0; `git diff --name-only` shows only this ledger modified. `git status --short --untracked-files=all` also shows concurrent untracked mteb retry artifacts under `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/`; this lane did not create, edit, or remove them.
