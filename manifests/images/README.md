@@ -41,3 +41,7 @@ python3 scripts/agentic_bench_images.py lint-registry \
 ```
 
 `--verify-fallback-files` upgrades the static gate from configured transport metadata to actual fallback tar presence/hash verification. As of the current audit, that TB2 + SWE promotion selection still fails closed only because 38 TB2 rows lack P0 digest refs or verified fallback checksums; the SWE django10097 rows now satisfy the fallback-tar transport gate. P0 digest refs are still preferred for scale, but no longer required for this narrow SWE django fallback smoke.
+
+## Fail-Closed Pending Manifests
+
+- `mcp_atlas.yaml` is a dedicated MCP-Atlas blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, dataset, runner, trace/result contract, and server/runtime images are staged.

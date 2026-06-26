@@ -68,6 +68,11 @@ image_manifests:
     status: missing_r2e_image_enumeration
     policy: optional_until_r2e_manifest_exists
 
+  - id: mcp_atlas
+    path: images/mcp_atlas.yaml
+    status: missing_checkout_dataset_runner_image_contract
+    policy: disabled_until_checkout_dataset_runner_trace_and_images_staged
+
   - id: tau3_bench
     path: images/tau3_bench.yaml
     status: smoke_oracle_direct_worker_ready

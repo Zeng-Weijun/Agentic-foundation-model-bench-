@@ -1119,6 +1119,42 @@ class AgenticBenchSuiteTest(unittest.TestCase):
 
         self.assertEqual(active_legacy, [])
 
+    def test_example_manifest_mcp_atlas_has_dedicated_fail_closed_contract(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        mcp_atlas = next(bench for bench in config["benches"] if bench["id"] == "mcp_atlas")
+
+        self.assertEqual(mcp_atlas["benchmark"], "MCP-Atlas")
+        self.assertEqual(mcp_atlas["adapter_script"], "run_mcp_atlas.sh")
+        self.assertEqual(mcp_atlas["adapter_status"], "pending_adapter")
+        self.assertFalse(mcp_atlas.get("enabled", True))
+        self.assertEqual(mcp_atlas["image_manifest"], "manifests/images/mcp_atlas.yaml")
+        self.assertEqual(mcp_atlas["image_policy"], "required")
+
+        manifest = module._load_yaml(
+            (ROOT / "manifests" / "images" / "mcp_atlas.yaml").read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["bench_id"], "mcp_atlas")
+        self.assertIn("missing_checkout", manifest["status"])
+        self.assertIn("missing_runner", manifest["known_blockers"])
+        self.assertIn("missing_dataset", manifest["known_blockers"])
+        self.assertIn("missing_image_transport", manifest["known_blockers"])
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["MCP-Atlas"])
+        target = report["targets"][0]
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("no_enabled_suite_entry", target["blockers"])
+        self.assertIn("suite_entry_disabled", target["blockers"])
+        self.assertIn("adapter_not_wired", target["blockers"])
+        self.assertIn("required_image_transport_missing", target["blockers"])
+        entry = target["entries"][0]
+        image_report = entry["image_manifests"][0]
+        self.assertEqual(image_report["manifest"], "manifests/images/mcp_atlas.yaml")
+        self.assertEqual(image_report["counts"]["required_images"], 1)
+        self.assertEqual(image_report["counts"]["required_without_offline_transport"], 1)
+        self.assertFalse(entry["ready"])
+
     def test_example_manifest_tau3_bench_is_enabled_oracle_direct_smoke(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

@@ -239,7 +239,7 @@ Suite rows are split between full pending targets and enabled smoke targets:
 Full entries that remain disabled/pending in `manifests/suite.example.yaml`:
 
 - `terminal_bench_2_1`
-- MCP-Atlas
+- MCP-Atlas: dedicated fail-closed manifest `manifests/images/mcp_atlas.yaml`; keep disabled until checkout/dataset/runner/trace contract and image transport are staged.
 - Tool-Decathlon
 - programbench
 - NL2Repo

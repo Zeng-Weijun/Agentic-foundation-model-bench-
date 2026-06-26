@@ -1,0 +1,43 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: mcp_atlas
+generated_at: "2026-06-26"
+status: missing_checkout_dataset_runner_image_contract
+collector: codex-round43
+
+evidence:
+  suite_entry: manifests/suite.example.yaml#mcp_atlas
+  prior_inventory:
+    - reports/pending_adapter_inventory_20260625.md
+    - _coordination/20260625_harbor_bench/lanes/pending-benches-inventory-round34.md
+  checked_missing_paths:
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/MCP-Atlas
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/mcp-atlas
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/mcp_atlas
+    - /data/nips/bench/run_mcp_atlas.sh
+  unrelated_atlas_reference: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas
+  unrelated_atlas_note: SWE Atlas exists and can be used as Harbor pattern reference only; it is not MCP-Atlas.
+
+known_blockers:
+  - missing_checkout
+  - missing_dataset
+  - missing_runner
+  - missing_trace_contract
+  - missing_result_parser
+  - missing_image_transport
+  - missing_worker_smoke
+
+next_actions:
+  - Stage the authoritative MCP-Atlas checkout and dataset on dev under shared storage.
+  - Freeze one smoke task plus MCP server reset/tool exposure contract.
+  - Enumerate required server/runtime images with P0 digest refs or fallback tar sha256 values.
+  - Implement run_mcp_atlas.sh only after the dataset and image contract are concrete.
+  - Add a parser for MCP-Atlas native result artifacts before enabling the suite row.
+
+images:
+  - id: mcp_atlas_server_runtime_todo
+    role: mcp_server_runtime_placeholder
+    bench: MCP-Atlas
+    required: true
+    image_transport: missing
+    registry_status: missing_checkout_dataset_image_contract
+    offline_blocker: No MCP-Atlas server/runtime image refs, P0 digests, fallback tars, or sha256 files are staged.
