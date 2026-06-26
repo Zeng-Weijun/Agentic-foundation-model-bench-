@@ -1,0 +1,48 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tool_decathlon
+generated_at: "2026-06-26"
+status: missing_checkout_dataset_runner_image_contract
+collector: codex-round44
+
+evidence:
+  suite_entry: manifests/suite.example.yaml#tool_decathlon
+  prior_inventory:
+    - reports/pending_adapter_inventory_20260625.md
+    - _coordination/20260625_harbor_bench/lanes/pending-benches-inventory-round34.md
+    - reports/all_bench_offline_gap_matrix_20260625.md
+    - reports/p0_harbor_bench_manifest_inventory_20260625.md
+  checked_missing_paths:
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/Tool-Decathlon
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/tool-decathlon
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/tool_decathlon
+    - /data/nips/bench/run_tool_decathlon.sh
+  public_metadata:
+    openreview: https://openreview.net/forum?id=z53s5p0qhf
+    reported_shape: 32 apps, 604 tools, 108 tasks; local checkout/data not staged.
+
+known_blockers:
+  - missing_checkout
+  - missing_dataset
+  - missing_runner
+  - missing_tool_server_lifecycle
+  - missing_grader_contract
+  - missing_trace_contract
+  - missing_result_parser
+  - missing_image_transport
+  - missing_worker_smoke
+
+next_actions:
+  - Stage the authoritative Tool-Decathlon/Toolathlon checkout and task data on dev under shared storage.
+  - Freeze one smoke task plus tool-server lifecycle/reset, app state, tool exposure, and grader output contract.
+  - Enumerate required tool-server/runtime images with P0 digest refs or fallback tar sha256 values.
+  - Implement run_tool_decathlon.sh only after the dataset and image contract are concrete.
+  - Add a parser for Tool-Decathlon native result artifacts before enabling the suite row.
+
+images:
+  - id: tool_decathlon_tool_server_runtime_todo
+    role: tool_server_runtime_placeholder
+    bench: Tool-Decathlon
+    required: true
+    image_transport: missing
+    registry_status: missing_checkout_dataset_image_contract
+    offline_blocker: No Tool-Decathlon app/tool-server image refs, P0 digests, fallback tars, or sha256 files are staged.

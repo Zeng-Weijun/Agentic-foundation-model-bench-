@@ -73,6 +73,11 @@ image_manifests:
     status: missing_checkout_dataset_runner_image_contract
     policy: disabled_until_checkout_dataset_runner_trace_and_images_staged
 
+  - id: tool_decathlon
+    path: images/tool_decathlon.yaml
+    status: missing_checkout_dataset_runner_image_contract
+    policy: disabled_until_checkout_dataset_runner_trace_and_images_staged
+
   - id: tau3_bench
     path: images/tau3_bench.yaml
     status: smoke_oracle_direct_worker_ready

@@ -316,8 +316,8 @@ benches:
     adapter: tool_decathlon
     adapter_script: run_tool_decathlon.sh
     adapter_status: pending_adapter
-    image_manifest: manifests/images/pending_benches.yaml
-    image_policy: optional
+    image_manifest: manifests/images/tool_decathlon.yaml
+    image_policy: required
     model_profile: gpt54mini_8130
     enabled: false
 

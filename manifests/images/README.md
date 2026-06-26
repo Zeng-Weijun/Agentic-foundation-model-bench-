@@ -45,3 +45,4 @@ python3 scripts/agentic_bench_images.py lint-registry \
 ## Fail-Closed Pending Manifests
 
 - `mcp_atlas.yaml` is a dedicated MCP-Atlas blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, dataset, runner, trace/result contract, and server/runtime images are staged.
+- `tool_decathlon.yaml` is a dedicated Tool-Decathlon blocker manifest. It intentionally contains one required placeholder image without digest or fallback transport, so readiness and image lint fail closed until the real checkout, dataset, runner, trace/result contract, and app/tool-server runtime images are staged.

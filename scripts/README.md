@@ -240,7 +240,8 @@ Full entries that remain disabled/pending in `manifests/suite.example.yaml`:
 
 - `terminal_bench_2_1`
 - MCP-Atlas: dedicated fail-closed manifest `manifests/images/mcp_atlas.yaml`; keep disabled until checkout/dataset/runner/trace contract and image transport are staged.
-- Tool-Decathlon
+- Tool-Decathlon: dedicated fail-closed manifest `manifests/images/tool_decathlon.yaml`; keep disabled until checkout/dataset/runner/tool-server/trace contract and image transport are staged.
+- `tau3_bench`
 - programbench
 - NL2Repo
 

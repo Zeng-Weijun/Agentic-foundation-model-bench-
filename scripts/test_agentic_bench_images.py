@@ -1099,6 +1099,18 @@ class AgenticBenchImagesTest(unittest.TestCase):
         self.assertEqual(summary["images"][0]["id"], "mcp_atlas_server_runtime_todo")
         self.assertEqual(summary["images"][0]["lint_status"], "missing_offline_transport")
 
+    def test_example_tool_decathlon_manifest_lints_as_fail_closed(self):
+        module = load_module()
+        manifest = ROOT / "manifests" / "images" / "tool_decathlon.yaml"
+
+        summary = module.lint_image_manifest(manifest, require_offline_transport=True)
+
+        self.assertEqual(summary["bench_id"], "tool_decathlon")
+        self.assertEqual(summary["counts"]["required_images"], 1)
+        self.assertEqual(summary["counts"]["required_without_offline_transport"], 1)
+        self.assertEqual(summary["images"][0]["id"], "tool_decathlon_tool_server_runtime_todo")
+        self.assertEqual(summary["images"][0]["lint_status"], "missing_offline_transport")
+
     def test_cli_lint_reports_missing_offline_transport(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
