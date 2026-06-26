@@ -898,6 +898,15 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(image_report["counts"]["required_images"], 2)
         self.assertEqual(image_report["counts"]["required_without_offline_transport"], 0)
         self.assertIn("adapter_not_wired", target["blockers"])
+        image_manifest = module._load_yaml(
+            (ROOT / "manifests" / "images" / "tau3_bench.yaml").read_text(encoding="utf-8")
+        )
+        source_ids = {image["id"]: image.get("source_image_id") for image in image_manifest["images"]}
+        expected_ids = {
+            "tau3_harbor_main_runtime": "sha256:80c0d9453584d67f4fd89f53f6f47e2503870f7663d3615384f6e23f6dcc0e78",
+            "tau3_harbor_mcp_runtime": "sha256:b06571be24cf17bb4d04f4f0c76e7209ed112e2bfde48923477d34999581aefb",
+        }
+        self.assertEqual(source_ids, expected_ids)
 
     def test_example_manifest_has_enabled_tau3_oracle_direct_smoke_without_full_readiness(self):
         module = load_module()

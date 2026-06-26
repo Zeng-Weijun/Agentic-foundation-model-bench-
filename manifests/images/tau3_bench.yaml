@@ -40,6 +40,7 @@ images:
     registry_status: pushed_to_p0_and_worker_pulled
     image_ref: 100.97.118.137:8555/swe-data-harness/tau3-smoke-main@sha256:571aa921fc1eda999b9fc124a266900c6b10a4aceba9283e6f9867f9a44788e4
     local_ref: tau3-smoke-main:20260626r2
+    source_image_id: sha256:80c0d9453584d67f4fd89f53f6f47e2503870f7663d3615384f6e23f6dcc0e78
     fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/tau3-smoke-main_20260626r2.tar
     fallback_tar_sha256: cfb1207cf33fa152ee99b01b10b7ff229bb2cdcb847a39d0fc47771f891f2b64
     source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/Dockerfile
@@ -54,6 +55,7 @@ images:
     registry_status: pushed_to_p0_and_worker_pulled
     image_ref: 100.97.118.137:8555/swe-data-harness/tau3-smoke-runtime@sha256:290a4f09c7ade3a1e7a08dfd3d4c6d0951b4ae519eae12d2fe1ccb99745dc699
     local_ref: tau3-smoke-runtime:20260626r2
+    source_image_id: sha256:b06571be24cf17bb4d04f4f0c76e7209ed112e2bfde48923477d34999581aefb
     fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/tau3-smoke-runtime_20260626r2.tar
     fallback_tar_sha256: 2503e032377986ffef80b935035e279a52e1a13807a6fa1e7fb65d6033615d85
     source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/runtime-server/Dockerfile
