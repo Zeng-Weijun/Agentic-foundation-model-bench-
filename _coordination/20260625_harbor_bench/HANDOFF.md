@@ -339,6 +339,7 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 
 - GitHub issue opened from the install-windows worker proof:
   - #19 `Image checker digest pull leaves required local_ref tag absent`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/19
+- #19 fixed in commit `dacdef9` and closed with comment: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/19#issuecomment-4805492390
 - Implemented #19 by teaching `scripts/agentic_bench_images.py check` to tag a successfully pulled internal digest ref to the first configured `local_ref`, then inspect that local ref and record `local_tag_status`, `local_tag_ref`, `local_tag_source_ref`, and count `tagged` in the image-check summary.
 - Staged and pushed Terminal-Bench 2.1 `install-windows-3.11` from `swe_dev` using `scripts/stage_cache_images_from_plan.sh --execute --push --only install-windows-3.11`. Result artifact: `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_install_windows_p0_push_20260626.tsv`.
 - P0 digest: `100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:5dcb2476f1597ebc81da54ad010e9dddf5cc5bb2670f225c7be36e8b50ec4265`.
