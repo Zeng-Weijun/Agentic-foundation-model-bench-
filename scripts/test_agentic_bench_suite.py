@@ -918,6 +918,7 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(tau3_smoke["adapter_status"], "wired_legacy")
         self.assertEqual(tau3_smoke["readiness_role"], "image_smoke")
         self.assertEqual(tau3_smoke["image_policy"], "required")
+        self.assertEqual(tau3_smoke["image_manifest"], "manifests/images/tau3_oracle_direct_smoke.yaml")
         self.assertEqual(tau3_smoke["params"]["TAU3_AGENT"], "oracle_direct")
         self.assertEqual(tau3_smoke["params"]["TAU3_DIRECT_IMAGE"], "tau3-smoke-main:20260626r2")
 
@@ -942,6 +943,10 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(target["aggregation_entry_count"], 1)
         self.assertEqual(full_entries[0]["adapter_status"], "pending_adapter")
         self.assertEqual(helper_entries[0]["readiness_role"], "image_smoke")
+        helper_image_report = helper_entries[0]["image_manifests"][0]
+        self.assertEqual(helper_image_report["manifest"], "manifests/images/tau3_oracle_direct_smoke.yaml")
+        self.assertEqual(helper_image_report["counts"]["required_images"], 1)
+        self.assertEqual(helper_image_report["counts"]["required_without_offline_transport"], 0)
         self.assertTrue(helper_entries[0]["ready"])
 
     def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):

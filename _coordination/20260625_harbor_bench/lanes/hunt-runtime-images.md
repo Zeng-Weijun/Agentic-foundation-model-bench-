@@ -2340,3 +2340,71 @@ No new ISSUE-READY runtime/image bug confirmed in this pass. The current state f
 - Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches.
 - `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no output, interpreted as no pycache under coordination.
 - `git status --short --untracked-files=all`; rc 0. Only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` is modified after this lane's repair.
+
+
+## Round31 tau3 oracle-direct image review
+
+Scope: runtime/images ledger-only review after the Round31 prompt. I read `WORKFLOW.md` first, then worked through `ssh dev` in the shared worktree. I did not edit production code, manifests, HANDOFF, tests, commits, GitHub issues, or Docker state. The only Docker execution was a bounded worker `docker run --rm --network none` against an already-present tau3 r2 local image; no Docker pull/load/build/prune/restart and no public download was run. Final current head observed during the round moved from the requested `033fbe6` to `9943896` because another lane committed `Add tau3 oracle direct smoke helper` while this review was running.
+
+### ISSUE-READY: oracle-direct helper preflights an unused tau3 sidecar image (#20)
+
+severity: medium
+
+dedup: Related to #8 because the worker rootless daemon has fragile P0/fallback ingest and compose/network limits, but not a duplicate: this bug is a suite/image-manifest contract mismatch that can fail before any compose path is used. Related to #6 image preflight policy, but distinct from transport population. Not #16 because readiness-role aggregation is working; full tau3 remains blocked while the helper is ready.
+
+location:
+
+- `manifests/suite.example.yaml:335-353` defines enabled helper `tau3_bench_oracle_direct_smoke` with `TAU3_AGENT=oracle_direct`, `TAU3_DIRECT_IMAGE=tau3-smoke-main:20260626r2`, and `image_manifest: manifests/images/tau3_bench.yaml`.
+- `manifests/images/tau3_bench.yaml:35-63` makes both `tau3_harbor_main_runtime` and `tau3_harbor_mcp_runtime` required. The second row is the sidecar/runtime image `tau3-smoke-runtime:20260626r2`.
+- `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh:72-101` implements `TAU3_AGENT=oracle_direct`; the direct command is `docker run --rm --network none ... "$TAU3_DIRECT_IMAGE" bash -lc 'bash /solution/solve.sh && bash /tests/test.sh'`. It mounts `/tests`, `/solution`, logs, and artifacts, and does not use the runtime sidecar image or Docker compose.
+
+static_repro:
+
+1. Dry-run the helper: `scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --dry-run --json --only tau3_bench_oracle_direct_smoke --model-profile dev_proxy_gpt54mini_8130`. It returns one run with `TAU3_AGENT=oracle_direct`, `TAU3_DIRECT_IMAGE=tau3-smoke-main:20260626r2`, and required image preflight on `manifests/images/tau3_bench.yaml`.
+2. In-memory fake the image checker with main image present at the expected `source_image_id` and sidecar image absent. `check_image_manifest('manifests/images/tau3_bench.yaml', allow_pull=False, load_fallback=False)` returns `present=1`, `missing=1`; `tau3_harbor_main_runtime` is present and `tau3_harbor_mcp_runtime` is missing.
+3. The direct runner command only needs the main image. A real worker no-network probe against the already-present main tag returned rc 0: `docker run --rm --network none tau3-smoke-main:20260626r2 python3 -c 'import tau2; print("round31-main-network-none-ok")'`.
+
+impact:
+
+- A worker with the direct-used main image ready but the unused sidecar missing, stale, quarantined, or failing P0/fallback ingest will fail the `tau3_bench_oracle_direct_smoke` preflight even though the direct no-sidecar oracle smoke has enough image state to run.
+- This increases exposure to the #8 rootless daemon failure modes by forcing an unnecessary second image through inspect/pull/load/smoke policy for a path that intentionally bypasses Harbor/compose.
+- It can make the new helper look less robust than the real worker execution path and can confuse future promotion gates about what is required for no-sidecar tau3 oracle smoke versus full Harbor tau3 execution.
+
+fix:
+
+- Add a separate image manifest for the helper, for example `manifests/images/tau3_oracle_direct_smoke.yaml`, containing only `tau3_harbor_main_runtime` with `image_ref`, `local_ref`, `source_image_id`, `fallback_tar`, and `fallback_tar_sha256`.
+- Point `tau3_bench_oracle_direct_smoke.image_manifest` at that direct-only manifest. Keep `manifests/images/tau3_bench.yaml` as the two-image Harbor/full-smoke manifest for compose/sidecar paths.
+- Add a regression test that the helper image preflight has `required_images=1`, `required_without_offline_transport=0`, exports `DOCKER_API_VERSION=1.45`, and still does not satisfy the full tau3 target aggregation.
+
+### No-new-issue evidence
+
+- Current uncommitted tau3 identity hardening is effective. `manifests/images/tau3_bench.yaml` now has `source_image_id` for both tau3 r2 rows, and `scripts/agentic_bench_images.py check --skip-docker` reports those expected image IDs. The earlier suspected local-tag identity gap is therefore not a current issue in this worktree.
+- The worker no-sidecar/no-network execution path is real for the main image: worker-j9jjd `docker image inspect` found both tau3 r2 local tags with the expected image IDs, and `docker run --rm --network none tau3-smoke-main:20260626r2 python3 -c 'import tau2; ...'` returned rc 0. The log still shows LiteLLM attempting a remote model-cost-map fetch and falling back after DNS failure; this is the known offline-hardening caveat, not a new image transport issue because `--network none` prevents public egress.
+- Readiness aggregation is still fail-closed. `--readiness --target-benches tau3-bench --json` returned rc 1: full `tau3_bench` is disabled/pending adapter and blocked, while `tau3_bench_oracle_direct_smoke` is an enabled `image_smoke` helper and does not make the full target ready.
+- Rootless compose remains deduped to #8. Handoff and Round30 artifacts record default compose network `operation not permitted`, `network_mode: none` compose hitting `/version` EOF, and API-version sweeps failing. This lane did not find a distinct compose root cause beyond #8.
+- `swe_dev` source-cache state is consistent with the handoff: read-only Docker cache count from the explicit `swe_dev` endpoint returned `tb2_offline=89`, `swebench=500`, `swerex_prebuilt=728`, `p0_tb2_tagged=34`, `/data/docker` present, `/data` 89% used, and both `/data/swe/SWE-bench` and `/data/tmp/tb2-prebuild-save` have zero top-level files. The useful TB2/SWE source state is Docker cache plus shared/P0 manifest artifacts, not loose `/data` tar/source directories.
+
+### Command evidence
+
+- `sed -n '1,620p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0.
+- Memory quick grep for `Round31|oracle_direct|tau3_bench_oracle_direct_smoke|tau3 rootless|033fbe6|image-warmup-policy`; rc 0 with no relevant hits used.
+- Read current systematic-debugging and verification-before-completion skill files from `/Users/Zhuanz1/.codex/plugins/cache/openai-curated/superpowers/d08f0354/...`; rc 0.
+- Initial remote status: branch `feat/image-warmup-policy`, head `033fbe6`, with other-lane uncommitted changes in HANDOFF/readiness/suite/tests and untracked tau3 adapter ledger/pycache; rc 0.
+- Later remote status after concurrent commit: head `9943896`; uncommitted other-lane changes remained in `_coordination/20260625_harbor_bench/HANDOFF.md`, `_coordination/20260625_harbor_bench/lanes/tau3-adapter-round30.md`, `manifests/images/tau3_bench.yaml`, and `scripts/test_agentic_bench_suite.py`; rc 0. This lane did not edit those files.
+- Read HANDOFF Round27-Round30 sections, `tau3-adapter-round30.md`, current suite diff, runtime ledger tail, and runner ledger grep; rc 0.
+- Static line reads for `manifests/images/tau3_bench.yaml`, `manifests/suite.example.yaml`, `/mnt/.../bench/run_tau3_bench.sh`, and `scripts/agentic_bench_images.py`; rc 0.
+- First in-memory identity probe had a shell quoting SyntaxError; rc 1, discarded as operator error. Second probe used a missing helper class; rc 1, discarded. Corrected in-memory identity probe returned rc 0 and confirmed current `source_image_id` pins are seen by the checker.
+- Suite dry-run/readiness probe with `PYTHONDONTWRITEBYTECODE=1`; wrapper rc 0. Inner dry-run for `tau3_bench_oracle_direct_smoke` rc 0; inner readiness for `tau3-bench` rc 1 with full target blocked and helper ready.
+- Worker explicit endpoint no-network probe with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock DOCKER_API_VERSION=1.45`; rc 0. It inspected both tau3 r2 local tags and ran the main image under `--network none` successfully.
+- Explicit `swe_dev` endpoint Docker-cache count probe; rc 0. Counts recorded in no-new-issue evidence above.
+- Tau3 static image lint/check probe; rc 0. `lint` counts: `images=2`, `required_images=2`, `required_with_digest_ref=2`, `required_with_fallback_sha=2`, `fallback_tar_verified=2`, `required_without_offline_transport=0`. `check --skip-docker` counts: `tar_verified=2`, `unchecked=2`, no tar mismatch/missing.
+- In-memory sidecar-missing checker repro; rc 0. Fake main-present/runtime-missing state returned `present=1`, `missing=1`, proving the direct helper can be blocked by the unused sidecar requirement.
+- Dedup grep for `oracle_direct`, `sidecar`, `tau3_harbor_mcp_runtime`, `tau3-smoke-runtime`, `image_smoke`, and #8 context across runtime ledger, runner ledger, and HANDOFF; rc 0. No prior finding for this exact unused-sidecar preflight mismatch was found.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace matches.
+- Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches.
+- `find . -path "*/__pycache__*" -print`; rc 0 with no output in this final scan, so no pycache was present at validation time.
+- `git status --short --untracked-files=all`; rc 0. Final status showed only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` modified by this lane.

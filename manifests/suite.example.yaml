@@ -338,7 +338,7 @@ benches:
     adapter_script: run_tau3_bench.sh
     adapter_status: wired_legacy
     readiness_role: image_smoke
-    image_manifest: manifests/images/tau3_bench.yaml
+    image_manifest: manifests/images/tau3_oracle_direct_smoke.yaml
     image_policy: required
     model_profile: gpt54mini_8130
     concurrency: 1

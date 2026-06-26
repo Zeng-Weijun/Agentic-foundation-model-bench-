@@ -1,0 +1,28 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tau3_oracle_direct_smoke
+generated_at: "2026-06-26"
+status: oracle_direct_main_image_ready_worker_rootless
+collector: codex-main
+
+evidence:
+  source_manifest: manifests/images/tau3_bench.yaml
+  shared_runner: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh
+  stable_dataset: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/datasets/tau3-bench-oracle-direct-smoke
+  round30_artifact_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round30
+  direct_helper_note: oracle_direct executes only the main task image and does not use the tau3 runtime sidecar.
+
+images:
+  - id: tau3_oracle_direct_main_runtime
+    role: oracle_direct_task_main_runtime
+    bench: tau3-bench
+    required: true
+    image_transport: p0_registry_digest_and_shared_tar
+    registry_status: pushed_to_p0_and_worker_pulled
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-smoke-main@sha256:571aa921fc1eda999b9fc124a266900c6b10a4aceba9283e6f9867f9a44788e4
+    local_ref: tau3-smoke-main:20260626r2
+    source_image_id: sha256:80c0d9453584d67f4fd89f53f6f47e2503870f7663d3615384f6e23f6dcc0e78
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/tau3-smoke-main_20260626r2.tar
+    fallback_tar_sha256: cfb1207cf33fa152ee99b01b10b7ff229bb2cdcb847a39d0fc47771f891f2b64
+    source_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench-smoke/tau3-airline-0/environment/Dockerfile
+    materialized_dockerfile: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_smoke_image_20260626/context/Dockerfile.main
+    smoke_command: "docker run --rm --network none tau3-smoke-main:20260626r2 python3 -c 'import tau2; print(\"worker-tau3-main-r2-ok\")'"

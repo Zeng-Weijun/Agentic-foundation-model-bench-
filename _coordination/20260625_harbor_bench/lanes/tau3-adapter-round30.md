@@ -86,6 +86,7 @@ Suite-generated worker command also passed from the Mac control plane through th
 - Helper uses `readiness_role: image_smoke`, `adapter_status: wired_legacy`, `TAU3_AGENT=oracle_direct`, and the stable one-task dataset path.
 - Added regression coverage that the helper is ready but does not satisfy full tau3 readiness.
 - Added `source_image_id` pins for both tau3 r2 image rows so the image checker can detect local tag drift before `oracle_direct` executes.
+- Split the direct helper onto `manifests/images/tau3_oracle_direct_smoke.yaml`, a one-image manifest for the main task image only. Full tau3 still uses `manifests/images/tau3_bench.yaml` with both main and runtime images. GitHub issue: #20.
 - Full `tau3_bench` entry remains `enabled: false`, `adapter_status: pending_adapter`, and the target remains `blocked` with `aggregation_entry_count=1`.
 
 ## Validation

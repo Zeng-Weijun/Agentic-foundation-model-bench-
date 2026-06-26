@@ -3273,3 +3273,78 @@ The post-install-windows runner/result state is internally consistent for the su
 - Round29-only bounded secret scan: rc 0, `round29_secret_scan_hits=0`.
 - Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
 - Final scope check: rc 0; `git diff --name-only` shows only this ledger modified. `git status --short --untracked-files=all` also shows concurrent untracked mteb retry artifacts under `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/`; this lane did not create, edit, or remove them.
+
+## Round31 tau3 oracle-direct runner/result review
+
+### Scope
+
+- Lane: runner/results/provenance review of the tau3 oracle-direct helper, readiness role semantics, result summaries, command provenance, and output uniqueness.
+- Worktree accessed only through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Ledger-only. No production code, manifests, tests, handoff, Docker save/load/pull/run/build, benchmark runs, model calls, commits, pushes, or issue edits were performed by this lane.
+- Head moved during the audit. The first remote status read saw `033fbe6` with tau3 helper changes dirty; later reads saw committed head `9943896 Add tau3 oracle direct smoke helper`. Subsequent final status showed concurrent non-ledger modifications outside this lane.
+
+### Finding
+
+No new ISSUE-READY bug in this round.
+
+The tau3 oracle-direct smoke helper is not currently able to fake-green the full `tau3-bench` target:
+
+- `manifests/suite.example.yaml:319-353` keeps the full `tau3_bench` entry disabled with `adapter_status: pending_adapter`, while the new `tau3_bench_oracle_direct_smoke` entry is enabled, `adapter_status: wired_legacy`, and explicitly marked `readiness_role: image_smoke`.
+- `scripts/agentic_bench_suite.py:781-789` classifies helper roles, and `scripts/agentic_bench_suite.py:962-983` aggregates target readiness from full-role entries when they exist.
+- A safe readiness CLI probe for `--target-benches tau3-bench` returned rc 1, target `blocked`, blockers `no_enabled_suite_entry`, `suite_entry_disabled`, and `adapter_not_wired`. The report had `entry_count=2`, `aggregation_entry_count=1`, `ready_entry_count=1`, and `aggregation_ready_entry_count=0`, showing the ready helper did not satisfy the full target.
+- A safe readiness CLI probe for the exact helper id `tau3_bench_oracle_direct_smoke` returned rc 0 and target `ready`. That is acceptable because it is an explicit helper target, not the full tau3 target.
+- The human readiness output for full `tau3-bench` returned rc 1 and did not contain `score` or benchmark-pass wording. It printed `readiness: ready=0 blocked=1 missing=0 total=1` and the target as blocked.
+- Focused regression tests passed for `test_example_manifest_tau3_has_worker_ready_images_but_stays_disabled_until_adapter`, `test_example_manifest_has_enabled_tau3_oracle_direct_smoke_without_full_readiness`, and `test_cli_readiness_rejects_max_concurrency_above_proxy_ceiling`.
+
+### Result/parser contract review
+
+The native tau3 summaries are fixture-ready, but the normalized suite result layer still lacks a tau3 parser. This is COMMENT-READY evidence for existing #1/#12, not a new root cause.
+
+- Direct oracle summary path: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/dev_worker_smoke_dryrun/tau3_bench_oracle_direct_smoke/tau3_result_summary.json`.
+- Direct summary parsed as 847 bytes, `schema_version=agentic_bench.tau3_direct_result_summary.v1`, top-level keys `direct_rc,mode,result_path,reward,reward_path,run_dir,schema_version,status,verifier_status`, `status=passed`, `mode=oracle_direct`, `direct_rc=0`, `verifier_status=passed`, `reward=1.0`, and bounded secret scan hits `0`.
+- Prior Harbor failure summary path: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round29_parsecheck/runner_execute/tau3_bench/gpt-5.4_parsecheck_execute/tau3_result_summary.json`.
+- Harbor summary parsed as 657 bytes, `schema_version=agentic_bench.tau3_result_summary.v1`, top-level keys `exception_stats,jobs_dir,n_errors,n_total_trials,result_path,schema_version,status,successful_eval_trials`, `status=errors`, `n_total_trials=1`, `n_errors=1`, `successful_eval_trials=0`, and bounded secret scan hits `0`.
+- Synthetic call into `scripts/agentic_bench_suite.py:1584-1611` confirmed current normalized behavior: with adapter exit 0, tau3 returns `parser_status=no_parser`, `status=unknown`, `failure_category=native_artifact_missing`; with adapter exit 1, it returns `parser_status=not_run`, `status=infra_error`, `failure_category=adapter_crash` without reading the existing summary. This is the existing execution-vs-benchmark split and provenance gap tracked by #1/#12.
+- Fixture expectation for #1/#12 implementation: parse `tau3_result_summary.json` from `runtime_env.BENCH_RUN_DIR` even when adapter exit is nonzero; map direct pass to `benchmark_result.parser_status=parsed`, `status=pass`, `passed=true`, `metric=reward`, `reward=1.0`; map Harbor `status=errors` with `n_errors>0` or `successful_eval_trials=0` to a benchmark/infra failure that preserves `n_total_trials`, `n_errors`, `successful_eval_trials`, and bounded `exception_stats` keys without calling it an opaque adapter crash.
+
+### Provenance and redaction review
+
+- Dry-run for `--only tau3_bench_oracle_direct_smoke --model-profile dev_proxy_gpt54mini_8130` returned rc 0. It resolved `TAU3_AGENT=oracle_direct`, `TAU3_DIRECT_IMAGE=tau3-smoke-main:20260626r2`, `TAU3_GENERATE_DATASET=0`, `TAU3_RUN_HARBOR=1`, `TAU3_N_CONCURRENT=1`, `MAX_CONCURRENCY=1`, `DOCKER_API_VERSION=1.45`, required image preflight, and worker env keys `BENCH_OFFLINE,DOCKER_API_VERSION,DOCKER_HOST,NO_PROXY,TMPDIR,no_proxy`.
+- Dry-run command provenance had no token-like values by bounded scan. `command_preview` includes the `OPENAI_API_KEY` variable name as a placeholder from the model profile, but the scan found no raw secret-looking value. The image-preflight command does not include tau3 task params, only image-check/env provenance.
+- Run-dir uniqueness remains an existing #2 issue: dry-run produced deterministic `run_id=dev_worker_smoke_dryrun__tau3_bench_oracle_direct_smoke__dev_proxy_gpt54mini_8130`, `run_dir=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/dev_worker_smoke_dryrun/tau3_bench_oracle_direct_smoke`, `BENCH_RUN_DIR` equal to that path, and `RUN_TAG=dev_worker_smoke_dryrun`.
+- Bounded sidecar scan of the direct run root found `tau3_result_summary.json` has no secret-like hits. Raw sidecars must still remain pointer-only: `run.env.summary` and `tau3_direct_oracle.log` contain remote-cost-map or URL evidence, and copied dataset artifacts under the Round30 artifact root contain secret-key-name/code patterns. This is redaction/provenance fixture evidence for #10/#13, not a new leak in normalized output.
+- Runtime-images alignment: `hunt-runtime-images.md` records tau3 r2 as image transport/smoke readiness only, and says full tau3 stays disabled/pending adapter. That matches this runner-results review.
+
+### Dedup
+
+- #1: current suite result code still conflates nonzero adapter exit with benchmark parsing skipped. Tau3 summaries provide a new fixture, not a new issue.
+- #2: deterministic tau3 `run_id`, `run_dir`, `BENCH_RUN_DIR`, and `RUN_TAG` are the same invocation-unique output root bug already filed.
+- #10/#13: raw tau3 logs/dataset/code sidecars have URL/key-name patterns and should be excluded or allowlist-parsed. The normalized direct summary itself had zero bounded secret hits.
+- #12: tau3 parser and `source.native_artifacts[]` provenance are still missing from `agentic_bench.result.v1`; this is implementation guidance for #12.
+- #8: Harbor/compose/rootless failures and the LiteLLM model-cost-map warning remain runtime/offline-hardening context. The runner-result layer did not create a new offline egress path in this review.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md >/tmp/codex_workflow_read_round31 && wc -l /tmp/codex_workflow_read_round31`: rc 0, 973 lines.
+- Remote status/read commands through `ssh dev`: rc 0. Initial read saw branch `feat/image-warmup-policy`, head `033fbe6`, and dirty tau3 files; later read saw head `9943896 Add tau3 oracle direct smoke helper`.
+- Handoff, ledger tail, diff/status, tau3 grep, suite/test line reads, and tau3 image manifest line reads: rc 0.
+- Safe JSON readiness probe for full `tau3-bench`: harness rc 0, inner CLI rc 1 with blocked target evidence recorded above.
+- Safe JSON dry-run probe for `tau3_bench_oracle_direct_smoke`: rc 0 with env/provenance evidence recorded above.
+- Metadata-only parser for direct and Harbor `tau3_result_summary.json` artifacts: rc 0.
+- Metadata-only sidecar scan of direct run root and Round30 artifact root: rc 0.
+- Synthetic `_benchmark_result_for_run()` probe for tau3 exit 0 and exit 1: rc 0, current generic parser statuses recorded above.
+- Runtime-images tau3 alignment grep: rc 0.
+- Human readiness corrected probe for full `tau3-bench`: rc 0 harness, inner CLI rc 1, no score/pass wording.
+- Exact helper readiness probe: rc 0, target `tau3_bench_oracle_direct_smoke` ready when explicitly selected.
+- Focused regression test command with one stale selector failed before correction: rc 1, `AttributeError` for the stale method name. Corrected focused regression command ran 3 tests and returned rc 0.
+- Two earlier safe probes had shell quoting mistakes and returned rc 1; they were not used as evidence and were rerun successfully with a tested heredoc pattern.
+- First ledger append attempt used a double-quoted SSH heredoc and failed with rc 127 due shell interpretation of Markdown backticks; no Round31 section was present before this successful append.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- First trailing-whitespace and Round31 secret-scan validation probes used the wrong nested SSH quoting and returned rc 1 before inspecting the ledger. Corrected literal-stdin reruns returned rc 0.
+- Corrected trailing whitespace scan on this ledger: rc 0, `trailing_whitespace_count=0`.
+- Corrected Round31 bounded secret scan: rc 0, `authorization_header_value=0`, `bearer_value=0`, `sk_value=0`, `openai_key_assignment=0`.
+- Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
+- Final scope/status check command returned rc 0. Current shared worktree status includes this ledger plus concurrent non-ledger changes in `_coordination/20260625_harbor_bench/HANDOFF.md`, `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`, `_coordination/20260625_harbor_bench/lanes/tau3-adapter-round30.md`, `_coordination/20260625_harbor_bench/readiness_20260626.json`, `manifests/suite.example.yaml`, `scripts/test_agentic_bench_suite.py`, and untracked `manifests/images/tau3_oracle_direct_smoke.yaml`; this lane did not edit or revert those non-ledger files.

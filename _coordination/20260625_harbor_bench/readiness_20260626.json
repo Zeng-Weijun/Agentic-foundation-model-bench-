@@ -5,7 +5,7 @@
     "ready": 1,
     "total": 9
   },
-  "created_at": "2026-06-26T01:46:58Z",
+  "created_at": "2026-06-26T01:57:01Z",
   "schema_version": "agentic_bench.readiness_report.v1",
   "suite_id": "dev_worker_smoke_dryrun",
   "suite_path": "manifests/suite.example.yaml",
@@ -394,18 +394,18 @@
           "enabled": true,
           "image_manifests": [
             {
-              "bench_id": "tau3_bench",
+              "bench_id": "tau3_oracle_direct_smoke",
               "blockers": [],
               "counts": {
-                "images": 2,
+                "images": 1,
                 "optional_placeholders": 0,
-                "required_images": 2,
-                "required_with_offline_transport": 2,
+                "required_images": 1,
+                "required_with_offline_transport": 1,
                 "required_without_offline_transport": 0
               },
-              "manifest": "manifests/images/tau3_bench.yaml",
-              "manifest_status": "smoke_images_ready_worker_rootless",
-              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/tau3_bench.yaml",
+              "manifest": "manifests/images/tau3_oracle_direct_smoke.yaml",
+              "manifest_status": "oracle_direct_main_image_ready_worker_rootless",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/tau3_oracle_direct_smoke.yaml",
               "status": "ready"
             }
           ],
