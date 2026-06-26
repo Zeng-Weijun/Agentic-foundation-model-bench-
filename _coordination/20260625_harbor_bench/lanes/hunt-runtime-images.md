@@ -2286,3 +2286,57 @@ fix:
 - Initial bounded key-like secret scan on this ledger: rc 1, interpreted as no matches.
 - Initial pycache scan under `_coordination/20260625_harbor_bench`: rc 0 with no output.
 - `git status --short --untracked-files=all`; rc 0. It showed this lane's runtime ledger plus concurrent unrelated `_coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`; this lane did not edit the runner ledger.
+
+
+## Round29 post-install-windows image transport review
+
+Scope: runtime/images review at branch `feat/image-warmup-policy`, head `6bd03e8`, after #18/#19 closure and TB2 `install-windows-3.11` promotion. Ledger-only. I did not edit production code, manifests, tests, handoff, runner ledger, commits, GitHub issues, or Docker state. The only live worker Docker probe was bounded read-only `docker image inspect` against already-promoted local tags with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock` and `DOCKER_API_VERSION=1.45`; no pull/load/run/save/build/restart/prune was executed.
+
+### Findings
+
+No new ISSUE-READY runtime/image bug confirmed in this pass. The current state fails closed for the remaining TB2 transport gaps and no longer shows the two unsafe paths found in Round27/Round28.
+
+- #18 appears fixed for suite-generated image preflight. `manifests/suite.example.yaml:48-52` now puts `DOCKER_API_VERSION: "1.45"` in the worker env, and `scripts/agentic_bench_suite.py:663-729` exports and records the redacted preflight env per command. The dry-run for `terminal_bench_2_1_image_smoke` produced one run with `image_preflight.environment.DOCKER_HOST=unix:///tmp/rl/run/docker.sock`, `image_preflight.environment.DOCKER_API_VERSION=1.45`, image-preflight concurrency `4`, and rendered exports for both variables.
+- #19 appears fixed for digest pulls that must leave a local tag behind. `scripts/agentic_bench_images.py:978-1004` pulls the internal digest, tags the pulled digest ref to the first configured `local_ref`, records `local_tag_status`, `local_tag_ref`, and `local_tag_source_ref`, and increments `counts.tagged`. `scripts/agentic_bench_images.py:1529-1533` still exits nonzero on checker errors/missing images, so a tag failure is not a fake-pass path.
+- The install-windows worker proof is internally consistent. The active manifest row has `fallback_status=p0_digest_and_fallback_tar_verified`, a P0 digest ref, fallback sha prefix `3c34b88a6c7382e8`, and local ref `tb2-offline/install-windows-3.11:20260425`. The worker proof JSON records `present=1`, `pulled=1`, `tagged=1`, `smoke_passed=1`, `tar_verified=1`, `missing=0`, `errors=0`, and the row has `present_ref=tb2-offline/install-windows-3.11:20260425` with `local_tag_status=tagged`.
+- The live worker read-only inspect confirms promoted local tags are present under the required rootless env: `tb2-offline/install-windows-3.11:20260425`, `tau3-smoke-main:20260626r2`, and `tau3-smoke-runtime:20260626r2` all returned image IDs with rc 0. This is presence evidence only, not a fresh pull/run smoke.
+- TB2 full readiness remains correctly blocked. The active generated TB2 cache manifest says `materialized_from_swe_dev_cache_82_of_89_offline_transport_ready`, `offline_transport_ready_count=82`, and `remaining_transport_gap_count=7`. Strict lint with `--require-offline-transport --verify-fallback-files` returned rc 1 with `fallback_tar_verified=82`, no fallback tar missing/mismatch, and `required_without_offline_transport=7`.
+- The seven required TB2 gaps are exactly `tb2_mteb_retrieve`, `tb2_multi_source_data_merger`, `tb2_pytorch_model_recovery`, `tb2_qemu_alpine_ssh`, `tb2_qemu_startup`, `tb2_torch_pipeline_parallelism`, and `tb2_torch_tensor_parallelism`. `tb2_mteb_leaderboard` is not a gap: it has `lint_status=ok` and a verified fallback tar.
+- Readiness aggregation remains fail-closed after the Round27 role fix. `--readiness --target-benches Terminal-Bench-2.1,tau3-bench --json` returned rc 1 with `blocked=2`, `ready=0`. The full TB2 entry is `readiness_role=full` and blocked by `suite_entry_disabled`, `adapter_not_wired`, and `required_image_transport_missing`; the TB2 image-smoke helper is `readiness_role=image_smoke`, image-ready, but still `adapter_not_wired` and does not satisfy the full target. The tau3 entry is disabled/pending adapter while its image manifest is ready.
+- tau3 r2 should still be described as image transport/smoke readiness, not full benchmark readiness. `manifests/images/tau3_bench.yaml:4-32` records worker-rootless smoke image readiness and explicitly says the remaining blocker is that the suite adapter is not wired. Static tau3 lint returned rc 0 with two required rows, two digest refs, two verified fallback tars, and zero missing offline transport. `manifests/suite.example.yaml:319-333` keeps `tau3_bench` disabled with `adapter_status: pending_adapter`.
+
+### COMMENT-READY / dedup
+
+- Dedup to #6 and #8: TB2 transport population still needs fallback tar plus worker fallback-load/run-smoke proof because worker-j9jjd P0/rootless new-layer ingest has prior failures. The install-windows promotion is good evidence for that one row only; it does not clear mteb/multi-source or the giant torch rows.
+- Dedup to #12/#13: the image-check JSON has useful allowlisted provenance fields (`counts`, `present_ref`, `pull_status`, `local_tag_status`, `smoke_status`), but this pass found no new raw-output or normalized-result bug beyond the existing provenance/log issues.
+- #18/#19 are closed fixes and the checked paths match the intended behavior. No new issue should be filed from this lane unless a later worker check shows `local_tag_status=failed` while a suite-level gate still returns success, or readiness starts treating image-smoke helper entries as full-target readiness.
+
+### Next candidates
+
+- Keep `mteb-retrieve` and `multi-source-data-merger` quarantined. Both have staged/P0 history tied to worker rootless layer-registration I/O errors; do not promote either from source-cache or P0 evidence until a clean worker storage-health proof and successful ingest/smoke exist.
+- Next lowest-size candidates are the QEMU rows, but they need isolation: `tb2_qemu_alpine_ssh` and `tb2_qemu_startup` are each about `1.96GB` in the staging plan. Use fallback tar as required and treat a `--network none` smoke as image transport only, not QEMU task behavior.
+- Defer giant ML/torch rows one at a time: `tb2_torch_tensor_parallelism` about `11GB`, `tb2_torch_pipeline_parallelism` about `11.3GB`, and `tb2_pytorch_model_recovery` about `19.2GB`. These are last because they maximize rootless storage pressure and can mask whether a failure is image-specific or daemon/storage-wide.
+
+### Command evidence
+
+- `sed -n '1,260p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md` and `sed -n '261,620p' /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0.
+- Attempted to read the listed systematic-debugging and verification-before-completion skill files; rc 1 because the listed local skill paths were absent. Continued with manual fact-first debugging and verification.
+- `ssh dev 'cd .../image-warmup-policy && git rev-parse --abbrev-ref HEAD && git rev-parse --short HEAD && git status --short --untracked-files=all && grep -n "Round29 post-install-windows image transport review" .../hunt-runtime-images.md || true'`; rc 0. Branch/head `feat/image-warmup-policy` / `6bd03e8`; no existing Round29 runtime heading. Pre-existing unrelated changes were visible in runner ledger and remote-cache inventory files.
+- Read `_coordination/20260625_harbor_bench/HANDOFF.md`, runtime ledger tail, and runner ledger Round28/Round29 cross-checks; rc 0. Runner Round29 also reports #18/#19 fixed and no new runner issue.
+- Static reads of `scripts/agentic_bench_suite.py:470-735`, `scripts/agentic_bench_images.py:913-1061`, `scripts/agentic_bench_images.py:1500-1535`, `manifests/suite.example.yaml:42-64`, `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:1-28`, and `manifests/images/tau3_bench.yaml:1-61`; rc 0.
+- One inline Python manifest parser failed before checks with rc 1 due shell quoting; discarded as operator error and rerun.
+- Parsed TB2 manifest, install-windows worker JSON/rc files, install-windows push TSV, and the remote-cache stage plan; rc 0. Output confirmed 89 rows, 7 current missing rows, install-windows push rc 0, worker check rc 0, and the seven gap sizes listed above.
+- `PYTHONDONTWRITEBYTECODE=1` dry-run/readiness/lint wrapper; rc 0. Inner commands: TB2 image-smoke dry-run rc 0, readiness for TB2+tau3 rc 1, TB2 strict lint rc 1, tau3 strict lint rc 0.
+- Re-parsed readiness and TB2 lint payloads to inspect nested fields; wrapper rc 0. Inner readiness rc 1 and TB2 lint rc 1, with full TB2 blocked and seven `lint_status=missing_offline_transport` required rows.
+- Focused tests: `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_image_preflight_remote_command_exports_worker_env scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_readiness_helper_entry_does_not_satisfy_full_terminal_bench_target scripts.test_agentic_bench_suite.AgenticBenchSuiteTest.test_terminal_bench_full_entry_uses_cache_manifest_with_current_gap_counts scripts.test_agentic_bench_images.AgenticBenchImagesTest.test_check_manifest_tags_pulled_digest_to_local_ref`; rc 0, 4 tests passed.
+- `find _coordination/20260625_harbor_bench -type f \( -iname "*tau3*worker*" -o -iname "*tau3*check*" -o -iname "*tau3*r2*" -o -iname "*install_windows*" \) ...`; rc 0. Found install-windows artifacts and no tau3 worker JSON artifact in this tree; tau3 evidence is currently in manifest/handoff/lane notes and the live read-only image inspect above.
+- Worker read-only inspect via explicit worker-j9jjd endpoint with `DOCKER_HOST=unix:///tmp/rl/run/docker.sock DOCKER_API_VERSION=1.45`; rc 0. It printed image IDs for `tb2-offline/install-windows-3.11:20260425`, `tau3-smoke-main:20260626r2`, and `tau3-smoke-runtime:20260626r2`.
+- The first Round29 append attempt used unsafe local shell quoting around Markdown backticks, which produced local command-substitution errors and corrupted the new Round29 section. I repaired only this ledger by replacing the malformed Round29-from-heading-to-EOF block; prior rounds were left intact.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 1, interpreted as no trailing whitespace matches.
+- Bounded key-like secret scan on this ledger; rc 1, interpreted as no matches.
+- `find _coordination/20260625_harbor_bench -path "*/__pycache__*" -print -quit`; rc 0 with no output, interpreted as no pycache under coordination.
+- `git status --short --untracked-files=all`; rc 0. Only `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` is modified after this lane's repair.

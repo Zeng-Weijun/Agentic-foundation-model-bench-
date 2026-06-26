@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-mteb-retry Asia/Shanghai
+Updated: 2026-06-26 post-tau3-round29 Asia/Shanghai
 
 ## Objective
 
@@ -365,3 +365,17 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Conclusion: do not promote `mteb-retrieve`; keep it under #8 rootless Docker network/ingest quarantine. Active Terminal-Bench 2.1 remains `82/89` offline-transport ready with `7` remaining gaps.
 - #8 comment posted with this evidence: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4805539733
 - Round29 runner-results bug hunt found no new ISSUE-READY bug after #18/#19 and install-windows promotion; it recommends parsing allowlisted checker JSON into image-preflight summaries as a #12/#13 follow-up, not as a new issue.
+
+## 2026-06-26 tau3 Round29 runner contract and worker blocker
+
+- Added a tau3 adapter evidence report: `_coordination/20260625_harbor_bench/lanes/tau3-adapter-round29.md`.
+- Modified the shared runner `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh` outside this git repo. Backup before the change: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round29/run_tau3_bench.before_round29.sh`.
+- Shared runner current sha256: `469470ffddb2c9753707e80b1194e37680c20477fa72774ee64a85b1f71284a6`; pre-Round29 backup sha256: `db5a9559234c24cde85c0c01582ef6ac9ac5331538422115e8cc249a1689c646`.
+- Runner now supports `TAU3_AGENT=oracle`, `HARBOR_BIN`, no-model/no-OpenAI-env dry-run command generation, and post-Harbor `result.json` parsing so Harbor exceptions make the wrapper return nonzero.
+- Patched a copied one-task smoke dataset at `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round29/dataset/tau3-airline-0`; no full dataset/template mutation was made.
+- Worker image inspect passed for both tau3 r2 digest refs and worker runner dry-run passed with direct `harbor run -a oracle --no-force-build` and no model/OpenAI parameters.
+- Real worker Harbor oracle smoke did not pass: rootless Docker compose failed creating the default network with `operation not permitted`. After the runner parser fix, the same failure returns wrapper rc 1 and writes `tau3_result_summary.json` with `status=errors`, `n_total_trials=1`, `n_errors=1`, `successful_eval_trials=0`.
+- Additional worker probes: `docker network create` is not permitted, `docker run --network host` is not permitted, `docker run --network none` succeeds, and a minimal compose `network_mode: none` probe still hit the known Docker compose `/v1.45/version` EOF instability.
+- Oracle mode still triggered a LiteLLM remote model-cost-map warning before local fallback, so Harbor needs an explicit offline/no-public-egress setting before any worker run is called offline clean.
+- Conclusion: tau3 remains image-ready and runner-contract-ready for oracle dry-run, but not adapter-smoke-ready. Keep `manifests/suite.example.yaml` tau3 disabled with `adapter_status: pending_adapter` until compose/offline blockers are cleared and a one-task oracle result passes.
+- #8 rootless worker comment posted: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4805622535
