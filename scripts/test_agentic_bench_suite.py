@@ -1155,6 +1155,42 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(image_report["counts"]["required_without_offline_transport"], 1)
         self.assertFalse(entry["ready"])
 
+    def test_example_manifest_programbench_has_dedicated_fail_closed_contract(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        programbench = next(bench for bench in config["benches"] if bench["id"] == "programbench")
+
+        self.assertEqual(programbench["benchmark"], "programbench")
+        self.assertEqual(programbench["adapter_script"], "run_programbench.sh")
+        self.assertEqual(programbench["adapter_status"], "pending_adapter")
+        self.assertFalse(programbench.get("enabled", True))
+        self.assertEqual(programbench["image_manifest"], "manifests/images/programbench.yaml")
+        self.assertEqual(programbench["image_policy"], "required")
+
+        manifest = module._load_yaml(
+            (ROOT / "manifests" / "images" / "programbench.yaml").read_text(encoding="utf-8")
+        )
+        self.assertEqual(manifest["bench_id"], "programbench")
+        self.assertIn("missing_checkout", manifest["status"])
+        self.assertIn("missing_runner", manifest["known_blockers"])
+        self.assertIn("missing_dataset", manifest["known_blockers"])
+        self.assertIn("missing_image_transport", manifest["known_blockers"])
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["programbench"])
+        target = report["targets"][0]
+        self.assertEqual(target["status"], "blocked")
+        self.assertIn("no_enabled_suite_entry", target["blockers"])
+        self.assertIn("suite_entry_disabled", target["blockers"])
+        self.assertIn("adapter_not_wired", target["blockers"])
+        self.assertIn("required_image_transport_missing", target["blockers"])
+        entry = target["entries"][0]
+        image_report = entry["image_manifests"][0]
+        self.assertEqual(image_report["manifest"], "manifests/images/programbench.yaml")
+        self.assertEqual(image_report["counts"]["required_images"], 1)
+        self.assertEqual(image_report["counts"]["required_without_offline_transport"], 1)
+        self.assertFalse(entry["ready"])
+
     def test_example_manifest_tool_decathlon_has_dedicated_fail_closed_contract(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

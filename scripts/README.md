@@ -242,7 +242,7 @@ Full entries that remain disabled/pending in `manifests/suite.example.yaml`:
 - MCP-Atlas: dedicated fail-closed manifest `manifests/images/mcp_atlas.yaml`; keep disabled until checkout/dataset/runner/trace contract and image transport are staged.
 - Tool-Decathlon: dedicated fail-closed manifest `manifests/images/tool_decathlon.yaml`; keep disabled until checkout/dataset/runner/tool-server/trace contract and image transport are staged.
 - `tau3_bench`
-- programbench
+- programbench: dedicated fail-closed manifest `manifests/images/programbench.yaml`; keep disabled until checkout/task data/fixture-grader/trace contract and runtime transport are staged.
 - NL2Repo
 
 Enabled smoke targets:

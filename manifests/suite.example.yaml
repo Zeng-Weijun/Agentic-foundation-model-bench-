@@ -348,8 +348,8 @@ benches:
     adapter: programbench
     adapter_script: run_programbench.sh
     adapter_status: pending_adapter
-    image_manifest: manifests/images/pending_benches.yaml
-    image_policy: optional
+    image_manifest: manifests/images/programbench.yaml
+    image_policy: required
     model_profile: gpt54mini_8130
     enabled: false
 

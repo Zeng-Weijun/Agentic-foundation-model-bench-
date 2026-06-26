@@ -73,6 +73,11 @@ image_manifests:
     status: missing_checkout_dataset_runner_image_contract
     policy: disabled_until_checkout_dataset_runner_trace_and_images_staged
 
+  - id: programbench
+    path: images/programbench.yaml
+    status: missing_checkout_dataset_runner_image_contract
+    policy: disabled_until_checkout_dataset_fixture_grader_and_runtime_staged
+
   - id: tool_decathlon
     path: images/tool_decathlon.yaml
     status: missing_checkout_dataset_runner_image_contract

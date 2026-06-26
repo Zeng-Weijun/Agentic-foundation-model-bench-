@@ -1,0 +1,48 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: programbench
+generated_at: "2026-06-26"
+status: missing_checkout_dataset_runner_image_contract
+collector: codex-round45
+
+evidence:
+  suite_entry: manifests/suite.example.yaml#programbench
+  prior_inventory:
+    - reports/pending_adapter_inventory_20260625.md
+    - _coordination/20260625_harbor_bench/lanes/pending-benches-inventory-round34.md
+    - reports/all_bench_offline_gap_matrix_20260625.md
+    - reports/p0_harbor_bench_manifest_inventory_20260625.md
+  checked_missing_paths:
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/programbench
+    - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/programbench
+    - /data/nips/bench/run_programbench.sh
+  public_metadata:
+    paper: https://arxiv.org/html/2605.03546v1
+    reported_shape: Clean-room program reconstruction from executable/docs; local checkout, tasks, fixtures, and hidden-test contract are not staged.
+
+known_blockers:
+  - missing_checkout
+  - missing_dataset
+  - missing_runner
+  - missing_fixture_archive
+  - missing_hidden_test_contract
+  - missing_grader_contract
+  - missing_trace_contract
+  - missing_result_parser
+  - missing_image_transport
+  - missing_worker_smoke
+
+next_actions:
+  - Stage the authoritative ProgramBench checkout and task data on dev under shared storage.
+  - Freeze one smoke task with executable/docs inputs, expected workspace layout, grader output, and hidden-test artifact contract.
+  - Identify whether execution is docker-free or requires a runtime image/cache, then enumerate P0 digest refs or fallback tar sha256 values.
+  - Implement run_programbench.sh only after dataset, fixture, grader, and runtime/image contracts are concrete.
+  - Add a parser for ProgramBench native result artifacts before enabling the suite row.
+
+images:
+  - id: programbench_runtime_todo
+    role: programbench_runtime_placeholder
+    bench: ProgramBench
+    required: true
+    image_transport: missing
+    registry_status: missing_checkout_dataset_image_contract
+    offline_blocker: No ProgramBench runtime image refs, dependency cache, P0 digests, fallback tars, or sha256 files are staged.
