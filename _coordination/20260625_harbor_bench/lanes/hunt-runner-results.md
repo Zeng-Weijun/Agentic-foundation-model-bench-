@@ -3430,3 +3430,77 @@ The tau3 direct helper is affected by the existing invocation-unique output issu
 - Round32 bounded secret scan: rc 0, `authorization_header_value=0`, `bearer_value=0`, `sk_value=0`, `openai_key_assignment=0`.
 - Pycache scan after safe Python probes/tests: rc 0, `pycache_dir_count=0`.
 - Final scope/status check command returned rc 0. `git status --short --untracked-files=all` shows this ledger modified plus concurrent non-ledger changes in `_coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md` and untracked runtime artifacts `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626/tb2_qemu_alpine_stage_20260626.log` and `.tsv`; this lane did not create, edit, or remove those non-ledger files.
+
+## Round33 naming/readiness consistency review
+
+### Scope
+
+- Lane: runner/results/readiness naming audit after committed head `bd66566 Promote TB2 qemu-startup transport`.
+- Worktree accessed only through `ssh dev`: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy`.
+- Ledger-only. No production code, manifests, tests, README, Docker, benchmark, model, commit, push, or issue edit was performed by this lane.
+- Important concurrency note: the worktree was initially clean at `bd66566`. During this audit, another lane introduced uncommitted edits to `README.md`, `manifests/offline_images.example.yaml`, `manifests/suite.example.yaml`, `scripts/test_agentic_bench_suite.py`, and `scripts/__pycache__/...`. I did not edit or revert those files. Evidence below distinguishes committed-head findings from the concurrent dirty worktree.
+
+### ISSUE-READY: committed head still exposes legacy Terminal-Bench 2.0 as a ready/default suite target
+
+severity: high
+
+dedup: New naming/readiness drift against the current active taxonomy. It is adjacent to prior readiness-role/image-smoke issues, but the root cause here is a stale active legacy suite row plus stale user-facing README text for Terminal-Bench 2.0. A concurrent uncommitted diff already appears to remove the row and update the README; if that diff is committed after validation, file this as fixed-by-current-branch rather than opening a new GitHub issue.
+
+location:
+
+- `bd66566:README.md:401-418` describes the selected benchmark list for an old `run_suite_from_yaml.sh configs/gpt54mini_ab_cocoa_full.yaml` flow and lists `terminal_bench_2_0`, then explains raw Terminal-Bench 2.0 task conversion under `shared_bench/terminal-bench-2.0`.
+- `bd66566:manifests/suite.example.yaml:148-160` contains an enabled-by-default `terminal_bench_2_0` row with `adapter_status: wired_legacy`, `adapter_script: run_terminal_bench_2_0.sh`, and no `enabled: false` guard.
+- `scripts/agentic_bench_suite.py:36-38` correctly names the tracked active target as `terminal_bench_2_1` / `Terminal Bench 2.1`, so the legacy row is inconsistent with the current target taxonomy rather than an intentional tracked readiness target.
+
+static_repro:
+
+- Committed-head grep: `git grep -n -E "terminal_bench_2_0|Terminal[- ]Bench 2\\.0|tau2-bench|tau2_bench" bd66566 -- README.md scripts/README.md manifests/README.md reports/README.md manifests/suite.example.yaml scripts/agentic_bench_suite.py _coordination/20260625_harbor_bench/readiness_20260626.json` returned the stale README lines and the active `terminal_bench_2_0` suite row.
+- In-memory plan probe using `git show bd66566:manifests/suite.example.yaml` and current `agentic_bench_suite.py` returned `head_legacy_count=1`, `head_legacy_enabled=True`, `adapter_status=wired_legacy`, `adapter_script=run_terminal_bench_2_0.sh`.
+- The same in-memory probe showed the default dry-run plan from the committed suite has `head_default_run_count=12`, `contains_terminal_bench_2_0=True`, `contains_terminal_bench_2_1=False`, and `contains_terminal_bench_2_1_image_smoke=True`.
+- The committed-head readiness probe showed `--target-benches Terminal-Bench 2.0` and `--target-benches terminal_bench_2_0` both resolve to a ready target with one ready full entry `terminal_bench_2_0`, while `Terminal-Bench 2.1` remains blocked on the real full 2.1 entry.
+
+impact:
+
+- A user following committed-head README guidance or running the default suite can route one-click planning toward legacy Terminal-Bench 2.0 even though the active benchmark contract is Terminal-Bench 2.1.
+- Worse, the static readiness gate can report `Terminal-Bench 2.0` as ready because the stale row is enabled and `wired_legacy`, while the real `Terminal-Bench 2.1` target remains blocked. This can produce a false sense that Terminal-Bench readiness is green by selecting the wrong target name.
+- The bug is user-facing because the stale name appears in top-level README instructions, not only historical reports.
+
+fix:
+
+- Remove the `terminal_bench_2_0` row from `manifests/suite.example.yaml`, or set `enabled: false`, `adapter_status: deprecated`, and `readiness_role: legacy_disabled` if historical discoverability is required.
+- Update the top-level README to mark the old A+B+CoCoA launcher as historical and list the active readiness targets, using `terminal_bench_2_1` / Terminal-Bench 2.1.
+- Add/keep a focused regression test that no enabled suite entry contains `terminal_bench_2_0` or `run_terminal_bench_2_0`.
+- Current dirty worktree appears to implement exactly this shape: README now lists `terminal_bench_2_1`, suite diff removes the `terminal_bench_2_0` row, and tests add `test_example_suite_has_no_active_terminal_bench_2_0`. Validate and commit that fix rather than filing a fresh issue if the implementation is accepted.
+
+### No-new-issue checks
+
+- tau taxonomy: committed-head readiness for `tau2-bench` and `tau2_bench` returns `missing_suite_entry`; committed-head readiness for `tau3-bench` and `tau3_bench` matches the active target and remains blocked on the full tau3 entry while including the oracle-direct helper. No active `tau2-bench` suite target was found in README/scripts/manifests/readiness. The remaining `import tau2` strings in tau3 image smoke commands are package/import checks inside tau3 images, not active bench taxonomy.
+- Terminal-Bench 2.1 docs/scripts: `scripts/README.md:173`, `:201`, `:237` use Terminal-Bench 2.1 and the readiness default target list correctly. `scripts/agentic_bench_suite.py:36-38` also uses only Terminal Bench 2.1 in tracked readiness targets.
+- Result parser names: `scripts/agentic_bench_suite.py:1553-1611` currently has only the RepoZero parser and generic `no_parser` fallback; no stale tau2 or Terminal-Bench 2.0 parser branch was found.
+- Qwen score anchor: `bd66566:README.md:143-152`, `reports/README.md:69-84`, and `manifests/models.example.yaml:3-16` clearly identify the anchor as local Qwen3-Coder-30B-A3B-Instruct + Qwen Code on SWE-bench Verified, `245/500 = 49.0%`, and explicitly say not to conflate it with public Qwen3-Coder-Next 80A3 technical-report scores. No new issue.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md >/tmp/codex_workflow_read_round33 && wc -l /tmp/codex_workflow_read_round33`: rc 0, 973 lines.
+- Skill instruction reads for systematic-debugging and verification-before-completion: rc 0.
+- Memory quick grep for remote/coordination workflow context: rc 0.
+- Initial remote status/log through `ssh dev`: rc 0; verified branch `feat/image-warmup-policy`, head `bd66566`, and clean initial `git status --short --untracked-files=all` output.
+- File inventory and first grep across README, scripts, manifests, readiness, and suite code: rc 0.
+- README/Qwen/suite line reads: rc 0.
+- Two early shell-piped probes for `terminal_bench_2_0` dry-run/readiness had quoting/pipe errors and returned rc 1; they were not used as evidence. Corrected subprocess probes are recorded below.
+- Corrected current-worktree dry-run for `--only terminal_bench_2_0`: rc 0 with zero selected runs after a concurrent suite edit removed the row.
+- Corrected current-worktree readiness probes for `Terminal-Bench 2.0`, `Terminal-Bench 2.1`, `terminal_bench_2_0`, and `terminal_bench_2_1`: rc 0 harness; current dirty worktree reports 2.0 missing and 2.1 blocked.
+- Exact committed-head grep with `git grep ... bd66566`: rc 0 and produced the stale README plus suite-row evidence.
+- `git show bd66566:README.md` / `git show bd66566:manifests/suite.example.yaml` line reads: rc 0.
+- In-memory committed-head suite plan/readiness probe using `git show bd66566:manifests/suite.example.yaml`: rc 0 and produced the `terminal_bench_2_0` default-run and ready-target evidence above.
+- Qwen anchor grep on committed README plus scripts README target grep: rc 0.
+- Current dirty diff read for README/suite/test/offline manifest: rc 0; used only to note that a concurrent fix appears in progress.
+- Parser-code grep for stale names/result parser branches: rc 0.
+- Pre-append `grep -n '^## Round33' ... || true`: rc 0, no existing Round33 section.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runner-results.md`: rc 0.
+- Trailing whitespace scan on this ledger: rc 0, `trailing_whitespace_count=0`.
+- Round33 bounded secret scan: rc 0, `authorization_header_value=0`, `bearer_value=0`, `sk_value=0`, `openai_key_assignment=0`.
+- Final scope/status command returned rc 0. `git status --short --untracked-files=all` shows this ledger modified plus concurrent non-ledger changes in `README.md`, `_coordination/20260625_harbor_bench/readiness_20260626.json`, `manifests/offline_images.example.yaml`, `manifests/suite.example.yaml`, `reports/agentic_bench_landscape_20260625.md`, `reports/agentic_bench_matrix_20260625.csv`, `scripts/test_agentic_bench_suite.py`, and untracked `_coordination/20260625_harbor_bench/lanes/docs-taxonomy-round33.md` and `readiness-taxonomy-round33.md`; this lane did not create, edit, or remove those non-ledger files.

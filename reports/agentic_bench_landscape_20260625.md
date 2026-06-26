@@ -250,7 +250,7 @@ Published score anchors:
 
 Qwen anchors:
 
-- Public Qwen3-Coder-Next technical report is for Terminal-Bench 2.0, not 2.1:
+- Public Qwen3-Coder-Next technical-report numbers below are cross-version context from Terminal-Bench 2.0, not the active Terminal-Bench 2.1 target:
   - Qwen3-Coder-Next 80A3:
     - Terminus2-xml: 34.2
     - Terminus2-json: 36.2
@@ -260,7 +260,7 @@ Qwen anchors:
 
 Local status:
 
-- The local Qwen suite config includes `terminal_bench_2_0` under both smoke and full benchmark lists.
+- The current suite targets `terminal_bench_2_1`; no local Terminal-Bench 2.1 full 30B score has been inspected yet.
 - No local Qwen3-Coder-30B-A3B full Terminal-Bench score was found in the inspected evidence.
 
 Trace fields to collect:
@@ -790,7 +790,7 @@ For the Qwen result, keep the statement precise:
 1. For every benchmark row above, create one `runs/<bench>/<model>/<task>/trace_manifest.yaml` in the contract shape above.
 2. Refresh current public leaderboard scores immediately before using them in a final paper/table.
 3. Run or locate local Qwen3-Coder-30B-A3B full scores for:
-   - Terminal-Bench 2.1 or 2.0, whichever is actually reproducible in our harness.
+   - Terminal-Bench 2.1 once reproducible in our harness; keep Terminal-Bench 2.0 only as a historical public Qwen-score anchor.
    - DeepSWE with mini-swe-agent, if compute and relay stability allow.
    - RepoZero Py2JS full, since the local wrapper already exists.
    - tau3-Banking only if the tau3 harness and API/user simulator setup are pinned.

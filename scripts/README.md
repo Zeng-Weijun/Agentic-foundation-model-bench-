@@ -232,11 +232,18 @@ This command should be run from `dev` after `dev` can SSH to `worker-j9jjd`. At 
 
 Use `--only repozero_py2js_smoke,vitabench_delivery_one_task_smoke` for a narrow smoke and `--max-concurrency N` to override suite-level benchmark concurrency. Per-benchmark worker counts remain in YAML so large runs can be reviewed before execution. The 8.130 relay profile is staged for suite-level concurrency 40 and should stay at or below 50 unless the relay capacity changes.
 
-Pending adapters are present but disabled in `manifests/suite.example.yaml`:
+Suite rows are split between full pending targets and narrow image/smoke helpers:
 
-- Terminal-Bench 2.1
+Full entries that remain disabled/pending in `manifests/suite.example.yaml`:
+
+- `terminal_bench_2_1`
 - MCP-Atlas
 - Tool-Decathlon
-- tau3-bench
+- `tau3_bench`
 - programbench
 - NL2Repo
+
+Enabled narrow helpers:
+
+- `terminal_bench_2_1_image_smoke`: image-preflight row for the selected TB2.1 smoke image; still adapter-blocked for execution.
+- `tau3_bench_oracle_direct_smoke`: oracle-direct tau3 image smoke; image transport is ready, while the full tau3 target remains disabled/pending.

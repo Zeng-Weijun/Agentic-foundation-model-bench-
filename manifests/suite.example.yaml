@@ -145,19 +145,6 @@ benches:
       VITA_ENABLE_THINK: 0
       VITA_LANGUAGE: english
 
-  - id: terminal_bench_2_0
-    benchmark: terminal_bench
-    adapter: terminal_bench
-    adapter_script: run_terminal_bench_2_0.sh
-    adapter_status: wired_legacy
-    model_profile: gpt54mini_8130
-    concurrency: 1
-    params:
-      NUM_TASKS: 1
-      MAX_CONCURRENCY: 1
-      TB_AGENT: codex
-      TB_N_CONCURRENT: 1
-
   - id: swebench_verified_qwen_code_smoke
     benchmark: swe-bench-verified
     adapter: swebench_verified_qwen_code

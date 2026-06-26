@@ -49,9 +49,6 @@ shared_asset_summary:
     - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/image_migration
       status: manifests_and_logs_only_no_tars_in_bounded_check
       tar_count: 0
-    - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.0/offline/first4/images
-      status: tar_available
-      tar_count: 1
     - path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images
       status: tar_manifest_available
       tar_count: 51
@@ -97,7 +94,7 @@ images:
     status: partial_worker_cache_preload_missing_exact_subset_before_offline_run
 
   - bench: terminal-bench
-    id: terminal_bench_2_0_2_1_prebuilt_images
+    id: terminal_bench_2_1_prebuilt_images
     required_images:
       - tb2-offline/<task>:20260425
     present_on_worker:
@@ -113,7 +110,6 @@ images:
     source_path:
       - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/manifest.jsonl
       - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.1/prebuilt-images/20260425/*.tar
-      - /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/terminalbench2.0/offline/first4/images/tb2_offline_first4_20260425.tar
     status: shared_tar_available_worker_missing
 
   - bench: openhands

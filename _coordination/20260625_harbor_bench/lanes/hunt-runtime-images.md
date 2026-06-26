@@ -2470,3 +2470,52 @@ No new QEMU-specific bug is confirmed. The current branch still correctly treats
 - `find . -path "*/__pycache__*" -print`; rc 0 with no output, so no pycache was present at validation time.
 - Final `git status --short --untracked-files=all`; rc 0. It showed this lane's modified `hunt-runtime-images.md`, plus concurrent unrelated changes to `hunt-runner-results.md` and untracked `tb2_qemu_alpine_stage_20260626.{log,tsv}`. I did not edit the runner ledger or create the QEMU artifacts.
 - Read-only follow-up on those concurrent QEMU artifacts; rc 0 for `ls/sed`, and the corrected tar-existence probe rc 0. The TSV had only a header, the log had a single `ROW tb2_qemu_alpine_ssh ...` line, and both planned QEMU fallback tar paths were still absent. One intermediate tar-existence probe had a shell quoting SyntaxError and rc 1; discarded as operator error.
+## Round33 post-QEMU TB2 transport and tau3 wording review
+
+Scope: runtime/images ledger-only review at branch `feat/image-warmup-policy`, observed head `bd66566` after commits `e7b06e9` and `bd66566`. I read `WORKFLOW.md` first, then worked through `ssh dev` in the shared worktree. I did not edit production code, manifests, tests, README, HANDOFF, Docker state, commits, or GitHub issues. This section is the only file write from this lane.
+
+### Findings
+
+No new ISSUE-READY runtime/image bug confirmed in this pass.
+
+- Terminal-Bench 2.1 full image transport is now consistently `84/89` with exactly five required offline-transport gaps. `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:4-18` records `materialized_from_swe_dev_cache_84_of_89_offline_transport_ready`, `offline_transport_ready_count: 84`, `remaining_transport_gap_count: 5`, and `missing_transport_for_5_cache_tasks`.
+- Strict static lint agrees with the manifest. `agentic_bench_images.py lint --require-offline-transport --verify-fallback-files` returned rc 1, as expected for remaining required gaps, with `fallback_tar_verified=84`, `fallback_tar_missing=0`, `fallback_tar_mismatch=0`, `required_images=89`, and `required_without_offline_transport=5`.
+- Skip-Docker static check agrees with the verified fallback set. `agentic_bench_images.py check --skip-docker --json` returned rc 0 with `tar_verified=84`, `tar_missing=0`, `tar_mismatch=0`, `identity_mismatch=0`, and `unchecked=89`.
+- The five remaining gaps are exactly the expected rows: `tb2_mteb_retrieve` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:686-694`, `tb2_multi_source_data_merger` at `698-706`, `tb2_pytorch_model_recovery` at `905-913`, `tb2_torch_pipeline_parallelism` at `1127-1135`, and `tb2_torch_tensor_parallelism` at `1139-1147`. All five still have `fallback_transport: none` and `fallback_status: missing_shared_tar`.
+- The QEMU rows are no longer gaps. `tb2_qemu_alpine_ssh` at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml:917-928` and `tb2_qemu_startup` at `932-943` both now have P0 digest refs plus fallback tar sha. Their staged evidence files report stage rc `0` and worker fallback check rc `0`; both worker checks had `tar_verified=1`, `loaded=1`, `present=1`, `smoke_passed=1`, `identity_mismatch=0`, `errors=0`, and `pulled=0`. This is fallback-load/readiness evidence, not a direct worker P0 pull proof.
+- Saved readiness state matches the live static checks. `_coordination/20260625_harbor_bench/readiness_20260626.json` contains the TB2 cache manifest with `required_with_offline_transport=84` and `required_without_offline_transport=5`.
+- Active readiness remains fail-closed. `./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches Terminal-Bench-2.1,tau3-bench --json` returned rc 1 with `blocked=2`, `ready=0`, `missing=0`. The full TB2 entry is blocked by `required_image_transport_missing`; the TB2 image-smoke helper is `readiness_role=image_smoke` and does not satisfy the full target.
+- tau3 wording is not confused with tau2 in active paths. `manifests/suite.example.yaml:306-340` defines `tau3_bench` and `tau3_bench_oracle_direct_smoke` as `benchmark: tau3-bench`; `scripts/agentic_bench_suite.py:46` exposes the `tau3_bench` target label and aliases only. `manifests/bench_registry.yaml:71-74` still says `tau3_bench` policy/status is disabled until runtime images are prebuilt, which is stale relative to the smoke-image transport state but not a tau2/tau3 target confusion or runtime-readiness fake pass.
+- Active `manifests`, `scripts/README.md`, and `README.md` do not contain stale `82/89`, `83/89`, `remaining_transport_gap_count: 7`, `remaining_transport_gap_count: 6`, active `Terminal-Bench 2.0`, or active `terminal_bench_2_0` claims. Historical reports still contain old Terminal-Bench 2.0 references, and HANDOFF still contains chronological 82/89 and 83/89 transition lines, but HANDOFF explicitly supersedes them to current `84/89` and five gaps at `_coordination/20260625_harbor_bench/HANDOFF.md:365`, `376`, and `387`. Those are not issue-ready runtime/image bugs.
+
+### COMMENT-READY / dedup
+
+- Dedup to #6/#8/#12/#13: the remaining five rows still need materialized fallback tar+sha, manifest update, and worker-j9jjd fallback-load/run-smoke proof before full TB2 image preflight can pass. P0 pull evidence is still not a sufficient worker-readiness claim while #8 rootless registry/network behavior remains constrained.
+- `mteb-retrieve` and `multi-source-data-merger` should remain quarantined because earlier staged/P0 artifacts were associated with worker ingest failures. The next practical work should isolate `pytorch-model-recovery` or the two torch rows only after storage-health and image-size risk are explicitly accepted.
+- No issue should be filed for QEMU missingness: both QEMU rows are promoted in the active manifest and have worker fallback evidence. No issue should be filed for tau2/tau3 naming: active target paths use tau3; tau2 appears only in older reports or upstream source/dependency references.
+
+### Command evidence
+
+- `cat /Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`; rc 0. Output was truncated by the local tool display, but the command completed successfully.
+- Read systematic-debugging and verification-before-completion skill files from the active `d08f0354` skill cache; rc 0. An initial stale `7fd3161c` skill path read failed with rc 1 and was discarded as environment-path drift.
+- Memory quick grep for Round33/TB2/tau3 terms in `MEMORY.md`; rc 0. It only returned older generic TB2 inventory context and was not used as current evidence.
+- Remote preflight: `ssh dev 'cd .../image-warmup-policy && git branch --show-current && git rev-parse --short HEAD && git log --oneline -6 && git status --short --untracked-files=all'`; rc 0. Branch/head was `feat/image-warmup-policy` / `bd66566`. Pre-existing status showed `M scripts/test_agentic_bench_suite.py`; this lane did not edit it.
+- Read HANDOFF and runtime ledger tail through `ssh dev`; rc 0.
+- Parsed active TB2 manifest with `PYTHONDONTWRITEBYTECODE=1 python3`; rc 0. Output confirmed 89 rows, manifest evidence `offline_transport_ready_count=84`, and the five local refs for remaining gaps.
+- TB2 strict lint command: `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py lint --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml --require-offline-transport --verify-fallback-files --json`; inner rc 1, wrapper rc 0 after capturing output. Counts are listed above.
+- TB2 skip-Docker check command: `PYTHONDONTWRITEBYTECODE=1 python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/terminal_bench_2_1_swe_dev_cache.yaml --skip-docker --json`; inner rc 0, wrapper rc 0. Counts are listed above.
+- Grep over current docs/manifests paths for stale count/QEMU/TB2.0/tau2 strings; rc 0. Matches were limited to chronological HANDOFF history, current QEMU promoted rows, dated reports, tests that assert no active tau2/TB2.0, and active tau3 target strings.
+- Active suite/registry grep for `terminal_bench_2_0`, `Terminal-Bench 2.0`, `tau2-bench`, and tau3 strings across `manifests`, `scripts`, `bench_registry.yaml`, `README.md`, and `docs`; rc 0. No active `terminal_bench_2_0` suite or registry target was found; tau3 active paths are listed above.
+- Readiness command: `PYTHONDONTWRITEBYTECODE=1 ./scripts/run_suite_from_yaml.sh manifests/suite.example.yaml --readiness --target-benches Terminal-Bench-2.1,tau3-bench --json`; inner rc 1, wrapper rc 0 after capturing output. Counts: `blocked=2`, `ready=0`, `missing=0`.
+- Parsed active suite entries for Terminal-Bench/tau3; rc 0. Output showed `terminal_bench_2_1`, `terminal_bench_2_1_image_smoke`, `tau3_bench`, and `tau3_bench_oracle_direct_smoke`; no Terminal-Bench 2.0 entry.
+- Static line reads for active TB2 manifest header, QEMU rows, remaining gap rows, suite tau3 entries, bench registry tau3 row, and target aliases; rc 0.
+- Parsed `_coordination/20260625_harbor_bench/readiness_20260626.json`; rc 0. TB2 cache manifest counts were 89/84/5.
+- Parsed QEMU staging/worker evidence files under `_coordination/20260625_harbor_bench/inventory/remote_cache_20260626`; rc 0. Both QEMU rows had stage rc file `0`, worker rc file `0`, and worker counts summarized above.
+
+### Validation
+
+- `git diff --check -- _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0, no output.
+- `grep -n "[[:blank:]]$" _coordination/20260625_harbor_bench/lanes/hunt-runtime-images.md`; rc 0 through `|| true`, no output, interpreted as no trailing whitespace matches.
+- Initial broad key-like secret scan returned rc 0 with historical `vulnerable-secret` task-name false positives. Final stricter scan for API keys, access/auth tokens, Authorization/Bearer assignments, or private-key headers returned rc 0 through `|| true` with no output, interpreted as no secret matches.
+- `find . -path "*/__pycache__*" -print -quit`; rc 0 with no output before status, interpreted as no pycache under the worktree.
+- `git status --short --untracked-files=all`; rc 0. It showed this lane's modified runtime ledger plus pre-existing or concurrent modifications in README, runner ledger, readiness JSON, suite/offline manifests, reports, and tests, plus two untracked round33 taxonomy lane files. I did not edit those other files.

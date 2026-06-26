@@ -880,6 +880,18 @@ class AgenticBenchSuiteTest(unittest.TestCase):
 
         self.assertEqual(active_tau2, [])
 
+    def test_example_suite_has_no_active_terminal_bench_2_0(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        active_legacy = []
+        for bench in config["benches"]:
+            haystack = " ".join(str(bench.get(key, "")) for key in ("id", "benchmark", "adapter", "adapter_script"))
+            if ("terminal_bench_2_0" in haystack or "run_terminal_bench_2_0" in haystack) and bench.get("enabled", True):
+                active_legacy.append(bench["id"])
+
+        self.assertEqual(active_legacy, [])
+
     def test_example_manifest_tau3_has_worker_ready_images_but_stays_disabled_until_adapter(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

@@ -370,7 +370,7 @@ runs/<bench>/<model>_<timestamp>/
 
 ## 当前确认程度
 
-- `tau3-bench`：Harbor adapter 已存在，1-task dataset 生成路径已验证；worker 离线运行还需要预构建 runtime 镜像/共享 tar。
+- `tau3-bench`：Harbor adapter 和 1-task dataset 生成路径已验证；当前 smoke/oracle-direct 镜像 transport 已具备 P0 digest 与 fallback tar，full target 仍因 suite entry disabled、adapter pending 和 rootless CLI/API caveat 保持 blocked。
 - `vitabench`：`.venv/bin/vita` 已验证可启动，已有 gpt-5.4 smoke 结果。
 - `terminal_bench`：`.venv/bin/tb --help` 已验证可启动，历史有 89 task full run。
 - `swebench_verified`：镜像和历史 eval report 足够；脚本依赖 `/data/swe/SWE-agent` 和 conda env。
@@ -398,27 +398,25 @@ Equivalent generic entry:
 ./run_suite_from_yaml.sh configs/gpt54mini_ab_cocoa_full.yaml
 ```
 
-The YAML controls the model profile, suite concurrency, per-benchmark worker
-budgets, and the selected benchmark list. The current selection is:
+The old A+B+CoCoA launcher is retained only as historical context. Do not use it
+as the current benchmark target list. The active one-command suite is
+`manifests/suite.example.yaml`, whose default readiness targets are:
 
 ```text
-vitabench_full
-swebench_verified
-terminal_bench_2_0
-repozero_py2js
-cocoabench
+swebench_verified_multi
+terminal_bench_2_1
+mcp_atlas
+tool_decathlon
+tau3_bench
+programbench
+repozero
+nl2repo
+deepswe
 ```
 
-`terminal_bench_2_0` converts the raw Terminal-Bench 2.0 task layout under
-`shared_bench/terminal-bench-2.0` into the local CLI-compatible directory
-`shared_bench/terminal-bench-2.0-yaml`, so this entry runs the 89 raw 2.0 tasks
-rather than the 241-task `original-tasks` directory. The converter defaults to
-local prebuilt images named `tb2-offline/<task>:20260425`; for offline rootless
-workers these images must be preloaded from `dev` or shared storage before a
-task starts. Set `TB2_USE_PREBUILT_IMAGES=0` only on an internet/build-capable
-host. `cocoabench` points to
-`cocoabench-head`; the wrapper auto-enables encrypted-task loading and filters to
-the 148 `task.yaml.enc` tasks supported by the current `parallel_inference.py`
-runner. The remaining 27 head tasks use the separate
-`instruction.md.enc`/`evaluation.md.enc`/`metadata.json.enc` SCALE-style layout
-and are skipped unless that runner is extended.
+Terminal-Bench work is now `terminal_bench_2_1`. The full Terminal-Bench 2.1
+entry points at `manifests/images/terminal_bench_2_1_swe_dev_cache.yaml`; as of
+this snapshot that manifest records 84/89 worker-proven offline transports and
+5 remaining image gaps. The legacy pre-2.1 row and runner are not
+active suite targets. `cocoabench` remains historical until its runner and
+rootless image contract are revalidated under the current suite.
