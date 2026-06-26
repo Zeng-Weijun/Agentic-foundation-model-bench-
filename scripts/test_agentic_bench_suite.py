@@ -899,6 +899,42 @@ class AgenticBenchSuiteTest(unittest.TestCase):
         self.assertEqual(image_report["counts"]["required_without_offline_transport"], 0)
         self.assertIn("adapter_not_wired", target["blockers"])
 
+    def test_example_manifest_has_enabled_tau3_oracle_direct_smoke_without_full_readiness(self):
+        module = load_module()
+        suite_path = ROOT / "manifests" / "suite.example.yaml"
+        config = module.load_suite_config(suite_path)
+        tau3_smoke = next(bench for bench in config["benches"] if bench["id"] == "tau3_bench_oracle_direct_smoke")
+
+        self.assertTrue(tau3_smoke.get("enabled", True))
+        self.assertEqual(tau3_smoke["adapter_status"], "wired_legacy")
+        self.assertEqual(tau3_smoke["readiness_role"], "image_smoke")
+        self.assertEqual(tau3_smoke["image_policy"], "required")
+        self.assertEqual(tau3_smoke["params"]["TAU3_AGENT"], "oracle_direct")
+        self.assertEqual(tau3_smoke["params"]["TAU3_DIRECT_IMAGE"], "tau3-smoke-main:20260626r2")
+
+        plan = module.build_run_plan(
+            config,
+            suite_path=suite_path,
+            dry_run=True,
+            only={"tau3_bench_oracle_direct_smoke"},
+            model_profile_override="dev_proxy_gpt54mini_8130",
+        )
+        self.assertEqual(len(plan["runs"]), 1)
+        run = plan["runs"][0]
+        self.assertEqual(run["runtime_env"]["TAU3_AGENT"], "oracle_direct")
+        self.assertEqual(run["runtime_env"]["TAU3_GENERATE_DATASET"], "0")
+        self.assertIn("tau3-bench-oracle-direct-smoke", run["runtime_env"]["TAU3_DATASET_DIR"])
+
+        report = module.build_readiness_report(config, suite_path=suite_path, target_benches=["tau3-bench"])
+        target = report["targets"][0]
+        full_entries = [entry for entry in target["entries"] if entry["readiness_role"] == "full"]
+        helper_entries = [entry for entry in target["entries"] if entry["bench_id"] == "tau3_bench_oracle_direct_smoke"]
+        self.assertEqual(target["status"], "blocked")
+        self.assertEqual(target["aggregation_entry_count"], 1)
+        self.assertEqual(full_entries[0]["adapter_status"], "pending_adapter")
+        self.assertEqual(helper_entries[0]["readiness_role"], "image_smoke")
+        self.assertTrue(helper_entries[0]["ready"])
+
     def test_example_manifest_has_enabled_terminal_bench_image_smoke(self):
         module = load_module()
         suite_path = ROOT / "manifests" / "suite.example.yaml"

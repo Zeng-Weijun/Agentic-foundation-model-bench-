@@ -5,7 +5,7 @@
     "ready": 1,
     "total": 9
   },
-  "created_at": "2026-06-26T00:54:37Z",
+  "created_at": "2026-06-26T01:46:58Z",
   "schema_version": "agentic_bench.readiness_report.v1",
   "suite_id": "dev_worker_smoke_dryrun",
   "suite_path": "manifests/suite.example.yaml",
@@ -383,11 +383,39 @@
           ],
           "readiness_role": "full",
           "ready": false
+        },
+        {
+          "adapter": "tau3_bench",
+          "adapter_ready": true,
+          "adapter_status": "wired_legacy",
+          "bench_id": "tau3_bench_oracle_direct_smoke",
+          "benchmark": "tau3-bench",
+          "blockers": [],
+          "enabled": true,
+          "image_manifests": [
+            {
+              "bench_id": "tau3_bench",
+              "blockers": [],
+              "counts": {
+                "images": 2,
+                "optional_placeholders": 0,
+                "required_images": 2,
+                "required_with_offline_transport": 2,
+                "required_without_offline_transport": 0
+              },
+              "manifest": "manifests/images/tau3_bench.yaml",
+              "manifest_status": "smoke_images_ready_worker_rootless",
+              "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/image-warmup-policy/manifests/images/tau3_bench.yaml",
+              "status": "ready"
+            }
+          ],
+          "readiness_role": "image_smoke",
+          "ready": true
         }
       ],
-      "entry_count": 1,
+      "entry_count": 2,
       "label": "tau3-bench",
-      "ready_entry_count": 0,
+      "ready_entry_count": 1,
       "status": "blocked",
       "target_id": "tau3_bench",
       "wired_entry_count": 0

@@ -1,6 +1,6 @@
 # Harbor Bench Handoff
 
-Updated: 2026-06-26 post-tau3-round29 Asia/Shanghai
+Updated: 2026-06-26 post-tau3-round30 oracle-direct smoke Asia/Shanghai
 
 ## Objective
 
@@ -28,7 +28,7 @@ Build the Harbor/P0-registry-backed bench runner path so a future worker can run
 ## In Flight
 
 - Main implementation: image preflight warmup policy in `scripts/agentic_bench_suite.py` and `scripts/agentic_bench_images.py` plus tests/docs.
-- tau3-bench: full 375-task Harbor dataset generated; shared runner dry-run/redaction verified; worker execution remains disabled pending offline images and Harbor CLI env. `tau2` is no longer an active bench target; keep only tau3, while preserving the upstream source checkout path where tau3 generation depends on it.
+- tau3-bench: full 375-task Harbor dataset generated; full Harbor/compose path still blocked on worker rootless compose, but a one-task `TAU3_AGENT=oracle_direct` helper now passes on worker-j9jjd via direct `docker run --network none` and is enabled only as an `image_smoke` suite helper. The full tau3 target remains disabled/pending adapter and must not be counted as ready. `tau2` is no longer an active bench target; keep only tau3, while preserving the upstream source checkout path where tau3 generation depends on it.
 - Image inventory: `swe_dev` has substantially more SWE-bench/TB2.1 Docker images than worker; shared TB2.1 tars are partial, so worker full runs need staging from `swe_dev` cache. Current inventory artifacts: `_coordination/20260625_harbor_bench/inventory/swe_dev_data_inventory_20260626.md`, `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_20260626.json`, and identity-enriched `_coordination/20260625_harbor_bench/inventory/swe_dev_docker_cache_identities_20260626.json`.
 - Terminal-Bench 2.1: `terminal_bench_2_1_image_smoke` is enabled for image preflight using `gcode-to-text`; worker rootless check passes via cached/verified fallback image, while full TB execution remains pending adapter/runtime result wiring.
 - Bug-hunt pair: only surface:50 and surface:54 produce `_coordination/20260625_harbor_bench/lanes/*.md`; each must cross-check the other's ledger before the orchestrator files issues.
@@ -379,3 +379,17 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - Oracle mode still triggered a LiteLLM remote model-cost-map warning before local fallback, so Harbor needs an explicit offline/no-public-egress setting before any worker run is called offline clean.
 - Conclusion: tau3 remains image-ready and runner-contract-ready for oracle dry-run, but not adapter-smoke-ready. Keep `manifests/suite.example.yaml` tau3 disabled with `adapter_status: pending_adapter` until compose/offline blockers are cleared and a one-task oracle result passes.
 - #8 rootless worker comment posted: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/8#issuecomment-4805622535
+
+## 2026-06-26 tau3 Round30 oracle-direct worker smoke
+
+- Added tau3 adapter evidence report: `_coordination/20260625_harbor_bench/lanes/tau3-adapter-round30.md`.
+- Modified the shared runner `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/run_tau3_bench.sh` outside this git repo again. Current runner sha256 after Round30 direct mode: `4424b70928dda8ca43d613c0a28020e822e05f9b71a53f8acec44a1eeef9c012`.
+- Runner now supports `TAU3_AGENT=oracle_direct` for exactly one task. It bypasses Harbor/compose and writes a direct `docker run --rm --network none` command against `tau3-smoke-main:20260626r2`, mounting copied `/solution`, `/tests`, and log/artifact dirs.
+- Stable one-task dataset copied to `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/datasets/tau3-bench-oracle-direct-smoke`.
+- Worker direct oracle proof passed with `direct_rc=0`, verifier `status=passed`, and `reward=1.0`. Artifact: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round30/direct_oracle_run_20260626.txt`.
+- Suite-generated command proof passed from the Mac control plane through the explicit worker-j9jjd SSH path. Result summary: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/dev_worker_smoke_dryrun/tau3_bench_oracle_direct_smoke/tau3_result_summary.json`, schema `agentic_bench.tau3_direct_result_summary.v1`, `status=passed`, `verifier_status=passed`, `direct_rc=0`, `reward=1.0`.
+- Added enabled helper entry `tau3_bench_oracle_direct_smoke` in `manifests/suite.example.yaml` with `readiness_role: image_smoke`, `adapter_status: wired_legacy`, `TAU3_AGENT=oracle_direct`, `TAU3_GENERATE_DATASET=0`, and `TAU3_DATASET_DIR=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/datasets/tau3-bench-oracle-direct-smoke`.
+- Added regression coverage ensuring the helper is ready but excluded from full tau3 aggregation. Full tau3 still has `aggregation_entry_count=1`, `adapter_status=pending_adapter`, and target status `blocked`.
+- Rootless compose remains blocked: a layered `network_mode: none` compose probe and API-version sweep over `1.45`, `1.44`, `1.43`, `1.41`, and unset all failed during compose up at the Docker `/version` EOF path. Artifact: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/tau3_adapter_smoke_20260626_round30/compose_api_version_probe_20260626.txt`.
+- Offline-clean caveat remains: the direct run uses `--network none` so public egress fails, but tau2/LiteLLM import still attempts the remote model-cost-map fetch before falling back locally. Keep this as an offline-hardening follow-up before calling tau3 fully offline-clean.
+- Conclusion: tau3 has one worker-passing oracle-direct smoke helper, not full Harbor adapter readiness. Keep the full tau3 suite entry disabled/pending adapter until Harbor/compose or a proper non-compose adapter path is implemented for all intended tasks.

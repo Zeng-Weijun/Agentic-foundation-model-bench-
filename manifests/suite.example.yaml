@@ -332,6 +332,26 @@ benches:
       MAX_CONCURRENCY: 1
     enabled: false
 
+  - id: tau3_bench_oracle_direct_smoke
+    benchmark: tau3-bench
+    adapter: tau3_bench
+    adapter_script: run_tau3_bench.sh
+    adapter_status: wired_legacy
+    readiness_role: image_smoke
+    image_manifest: manifests/images/tau3_bench.yaml
+    image_policy: required
+    model_profile: gpt54mini_8130
+    concurrency: 1
+    params:
+      TAU3_AGENT: oracle_direct
+      TAU3_GENERATE_DATASET: 0
+      TAU3_RUN_HARBOR: 1
+      TAU3_DATASET_DIR: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/datasets/tau3-bench-oracle-direct-smoke
+      TAU3_DIRECT_IMAGE: tau3-smoke-main:20260626r2
+      TAU3_N_CONCURRENT: 1
+      MAX_CONCURRENCY: 1
+    enabled: true
+
   - id: programbench
     benchmark: programbench
     adapter: programbench
