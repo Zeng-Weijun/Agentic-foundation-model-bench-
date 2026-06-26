@@ -102,6 +102,35 @@ inspect_image_id() {
   docker image inspect "$ref" | python3 -c 'import json, sys; payload=json.load(sys.stdin); doc=payload[0] if isinstance(payload, list) and payload else payload; print(doc.get("Id", "") if isinstance(doc, dict) else "")'
 }
 
+inspect_repo_digests() {
+  local ref="$1"
+  docker inspect --format='{{range .RepoDigests}}{{println .}}{{end}}' "$ref" 2>/dev/null || true
+}
+
+select_p0_repo_digest() {
+  local p0_ref="$1"
+  local repo_digests="$2"
+  local p0_repo="${p0_ref%:*}"
+  local expected_prefix="${p0_repo}@sha256:"
+  local repo_digest
+  local digest
+
+  while IFS= read -r repo_digest; do
+    if [ -z "$repo_digest" ]; then
+      continue
+    fi
+    case "$repo_digest" in
+      "$expected_prefix"*)
+        digest="${repo_digest#"$expected_prefix"}"
+        if printf '%s\n' "$digest" | grep -Eq '^[0-9a-f]{64}$'; then
+          printf '%s\n' "$repo_digest"
+          return 0
+        fi
+        ;;
+    esac
+  done <<< "$repo_digests"
+}
+
 write_result_row() {
   local row_status="$1"
   if [ -z "$OUTPUT_TSV" ]; then
@@ -204,11 +233,20 @@ while IFS=$'\t' read -r id slug local_ref source_image_id source_host source_ref
       fi
       docker tag "$local_ref" "$p0_tag"
       docker push "$p0_tag"
-      p0_digest_ref="$(docker inspect --format='{{index .RepoDigests 0}}' "$p0_tag" 2>/dev/null || true)"
-      if [ -z "$p0_digest_ref" ]; then
+      p0_repo_digests="$(inspect_repo_digests "$p0_tag")"
+      p0_digest_ref="$(select_p0_repo_digest "$p0_tag" "$p0_repo_digests")"
+      if [ -z "$p0_repo_digests" ]; then
         echo "FAIL missing p0 digest after push $id p0_tag=$p0_tag" >&2
         failed=$((failed + 1))
         status="push_digest_missing"
+        write_result_row "$status"
+        continue
+      fi
+      if [ -z "$p0_digest_ref" ]; then
+        p0_digest_ref="$(printf '%s\n' "$p0_repo_digests" | awk 'NF {print; exit}')"
+        echo "FAIL p0 digest mismatch after push $id p0_tag=$p0_tag expected_prefix=${p0_tag%:*}@sha256:" >&2
+        failed=$((failed + 1))
+        status="push_digest_mismatch"
         write_result_row "$status"
         continue
       fi
