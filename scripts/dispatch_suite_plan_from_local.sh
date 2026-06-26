@@ -17,4 +17,15 @@ fi
 
 PLAN_PATH="$1"
 shift
+
+has_dispatch_host=0
+for arg in "$@"; do
+  if [[ "$arg" == "--local-dispatch-host" || "$arg" == --local-dispatch-host=* ]]; then
+    has_dispatch_host=1
+    break
+  fi
+done
+if [[ "$has_dispatch_host" -eq 0 && -z "${AGENTIC_BENCH_LOCAL_DISPATCH_HOST:-}" ]]; then
+  set -- "--local-dispatch-host" "$(hostname)" "$@"
+fi
 exec "$PYTHON_BIN" "$SCRIPT_DIR/agentic_bench_suite.py" --dispatch-plan "$PLAN_PATH" "$@"

@@ -514,6 +514,25 @@ def _secretish_key(key: Any) -> bool:
     )
 
 
+_SECRET_ASSIGNMENT_RE = re.compile(
+    r"(?P<key>[A-Za-z_][A-Za-z0-9_]*)(?P<eq>=)(?P<quote>[\"']?)(?P<value>[^\"'\s;]+)(?P=quote)"
+)
+
+
+def _redact_secret_text(value: str) -> str:
+    def replace(match: re.Match[str]) -> str:
+        key = match.group("key")
+        if not _secretish_key(key):
+            return match.group(0)
+        raw_value = match.group("value")
+        if raw_value.startswith("${") and raw_value.endswith("}"):
+            return match.group(0)
+        quote = match.group("quote")
+        return f"{key}{match.group('eq')}{quote}<redacted>{quote}"
+
+    return _SECRET_ASSIGNMENT_RE.sub(replace, value)
+
+
 def _redact_env(env: dict[str, str]) -> dict[str, str]:
     redacted: dict[str, str] = {}
     for key, value in env.items():
@@ -535,9 +554,13 @@ def _redact_secret_values(value: Any, key: str = "") -> Any:
         }
     if isinstance(value, list):
         return [_redact_secret_values(item, key) for item in value]
+    if isinstance(value, str):
+        if _secretish_key(key):
+            if value.startswith("${") and value.endswith("}"):
+                return value
+            return "<redacted>"
+        return _redact_secret_text(value)
     if _secretish_key(key):
-        if isinstance(value, str) and value.startswith("${") and value.endswith("}"):
-            return value
         return "<redacted>"
     return value
 
@@ -1376,6 +1399,14 @@ SSH_OPTIONS_WITH_VALUE = {
 }
 
 
+LOCAL_DISPATCH_FORBIDDEN_SSH_OPTION_PREFIXES = (
+    "-D", "-F", "-J", "-L", "-R", "-W", "-o",
+)
+
+FORBIDDEN_DISPATCH_HOST_KEYS = {"dev", "swe_dev", "swe_dev2", "swe_dev_2", "zwj", "zwj3_image"}
+FORBIDDEN_DISPATCH_HOST_FRAGMENTS = ("zwj3-image", "group-ailab-mineruinfra", "group-ailab-sciversealign")
+
+
 def _load_json_plan(path: str | Path) -> dict[str, Any]:
     plan_path = Path(path).expanduser()
     try:
@@ -1406,12 +1437,26 @@ def _ssh_target_from_argv(argv: Any) -> str:
     return ""
 
 
+def _validate_local_dispatch_ssh_options(command_argv: Any, *, context: str) -> None:
+    if not isinstance(command_argv, list):
+        return
+    for part in [str(item) for item in command_argv[1:]]:
+        if part == "--":
+            return
+        if not part.startswith("-") or part == "-":
+            return
+        if part.startswith(LOCAL_DISPATCH_FORBIDDEN_SSH_OPTION_PREFIXES):
+            raise ConfigError(f"{context} uses ssh option {part!r}, which is not allowed for local dispatch")
+
+
 def _forbidden_dispatch_host(value: str) -> bool:
     key = _readiness_key(value)
-    return key in {"dev", "swe_dev", "swe_dev2", "swe_dev_2"}
+    lowered = str(value).lower()
+    return key in FORBIDDEN_DISPATCH_HOST_KEYS or any(fragment in lowered for fragment in FORBIDDEN_DISPATCH_HOST_FRAGMENTS)
 
 
 def _validate_local_dispatch_ssh_command(command_argv: Any, *, context: str) -> str:
+    _validate_local_dispatch_ssh_options(command_argv, context=context)
     target = _ssh_target_from_argv(command_argv)
     if not target:
         raise ConfigError(f"{context} must be a direct worker ssh command_argv")
@@ -1449,7 +1494,10 @@ def dispatch_plan_from_local_controller(
     dispatch_host_label: str = "",
     allow_dev_dispatch: bool = False,
 ) -> int:
-    dispatch_host = dispatch_host_label or os.environ.get("AGENTIC_BENCH_LOCAL_DISPATCH_HOST") or socket.gethostname()
+    configured_dispatch_host = dispatch_host_label or os.environ.get("AGENTIC_BENCH_LOCAL_DISPATCH_HOST")
+    if not configured_dispatch_host and not allow_dev_dispatch:
+        raise ConfigError("local dispatch requires an explicit --local-dispatch-host or AGENTIC_BENCH_LOCAL_DISPATCH_HOST")
+    dispatch_host = configured_dispatch_host or socket.gethostname()
     dispatch_plan = _redact_secret_values(plan)
     _validate_local_dispatch_plan(dispatch_plan, dispatch_host=dispatch_host, allow_dev_dispatch=allow_dev_dispatch)
     source_controller_host = dispatch_plan.get("controller_host")
