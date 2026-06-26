@@ -305,6 +305,8 @@ Read `/Users/Zhuanz1/Desktop/ssh_work/WORKFLOW.md`, then this handoff. Run `cmux
 - GitHub issues opened from Round27 bug-hunt:
   - #16 `Readiness target aggregation can mark full Terminal-Bench 2.1 ready from image smoke entry`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/16
   - #17 `Readiness mode bypasses proxy concurrency ceiling validation for --max-concurrency`: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/17
+- #16 fixed/closed comment: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/16#issuecomment-4805335913
+- #17 fixed/closed comment: https://github.com/Zeng-Weijun/Agentic-foundation-model-bench-/issues/17#issuecomment-4805338604
 - Implemented #16 by adding readiness roles to suite entries. Entries default to `readiness_role: full`; helper entries with ids/adapters ending in `_image_smoke` default to `image_smoke`. Target status aggregation now uses full-role entries, so a helper image-smoke entry can no longer make the full Terminal-Bench 2.1 target ready while the full entry remains blocked.
 - Implemented #17 by factoring suite concurrency/proxy-ceiling validation into a shared helper and running it before `--readiness` emits a report. `--readiness --target-benches RepoZero --max-concurrency 51` now returns rc 2 with `suite_concurrency 51 exceeds suite.proxy_concurrency_ceiling 50`.
 - Added regression tests for both bugs: readiness rejects over-ceiling concurrency and a ready `terminal_bench_2_1_image_smoke` helper does not satisfy the full `Terminal Bench 2.1` target.
