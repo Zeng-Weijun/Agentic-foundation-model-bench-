@@ -57,11 +57,16 @@ image_manifests:
     status: blocked_until_r2e_pier_transport_materialized
     policy: required_when_deepswe_enabled
 
-
   - id: tau3_bench
     path: images/tau3.yaml
     status: blocked_until_full_transport_materialized
     policy: required_when_tau3_enabled
+
+  - id: swebench_multilingual
+    path: images/swemultilingual.yaml
+    status: blocked_until_full300_transport_materialized
+    policy: required_when_swemultilingual_enabled
+
 
   - id: pending_agentic_benches
     path: images/pending_benches.yaml

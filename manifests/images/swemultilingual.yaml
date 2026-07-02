@@ -1,0 +1,3657 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: swebench_multilingual
+generated_at: "2026-07-02"
+status: blocked_until_full300_transport_materialized
+image_system: SWE-bench harness instance images
+description: >-
+  Fail-closed SWE-bench Multilingual full300 image manifest skeleton.
+  Rows are deterministic placeholders until the pinned dataset snapshot
+  derives real instance_id -> image refs through the SWE-bench TestSpec
+  naming path.
+source:
+  dataset_id: SWE-bench/SWE-bench_Multilingual
+  hf_sha: 2b7aced941b4873e9cad3e76abbae93f481d1beb
+  split: test
+  dataset_version: "2025-08-26"
+dataset:
+  snapshot_script: scripts/snapshot_swebench_multilingual_dataset.sh
+  expected_snapshot_dir: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26
+  expected_task_count: 300
+expected_task_count: 300
+repo_count: 42
+languages:
+  - C
+  - C++
+  - Go
+  - Java
+  - JavaScript
+  - TypeScript
+  - PHP
+  - Ruby
+  - Rust
+official_language_distribution:
+  C: 30
+  C++: 12
+  Go: 42
+  Java: 43
+  JavaScript/TypeScript: 43
+  PHP: 43
+  Ruby: 44
+  Rust: 43
+staging_reuse:
+  candidate_script: scripts/stage_swebench_verified_p0.py generalization
+  reusable_parts:
+    - dry_run_first_plan_push_split
+    - digest_extraction_after_push
+    - resume_json_summary_counts
+    - timeout_cleanup_controls
+  needs_generalization:
+    - replace SWE-bench Verified wrapper/chunk assumptions with TestSpec instance image refs
+    - derive multilingual instance rows from pinned dataset snapshot
+transport_policy:
+  required_for_full: true
+  no_worker_cache_fallback: true
+  accepted_proofs:
+    - p0_digest_ref
+    - verified_fallback_tar_sha256
+images:
+  - id: sweml_pending_sweml_0001
+    instance_id: pending_sweml_0001
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0002
+    instance_id: pending_sweml_0002
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0003
+    instance_id: pending_sweml_0003
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0004
+    instance_id: pending_sweml_0004
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0005
+    instance_id: pending_sweml_0005
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0006
+    instance_id: pending_sweml_0006
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0007
+    instance_id: pending_sweml_0007
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0008
+    instance_id: pending_sweml_0008
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0009
+    instance_id: pending_sweml_0009
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0010
+    instance_id: pending_sweml_0010
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0011
+    instance_id: pending_sweml_0011
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0012
+    instance_id: pending_sweml_0012
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0013
+    instance_id: pending_sweml_0013
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0014
+    instance_id: pending_sweml_0014
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0015
+    instance_id: pending_sweml_0015
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0016
+    instance_id: pending_sweml_0016
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0017
+    instance_id: pending_sweml_0017
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0018
+    instance_id: pending_sweml_0018
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0019
+    instance_id: pending_sweml_0019
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0020
+    instance_id: pending_sweml_0020
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0021
+    instance_id: pending_sweml_0021
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0022
+    instance_id: pending_sweml_0022
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0023
+    instance_id: pending_sweml_0023
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0024
+    instance_id: pending_sweml_0024
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0025
+    instance_id: pending_sweml_0025
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0026
+    instance_id: pending_sweml_0026
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0027
+    instance_id: pending_sweml_0027
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0028
+    instance_id: pending_sweml_0028
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0029
+    instance_id: pending_sweml_0029
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0030
+    instance_id: pending_sweml_0030
+    role: swebench_instance_image
+    required: true
+    language: C
+    language_bucket: c
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0031
+    instance_id: pending_sweml_0031
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0032
+    instance_id: pending_sweml_0032
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0033
+    instance_id: pending_sweml_0033
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0034
+    instance_id: pending_sweml_0034
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0035
+    instance_id: pending_sweml_0035
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0036
+    instance_id: pending_sweml_0036
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0037
+    instance_id: pending_sweml_0037
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0038
+    instance_id: pending_sweml_0038
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0039
+    instance_id: pending_sweml_0039
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0040
+    instance_id: pending_sweml_0040
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0041
+    instance_id: pending_sweml_0041
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0042
+    instance_id: pending_sweml_0042
+    role: swebench_instance_image
+    required: true
+    language: C++
+    language_bucket: cpp
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0043
+    instance_id: pending_sweml_0043
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0044
+    instance_id: pending_sweml_0044
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0045
+    instance_id: pending_sweml_0045
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0046
+    instance_id: pending_sweml_0046
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0047
+    instance_id: pending_sweml_0047
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0048
+    instance_id: pending_sweml_0048
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0049
+    instance_id: pending_sweml_0049
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0050
+    instance_id: pending_sweml_0050
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0051
+    instance_id: pending_sweml_0051
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0052
+    instance_id: pending_sweml_0052
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0053
+    instance_id: pending_sweml_0053
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0054
+    instance_id: pending_sweml_0054
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0055
+    instance_id: pending_sweml_0055
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0056
+    instance_id: pending_sweml_0056
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0057
+    instance_id: pending_sweml_0057
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0058
+    instance_id: pending_sweml_0058
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0059
+    instance_id: pending_sweml_0059
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0060
+    instance_id: pending_sweml_0060
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0061
+    instance_id: pending_sweml_0061
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0062
+    instance_id: pending_sweml_0062
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0063
+    instance_id: pending_sweml_0063
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0064
+    instance_id: pending_sweml_0064
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0065
+    instance_id: pending_sweml_0065
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0066
+    instance_id: pending_sweml_0066
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0067
+    instance_id: pending_sweml_0067
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0068
+    instance_id: pending_sweml_0068
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0069
+    instance_id: pending_sweml_0069
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0070
+    instance_id: pending_sweml_0070
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0071
+    instance_id: pending_sweml_0071
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0072
+    instance_id: pending_sweml_0072
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0073
+    instance_id: pending_sweml_0073
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 31
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0074
+    instance_id: pending_sweml_0074
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 32
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0075
+    instance_id: pending_sweml_0075
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 33
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0076
+    instance_id: pending_sweml_0076
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 34
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0077
+    instance_id: pending_sweml_0077
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 35
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0078
+    instance_id: pending_sweml_0078
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 36
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0079
+    instance_id: pending_sweml_0079
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 37
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0080
+    instance_id: pending_sweml_0080
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 38
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0081
+    instance_id: pending_sweml_0081
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 39
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0082
+    instance_id: pending_sweml_0082
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 40
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0083
+    instance_id: pending_sweml_0083
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 41
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0084
+    instance_id: pending_sweml_0084
+    role: swebench_instance_image
+    required: true
+    language: Go
+    language_bucket: go
+    language_index: 42
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0085
+    instance_id: pending_sweml_0085
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0086
+    instance_id: pending_sweml_0086
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0087
+    instance_id: pending_sweml_0087
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0088
+    instance_id: pending_sweml_0088
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0089
+    instance_id: pending_sweml_0089
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0090
+    instance_id: pending_sweml_0090
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0091
+    instance_id: pending_sweml_0091
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0092
+    instance_id: pending_sweml_0092
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0093
+    instance_id: pending_sweml_0093
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0094
+    instance_id: pending_sweml_0094
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0095
+    instance_id: pending_sweml_0095
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0096
+    instance_id: pending_sweml_0096
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0097
+    instance_id: pending_sweml_0097
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0098
+    instance_id: pending_sweml_0098
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0099
+    instance_id: pending_sweml_0099
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0100
+    instance_id: pending_sweml_0100
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0101
+    instance_id: pending_sweml_0101
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0102
+    instance_id: pending_sweml_0102
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0103
+    instance_id: pending_sweml_0103
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0104
+    instance_id: pending_sweml_0104
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0105
+    instance_id: pending_sweml_0105
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0106
+    instance_id: pending_sweml_0106
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0107
+    instance_id: pending_sweml_0107
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0108
+    instance_id: pending_sweml_0108
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0109
+    instance_id: pending_sweml_0109
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0110
+    instance_id: pending_sweml_0110
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0111
+    instance_id: pending_sweml_0111
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0112
+    instance_id: pending_sweml_0112
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0113
+    instance_id: pending_sweml_0113
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0114
+    instance_id: pending_sweml_0114
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0115
+    instance_id: pending_sweml_0115
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 31
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0116
+    instance_id: pending_sweml_0116
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 32
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0117
+    instance_id: pending_sweml_0117
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 33
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0118
+    instance_id: pending_sweml_0118
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 34
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0119
+    instance_id: pending_sweml_0119
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 35
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0120
+    instance_id: pending_sweml_0120
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 36
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0121
+    instance_id: pending_sweml_0121
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 37
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0122
+    instance_id: pending_sweml_0122
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 38
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0123
+    instance_id: pending_sweml_0123
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 39
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0124
+    instance_id: pending_sweml_0124
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 40
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0125
+    instance_id: pending_sweml_0125
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 41
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0126
+    instance_id: pending_sweml_0126
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 42
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0127
+    instance_id: pending_sweml_0127
+    role: swebench_instance_image
+    required: true
+    language: Java
+    language_bucket: java
+    language_index: 43
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0128
+    instance_id: pending_sweml_0128
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0129
+    instance_id: pending_sweml_0129
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0130
+    instance_id: pending_sweml_0130
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0131
+    instance_id: pending_sweml_0131
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0132
+    instance_id: pending_sweml_0132
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0133
+    instance_id: pending_sweml_0133
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0134
+    instance_id: pending_sweml_0134
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0135
+    instance_id: pending_sweml_0135
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0136
+    instance_id: pending_sweml_0136
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0137
+    instance_id: pending_sweml_0137
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0138
+    instance_id: pending_sweml_0138
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0139
+    instance_id: pending_sweml_0139
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0140
+    instance_id: pending_sweml_0140
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0141
+    instance_id: pending_sweml_0141
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0142
+    instance_id: pending_sweml_0142
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0143
+    instance_id: pending_sweml_0143
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0144
+    instance_id: pending_sweml_0144
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0145
+    instance_id: pending_sweml_0145
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0146
+    instance_id: pending_sweml_0146
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0147
+    instance_id: pending_sweml_0147
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0148
+    instance_id: pending_sweml_0148
+    role: swebench_instance_image
+    required: true
+    language: JavaScript
+    language_bucket: javascript
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0149
+    instance_id: pending_sweml_0149
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0150
+    instance_id: pending_sweml_0150
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0151
+    instance_id: pending_sweml_0151
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0152
+    instance_id: pending_sweml_0152
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0153
+    instance_id: pending_sweml_0153
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0154
+    instance_id: pending_sweml_0154
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0155
+    instance_id: pending_sweml_0155
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0156
+    instance_id: pending_sweml_0156
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0157
+    instance_id: pending_sweml_0157
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0158
+    instance_id: pending_sweml_0158
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0159
+    instance_id: pending_sweml_0159
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0160
+    instance_id: pending_sweml_0160
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0161
+    instance_id: pending_sweml_0161
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0162
+    instance_id: pending_sweml_0162
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0163
+    instance_id: pending_sweml_0163
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0164
+    instance_id: pending_sweml_0164
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0165
+    instance_id: pending_sweml_0165
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0166
+    instance_id: pending_sweml_0166
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0167
+    instance_id: pending_sweml_0167
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0168
+    instance_id: pending_sweml_0168
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0169
+    instance_id: pending_sweml_0169
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0170
+    instance_id: pending_sweml_0170
+    role: swebench_instance_image
+    required: true
+    language: TypeScript
+    language_bucket: typescript
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0171
+    instance_id: pending_sweml_0171
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0172
+    instance_id: pending_sweml_0172
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0173
+    instance_id: pending_sweml_0173
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0174
+    instance_id: pending_sweml_0174
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0175
+    instance_id: pending_sweml_0175
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0176
+    instance_id: pending_sweml_0176
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0177
+    instance_id: pending_sweml_0177
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0178
+    instance_id: pending_sweml_0178
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0179
+    instance_id: pending_sweml_0179
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0180
+    instance_id: pending_sweml_0180
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0181
+    instance_id: pending_sweml_0181
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0182
+    instance_id: pending_sweml_0182
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0183
+    instance_id: pending_sweml_0183
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0184
+    instance_id: pending_sweml_0184
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0185
+    instance_id: pending_sweml_0185
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0186
+    instance_id: pending_sweml_0186
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0187
+    instance_id: pending_sweml_0187
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0188
+    instance_id: pending_sweml_0188
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0189
+    instance_id: pending_sweml_0189
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0190
+    instance_id: pending_sweml_0190
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0191
+    instance_id: pending_sweml_0191
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0192
+    instance_id: pending_sweml_0192
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0193
+    instance_id: pending_sweml_0193
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0194
+    instance_id: pending_sweml_0194
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0195
+    instance_id: pending_sweml_0195
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0196
+    instance_id: pending_sweml_0196
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0197
+    instance_id: pending_sweml_0197
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0198
+    instance_id: pending_sweml_0198
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0199
+    instance_id: pending_sweml_0199
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0200
+    instance_id: pending_sweml_0200
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0201
+    instance_id: pending_sweml_0201
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 31
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0202
+    instance_id: pending_sweml_0202
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 32
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0203
+    instance_id: pending_sweml_0203
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 33
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0204
+    instance_id: pending_sweml_0204
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 34
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0205
+    instance_id: pending_sweml_0205
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 35
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0206
+    instance_id: pending_sweml_0206
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 36
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0207
+    instance_id: pending_sweml_0207
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 37
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0208
+    instance_id: pending_sweml_0208
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 38
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0209
+    instance_id: pending_sweml_0209
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 39
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0210
+    instance_id: pending_sweml_0210
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 40
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0211
+    instance_id: pending_sweml_0211
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 41
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0212
+    instance_id: pending_sweml_0212
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 42
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0213
+    instance_id: pending_sweml_0213
+    role: swebench_instance_image
+    required: true
+    language: PHP
+    language_bucket: php
+    language_index: 43
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0214
+    instance_id: pending_sweml_0214
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0215
+    instance_id: pending_sweml_0215
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0216
+    instance_id: pending_sweml_0216
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0217
+    instance_id: pending_sweml_0217
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0218
+    instance_id: pending_sweml_0218
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0219
+    instance_id: pending_sweml_0219
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0220
+    instance_id: pending_sweml_0220
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0221
+    instance_id: pending_sweml_0221
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0222
+    instance_id: pending_sweml_0222
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0223
+    instance_id: pending_sweml_0223
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0224
+    instance_id: pending_sweml_0224
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0225
+    instance_id: pending_sweml_0225
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0226
+    instance_id: pending_sweml_0226
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0227
+    instance_id: pending_sweml_0227
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0228
+    instance_id: pending_sweml_0228
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0229
+    instance_id: pending_sweml_0229
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0230
+    instance_id: pending_sweml_0230
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0231
+    instance_id: pending_sweml_0231
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0232
+    instance_id: pending_sweml_0232
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0233
+    instance_id: pending_sweml_0233
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0234
+    instance_id: pending_sweml_0234
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0235
+    instance_id: pending_sweml_0235
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0236
+    instance_id: pending_sweml_0236
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0237
+    instance_id: pending_sweml_0237
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0238
+    instance_id: pending_sweml_0238
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0239
+    instance_id: pending_sweml_0239
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0240
+    instance_id: pending_sweml_0240
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0241
+    instance_id: pending_sweml_0241
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0242
+    instance_id: pending_sweml_0242
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0243
+    instance_id: pending_sweml_0243
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0244
+    instance_id: pending_sweml_0244
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 31
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0245
+    instance_id: pending_sweml_0245
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 32
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0246
+    instance_id: pending_sweml_0246
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 33
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0247
+    instance_id: pending_sweml_0247
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 34
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0248
+    instance_id: pending_sweml_0248
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 35
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0249
+    instance_id: pending_sweml_0249
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 36
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0250
+    instance_id: pending_sweml_0250
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 37
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0251
+    instance_id: pending_sweml_0251
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 38
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0252
+    instance_id: pending_sweml_0252
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 39
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0253
+    instance_id: pending_sweml_0253
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 40
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0254
+    instance_id: pending_sweml_0254
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 41
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0255
+    instance_id: pending_sweml_0255
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 42
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0256
+    instance_id: pending_sweml_0256
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 43
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0257
+    instance_id: pending_sweml_0257
+    role: swebench_instance_image
+    required: true
+    language: Ruby
+    language_bucket: ruby
+    language_index: 44
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0258
+    instance_id: pending_sweml_0258
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 1
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0259
+    instance_id: pending_sweml_0259
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 2
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0260
+    instance_id: pending_sweml_0260
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 3
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0261
+    instance_id: pending_sweml_0261
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 4
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0262
+    instance_id: pending_sweml_0262
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 5
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0263
+    instance_id: pending_sweml_0263
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 6
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0264
+    instance_id: pending_sweml_0264
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 7
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0265
+    instance_id: pending_sweml_0265
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 8
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0266
+    instance_id: pending_sweml_0266
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 9
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0267
+    instance_id: pending_sweml_0267
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 10
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0268
+    instance_id: pending_sweml_0268
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 11
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0269
+    instance_id: pending_sweml_0269
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 12
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0270
+    instance_id: pending_sweml_0270
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 13
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0271
+    instance_id: pending_sweml_0271
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 14
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0272
+    instance_id: pending_sweml_0272
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 15
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0273
+    instance_id: pending_sweml_0273
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 16
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0274
+    instance_id: pending_sweml_0274
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 17
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0275
+    instance_id: pending_sweml_0275
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 18
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0276
+    instance_id: pending_sweml_0276
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 19
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0277
+    instance_id: pending_sweml_0277
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 20
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0278
+    instance_id: pending_sweml_0278
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 21
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0279
+    instance_id: pending_sweml_0279
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 22
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0280
+    instance_id: pending_sweml_0280
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 23
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0281
+    instance_id: pending_sweml_0281
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 24
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0282
+    instance_id: pending_sweml_0282
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 25
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0283
+    instance_id: pending_sweml_0283
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 26
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0284
+    instance_id: pending_sweml_0284
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 27
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0285
+    instance_id: pending_sweml_0285
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 28
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0286
+    instance_id: pending_sweml_0286
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 29
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0287
+    instance_id: pending_sweml_0287
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 30
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0288
+    instance_id: pending_sweml_0288
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 31
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0289
+    instance_id: pending_sweml_0289
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 32
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0290
+    instance_id: pending_sweml_0290
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 33
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0291
+    instance_id: pending_sweml_0291
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 34
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0292
+    instance_id: pending_sweml_0292
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 35
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0293
+    instance_id: pending_sweml_0293
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 36
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0294
+    instance_id: pending_sweml_0294
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 37
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0295
+    instance_id: pending_sweml_0295
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 38
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0296
+    instance_id: pending_sweml_0296
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 39
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0297
+    instance_id: pending_sweml_0297
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 40
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0298
+    instance_id: pending_sweml_0298
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 41
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0299
+    instance_id: pending_sweml_0299
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 42
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
+  - id: sweml_pending_sweml_0300
+    instance_id: pending_sweml_0300
+    role: swebench_instance_image
+    required: true
+    language: Rust
+    language_bucket: rust
+    language_index: 43
+    source_ref_status: pending_dataset_snapshot
+    source_ref_pattern: swebench/sweb.eval.x86_64.<instance_id-normalized>:latest
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real instance image ref and transport proof are pending dataset snapshot and staging
