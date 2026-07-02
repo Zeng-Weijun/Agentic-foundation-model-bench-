@@ -1,0 +1,79 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: mcp_atlas
+generated_at: '2026-07-02'
+status: blocked_until_local_replay_smoke_assets_materialized
+full_ready: false
+description: Fail-closed MCP-Atlas local/replay smoke contract. This is not a full500 readiness claim.
+source:
+  official_repo: https://github.com/scaleapi/mcp-atlas.git
+  source_commit: b290e672645791fea0bcb23e2c0f4fec50715cca
+  source_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/sources/mcp-atlas
+dataset:
+  snapshot_script: scripts/snapshot_mcp_atlas_dataset.sh
+  hf_dataset: ScaleAI/MCP-Atlas
+  parquet_file: MCP-Atlas.parquet
+  expected_snapshot_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/datasets/ScaleAI-MCP-Atlas/MCP-Atlas.parquet
+  expected_full_task_count: 500
+  sample_task_count: 10
+  content_length: 15638757
+  etag: 89dcacffef7a52ab656bee3ccea653ab754f4314c63418956b483cf620966217
+expected_full_task_count: 500
+server_count: 36
+default_server_count: 20
+smoke_contract:
+  mode: smoke
+  max_tasks: 5
+  server_profile: local_replay_smoke
+  external_service_profile: replay
+  allowed_servers:
+  - calculator
+  - filesystem
+  - memory
+  - git
+  - mcp-code-executor
+  not_full500_claim: true
+  requires_agent_relay: true
+  requires_judge_relay: true
+  coverage_threshold: 0.75
+full_blockers:
+  requires_mirror_or_replay:
+  - arxiv
+  - ddg-search
+  - fetch
+  - pubmed
+  - weather
+  - wikipedia
+  - open-library
+  - osm-mcp-server
+  - met-museum
+  - exa
+  - brave-search
+  - alchemy
+  - twelvedata
+  - national-parks
+  - google-maps
+  - weather-data
+  - airtable
+  - google-workspace
+  - notion
+  - mongodb
+  - slack
+  missing:
+  - hf_parquet_snapshot_sha256_row_count
+  - runtime_image_p0_or_verified_fallback
+  - completion_eval_runner_env
+  - local_replay_fixture_bundle
+  - full500_server_closure_matrix
+images:
+- id: mcp_atlas_agent_environment_1_2_5
+  role: agent_environment_runtime
+  required: true
+  source_image: ghcr.io/scaleapi/mcp-atlas:1.2.5
+  oci_index_digest: sha256:415a532f1aeae911fbe2d337cde0657c345a937fab295989f6ef8c70c09c740f
+  linux_amd64_manifest_digest: sha256:17ebc85b99914125f61696bf3c1052b965d9b472ba7ba3d188b2d4513f0a4b62
+  p0_target_repo: 100.97.118.137:8555/swe-data-harness/mcp-atlas-agent-environment
+  p0_target_tag: 1.2.5-linux-amd64
+  fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/mcp_atlas/agent-environment_1.2.5_linux_amd64.tar
+  image_transport: missing
+  registry_status: missing_p0_digest_and_verified_fallback
+  blocker: runtime image has not been staged to P0 or verified fallback tar

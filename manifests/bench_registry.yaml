@@ -77,6 +77,11 @@ image_manifests:
     status: blocked_until_programbench_full200_tests_and_image_transport_staged
     policy: required_when_programbench_enabled
 
+  - id: mcp_atlas
+    path: images/mcp_atlas.yaml
+    status: blocked_until_local_replay_smoke_dataset_runtime_and_fixtures_staged
+    policy: required_when_mcp_atlas_smoke_enabled
+
   - id: pending_agentic_benches
     path: images/pending_benches.yaml
     status: manifest_gap_inventory
