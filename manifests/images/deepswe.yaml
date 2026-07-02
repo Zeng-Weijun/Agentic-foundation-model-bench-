@@ -1,19 +1,1048 @@
 schema_version: agentic_bench.image_manifest.v1
 bench_id: deepswe
-generated_at: "2026-06-25"
-status: missing_r2e_image_manifest
-evidence:
-  p0_inventory_report: reports/p0_harbor_bench_manifest_inventory_20260625.md
-  offline_gap_report: reports/all_bench_offline_gap_matrix_20260625.md
-known_blockers:
-  - exact_r2e_gym_or_pier_image_tags_not_enumerated
-  - no_deepswe_specific_shared_tar_found
-  - rootless_container_networking_not_proven_for_deepswe
-
+generated_at: "2026-07-02"
+status: blocked_until_r2e_pier_transport_materialized
+image_system: R2E/Pier task environment images
+description: >-
+  Fail-closed DeepSWE v1.1 image manifest skeleton. All 113 task
+  environment rows are required, but none has P0 digest proof or verified
+  fallback tar sha yet.
+source:
+  official_repo: https://github.com/datacurve-ai/deep-swe
+  source_commit: "578129c"
+  data_version: v1.1
+dataset:
+  snapshot_script: scripts/snapshot_deepswe_dataset.sh
+  expected_snapshot_dir: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/deepswe-v1.1
+  expected_task_count: 113
+expected_task_count: 113
+language_counts:
+  TypeScript: 35
+  Go: 34
+  Python: 34
+  Rust: 5
+  JavaScript: 5
+transport_policy:
+  required_for_full: true
+  no_worker_cache_fallback: true
+  accepted_proofs:
+    - p0_digest_ref
+    - verified_fallback_tar_sha256
 images:
-  - id: deepswe_r2e_images_todo
-    role: placeholder_until_r2e_enumeration
-    required: false
-    image_transport: todo
-    registry_status: missing
-    fallback_transport: none
+  - id: deepswe_abs-module-cache-flags
+    task_id: abs-module-cache-flags
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75679ajj3b8dtd7se3h7z0a1833y6r
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_abs-stepped-slices
+    task_id: abs-stepped-slices
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7d5m4ed35zfp7gyhx7wdahed82yw72
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_actionlint-action-pinning-lint
+    task_id: actionlint-action-pinning-lint
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79dnvkvq8j9bs22ededmsc79823akj
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_adaptix-name-mapping-aliases
+    task_id: adaptix-name-mapping-aliases
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73dq4n55jdxasppe6jjmth4183d47n
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_aiomonitor-task-snapshots-diff
+    task_id: aiomonitor-task-snapshots-diff
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75rc2q0zhmsqwk7wewfwwtrx830v2n
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_anko-default-function-arguments
+    task_id: anko-default-function-arguments
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7fj3hc92zehtc8azrm32xzb182w9dr
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_anko-typed-variable-bindings
+    task_id: anko-typed-variable-bindings
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79betfed7ets4an20cr4j57182y9wt
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_arcane-drift-detection-baselines
+    task_id: arcane-drift-detection-baselines
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70nj38qyatmsmj1d5zh57j25820vrx
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_arktype-json-schema-refs-dependencies
+    task_id: arktype-json-schema-refs-dependencies
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh771gpr8crkjsnt9pj81bafgs8229em
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_awilix-async-container-initialization
+    task_id: awilix-async-container-initialization
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70bg8gy4xks4eyh1s71ecmk9822p9c
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_bandit-incremental-cache-control
+    task_id: bandit-incremental-cache-control
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7drfg2vkvdvfh9xx0nfd5pz9821xr7
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_bandit-interprocedural-taint-checks
+    task_id: bandit-interprocedural-taint-checks
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77yap0nc4zwm5bysc954xbr182tptg
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_bandit-structured-nosec-directives
+    task_id: bandit-structured-nosec-directives
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh757d8ggvnfaszv8zcav3msy982ma7f
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_boa-hierarchical-evaluation-cancellation
+    task_id: boa-hierarchical-evaluation-cancellation
+    role: task_environment
+    required: true
+    language: rust
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71kat2v58yys3pnyybkgycax832vj2
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_cattrs-partial-structuring-recovery
+    task_id: cattrs-partial-structuring-recovery
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7f7cahc5ddm1qzpxz13kpmrh8235pc
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_clack-async-autocomplete-options
+    task_id: clack-async-autocomplete-options
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh78c5dwwna57y757p2y5ktw79836dnv
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_claude-code-by-agents-recursive-delegation
+    task_id: claude-code-by-agents-recursive-delegation
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh734ehfw2s3bztf7pzc9xf3x18212bs
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_cliffy-config-file-parsing
+    task_id: cliffy-config-file-parsing
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72088pg9vkc6peacnkc35yy9832jff
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_csstree-shorthand-expansion-compression
+    task_id: csstree-shorthand-expansion-compression
+    role: task_environment
+    required: true
+    language: javascript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72qraccnjwdet6ynagsccr4x82y65c
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_dasel-html-document-format
+    task_id: dasel-html-document-format
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7c7rrg3zke74w7068nawak9x82t6am
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_dateutil-rfc5545-timezone-interop
+    task_id: dateutil-rfc5545-timezone-interop
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7czqrrmrm1vnwfx1nhtjh9as833esn
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_drizzle-orm-window-function-builders
+    task_id: drizzle-orm-window-function-builders
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70cshdjenz3z5gq2wrqzhjmn82xbb0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_dynamodb-toolbox-conditional-attribute-requirements
+    task_id: dynamodb-toolbox-conditional-attribute-requirements
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79xyw12drtaz3reht4enc2hs83ef6v
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_dynamodb-toolbox-lazy-recursive-schemas
+    task_id: dynamodb-toolbox-lazy-recursive-schemas
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72mtcjbhgxmwq036jccx77dh83dj5n
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_effect-sse-httpapi-streaming
+    task_id: effect-sse-httpapi-streaming
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ajcjberhnnhk914qezwwt0x830v6v
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_eicrud-keyset-pagination-cursor
+    task_id: eicrud-keyset-pagination-cursor
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79vgnwnp3wfz0b63ft8zbs81822re8
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_etree-xml-diff-patch
+    task_id: etree-xml-diff-patch
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7e0e2z02keqh6j7db6bcg1c9822140
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_expr-try-catch-errors
+    task_id: expr-try-catch-errors
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71gkadwafw4ry4r6g37era0182qpms
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_fastapi-deprecation-response-headers
+    task_id: fastapi-deprecation-response-headers
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75azsnb5eqs3mf4xm0zkzha582rvcd
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_fastapi-implicit-head-options
+    task_id: fastapi-implicit-head-options
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7191qb52n5pfwh0a4yhahmt18343sn
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_fd-deterministic-multi-key-sorting
+    task_id: fd-deterministic-multi-key-sorting
+    role: task_environment
+    required: true
+    language: rust
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79s1ny2ab454f8caet44rv5n82za06
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_geo-shapeindex-serialization
+    task_id: geo-shapeindex-serialization
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74gd4v9cty7573mr6k7va39183ngrq
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_go-critic-doc-link-checker
+    task_id: go-critic-doc-link-checker
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh727w7pxd9cv476t3cxptxcg182e1e5
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_go-genai-streamed-function-args
+    task_id: go-genai-streamed-function-args
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ahy57bb3jmdjzmbvq257swh8353nm
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_go-git-worktree-merge-conflicts
+    task_id: go-git-worktree-merge-conflicts
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7bnb92eb32zvxx50fzjnshes822db0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_goreleaser-retry-publish-auditing
+    task_id: goreleaser-retry-publish-auditing
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7cc4hqw7wb87h3kwwnkq0pv1830gjz
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_gql-incremental-graphql-delivery
+    task_id: gql-incremental-graphql-delivery
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79vjbp8dv1pyk7t09zdb9xx9821628
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_happy-dom-abort-pending-body-reads
+    task_id: happy-dom-abort-pending-body-reads
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7c2re7cvbseq7xz6samd1xr182y1dc
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_happy-dom-deterministic-intersectionobserver
+    task_id: happy-dom-deterministic-intersectionobserver
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75ggdejhnymjbhkbtkxvhz758352br
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_helm-array-merge-strategies
+    task_id: helm-array-merge-strategies
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72a3qcr0kjpdr153havavn8s83bx8t
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_helm-unified-manifest-stream
+    task_id: helm-unified-manifest-stream
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7dvkse99x41x83c5z6f2eq7n82w8fm
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_httpx-deterministic-cookie-store
+    task_id: httpx-deterministic-cookie-store
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ccr1w93zymhy42k5hs2m9w1831xpx
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_httpx-multipart-response-parsing
+    task_id: httpx-multipart-response-parsing
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7fr6f1yw1289ye5ttsfvaqen8319dq
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_httpx-streaming-json-iteration
+    task_id: httpx-streaming-json-iteration
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73snc7v9x3psk69rg4eqvjgs836v5a
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_igel-persist-feature-schema
+    task_id: igel-persist-feature-schema
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7brwh7cv23ggeshkz85ac5fx831x5k
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_ink-grid-box-layout
+    task_id: ink-grid-box-layout
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75wxkjyha9441e7m9tpetb2582mn63
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_ipython-session-bundle-replay
+    task_id: ipython-session-bundle-replay
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh75kn07w0t92m4xxd3dy0cgp982jz6m
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_katex-multicolumn-array-spans
+    task_id: katex-multicolumn-array-spans
+    role: task_environment
+    required: true
+    language: javascript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7fkjmy67qny9z98mt6bj52m182ygdy
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kcp-go-multiplexed-kcp-streams
+    task_id: kcp-go-multiplexed-kcp-streams
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72w47mwm321wh9xj47vskc8d822e9t
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kea-atomic-signal-selectors
+    task_id: kea-atomic-signal-selectors
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7anwezzyc0zgk160c9peh13n82r12z
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kgateway-consistent-hash-policy
+    task_id: kgateway-consistent-hash-policy
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74gnp94dw8fx3h047h4m4ht9830bat
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kombu-single-active-consumer-priority
+    task_id: kombu-single-active-consumer-priority
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71vrtr4b1jj5vavv6aybnvjd83pcar
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kombu-virtual-queue-dead-lettering
+    task_id: kombu-virtual-queue-dead-lettering
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72pgvncj82fnbfq2bvmy1qs183jdc5
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_koota-composite-trait-aspects
+    task_id: koota-composite-trait-aspects
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh705e1hgmtj22pyetcmqa8ygs83bh33
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_koota-deferred-mutation-buffer
+    task_id: koota-deferred-mutation-buffer
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7evrvtwkk64hraqvefgx9ndd821j43
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_koota-entity-snapshot-rollback
+    task_id: koota-entity-snapshot-rollback
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71b98xenay7p45357036xq5x82tcdf
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_koota-pair-relation-tracking
+    task_id: koota-pair-relation-tracking
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7cshjqfe84fmtb2ye37nrd6h82dds6
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_koota-query-predicates
+    task_id: koota-query-predicates
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7dkes3xb054yt1fd3g6nym5s83bz2h
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_kysely-window-grouping-helpers
+    task_id: kysely-window-grouping-helpers
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh799f394epg9pb2j9fhzky98183e8ec
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_langchain-request-coalescing
+    task_id: langchain-request-coalescing
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71y4gxtry9p0m42wvg4th515831mwz
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_mashumaro-flattened-dataclass-fields
+    task_id: mashumaro-flattened-dataclass-fields
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70k6aj3y457hgtraar0rmgdn822qx8
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_meriyah-explicit-resource-declarations
+    task_id: meriyah-explicit-resource-declarations
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7398skqnxqwg9hbmdj7ncmk1822aa0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_mnamer-daemon-watch-lifecycle
+    task_id: mnamer-daemon-watch-lifecycle
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71jf6d7mtqaw5z1h69krrarx820dys
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_mobly-grouped-test-barriers
+    task_id: mobly-grouped-test-barriers
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74b2m0tjfn59vq8btqrj774s821570
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_narwhals-rolling-window-suite
+    task_id: narwhals-rolling-window-suite
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7987m8hz4g19ngkk2zfe3v4n82y0e2
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_numba-stencil-boundary-modes
+    task_id: numba-stencil-boundary-modes
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ag6w2nh5a47ta6bg7hj2mk1823qwj
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_obsidian-linter-auto-table-of-contents
+    task_id: obsidian-linter-auto-table-of-contents
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74j15mp1vrxx737y8b47tc8h832a37
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_obsidian-linter-link-format-conversion
+    task_id: obsidian-linter-link-format-conversion
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7anfdjd1c4e5ejxncny0j1ed82xjm4
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_obsidian-linter-scoped-ignore-markers
+    task_id: obsidian-linter-scoped-ignore-markers
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7fmf1y6r9ajpg3htmaj237h182vztd
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_ofetch-per-origin-circuit-breaker
+    task_id: ofetch-per-origin-circuit-breaker
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7aq6h38q4e91mragyvr8cd3n82xxxr
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_onedump-dump-encryption-pipeline
+    task_id: onedump-dump-encryption-pipeline
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73t6ych6s1a4vtkbgr61ecr1823tt2
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_opa-rego-rule-profiling
+    task_id: opa-rego-rule-profiling
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh78zjag0xnxppgym5v4sshav982y8s4
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_opa-template-string-reconstruction
+    task_id: opa-template-string-reconstruction
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7eq7eek21pjhv1zx8c2cmmed82yd7v
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_optique-conditional-option-dependencies
+    task_id: optique-conditional-option-dependencies
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79vadftp8bjw2qzqjw8a0b9s82ytpj
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_oxvg-structural-selector-preservation
+    task_id: oxvg-structural-selector-preservation
+    role: task_environment
+    required: true
+    language: rust
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh749pxv8w35vksyfhe7p8tg8x82p0vg
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_participle-grammar-conflict-analysis
+    task_id: participle-grammar-conflict-analysis
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74m2j63pskf6htk1sxxevvv1823hvd
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_pebble-durability-wait-apis
+    task_id: pebble-durability-wait-apis
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh786tyr77qk4ycrz24nm2kynh82zaam
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_pest-character-class-coalescing
+    task_id: pest-character-class-coalescing
+    role: task_environment
+    required: true
+    language: rust
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7bmp04pqht2pcvp8qce1afm582ph2j
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_prometheus-transactional-reload-status
+    task_id: prometheus-transactional-reload-status
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7faaexjnnv9h4vt84e0r1v4d82qtv7
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_prometheus-typed-label-sorting
+    task_id: prometheus-typed-label-sorting
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh76dadw64v8013j689380xsg182yhfc
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_psd-tools-blend-range-api
+    task_id: psd-tools-blend-range-api
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh72dq33t9djm894gqagmgpkhd82yvjv
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_pwntools-tube-multiplexing
+    task_id: pwntools-tube-multiplexing
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74mb9dzz76a6zgdqmmf5mvk1833cnk
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_python-statemachine-state-data-scoping
+    task_id: python-statemachine-state-data-scoping
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh719np6e210pf8skawv132rw183pfyy
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_query-persist-restored-query-state
+    task_id: query-persist-restored-query-state
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh76g3pdaddrcg12k7jse0xrzn83a5fd
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_quill-shared-toolbar-focus
+    task_id: quill-shared-toolbar-focus
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73sgee6751fmh72hwwctyscx832frj
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_returns-validated-error-accumulation
+    task_id: returns-validated-error-accumulation
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh754n098chwgtm24jakheqsw5833ec6
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_scc-bounded-memory-spilling
+    task_id: scc-bounded-memory-spilling
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71j0gr2axgn6v1f92cam6s6x82rkv6
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_scriggo-method-declarations
+    task_id: scriggo-method-declarations
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7adk413brr6nnvzntz1qvb51833me1
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_skrub-duration-encoding
+    task_id: skrub-duration-encoding
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77y2107s6xkqyf61mj1dsm0983kmp1
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_sql-formatter-bigquery-pipe-formatting
+    task_id: sql-formatter-bigquery-pipe-formatting
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh712k0bfwxew9fvg12k70g59n83pw33
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_sqlfmt-create-table-ddl-formatting
+    task_id: sqlfmt-create-table-ddl-formatting
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh71t2fb7qvx4y0svvv77e5p3182hnvq
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_sqlite-utils-safe-import-checkpoints
+    task_id: sqlite-utils-safe-import-checkpoints
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73xpqyc0vqx9prf3m106nqe5821dcb
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_superjson-error-stack-serialization
+    task_id: superjson-error-stack-serialization
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh701jywhzgddknqwzsq6npjv98226tq
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_task-task-graph-export
+    task_id: task-task-graph-export
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ejvdhks3x059j6jwfncaj4982yxrv
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_tengo-callable-instance-isolation
+    task_id: tengo-callable-instance-isolation
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77n9t7ybdq9387d08jzdp1y183ffe6
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_tengo-destructuring-bindings
+    task_id: tengo-destructuring-bindings
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ajwvesks1d5kkpeqx7y79sd8238zn
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_termenv-preserve-ansi-resets
+    task_id: termenv-preserve-ansi-resets
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh731cskx45z0t0961464d9ezx8220nt
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_testem-bail-on-test-failure
+    task_id: testem-bail-on-test-failure
+    role: task_environment
+    required: true
+    language: javascript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77k18d31qx7jj0c7nyv0xd8s82cznp
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_testem-per-launcher-reports
+    task_id: testem-per-launcher-reports
+    role: task_environment
+    required: true
+    language: javascript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7322qjz1xfjspavxy0kamf9h83277p
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_textual-kitty-key-phases
+    task_id: textual-kitty-key-phases
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7b36e22me6fzbav0na7kt14h82wk1m
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_textual-richlog-follow-state
+    task_id: textual-richlog-follow-state
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70247kxfz01g03p1dpz9fqv183g47e
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_tomlkit-toml-table-converters
+    task_id: tomlkit-toml-table-converters
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7ezsk4ze1jyjta967ypwnxhh83etpm
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_true-myth-iterable-collection-combinators
+    task_id: true-myth-iterable-collection-combinators
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh74r2t7kdnt7h2efdk0hf5asx82zr0s
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_ts-pattern-match-each
+    task_id: ts-pattern-match-each
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh724kgmvy32trvakc1q6a6sa583fdx7
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_updo-policy-alerting
+    task_id: updo-policy-alerting
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7dk7mmh6ewnyc9h46wyag19d831gmy
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_valibot-recursive-schema-composition
+    task_id: valibot-recursive-schema-composition
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77krxpg096a66tm8s8ztcarn82zzyv
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_vitest-duration-sharding
+    task_id: vitest-duration-sharding
+    role: task_environment
+    required: true
+    language: typescript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh788hvxvxaz825205djm3ctth822xms
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_vulture-persistent-analysis-cache
+    task_id: vulture-persistent-analysis-cache
+    role: task_environment
+    required: true
+    language: python
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7992s6336c7yhv34x198jqy182zpmt
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_wasmi-trap-coredumps
+    task_id: wasmi-trap-coredumps
+    role: task_environment
+    required: true
+    language: rust
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh70h37djmvc9ac48jeh25gwz582xgqv
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_wazero-multi-module-snapshots
+    task_id: wazero-multi-module-snapshots
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77sbk25h3f5383rz7xqx98th822fd4
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_yaegi-go-embed-directives
+    task_id: yaegi-go-embed-directives
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh73faxghpn90rtyxsrjmpjpsx83f4ws
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_yjs-map-conflict-detection
+    task_id: yjs-map-conflict-detection
+    role: task_environment
+    required: true
+    language: javascript
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh7fwz4nedevfex8ssk2p8xbt9836scp
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar
+  - id: deepswe_ytt-jsonpath-query-api
+    task_id: ytt-jsonpath-query-api
+    role: task_environment
+    required: true
+    language: go
+    source_image: public.ecr.aws/d3j8x8q7/swe-bench-202605:kh77w0w2z8qs6m904k2hs9eg058325j8
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: task image has not been staged to P0 or verified fallback tar

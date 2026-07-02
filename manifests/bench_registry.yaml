@@ -54,14 +54,14 @@ image_manifests:
 
   - id: deepswe
     path: images/deepswe.yaml
-    status: missing_r2e_image_enumeration
-    policy: optional_until_r2e_manifest_exists
+    status: blocked_until_r2e_pier_transport_materialized
+    policy: required_when_deepswe_enabled
+
 
   - id: tau3_bench
     path: images/tau3.yaml
     status: blocked_until_full_transport_materialized
     policy: required_when_tau3_enabled
-
 
   - id: pending_agentic_benches
     path: images/pending_benches.yaml
