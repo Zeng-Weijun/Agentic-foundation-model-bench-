@@ -1,0 +1,1424 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: nl2repo
+generated_at: "2026-07-02"
+status: blocked_until_openhands_task_transport_materialized
+image_system: EnvCommons task images plus OpenHands app/runtime images
+description: >-
+  Fail-closed NL2Repo image manifest skeleton. The 104 task rows are
+  deterministic placeholders until the pinned dataset snapshot/EnvCommons
+  prepare_data output derives real project names and image refs.
+source:
+  upstream_repo: https://github.com/multimodal-art-projection/NL2RepoBench.git
+  upstream_commit: 781a1da1ee41fb8edb0bed22f586d69111610edf
+  envcommons_repo: https://github.com/EnvCommons/NL2RepoBench.git
+  envcommons_commit: 61d26cc0abd084ece8f5d805dcbd3f806a291f15
+dataset:
+  snapshot_script: scripts/snapshot_nl2repo_dataset.sh
+  expected_snapshot_dir: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/nl2repo-20260702
+  task_count_upstream: 104
+  task_count_envcommons_executable: 103
+  excluded_envcommons_task: arxiv-mcp-server
+expected_task_count_upstream: 104
+expected_task_count_envcommons_executable: 103
+expected_image_count: 108
+declared_test_count: 25640
+task_list_sha256: 88d33cf19a9e01ecbe5acee306cdeda7b148e11c821e1bc46f45d07392af197f
+wheelhouse_required: true
+wheelhouse:
+  required_for_worker: true
+  status: missing
+  expected_manifest: manifests/wheelhouse/nl2repo_20260702.yaml
+  no_public_index_policy: true
+openhands_runtime:
+  refs:
+    - docker.all-hands.dev/all-hands-ai/openhands:0.49
+    - docker.all-hands.dev/all-hands-ai/runtime:0.49-nikolaik
+    - docker.all-hands.dev/all-hands-ai/openhands:0.56
+    - docker.all-hands.dev/all-hands-ai/runtime:0.56-nikolaik
+transport_policy:
+  required_for_full: true
+  no_worker_cache_fallback: true
+  accepted_proofs:
+    - p0_digest_ref
+    - verified_fallback_tar_sha256
+images:
+  - id: nl2repo_pending_nl2repo_001
+    task_id: pending_nl2repo_001
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_002
+    task_id: pending_nl2repo_002
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_003
+    task_id: pending_nl2repo_003
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_004
+    task_id: pending_nl2repo_004
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_005
+    task_id: pending_nl2repo_005
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_006
+    task_id: pending_nl2repo_006
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_007
+    task_id: pending_nl2repo_007
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_008
+    task_id: pending_nl2repo_008
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_009
+    task_id: pending_nl2repo_009
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_010
+    task_id: pending_nl2repo_010
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 10
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_011
+    task_id: pending_nl2repo_011
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 11
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_012
+    task_id: pending_nl2repo_012
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 12
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_013
+    task_id: pending_nl2repo_013
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 13
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_014
+    task_id: pending_nl2repo_014
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 14
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_015
+    task_id: pending_nl2repo_015
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 15
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_016
+    task_id: pending_nl2repo_016
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 16
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_017
+    task_id: pending_nl2repo_017
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 17
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_018
+    task_id: pending_nl2repo_018
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 18
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_019
+    task_id: pending_nl2repo_019
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 19
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_020
+    task_id: pending_nl2repo_020
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 20
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_021
+    task_id: pending_nl2repo_021
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 21
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_022
+    task_id: pending_nl2repo_022
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 22
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_023
+    task_id: pending_nl2repo_023
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 23
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_024
+    task_id: pending_nl2repo_024
+    role: task_environment
+    required: true
+    category: "System Tools"
+    category_slug: system-tools
+    category_index: 24
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_025
+    task_id: pending_nl2repo_025
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_026
+    task_id: pending_nl2repo_026
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_027
+    task_id: pending_nl2repo_027
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_028
+    task_id: pending_nl2repo_028
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_029
+    task_id: pending_nl2repo_029
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_030
+    task_id: pending_nl2repo_030
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_031
+    task_id: pending_nl2repo_031
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_032
+    task_id: pending_nl2repo_032
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_033
+    task_id: pending_nl2repo_033
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_034
+    task_id: pending_nl2repo_034
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 10
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_035
+    task_id: pending_nl2repo_035
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 11
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_036
+    task_id: pending_nl2repo_036
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 12
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_037
+    task_id: pending_nl2repo_037
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 13
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_038
+    task_id: pending_nl2repo_038
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 14
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_039
+    task_id: pending_nl2repo_039
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 15
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_040
+    task_id: pending_nl2repo_040
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 16
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_041
+    task_id: pending_nl2repo_041
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 17
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_042
+    task_id: pending_nl2repo_042
+    role: task_environment
+    required: true
+    category: "Data Analysis & Processing"
+    category_slug: data-analysis-processing
+    category_index: 18
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_043
+    task_id: pending_nl2repo_043
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_044
+    task_id: pending_nl2repo_044
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_045
+    task_id: pending_nl2repo_045
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_046
+    task_id: pending_nl2repo_046
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_047
+    task_id: pending_nl2repo_047
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_048
+    task_id: pending_nl2repo_048
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_049
+    task_id: pending_nl2repo_049
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_050
+    task_id: pending_nl2repo_050
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_051
+    task_id: pending_nl2repo_051
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_052
+    task_id: pending_nl2repo_052
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 10
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_053
+    task_id: pending_nl2repo_053
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 11
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_054
+    task_id: pending_nl2repo_054
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 12
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_055
+    task_id: pending_nl2repo_055
+    role: task_environment
+    required: true
+    category: "Testing"
+    category_slug: testing
+    category_index: 13
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_056
+    task_id: pending_nl2repo_056
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_057
+    task_id: pending_nl2repo_057
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_058
+    task_id: pending_nl2repo_058
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_059
+    task_id: pending_nl2repo_059
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_060
+    task_id: pending_nl2repo_060
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_061
+    task_id: pending_nl2repo_061
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_062
+    task_id: pending_nl2repo_062
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_063
+    task_id: pending_nl2repo_063
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_064
+    task_id: pending_nl2repo_064
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_065
+    task_id: pending_nl2repo_065
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 10
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_066
+    task_id: pending_nl2repo_066
+    role: task_environment
+    required: true
+    category: "Utility Libraries"
+    category_slug: utility-libraries
+    category_index: 11
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_067
+    task_id: pending_nl2repo_067
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_068
+    task_id: pending_nl2repo_068
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_069
+    task_id: pending_nl2repo_069
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_070
+    task_id: pending_nl2repo_070
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_071
+    task_id: pending_nl2repo_071
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_072
+    task_id: pending_nl2repo_072
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_073
+    task_id: pending_nl2repo_073
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_074
+    task_id: pending_nl2repo_074
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_075
+    task_id: pending_nl2repo_075
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_076
+    task_id: pending_nl2repo_076
+    role: task_environment
+    required: true
+    category: "Web Development"
+    category_slug: web-development
+    category_index: 10
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_077
+    task_id: pending_nl2repo_077
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_078
+    task_id: pending_nl2repo_078
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_079
+    task_id: pending_nl2repo_079
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_080
+    task_id: pending_nl2repo_080
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_081
+    task_id: pending_nl2repo_081
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_082
+    task_id: pending_nl2repo_082
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_083
+    task_id: pending_nl2repo_083
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_084
+    task_id: pending_nl2repo_084
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 8
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_085
+    task_id: pending_nl2repo_085
+    role: task_environment
+    required: true
+    category: "Networking Tools"
+    category_slug: networking-tools
+    category_index: 9
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_086
+    task_id: pending_nl2repo_086
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_087
+    task_id: pending_nl2repo_087
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_088
+    task_id: pending_nl2repo_088
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_089
+    task_id: pending_nl2repo_089
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_090
+    task_id: pending_nl2repo_090
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_091
+    task_id: pending_nl2repo_091
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_092
+    task_id: pending_nl2repo_092
+    role: task_environment
+    required: true
+    category: "Database Interaction"
+    category_slug: database-interaction
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_093
+    task_id: pending_nl2repo_093
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_094
+    task_id: pending_nl2repo_094
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_095
+    task_id: pending_nl2repo_095
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_096
+    task_id: pending_nl2repo_096
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_097
+    task_id: pending_nl2repo_097
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_098
+    task_id: pending_nl2repo_098
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 6
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_099
+    task_id: pending_nl2repo_099
+    role: task_environment
+    required: true
+    category: "Machine Learning"
+    category_slug: machine-learning
+    category_index: 7
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_100
+    task_id: pending_nl2repo_100
+    role: task_environment
+    required: true
+    category: "Batch File Processing"
+    category_slug: batch-file-processing
+    category_index: 1
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_101
+    task_id: pending_nl2repo_101
+    role: task_environment
+    required: true
+    category: "Batch File Processing"
+    category_slug: batch-file-processing
+    category_index: 2
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_102
+    task_id: pending_nl2repo_102
+    role: task_environment
+    required: true
+    category: "Batch File Processing"
+    category_slug: batch-file-processing
+    category_index: 3
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_103
+    task_id: pending_nl2repo_103
+    role: task_environment
+    required: true
+    category: "Batch File Processing"
+    category_slug: batch-file-processing
+    category_index: 4
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_pending_nl2repo_104
+    task_id: pending_nl2repo_104
+    role: task_environment
+    required: true
+    category: "Batch File Processing"
+    category_slug: batch-file-processing
+    category_index: 5
+    source_ref_status: pending_envcommons_prepare_data
+    source_ref_pattern: ghcr.io/multimodal-art-projection/nl2repobench/<project_name>:1.0
+    dockerhub_ref_pattern: generalreasoning/nl2repobench-<project_name>:1.0
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: real task image ref and transport proof are pending dataset snapshot/staging
+  - id: nl2repo_openhands_app_0_49
+    role: openhands_app
+    required: true
+    source_ref: docker.all-hands.dev/all-hands-ai/openhands:0.49
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: OpenHands app/runtime image has not been staged to P0 or verified fallback tar
+  - id: nl2repo_openhands_runtime_0_49
+    role: openhands_runtime
+    required: true
+    source_ref: docker.all-hands.dev/all-hands-ai/runtime:0.49-nikolaik
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: OpenHands app/runtime image has not been staged to P0 or verified fallback tar
+  - id: nl2repo_openhands_app_0_56
+    role: openhands_app
+    required: true
+    source_ref: docker.all-hands.dev/all-hands-ai/openhands:0.56
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: OpenHands app/runtime image has not been staged to P0 or verified fallback tar
+  - id: nl2repo_openhands_runtime_0_56
+    role: openhands_runtime
+    required: true
+    source_ref: docker.all-hands.dev/all-hands-ai/runtime:0.56-nikolaik
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    blocker: OpenHands app/runtime image has not been staged to P0 or verified fallback tar

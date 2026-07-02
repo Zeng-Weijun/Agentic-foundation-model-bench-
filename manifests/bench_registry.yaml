@@ -67,6 +67,11 @@ image_manifests:
     status: blocked_until_full300_transport_materialized
     policy: required_when_swemultilingual_enabled
 
+  - id: nl2repo
+    path: images/nl2repo.yaml
+    status: blocked_until_openhands_task_transport_materialized
+    policy: required_when_nl2repo_enabled
+
 
   - id: pending_agentic_benches
     path: images/pending_benches.yaml
