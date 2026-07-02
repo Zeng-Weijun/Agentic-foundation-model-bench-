@@ -57,6 +57,12 @@ image_manifests:
     status: missing_r2e_image_enumeration
     policy: optional_until_r2e_manifest_exists
 
+  - id: tau3_bench
+    path: images/tau3.yaml
+    status: blocked_until_full_transport_materialized
+    policy: required_when_tau3_enabled
+
+
   - id: pending_agentic_benches
     path: images/pending_benches.yaml
     status: manifest_gap_inventory

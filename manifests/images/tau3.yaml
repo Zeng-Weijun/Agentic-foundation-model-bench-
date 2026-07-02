@@ -1,0 +1,43 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tau3_bench
+generated_at: "2026-07-02"
+status: blocked_until_full_transport_materialized
+description: >-
+  Fail-closed tau3-bench full transport skeleton. Current repo work has smoke
+  image evidence elsewhere, but the full 375-task Harbor runtime still needs
+  prebuilt main/runtime images with P0 digests or verified fallback tar hashes.
+source:
+  official_repo: https://github.com/sierra-research/tau2-bench.git
+  official_ref: v1.0.0
+  official_commit: 17e07b1da2bbc0cadfddeea36412686e0604127b
+dataset:
+  snapshot_script: scripts/snapshot_tau3_dataset.sh
+  expected_snapshot_dir: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/tau3-v1.0.0
+  expected_task_count: 375
+expected_task_count: 375
+domain_counts:
+  airline: 50
+  retail: 114
+  telecom: 114
+  banking_knowledge: 97
+transport_policy:
+  required_for_full: true
+  no_worker_cache_fallback: true
+  accepted_proofs:
+    - p0_digest_ref
+    - verified_fallback_tar_sha256
+images:
+  - id: tau3_full_main_runtime_pending
+    role: harbor_task_main_runtime
+    required: true
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    source: generated Harbor task environment Dockerfiles
+    blocker: full 375-task main runtime image has not been baked or staged
+  - id: tau3_full_mcp_runtime_pending
+    role: tau3_runtime_mcp_sidecar
+    required: true
+    image_transport: missing
+    registry_status: missing_p0_digest_and_verified_fallback
+    source: generated Harbor runtime-server Dockerfiles
+    blocker: tau3 user-simulator MCP sidecar image has not been baked or staged
