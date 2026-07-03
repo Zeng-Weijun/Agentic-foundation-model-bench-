@@ -9,12 +9,12 @@ Source: `swev_gold_full500_20260702/gold_results.jsonl` → **432 resolved + 53 
 ## 3-part ledger (current)
 | Bucket | Count |
 |---|---|
-| **offline-PASSED** | **486** |
-| **① offline-induced (identified, fix-pending)** | **14** |
+| **offline-PASSED** | **487** |
+| **① offline-induced (identified, fix-pending)** | **13** |
 | **② upstream-archived** | **0** |
 | **TOTAL** | **500** |
 
-`offline-PASSED 486 = 432 native (tmpfs) + 52 disk-storage-fixed + 2 Pod-B privileged-revalidated (psf__requests-2931, psf__requests-5414)`
+`offline-PASSED 487 = 432 native (tmpfs) + 52 disk-storage-fixed + 3 Pod-B (psf__requests-2931, psf__requests-5414 revalidated; pylint-dev__pylint-4661 backfill-fixed via internal-pip-mirror image bake)`
 
 ---
 
@@ -27,7 +27,7 @@ Source: `swev_gold_full500_20260702/gold_results.jsonl` → **432 resolved + 53 
 - (Re-validated 56 total incl. 3 non-error xarray that also pass; the 53 "error" → 52 fixed + matplotlib-20488 below.)
 - Artifacts: `swev_gold_disk_revalidate_20260702/diskval_results.jsonl` (offline scores).
 
-## C. 14 offline-induced (identified, fix-pending) — NONE upstream
+## C. 13 offline-induced (identified, fix-pending) — NONE upstream
 (2 of the original 16 — psf__requests-2931, psf__requests-5414 — flipped to offline-PASSED via Pod-B privileged-stack re-validation; see section E.)
 = matplotlib-20488 (from the 53 error) + the 15 resolved_false. Classified by failing-test evidence; SWE-bench Verified guarantees official resolvability, so any failure is our env/offline deviation.
 
@@ -75,4 +75,10 @@ Re-ran the 16 offline-induced gold instances on the NEW privileged **fuse-overla
 - Evidence: `agentic-foundation-model-bench/repo/reports/swev_gold16_podb_revalidate_20260703.md`; run dir `swev_gold16_podb_revalidate_85_20260703/` (per-instance `report.json`; `results.jsonl`).
 - **2/16 RESOLVED offline on the privileged stack → flipped to offline-PASSED**: `psf__requests-2931`, `psf__requests-5414` (offline-safe timeout/error tests; the old rootless-vfs-tmpfs stack was losing them).
 - **14/16 still unresolved (remain offline-induced, fix-pending)**: 8 network (`psf__requests-1724/1766/1921/2317` httpbin, `sphinx-doc__sphinx-7985/8269/8475` linkcheck, `matplotlib__matplotlib-20488` HTTPS) + 6 env (`astropy__astropy-7606/8707/8872`, `django__django-10097`, `pylint-dev__pylint-4661`, `sphinx-doc__sphinx-10435`). All gold patches applied cleanly; failures are live-network / env deps, NOT upstream bugs. Backfill in progress.
+
+## F. Backfill progress (rolling) — 14 remaining offline-induced
+Mechanism (env/pip cases): eval pip step hits offline wall on Pod B (internal mirror only) -> bake `/etc/pip.conf` (internal pypi mirror) into eval image, re-run `--cache_level instance`.
+- **FIXED 1**: `pylint-dev__pylint-4661` (appdirs installs from mirror -> `test_pylint_home` passes). -> offline-PASSED.
+- **Env, next (specific fix):** `astropy__astropy-8707` (pytest>=8 rejects nose-style tests -> pin pytest<8); `astropy__astropy-8872` (C-ext rebuild + pytest collection err -> dep/version); `astropy__astropy-7606` (flaky, retry stayed red -> PASS_TO_PASS root-cause); `django__django-10097` (3 auth-template tests -> TBD); `sphinx-doc__sphinx-10435` (`test_latex_code_role` -> apt-bake texlive).
+- **Network 8 (blocker-pending, need offline local service):** `psf__requests-1724/1766/1921/2317` (local httpbin), `sphinx-doc__sphinx-7985/8269/8475` (local linkcheck URL mock), `matplotlib__matplotlib-20488` (local HTTPS asset mirror). Live external endpoints; Pod B is offline with no reachable proxy, so these need a local mock stood up on-pod.
 

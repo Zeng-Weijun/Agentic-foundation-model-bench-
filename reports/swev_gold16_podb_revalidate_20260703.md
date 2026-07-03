@@ -47,3 +47,10 @@ Evidence: per-instance `…/eval/logs/run_evaluation/gold16_podb_85/gold/<iid>/r
 
 ## Red-line compliance
 - Pod B only; `c=4`; 51's full500 model canary (`swev_full500_model_20260702_podb_canary_*`) + its procs/dirs/ledger **untouched**; own isolated BASE; only-add (no deletions, no `rmi` of shared/51 images); **0 model tokens**; runner nohup-detached (survived the SSH-flaky maintenance window).
+
+## Backfill progress (rolling update, 2026-07-03)
+Mechanism (env/pip cases): the eval pip step hits Pod B's offline wall (internal mirror only) -> bake `/etc/pip.conf` (internal pypi mirror) into the eval image -> re-run `--cache_level instance`.
+- **FIXED 1: `pylint-dev__pylint-4661`** -> resolved=True (`appdirs` installs from internal mirror -> `test_pylint_home` passes). Evidence: `swev_gold16_podb_revalidate_85_20260703/fix_pylint4661/gold.fixpylint.json`. Ledger 486->487, offline-induced 14->13.
+- **Env, next (specific fix each):** `astropy__astropy-8707` (pytest>=8 rejects nose-style tests -> pin pytest<8); `astropy__astropy-8872` (C-ext rebuild + pytest collection err -> dep/version); `astropy__astropy-7606` (flaky; retry stayed red -> PASS_TO_PASS root-cause); `django__django-10097` (3 auth-template tests -> TBD); `sphinx-doc__sphinx-10435` (`test_latex_code_role` -> apt-bake texlive).
+- **Network 8 (blocker-pending):** `psf__requests-1724/1766/1921/2317` (local httpbin), `sphinx-doc__sphinx-7985/8269/8475` (local linkcheck URL mock), `matplotlib__matplotlib-20488` (local HTTPS asset). Live external endpoints; Pod B is offline with no reachable proxy -> require an on-pod local mock (next infra step).
+- NOTE: pip.conf bake fixed pylint but NOT the 4 astropy/django cases (not pip-blocked; case-specific env/version) -> deeper per-case fixes above.
