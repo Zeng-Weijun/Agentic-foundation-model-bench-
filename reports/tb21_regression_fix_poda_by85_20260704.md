@@ -43,3 +43,10 @@ Set `read_only: false` on the `/tests` bind in the affected tasks' `docker-compo
 
 ## Red lines held
 Pod A / TB2.1 only; 0 model tokens (oracle solution + tests only); read-only on 55's completed runs; **did not touch 55's launcher**, Pod B, or full500; only-add (temp replay dirs under `/tmp`, no deletes).
+
+## §4 (IN PROGRESS, by-85, 2026-07-04) — official offline oracle verification
+Lead approved running the official offline oracle for feal + git-webserver on Pod A env-kvm-15238487 (DOCKER_HOST=unix:///var/run/docker.sock, 0 model token). Method is self-contained — does NOT touch 55's launcher, terminus_2, or LiteLLM:
+- Copy the r7-final task dir to /tmp, edit the copy's `docker-compose.yaml` `/tests` bind `read_only: true -> false` (THE FIX), then `harbor run --path <task-copy> -a oracle --n-concurrent 1` (offline, --path = single local task).
+- **feal:** expect reward=1 (direct-container replay already PROVED rw /tests -> reward 0->1; see §Result table + §2).
+- **git-webserver:** run oracle, then inspect the running container for the HTTP-404 root cause (post-receive hook fired? nginx serving /var/www/html on :8080? ssh git-clone landed?).
+**RESUME POINTER (if auto-compact hits mid-run):** the decisive proof already stands and is committed — feal + compcert reward 0->1 with `/tests` rw; root cause = task docker-compose.yaml `/tests read_only:true`; fix = flip to `read_only:false` (55 applies to payload + oracle c=1 => official 84->86). git-webserver is a separate service regression (not rw-fixable). Only the *official harbor re-confirmation* + git-webserver live service-diag remain.
