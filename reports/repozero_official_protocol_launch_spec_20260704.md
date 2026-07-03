@@ -90,3 +90,39 @@ python3 evaluate/eval_py2js_mini.py <results.jsonl> <dataset_root> gpt-5.4-mini 
 
 ## Red lines held
 Pure read-only spec + offline prep only. **No run / no model call executed.** No Pod A/B runtime touched. `pip download` ran on **dev** (has net, authorized). Node probe on Pod B was read-only. Runner edits above are for the launch operator (not applied). **Launch order awaits lead.**
+
+## §7 — STATUS: PAUSED @ Gate4 (lead decision D, 2026-07-04)
+
+**Decision (lead):** PAUSE the official-protocol run. Keep the **codex-line 260/400 (65%)** as the RepoZero **primary number** (`reports/repozero_official_comparison_20260703.md`). **0 launched; ~6 tiny probe calls total; 0 full-run tokens.**
+
+### Gate outcomes
+- ✅ **Gate1** — pin `39308b1` pristine + worktree `rz_run_wt_20260704` + clean runner diff (below).
+- ✅ **Gate2** — preflight: relay `:18540` has `gpt-5.4-mini`; venv mini **2.4.4** offline-installed (77 wheels); `ulimit→65535`; node v16.14.0.
+- ✅ **Gate3** — xhigh reaches API: direct probe `reasoning_tokens=79`; adapted-runner end-to-end **`reasoning_tokens=114/148/328`** (evidence: `repozero_eval/gate3_e2e/{e2e.log,traj.json}`). mini 2.4.4 forwards `model_kwargs`→`litellm.completion` — no param-drop.
+- ❌ **Gate4** — BLOCKER: stock mini 2.4.4 ↔ gpt-5.4-mini scaffold incompatibility → 0 output (details below).
+
+### ★ Root finding — official-benchmark reproducibility gap (UPSTREAM-ARCHIVE, not-fix per charter)
+The official runner `run_py2js/run_all_loop_mini_openai.py` @39308b1 invokes `mini --custom-llm-provider litellm --api-base X -t <file>` — flags present in **NEITHER stock mini 1.17.5 (latest v1) NOR 2.4.4 (latest v2)**; the repo has **no vendored mini + no version pin**. RepoZero therefore depends on an **unidentifiable mini fork** whose CLI + agent-format + output-parser differ from any published mini-swe-agent. Compounding it, stock 2.4.4's scaffolds are incompatible with gpt-5.4-mini's (reasoning-model) output:
+- `mini.yaml` (tool-calling) → `No tool calls found in the response` → 0 output;
+- `mini_textbased.yaml` (correct bash-in-``` format) → gpt-5.4-mini responses repeatedly fail the strict "exactly ONE bash code block" parser → `Format error` loop → timeout(124), 0 output (the smoke's 8× "succeeded" were empty — no `.mjs`).
+
+Faithful reproduction is **not achievable offline without the exact fork**. Per the offline-E2E charter this is a **reproducibility gap in the official RepoZero benchmark itself → archived upstream-not-fix**. Our internal codex harness (stricter, `260/400`) remains the credible internal number.
+
+### Resume start point (if this line is ever resumed) — all preserved, DO NOT DELETE
+- worktree (pin pristine + adapted runner): `repozero_eval/rz_run_wt_20260704/`
+- offline mini wheels: `repozero_eval/wheels/mini_swe_agent/` (mini-swe-agent 2.4.4 + 76 deps = 77 wheels, 0 sdists)
+- venv: `repozero_eval/rz_venv/` ; xhigh evidence: `repozero_eval/gate3_e2e/`
+- **stock-2.4.4 adaptation diff (bug-for-bug audit record):**
+  ```
+  + import shlex ; + from minisweagent.run.mini import DEFAULT_CONFIG_FILE
+    model_name  : "deepseek-v3.1-250821" -> "gpt-5.4-mini"
+    num_processes: 10 -> 8
+    max_retries : 2 -> 1   (pass@1)
+    mini invocation:
+      -  -t {prompt_file!r} --custom-llm-provider litellm --api-base {api_base}
+      +  -t {shlex.quote(prompt)} -c {DEFAULT_CONFIG_FILE}
+         -c model.model_kwargs.api_base={api_base} -c model.model_kwargs.reasoning_effort=xhigh
+    + env at launch: MSWEA_CONFIGURED=1, MINI_SWE_AGENT_BIN=<venv>/bin/mini, dataset symlink into worktree
+    + RZ_SMOKE_N env-gated smoke limit (inert for full run)
+  ```
+- **Unresolved for resume:** the Gate4 model↔scaffold format incompatibility — needs the exact fork mini, OR a parser/prompt tune (accepting deviation), OR a format-compliant model. If resumed, also verify node v16 vs the eval (or stage node20) and the 5s-eval strict chain.
