@@ -65,3 +65,28 @@ Replicated 55's offline invocation shape: `harbor run --registry-path <reg> --ta
 - **solution.sh**: `git init --bare /git/server` + post-receive deploy hook → `/var/www/html`; nginx/sshd startup not explicit in solution (likely image entrypoint).
 - **Failure (privileged):** `HTTP 404` (server up, `hello.html` not deployed) + `fatal: not a git repository` → the ssh-localhost git-push flow **did not land** → post-receive hook never fired → 404. Root cause is the git-over-ssh / service-startup path, **not** a read-only mount (rw `/tests` did not fix it).
 - **Needs 55's service-orchestrated runner** (single-container replay + hand-rolled CLI both can't wire the services). Ranked checks in the running privileged container: (1) sshd up + `ssh localhost` works (key/perm); (2) post-receive hook fired + wrote `/var/www/html`; (3) verify.sh `apt-get install curl` behavior offline. → **86→87** once resolved.
+
+## §6 (by-85, PURE READ-ONLY) — git-webserver DEFINITIVE root cause: master/main default-branch mismatch
+No Pod A runtime (full89 running c=89). All shared-FS reads.
+
+**Services are NOT the issue:** the c=1 agent.log confirms `service ssh start` → `sshd [ OK ]` and `service nginx start` → `nginx [ OK ]`, `Setup complete!`.
+
+**Chain:** verify.sh (client) clones the bare repo, `git push origin master`, `sleep 2`, `curl :8080/hello.html` (expects HTTP 200). solution.sh (oracle): `git init --bare /git/server` (**no `--initial-branch`**) + post-receive hook `GIT_WORK_TREE=/var/www/html git checkout -f` (checks out **HEAD**) + nginx `root /var/www/html; try_files $uri $uri/ =404`.
+
+**Root cause (strong, read-only-derived):** `git init --bare` with no `--initial-branch` → the bare repo's HEAD points at git's built-in default branch. On the **new closure-r2 base image** (newer git; Debian default `main`), HEAD → `refs/heads/main`. The client hardcodes `git push origin master` → the `master` branch is created but **HEAD (main) stays unborn**. The post-receive hook's `git checkout -f` checks out HEAD (main = empty) → `hello.html` is **never deployed** to `/var/www/html` → nginx `=404`. On **rl-vfs** (older base image, git default `master`), HEAD → master → push master updates HEAD's branch → checkout deploys → 200. A **base-image git default-branch regression (master→main)**, not a mount/fuse issue. Confirmed absent: no `init.defaultBranch` / `--initial-branch` anywhere in the payload → relies on git's version-sensitive built-in default.
+
+**Fix (for 55, minimal, AFTER full89 收官):** pin the bare repo default to master, one of:
+- (a) image: `git config --system init.defaultBranch master` in the closure-r2 image; OR
+- (b) solution.sh: `git init --bare --initial-branch=master /git/server`; OR
+- (c) post-receive: check out the pushed branch explicitly instead of HEAD.
+(a)/(b) cleanest — matches the task's client which hardcodes `master`.
+
+**1-command read-only confirmation for 55 (post-full89, on a git-webserver container):** `git -C /git/server symbolic-ref HEAD` → `refs/heads/main` (while client pushes master) = confirmed; cross-check `git --version` (closure-r2) vs the rl-vfs image. Then apply (a)/(b), oracle c=1 → **86→87**.
+
+## Summary — all 3 privileged regressions root-caused (by-85)
+| task | class | root cause | fix | status |
+|---|---|---|---|---|
+| feal | build | `/tests read_only:true` + test builds C-ext there | `/tests read_only:false` | **PROVEN reward 0→1** |
+| compcert | build | `/tests read_only:true` + test links `/tests/positive_probe` | `/tests read_only:false` | **PROVEN reward 0→1** |
+| git-webserver | service | git default-branch master→main (client pushes master, HEAD=main unborn, hook deploys empty) | pin `init.defaultBranch=master` / `--initial-branch=master` | read-only root-caused; 55 confirms + fixes |
+All 3 fixed → **84 → 87**. 55 applies after full89 收官 (2 compose edits + 1 git-default fix), oracle c=1.
