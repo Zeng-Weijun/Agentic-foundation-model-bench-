@@ -50,3 +50,18 @@ Lead approved running the official offline oracle for feal + git-webserver on Po
 - **feal:** expect reward=1 (direct-container replay already PROVED rw /tests -> reward 0->1; see §Result table + §2).
 - **git-webserver:** run oracle, then inspect the running container for the HTTP-404 root cause (post-receive hook fired? nginx serving /var/www/html on :8080? ssh git-clone landed?).
 **RESUME POINTER (if auto-compact hits mid-run):** the decisive proof already stands and is committed — feal + compcert reward 0->1 with `/tests` rw; root cause = task docker-compose.yaml `/tests read_only:true`; fix = flip to `read_only:false` (55 applies to payload + oracle c=1 => official 84->86). git-webserver is a separate service regression (not rw-fixable). Only the *official harbor re-confirmation* + git-webserver live service-diag remain.
+
+## §5 (FINAL, by-85, 2026-07-04) — official-run attempt + git-webserver diagnosis
+
+### Official harbor-CLI oracle (feal): attempted; orchestration plumbing is 55's domain
+Replicated 55's offline invocation shape: `harbor run --registry-path <reg> --task terminal-bench/feal-differential-cryptanalysis -a oracle -n 1` (namespaced org/name; `--dataset-path`/`--task-id` are newer-harbor flags absent in 0.13.2 — this harbor uses `--registry-path` + `--task <org>/<name>`). Result: **`ExceptionGroup: unhandled errors in a TaskGroup`** — my hand-rolled CLI lacks the privileged-docker / `T_BENCH_*` orchestration env 55's wrapper sets (`TB_DOCKER_SDK_API_VERSION`, container-name vars, privileged-compose handling). I did **not** re-implement 55's wrapper (red line); 55 owns the working privileged offline invocation.
+
+**The fix is PROVEN regardless:** the direct-container replay runs the EXACT harbor oracle+verifier sequence (`bash /tests/solution.sh` → `bash /tests/run-tests.sh` → `reward.txt`) and yields reward **0→1** for feal+compcert with `/tests read_only:false` (re-confirmed post-attempt: feal `1 passed`, reward=1). Harbor's oracle agent + verifier do exactly these steps; the CLI wrapper only adds `results.json` packaging + registry/privileged plumbing.
+
+**Handoff:** 55 sets `/tests read_only:false` for feal + compcert in the r7-final payload, runs canonical **oracle c=1** via the proven runner (c≥2 → mount-guard) → **84→86**.
+
+### git-webserver — service-task diagnosis (confirmed NOT /tests-rw)
+- **verify.sh** (test's client): `apt-get install -y curl` (⚠ offline landmine on `network=none`), `ssh-keygen` + `Host localhost` ssh config, `git clone`/push over **ssh localhost**, then `curl :8080/hello.html`.
+- **solution.sh**: `git init --bare /git/server` + post-receive deploy hook → `/var/www/html`; nginx/sshd startup not explicit in solution (likely image entrypoint).
+- **Failure (privileged):** `HTTP 404` (server up, `hello.html` not deployed) + `fatal: not a git repository` → the ssh-localhost git-push flow **did not land** → post-receive hook never fired → 404. Root cause is the git-over-ssh / service-startup path, **not** a read-only mount (rw `/tests` did not fix it).
+- **Needs 55's service-orchestrated runner** (single-container replay + hand-rolled CLI both can't wire the services). Ranked checks in the running privileged container: (1) sshd up + `ssh localhost` works (key/perm); (2) post-receive hook fired + wrote `/var/www/html`; (3) verify.sh `apt-get install curl` behavior offline. → **86→87** once resolved.
