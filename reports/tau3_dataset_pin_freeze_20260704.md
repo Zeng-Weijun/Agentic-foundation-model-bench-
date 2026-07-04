@@ -1,5 +1,8 @@
 # tau3-bench — dataset-pin freeze + 2-image P0 manifest, 375-task (by-85, 2026-07-04)
 
+> **✅ DoD-③ COMPLETE (2026-07-04)** — images built + pushed to P0 + transport-proven PASS 4/4. This doc is the freeze-time pin record; the LIVE status is in the manifest `manifests/images/tau3_full_p0_20260704.yaml` (status=full_transport_proven; digests main@sha256:3591be51, runtime@sha256:bf0f3ab4) + evidence `reports/tau3_transport_proof_20260704.log`. The embedded snippet and 'no build/push' notes below reflect the freeze-time (pre-build) state.
+
+
 > **ALIGNED (55 final)** with the machine-readable manifest `manifests/images/tau3_full_p0_20260704.yaml` + patch `reports/tau3_offline_model_contract_patch_20260704.md`. Terminology: **375-task** dataset served by a **2-image** contract. Deterministic **`tree_tar_sha256 = 350576c207e0daa8deee21a1754af1908f1df08efaf75027f39ab849844b8763`** (computed).
 
 Pure docs/manifest — **no image build/push, no launch, no model call.** Freezes the tau3 dataset pin and drafts the P0 image-transport manifest so the enable line can start fail-closed (charter DoD). Extends `reports/tau3_recon_20260704.md`. Digests/shas that require a build are marked `PENDING_BUILD` (to be filled at build-execution, not now).
@@ -29,7 +32,7 @@ Empirical finding (read-only, this run): across all 375 tasks the **`environment
 ```yaml
 schema_version: agentic_bench.image_manifest.v1
 bench_id: tau3_bench
-status: draft_pending_build_and_transport      # NOT built, NOT pushed
+status: draft_pending_build_and_transport      # [freeze-time snapshot; SUPERSEDED -> manifest status=full_transport_proven, DoD-3 done]
 source:
   repo: github.com/sierra-research/tau2-bench
   ref: dev/tau3
