@@ -3,7 +3,7 @@ bench_id: tau3_bench
 # HIGH-1 fix: machine-readable P0 manifest (was a markdown placeholder). Structure FROZEN;
 # digest/sha fields PENDING until build+transport. suite/full row stays DISABLED until enable_gate passes.
 # STATUS: spec-closed / execution-blocked (build + P0 push + transport-proof await lead GO).
-status: draft_spec_closed_execution_blocked
+status: full_transport_materialized_pending_worker_preflight
 
 source:
   repo: github.com/sierra-research/tau2-bench
@@ -32,9 +32,12 @@ contract_basis: >-
 # so the EFFECTIVE compose MUST add the task_config mount + a fail-closed 375/375 preflight must pass.
 effective_compose:
   mount_added_to_tau3_runtime: "./runtime-server/task_config.json:/app/task_config.json:ro"   # server.py reads fixed /app/task_config.json
-  effective_compose_sha256: b3c8700bea384d34e27657a8482e1f5e370c652a86ced8789186349d141e8052    # uniform across ALL 375 (verified)
+  effective_compose_sha256: b3c8700bea384d34e27657a8482e1f5e370c652a86ced8789186349d141e8052    # mount-only transform, uniform across ALL 375 (preflight)
+  effective_compose_full_sha256: e6966c384239d81d2415791617cb62a3b3645ec8ac12d230241fee0413b7d997  # FULL effective = original + mount + build:->image:@P0digest ; 375/375 uniform ; THIS is what transport-proof composes-up
+  effective_compose_sample: images/tau3/effective-compose/tau3_effective_compose.sample.yaml
+  vs_frozen_dataset_compose: "dataset.compose_sha256=e1aa85 is the ORIGINAL (no mount, build:) frozen pin; the effective compose above ADDS the mount + swaps build:->image:@P0digest for transport-proof"
   preflight_fail_closed: "python3 scripts/tau3_transport_preflight.py <dataset>"
-  preflight_status: "PASS 375/375 (task_config_present=375/375, mount_present=375/375, unique_effective_compose=1) 2026-07-04"
+  preflight_status: "PASS 375/375 (task_config_present=375/375, effective-compose mount_present=375/375, runtime_image=375/375, unique_effective=1) 2026-07-04"
   transport_proof_gate: "transport-proof PASS is FORBIDDEN until (1) this preflight PASSES + (2) Pod A --network none compose-up proves the main<->MCP-sidecar link WITH the /app/task_config.json mount effective"
 
 # HIGH-4 (55 re-review): explicit 3-LLM relay contract — specific model names hard-pinned, single relay URL, NO defaults.
@@ -52,28 +55,28 @@ images:
     role: harbor_task_main_runtime
     required: true
     image_transport: p0_registry_digest                  # matches current manifest schema
-    base_image: python:3.12-slim@sha256:<BASE_DIGEST_PENDING>     # HIGH-2: pin base by digest
+    base_image: python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9     # HIGH-2: pin base by digest
     build_context: <task>/environment                            # Dockerfile identical across 375 tasks
-    dockerfile_offline_ready: false                              # HIGH-2: must vendor tau2-bench@commit + internal apt/pip first
-    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:<DIGEST_PENDING_BUILD>
-    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-main_<STAMP>.tar
-    fallback_tar_sha256: <PENDING_BUILD>
+    dockerfile_offline_ready: true                              # HIGH-2: must vendor tau2-bench@commit + internal apt/pip first
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:74ff8e9ecd39192452d22233c393a9c89cc795904f69518febab2b2b811d9e9a
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-main_20260704.tar
+    fallback_tar_sha256: ddc529eba366ffc648b72705979d7812497373c828e90e9924064956ad05258c
   - id: tau3_full_runtime
     role: tau3_runtime_mcp_sidecar
     required: true
     image_transport: p0_registry_digest
-    base_image: python:3.12-slim@sha256:<BASE_DIGEST_PENDING>
+    base_image: python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
     build_context: <task>/environment/runtime-server            # compose build: context ./runtime-server; identical across 375 tasks
-    dockerfile_offline_ready: false
+    dockerfile_offline_ready: true
     extra_deps: ["fastmcp>=3.0"]                                 # stage internally
-    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:<DIGEST_PENDING_BUILD>
-    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-runtime_<STAMP>.tar
-    fallback_tar_sha256: <PENDING_BUILD>
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:f7ce6893731447d834b1449c9bba68bf08345d407e762cf59a5f54d99b0e196c
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-runtime_20260704.tar
+    fallback_tar_sha256: e5f9fd82a62df8d588b18dd48e10ba67723fef106e694c6b4e0797a5ed969def
 
 transport:
   registry: "100.97.118.137:8555"       # insecure-registry, self-signed CA — same as TB2.1 (image registry, distinct from the relay)
-  digest_rows: 0                          # PENDING build
-  fallback_rows: 0                        # PENDING build
+  digest_rows: 2                          # both images pushed to P0 by-digest (2026-07-04)
+  fallback_rows: 2                        # both fallback tars saved + sha256 (2026-07-04)
   # enable_gate (55 FINAL): STRICT transport-proof gate via agentic_bench_images.py — ALL must PASS before suite/full enable:
   enable_gate:
     - "python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/tau3_full_p0_20260704.yaml --skip-docker"                                      # manifest/tar metadata, no docker
