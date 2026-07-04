@@ -1,0 +1,61 @@
+# 战役进度汇总 — bench KVM E2E（2026-07-04）
+
+> 整理:85(by-85)| 范围:tau3 / full500(SWE-V) / TB2.1 / V2 runner / 官方榜对照
+> 权威细节见:`_coordination/bench_kvm_e2e_20260704/{DECISIONS,HANDOFF}.md`、`reports/full500_midrun_audit_20260704.md`、`reports/tau3_transport_proof_20260704.log`、`reports/official_leaderboard_vs_relay_20260704.md`
+
+---
+
+## 1. tau3 transport-proof —— 双签正式关闭 ✅
+
+- **状态:** DoD-③ COMPLETE / **口径 = spec-closed·execution-blocked**（`dockerfile_offline_ready=false` 保留:内网 mirror + commit-pin 物化,非 offline-build-ready)。
+- **镜像(P0 by-digest,均实测 200):**
+  - main `100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:3591be51f3901080271eb4a9c1bd9c680fc999ced3c44fc42ccec7d788e81645`
+  - runtime `@sha256:bf0f3ab41886d31db8f7c93f874d63420c1679733dcce1e4c0663c1c11117fa8`
+- **构建修复:** `[all]` extra + `build-essential`(gcc+libc6-dev)→ 解 `tau2.voice→scipy/pyaudio` import 崩溃;apt/pip 内网 mirror。
+- **数据集冻结:** 隔离 2 个畸形 WIP 目录(`tau3-{telecom,banking_knowledge}-0`,其 `task_config.json` 竟是目录)→ freeze **恢复到** `350576c2`;preflight 硬化为按 frozen taskid_list(`ef22ab27`)fail-closed,PASS 375/375。
+- **Pod A transport-proof(env-kvm-15238487-rlgbn):PASS 4/4** —— 每域每任务 5 检:`TASKCFG_SHA_MATCH`(挂载 sha256==源)+ `SIDECAR_8000_UP` + `IMPORT_TAU2_FASTMCP_DOMAINS_OK`(55#1)+ `MAIN_TO_SIDECAR_LINK_OK` + `NO_PUBLIC_NET_CONFIRMED`(55#3)。
+- **双签:** 85 交付 + **55 复核 PASS**(独立 Pod A 重跑 airline-0 完整复现)。
+- **Commits(origin/main):** `0c69e60` → `9be6e20` → `623eeab` → `3adbfe3`。**证据:** `reports/tau3_transport_proof_20260704.log`。
+
+---
+
+## 2. full500(SWE-V)—— 停止点(用户令),账本冻结快照 + 审计双签
+
+**停止点:** 用户令停,账本冻结快照留档(Pod B `swev_full500_model_20260702`,中期,gpt-5.4-mini)。独立审计(surface:86,只读)结论 = **数值可签字,可复现性脆弱**:
+
+- **对账(真值源=每实例 `report.json`):** resolved **154/219 = 70.3%**;clean-report 196 实例账本 vs harness 真值 **0 mismatch**;零造假信号(抽样 resolved 全真跑 pytest,unresolved 全 agent-fail、harness 健康)。
+- **154 口径的脆弱性(可争 151/154/155):** 154 = 151 clean shard + **3 个真 resolved 藏在被改名的废弃后缀目录**(`.dockerinstability`);对 clean 目录重算只得 **151** → 账本当前无法从 clean 复现;换口径可争 155(补 django-11749)或 151(剔那 3 个)。
+- **★ 70.3% 严禁对榜:** 已完成集 = astropy 22 + django 197(纯 django 偏易,无 sympy/matplotlib/sphinx 硬库)→ 代表性偏斜,是**口径孤儿**(与 9/89 同类);gpt-5.4-mini 三榜均无官方锚。
+- **四 ISSUE(见 audit 报告):** ①3 resolved 只由废弃目录背书(须收编/落 provenance,对账前禁删后缀目录)②astropy-14995 双评双写(去重+查 chunk 重叠)③废弃目录 resolved 规则不一致(须定确定性规则)④70.3% 是 django 偏斜中期数(全 500 或分层前不报 rate,改 per-repo)。
+- **档案:** `reports/full500_midrun_audit_20260704.md`。
+
+---
+
+## 3. TB2.1 金丝雀 8 任务重跑 —— 进行中
+
+- **canonical oracle 账目:79/89 resolved**(`reports/scores/tb21_full89_oracle_infra_map_r5_final_20260703.{md,json}`)。
+- **10 个未解:** 8 属旧 rootless docker 栈的 `docker_api_eof_before_injection`(**环境类**),正在 **privileged 栈(fuse-overlayfs)金丝雀重跑**,预计多数转绿 → **预期 ~87/89**;剩 2(`rstan-to-pystan`/`query-optimize`)待官方 baseline 判决,可能归档 upstream-bug。
+- **口径:** bug-for-bug,不改官方缺陷;qemu 类任务需 `/dev/kvm` 才贴官方。**55 执行 / 85 审查**(跨家族对抗)。
+
+---
+
+## 4. V2 runner 转向 —— 设计中
+
+- SWE-V 全量入口将从当前 shard 式 runner 换成 **V2 runner**:**去 shard** + **run-eval 串联**(取消跑/评两段分离)+ **并发 c100**。
+- 目标:消除 full500 审计暴露的 chunk→instance 分配重叠(ISSUE-2)+ 双写(ISSUE-2)+ 后缀目录漂移(ISSUE-1/3)类脆弱性。
+- 状态:51 设计/实现中;就绪后更新 E2E 文档 §1.3(`docs_handoff/E2E_REPRO_SWEV_TB21_20260704.md`)。
+
+---
+
+## 5. 官方榜 × 中转站对照 —— 进行中
+
+报告 `reports/official_leaderboard_vs_relay_20260704.md`(源=官方 JSON/HTML,非三方聚合):
+
+- **干净可复现锚仅 2 个:** ① SWE-V bash-only(mini)**gpt-5.2-high = 72.8% / 500 pass@1**(=我方口径,首选验 harness 合格证);② TB2.1 terminus-2 **gpt-5.5 = 78.2% / 89×5**。
+- **选型:** P0 先打 gpt-5.2-high→72.8% 作 harness 合格证;P1 gpt-5.5+terminus-2→78.2%。
+- **口径警示(硬):** ①**TB2.1 = 5 attempts 非 ×3**(发射器须改)②SWE-V 榜冻结~2026-02(5.3/5.4/5.5 不在榜)③三方站 "GPT-5.5 82.6%/Opus4.8 88.6%/Fable5 95%" 官方 0 命中 **严禁引** ④RepoZero 官方 **400 案非 188**、无 LLM judge ⑤**gpt-5.4-mini 三榜全无官方锚** → full500 不可直接对榜(佐证 §2 的 70% django 虚高)。
+- TB2.0(勿混):Qwen3-Coder-480B 23.9 ✓ 锚吻合。
+
+---
+
+*红线(全程守):所有容器 `--network none`/compose 内网;bug-for-bug 不改官方;0 无授权模型调用;Pod B full500 运行中零扰动(审计全程只读)。*
