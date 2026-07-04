@@ -1,0 +1,203 @@
+{
+  "agent": "terminus-2",
+  "attempts": 1,
+  "bench": "terminal_bench_2_1_full89",
+  "concurrency": 89,
+  "corrected_resolved": 63,
+  "corrected_score": 0.7078651685393258,
+  "corrected_unresolved": 26,
+  "effort": "medium/default_no_reasoning_effort_arg",
+  "generated_at": "2026-07-05T05:16:00+08:00",
+  "infra": {
+    "connection_aborted": 0,
+    "docker_api": 0,
+    "docker_api_version": 0,
+    "mount_guard": 0,
+    "no_such_container": 0,
+    "preheat_errors": 0,
+    "preheat_present": 89,
+    "preheat_retagged": 248,
+    "preheat_tar_verified": 89,
+    "rate_limit_error": 0,
+    "readtimeout": 0,
+    "rows": "89/89",
+    "run_rc": 0,
+    "solution_missing": 0,
+    "xhigh_debug_count": 0
+  },
+  "model": "gpt-5.5",
+  "official_reference": "78.2% +/- 2.4 5-run mean; not directly identical to this single-attempt run.",
+  "original_unresolved_table": [
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "model-extraction-relu-logits"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "cancel-async-tasks"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "mteb-leaderboard"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "regex-chess"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "dna-insert"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "filter-js-from-html"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "count-dataset-tokens"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "sanitize-git-repo"
+    },
+    {
+      "counts_as_final_failure": false,
+      "final_category": "scorer_parse_bug_corrected_pass",
+      "note": "CTRf passed=7 failed=0; strict parser hit pytest cacheprovider warning. Corrected to pass by 85.",
+      "task_id": "headless-terminal"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "path-tracing"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "real_model_gap",
+      "note": "3/5 passed in 85 spot-check; oracle passed after toml fix.",
+      "task_id": "video-processing"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "mteb-retrieve"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "dna-assembly"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "overfull-hbox"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "torch-pipeline-parallelism"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "env_ceiling",
+      "note": "3/4, subprocess assert plus local nginx/QEMU 502 on 127.0.0.1:8080; task-local service behavior, not relay/P0/Docker transport.",
+      "task_id": "install-windows-3.11"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "raman-fitting"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "make-mips-interpreter"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "chess-best-move"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "extract-moves-from-video"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "fix-ocaml-gc"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "env_ceiling",
+      "note": "qemu timeout=30 / no KVM; oracle also timed out.",
+      "task_id": "make-doom-for-mips"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "real_model_gap",
+      "note": "8/63 passed in 85 spot-check; oracle passed canary8.",
+      "task_id": "schemelike-metacircular-eval"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "query-optimize"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "gpt2-codegolf"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "path-tracing-reverse"
+    },
+    {
+      "counts_as_final_failure": true,
+      "final_category": "model_or_task_unresolved_no_infra_signal",
+      "note": "Unresolved in native results; surface55 strict scan found no Docker/P0/mount/relay transport signal. Needs task/model-level review if pursued.",
+      "task_id": "train-fasttext"
+    }
+  ],
+  "raw_reducer_resolved": 62,
+  "raw_reducer_score": 0.6966292134831461,
+  "run_artifact": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c89_tb21_gpt55_official_medium_c89_single_20260704t195417z_attempt1_medium_c89",
+  "run_id": "tb21_gpt55_official_medium_c89_single_20260704t195417z",
+  "score_json_source": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/reports/scores/tb21_gpt55_official_medium_c89_single_20260704t195417z_medium_c89_scores.json",
+  "score_note": "Corrected score adopts surface85 PASS review: headless-terminal was a scorer false negative. This run is one pass@1 sample; official 78.2 +/- 2.4 is a 5-run mean, so +/-4-5pp single-sample drift is expected.",
+  "surface85_review": "DECISIONS.md lines 651-675; verdict PASS with mandatory headless-terminal correction to 63/89.",
+  "timeout_multiplier": "1.0",
+  "timeout_sec": 7200
+}
