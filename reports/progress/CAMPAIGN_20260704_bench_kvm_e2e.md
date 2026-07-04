@@ -59,3 +59,12 @@
 ---
 
 *红线(全程守):所有容器 `--network none`/compose 内网;bug-for-bug 不改官方;0 无授权模型调用;Pod B full500 运行中零扰动(审计全程只读)。*
+
+---
+
+## UPDATE 2026-07-05
+
+- **full500 停止点审计终稿:** 去重重算 **resolved = 177 / mismatch = 0**(可签字）。**70.5% 严禁对榜**（django 偏斜、gpt-5.4-mini 三榜无官方锚）。django-11133 裁定 = **选项 A**（4 份独立 eval 佐证 verdict，patch 抖动非造假；任何引用 177 处加脚注"1 例 provenance 例外"）。
+- **V2 runner:** 设计**已批准**；smoke10 在跑，放行门槛 = **10/10 rows、0 failed**。
+- **TB2.1 收口金丝雀:** 55 执行 + 85 独立复审 **双 PASS** —— privileged 栈消除 `docker_api_eof_before_injection` 类（3 可跑任务达真 pytest 执行、0 EOF），四项最小修复清单 1:1 对应根因且覆盖全 8 → **修复放行**。
+- **运维教训三条:** ① cmux `send` 后须单发 Enter（竞态，漏则卡输入框）；② gpfs 全树 `find` 禁用（灾难性空转，按精确证据路径直读）；③ flaky ssh 长内联命令中途断连 → 改**共享盘脚本 setsid 后台跑 + 经 dev 读结果文件**验证。
