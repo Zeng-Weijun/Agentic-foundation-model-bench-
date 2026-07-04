@@ -33,7 +33,7 @@ contract_basis: >-
 effective_compose:
   mount_added_to_tau3_runtime: "./runtime-server/task_config.json:/app/task_config.json:ro"   # server.py reads fixed /app/task_config.json
   effective_compose_sha256: b3c8700bea384d34e27657a8482e1f5e370c652a86ced8789186349d141e8052    # mount-only transform, uniform across ALL 375 (preflight)
-  effective_compose_full_sha256: e6966c384239d81d2415791617cb62a3b3645ec8ac12d230241fee0413b7d997  # FULL effective = original + mount + build:->image:@P0digest ; 375/375 uniform ; THIS is what transport-proof composes-up
+  effective_compose_full_sha256: d261358de091bbf4a4fdcbbe5a48290626bf7ddacf235b5f685a083fc31bb328  # FULL effective = original + mount + build:->image:@P0digest ; 375/375 uniform ; THIS is what transport-proof composes-up
   effective_compose_sample: images/tau3/effective-compose/tau3_effective_compose.sample.yaml
   vs_frozen_dataset_compose: "dataset.compose_sha256=e1aa85 is the ORIGINAL (no mount, build:) frozen pin; the effective compose above ADDS the mount + swaps build:->image:@P0digest for transport-proof"
   preflight_fail_closed: "python3 scripts/tau3_transport_preflight.py <dataset>"
@@ -55,23 +55,23 @@ images:
     role: harbor_task_main_runtime
     required: true
     image_transport: p0_registry_digest                  # matches current manifest schema
-    base_image: python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9     # HIGH-2: pin base by digest
+    base_image: python:3.12-slim@sha256:6da2590aca14d42e26e447add24777d223f865e2eaa6abaa97a5a8cfa003207c     # HIGH-2: pin base by digest
     build_context: <task>/environment                            # Dockerfile identical across 375 tasks
-    dockerfile_offline_ready: true                              # HIGH-2: must vendor tau2-bench@commit + internal apt/pip first
-    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:74ff8e9ecd39192452d22233c393a9c89cc795904f69518febab2b2b811d9e9a
+    dockerfile_offline_ready: false                              # 55#3口径: NOT offline-build-ready/fully-reproducible — materialized w/ internal pip mirror (pypi-tsinghua) + apt internal mirror (debian-proxy) + source commit pinned; build-network still LIVE for apt/git + unpinned transitive deps (build-essential, pyaudio compiled from source)
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:3591be51f3901080271eb4a9c1bd9c680fc999ced3c44fc42ccec7d788e81645
     fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-main_20260704.tar
-    fallback_tar_sha256: ddc529eba366ffc648b72705979d7812497373c828e90e9924064956ad05258c
+    fallback_tar_sha256: d41e6640a61f586e19a48886e54bd689aafc9a0d9dfad665c8fbbcaac55a17eb
   - id: tau3_full_runtime
     role: tau3_runtime_mcp_sidecar
     required: true
     image_transport: p0_registry_digest
-    base_image: python:3.12-slim@sha256:d764629ce0ddd8c71fd371e9901efb324a95789d2315a47db7e4d27e78f1b0e9
+    base_image: python:3.12-slim@sha256:6da2590aca14d42e26e447add24777d223f865e2eaa6abaa97a5a8cfa003207c
     build_context: <task>/environment/runtime-server            # compose build: context ./runtime-server; identical across 375 tasks
-    dockerfile_offline_ready: true
-    extra_deps: ["fastmcp>=3.0"]                                 # stage internally
-    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:f7ce6893731447d834b1449c9bba68bf08345d407e762cf59a5f54d99b0e196c
+    dockerfile_offline_ready: false
+    extra_deps: ["tau2-bench[all]", "fastmcp>=3.0", "apt:build-essential", "apt:portaudio19-dev", "apt:libportaudio2"]  # [all] extra REQUIRED: tau2 __init__ imports tau2.voice → scipy + pyaudio; pyaudio has no wheel → compiled from source (needs build-essential=gcc+libc6-dev + portaudio headers). [knowledge] alone crashed server.py at import.
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:bf0f3ab41886d31db8f7c93f874d63420c1679733dcce1e4c0663c1c11117fa8
     fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-runtime_20260704.tar
-    fallback_tar_sha256: e5f9fd82a62df8d588b18dd48e10ba67723fef106e694c6b4e0797a5ed969def
+    fallback_tar_sha256: 4ba76328b120e9312cec39f733233d651c6b08b7682d6d1f9e2963c6e568214f
 
 transport:
   registry: "100.97.118.137:8555"       # insecure-registry, self-signed CA — same as TB2.1 (image registry, distinct from the relay)
