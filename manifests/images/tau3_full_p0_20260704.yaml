@@ -3,7 +3,17 @@ bench_id: tau3_bench
 # HIGH-1 fix: machine-readable P0 manifest (was a markdown placeholder). Structure FROZEN;
 # digest/sha fields PENDING until build+transport. suite/full row stays DISABLED until enable_gate passes.
 # STATUS: spec-closed / execution-blocked (build + P0 push + transport-proof await lead GO).
-status: full_transport_materialized_pending_worker_preflight
+status: full_transport_proven_pod_a_4domains        # DoD-3 COMPLETE: Pod A --network none re-proof PASS 4/4 (2026-07-04)
+
+# DoD-3 transport-proof RESULT (Pod A env-kvm-15238487-rlgbn, fixed images):
+transport_proof:
+  result: "PASS 4/4 domains (airline/retail/telecom/banking_knowledge), FAIL=0"
+  host: env-kvm-15238487-rlgbn
+  method: "P0 by-digest pull both images + --internal network compose-up 1 real task/domain (quarantined -0 dirs excluded)"
+  checks_per_task: "P0-pull + TASKCFG_SHA_MATCH(mounted /app/task_config.json sha256==source) + SIDECAR_8000_UP + IMPORT_TAU2_FASTMCP_DOMAINS_OK(55#1, scipy/pyaudio fix) + MAIN_TO_SIDECAR_LINK_OK + NO_PUBLIC_NET_CONFIRMED(55#3)"
+  evidence: images/tau3/transport_proof/proof.log
+  proof_script: scripts/tau3_transport_proof.sh
+  date: "2026-07-04"
 
 source:
   repo: github.com/sierra-research/tau2-bench

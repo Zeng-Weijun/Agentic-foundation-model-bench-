@@ -1,0 +1,16 @@
+### tau3 DoD-3 transport-proof (re-proof, fixed images) host=rjob-500d7b83e2ec7b38-f61eb500bddbbf61-0 2026-07-04T14:27:08Z
+== STEP1: P0 by-digest pull ==
+100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:3591be51f3901080271eb4a9c1bd9c680fc999ced3c44fc42ccec7d788e81645
+100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:bf0f3ab41886d31db8f7c93f874d63420c1679733dcce1e4c0663c1c11117fa8
+== STEP2: internal network (no external egress) ==
+net=tau3net(--internal)
+== TASK[1] tau3-airline-0...  (src task_config bytes=1454 sha=c891fa12ef58) ==
+   running=true | cfg)TASKCFG_SHA_MATCH(c891fa12ef58) | sidecar)SIDECAR_8000_UP | import)IMPORT_TAU2_FASTMCP_DOMAINS_OK | link)MAIN_TO_SIDECAR_LINK_OK | net)NO_PUBLIC_NET_CONFIRMED
+== TASK[2] tau3-retail-0...  (src task_config bytes=3785 sha=714df6a4549a) ==
+   running=true | cfg)TASKCFG_SHA_MATCH(714df6a4549a) | sidecar)SIDECAR_8000_UP | import)IMPORT_TAU2_FASTMCP_DOMAINS_OK | link)MAIN_TO_SIDECAR_LINK_OK | net)NO_PUBLIC_NET_CONFIRMED
+== TASK[3] tau3-telecom-mms-issue-airplane-mode-on-...  (src task_config bytes=11784 sha=6664950c008e) ==
+   running=true | cfg)TASKCFG_SHA_MATCH(6664950c008e) | sidecar)SIDECAR_8000_UP | import)IMPORT_TAU2_FASTMCP_DOMAINS_OK | link)MAIN_TO_SIDECAR_LINK_OK | net)NO_PUBLIC_NET_CONFIRMED
+== TASK[4] tau3-banking_knowledge-task-001...  (src task_config bytes=3145 sha=088b79e7835b) ==
+   running=true | cfg)TASKCFG_SHA_MATCH(088b79e7835b) | sidecar)SIDECAR_8000_UP | import)IMPORT_TAU2_FASTMCP_DOMAINS_OK | link)MAIN_TO_SIDECAR_LINK_OK | net)NO_PUBLIC_NET_CONFIRMED
+### TRANSPORT-PROOF RESULT: PASS=4/4 FAIL=0
+### DoD-3 TRANSPORT-PROOF: PASS (4/4 domains, 55 3-hardening: sha-mount-match + import-probe + no-public-net)
