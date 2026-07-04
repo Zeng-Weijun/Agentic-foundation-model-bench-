@@ -65,10 +65,12 @@ transport:
   registry: "100.97.118.137:8555"       # insecure-registry, self-signed CA — same as TB2.1 (image registry, distinct from the relay)
   digest_rows: 0                          # PENDING build
   fallback_rows: 0                        # PENDING build
-  # enable-gate fix (55 re-review): stale `--require-offline-transport --verify-fallback` was an UNKNOWN-FLAG rc=2.
-  # Current valid gate (flags verified to PARSE) — runs ON the rjob pod (docker + images pulled):
-  enable_gate: "python3 scripts/check_offline_images_manifest.py --manifest manifests/images/tau3_full_p0_20260704.yaml --check --docker-host unix:///var/run/docker.sock"
-  enable_gate_note: "flags parse OK (verified); the default --docker-host is the retiring rl-vfs socket so pass the rjob socket explicitly. On dev (no docker) it exits on docker-connect, NOT on flags. Gate correctly FAILS now (digests PENDING) — that is the execution-block."
+  # enable_gate (55 FINAL): STRICT transport-proof gate via agentic_bench_images.py — ALL must PASS before suite/full enable:
+  enable_gate:
+    - "python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/tau3_full_p0_20260704.yaml --skip-docker"                                      # manifest/tar metadata, no docker
+    - "python3 scripts/agentic_bench_images.py verify-fallback-proofs --image-manifest manifests/images/tau3_full_p0_20260704.yaml --require-sidecar --require-complete"  # fallback tar+sha proof catalog, sidecar required, complete coverage
+    - "python3 scripts/agentic_bench_images.py check --image-manifest manifests/images/tau3_full_p0_20260704.yaml --pull --docker-host unix:///var/run/docker.sock"       # P0 digest backend proof (rjob pod w/ P0 access)
+  enable_gate_note: "STRICT: (1) skip-docker manifest/tar metadata + (2) verify-fallback-proofs --require-sidecar --require-complete + (3) P0 digest backend pull. Correctly FAILS now (digests/fallback-tars PENDING) = the execution-block. Flags verified present in scripts/agentic_bench_images.py."
   compose_runtime_build: true             # MEDIUM-1: task compose still has build: — switch to image:<digest> after build
 
 worker_target:                            # MEDIUM-2: NOT the retiring rootless-vfs contract

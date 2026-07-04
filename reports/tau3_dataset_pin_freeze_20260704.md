@@ -1,4 +1,6 @@
-# tau3-bench — dataset-pin freeze + 375-image P0 manifest DRAFT (by-85, 2026-07-04)
+# tau3-bench — dataset-pin freeze + 2-image P0 manifest, 375-task (by-85, 2026-07-04)
+
+> **ALIGNED (55 final)** with the machine-readable manifest `manifests/images/tau3_full_p0_20260704.yaml` + patch `reports/tau3_offline_model_contract_patch_20260704.md`. Terminology: **375-task** dataset served by a **2-image** contract. Deterministic **`tree_tar_sha256 = 350576c207e0daa8deee21a1754af1908f1df08efaf75027f39ab849844b8763`** (computed).
 
 Pure docs/manifest — **no image build/push, no launch, no model call.** Freezes the tau3 dataset pin and drafts the P0 image-transport manifest so the enable line can start fail-closed (charter DoD). Extends `reports/tau3_recon_20260704.md`. Digests/shas that require a build are marked `PENDING_BUILD` (to be filled at build-execution, not now).
 
@@ -18,12 +20,12 @@ Pure docs/manifest — **no image build/push, no launch, no model call.** Freeze
 | per-task required files | `task.toml`, `instruction.md`, `environment/docker-compose.yaml`, `environment/Dockerfile`, `environment/runtime-server/Dockerfile`, `solution/`, `tests/` (verified present on sample) |
 | env/docker-compose.yaml | **all 375 identical**, sha256 `e1aa85bb70ab83120e8e863036ea6bb41b600a35a0e5d8b65fce6d0b5a05f1c1` |
 
-**Freeze status: FROZEN at the pin above.** Immutable anchors = {upstream commit, adapter commit, task-count 375, domain split, task-id-list sha256, compose sha256}. Any change to these = a new pin (must re-freeze + re-manifest). **TODO at freeze-execution (needs a run on the host with the dataset):** compute the full per-file tree hash (or a `tar --sort=name` tar+sha256) of the 375-task tree and record it here; today's anchors (task-id list + compose sha) already detect id-set or compose drift.
+**Freeze status: FROZEN** (`freeze_status: frozen`, matching the manifest; anchors now include the deterministic tree_tar_sha256). Immutable anchors = {upstream commit, adapter commit, task-count 375, domain split, task-id-list sha256, compose sha256}. Any change to these = a new pin (must re-freeze + re-manifest). **TODO at freeze-execution (needs a run on the host with the dataset):** compute the full per-file tree hash (or a `tar --sort=name` tar+sha256) of the 375-task tree and record it here; today's anchors (task-id list + compose sha) already detect id-set or compose drift.
 
 ## 2. Image contract — 2-image (justified)
 Empirical finding (read-only, this run): across all 375 tasks the **`environment/docker-compose.yaml` is byte-identical (1 unique hash)**, the **main `environment/Dockerfile` is 1 unique**, and the **`environment/runtime-server/Dockerfile` is 1 unique**. The only per-task variation is the DATA (task.toml/instruction/solution/tests + domain DB). Therefore **two images cover all 375 tasks** — the per-domain (8-image) option from the feasibility draft is NOT needed. compose declares the MCP sidecar via `build: context: ./runtime-server`.
 
-## 3. 375-image P0 manifest — DRAFT (not built/pushed)
+## 3. P0 image manifest — SUPERSEDED by machine-readable `manifests/images/tau3_full_p0_20260704.yaml` (2-image contract, NOT 375-image; markdown below kept for context only)
 ```yaml
 schema_version: agentic_bench.image_manifest.v1
 bench_id: tau3_bench
@@ -68,7 +70,7 @@ On a net-enabled builder (swe_dev/swe_dev2), NOT on a KVM pod:
 - [x] dataset pin frozen (commit + adapter + counts + task-id sha256 + compose sha256)
 - [x] image contract determined = **2-image** (empirical, all-375-identical)
 - [x] P0 manifest drafted (schema v1, 2 images, PENDING_BUILD placeholders)
-- [ ] full tree-hash / dataset tar+sha (freeze-execution)
+- [x] deterministic tree_tar_sha256 = 350576c207e0daa8deee21a1754af1908f1df08efaf75027f39ab849844b8763 (computed; in manifest `dataset.tree_tar_sha256`)
 - [ ] images built + offline-provisioned (build-execution, net builder)
 - [ ] P0 push by-digest + fallback tars + shas filled
 - [ ] transport-proof on KVM pod (4-domain compose-up, sidecar link) = DoD ③
