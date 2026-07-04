@@ -65,9 +65,10 @@ transport:
   registry: "100.97.118.137:8555"       # insecure-registry, self-signed CA — same as TB2.1 (image registry, distinct from the relay)
   digest_rows: 0                          # PENDING build
   fallback_rows: 0                        # PENDING build
-  # HIGH-2/enable-gate fix (55 re-review): stale `--require-offline-transport --verify-fallback` gave rc=2 (flags don't exist).
-  # Current valid gate (dry-run check mode):
-  enable_gate: "python3 scripts/check_offline_images_manifest.py --manifest manifests/images/tau3_full_p0_20260704.yaml --check"
+  # enable-gate fix (55 re-review): stale `--require-offline-transport --verify-fallback` was an UNKNOWN-FLAG rc=2.
+  # Current valid gate (flags verified to PARSE) — runs ON the rjob pod (docker + images pulled):
+  enable_gate: "python3 scripts/check_offline_images_manifest.py --manifest manifests/images/tau3_full_p0_20260704.yaml --check --docker-host unix:///var/run/docker.sock"
+  enable_gate_note: "flags parse OK (verified); the default --docker-host is the retiring rl-vfs socket so pass the rjob socket explicitly. On dev (no docker) it exits on docker-connect, NOT on flags. Gate correctly FAILS now (digests PENDING) — that is the execution-block."
   compose_runtime_build: true             # MEDIUM-1: task compose still has build: — switch to image:<digest> after build
 
 worker_target:                            # MEDIUM-2: NOT the retiring rootless-vfs contract
