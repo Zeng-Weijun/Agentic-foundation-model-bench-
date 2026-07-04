@@ -28,6 +28,15 @@ contract_basis: >-
   all 375 TASKS share identical env/docker-compose.yaml (1 unique hash) + main Dockerfile (1) +
   runtime-server Dockerfile (1) => 2-IMAGE contract covers all 375 tasks; per-task variation is data only.
 
+# 55-review HARD requirement (transport-proof GATE): runtime image is generic (task_config.json NOT baked),
+# so the EFFECTIVE compose MUST add the task_config mount + a fail-closed 375/375 preflight must pass.
+effective_compose:
+  mount_added_to_tau3_runtime: "./runtime-server/task_config.json:/app/task_config.json:ro"   # server.py reads fixed /app/task_config.json
+  effective_compose_sha256: b3c8700bea384d34e27657a8482e1f5e370c652a86ced8789186349d141e8052    # uniform across ALL 375 (verified)
+  preflight_fail_closed: "python3 scripts/tau3_transport_preflight.py <dataset>"
+  preflight_status: "PASS 375/375 (task_config_present=375/375, mount_present=375/375, unique_effective_compose=1) 2026-07-04"
+  transport_proof_gate: "transport-proof PASS is FORBIDDEN until (1) this preflight PASSES + (2) Pod A --network none compose-up proves the main<->MCP-sidecar link WITH the /app/task_config.json mount effective"
+
 # HIGH-4 (55 re-review): explicit 3-LLM relay contract — specific model names hard-pinned, single relay URL, NO defaults.
 model_contract:
   relay_base_url: "http://100.96.122.22:18540/v1"         # pod-facing bench relay (OPENAI_BASE_URL). NOT the P0 image registry (100.97.118.137:8555).
