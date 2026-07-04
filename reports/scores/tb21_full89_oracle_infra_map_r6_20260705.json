@@ -1,0 +1,1326 @@
+{
+  "schema_version": "tb21.oracle_infra_map.v1",
+  "map_version": "r6_20260705",
+  "generated_at_utc": "2026-07-04T17:37:34Z",
+  "source_previous_map": "reports/scores/tb21_full89_oracle_infra_map_r5_final_20260703.json",
+  "counts": {
+    "total": 89,
+    "resolved": 85,
+    "unresolved_or_pending": 4
+  },
+  "resolved_task_ids": [
+    "adaptive-rejection-sampler",
+    "bn-fit-modify",
+    "break-filter-js-from-html",
+    "build-cython-ext",
+    "build-pmars",
+    "build-pov-ray",
+    "caffe-cifar-10",
+    "cancel-async-tasks",
+    "chess-best-move",
+    "circuit-fibsqrt",
+    "cobol-modernization",
+    "code-from-image",
+    "compile-compcert",
+    "configure-git-webserver",
+    "constraints-scheduling",
+    "count-dataset-tokens",
+    "crack-7z-hash",
+    "custom-memory-heap-crash",
+    "db-wal-recovery",
+    "distribution-search",
+    "dna-assembly",
+    "dna-insert",
+    "extract-elf",
+    "extract-moves-from-video",
+    "feal-differential-cryptanalysis",
+    "feal-linear-cryptanalysis",
+    "filter-js-from-html",
+    "financial-document-processor",
+    "fix-code-vulnerability",
+    "fix-git",
+    "fix-ocaml-gc",
+    "gcode-to-text",
+    "git-leak-recovery",
+    "gpt2-codegolf",
+    "headless-terminal",
+    "hf-model-inference",
+    "install-windows-3.11",
+    "kv-store-grpc",
+    "large-scale-text-editing",
+    "largest-eigenval",
+    "llm-inference-batching-scheduler",
+    "log-summary-date-ranges",
+    "mailman",
+    "make-mips-interpreter",
+    "mcmc-sampling-stan",
+    "merge-diff-arc-agi-task",
+    "model-extraction-relu-logits",
+    "modernize-scientific-stack",
+    "mteb-leaderboard",
+    "mteb-retrieve",
+    "multi-source-data-merger",
+    "nginx-request-logging",
+    "openssl-selfsigned-cert",
+    "overfull-hbox",
+    "password-recovery",
+    "path-tracing",
+    "path-tracing-reverse",
+    "polyglot-c-py",
+    "polyglot-rust-c",
+    "portfolio-optimization",
+    "protein-assembly",
+    "prove-plus-comm",
+    "pypi-server",
+    "pytorch-model-cli",
+    "pytorch-model-recovery",
+    "qemu-alpine-ssh",
+    "qemu-startup",
+    "raman-fitting",
+    "regex-chess",
+    "regex-log",
+    "reshard-c4-data",
+    "sam-cell-seg",
+    "sanitize-git-repo",
+    "schemelike-metacircular-eval",
+    "sparql-university",
+    "sqlite-db-truncate",
+    "sqlite-with-gcov",
+    "torch-pipeline-parallelism",
+    "torch-tensor-parallelism",
+    "train-fasttext",
+    "tune-mjcf",
+    "video-processing",
+    "vulnerable-secret",
+    "winning-avg-corewars",
+    "write-compressor"
+  ],
+  "unresolved_task_ids": [
+    "git-multibranch",
+    "make-doom-for-mips",
+    "query-optimize",
+    "rstan-to-pystan"
+  ],
+  "changelog": [
+    "Promoted 6 canary8 tasks from r5_final unresolved to resolved after approved fixes: materialize5 solution.sh symlinks, fixed-digest smoke for tqdm/toml task images, and Pod A privileged oracle c1 rerun.",
+    "Dual-sign record: surface55 executed canary8 and wrote machine-readable summary; surface85 review PASS was reported by orchestrator before this canonical map update.",
+    "Kept 4 unresolved/pending: git-multibranch=protocol, make-doom-for-mips=X11, query-optimize=pending-official-baseline, rstan-to-pystan=pending-official-baseline.",
+    "Canonical r5_final is preserved; this r6 file is the new map version and does not mutate prior evidence."
+  ],
+  "signoff": {
+    "executor": "surface55",
+    "reviewer": "surface85",
+    "review_status": "PASS per orchestrator approval",
+    "approval_scope": "map update 79/89 -> 85/89 from canary8 evidence"
+  },
+  "notes": [
+    "This is an oracle infra map, not a true-model score.",
+    "sam-cell-seg canary strict summary contains external_network_marker=1 from a PyTorch SECURITY.md warning URL string; no infra_fail/parse/timeout was recorded and the task is resolved.",
+    "make-doom-for-mips remains unresolved as X11 closure candidate; evaluate separately whether virtual display/X11 headers are our environment gap."
+  ],
+  "rows": [
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "adaptive-rejection-sampler"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "bn-fit-modify"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "break-filter-js-from-html"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_build-cython-ext_rlvfs_20260702t11041782990281z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "build-cython-ext"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "build-pmars"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_build-pov-ray_rlvfs_20260702t11111782990677z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "build-pov-ray"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "caffe-cifar-10"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "cancel-async-tasks"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "agent51_single_task_green",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_20260702t195608z/results.json",
+      "notes": "agent51 single-task fix/verify merged after audit challenge",
+      "source": "agent51_single_task_fix",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "chess-best-move",
+      "agent51_result": {
+        "n_resolved": 1,
+        "n_unresolved": 0,
+        "resolved_ids": [
+          "chess-best-move"
+        ],
+        "unresolved_ids": []
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "circuit-fibsqrt"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "cobol-modernization"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "code-from-image"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "compile-compcert"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "configure-git-webserver"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "constraints-scheduling"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "count-dataset-tokens"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "crack-7z-hash"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_custom-memory-heap-crash_rlvfs_20260702t10581782989886z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "custom-memory-heap-crash"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "db-wal-recovery"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "distribution-search"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "dna-assembly"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "dna-insert"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "extract-elf"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "extract-moves-from-video"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_feal-differential-cryptanalysis_rlvfs_20260702t11181782991124z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "feal-differential-cryptanalysis"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "feal-linear-cryptanalysis"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_filter-js-from-html_pg89q_rlvfs_shim_20260702t191032z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "filter-js-from-html"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_financial-document-processor_pg89q_rlvfs_shim_20260702t191927z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "financial-document-processor"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "fix-code-vulnerability"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "fix-git"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r5d_fix-ocaml-gc_pg89q_rlvfs_20260702t222425z_targeted_batch_01_of_01/results.json",
+      "notes": "r5d dataset patch resolved; strict summary clean_with_warnings",
+      "shell_rc": 0,
+      "source": "r5_targeted",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "fix-ocaml-gc"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "gcode-to-text"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "git-leak-recovery"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "protocol",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_01_of_08/tb21_strict_summary.json",
+      "notes": "Pod A canary8 reached oracle/test injection under r7 digest; HTTPS deploy test still fails with git clone protocol error `bad line length character: Welc`. surface55 executed; surface85 review PASS per orchestrator approval.",
+      "shell_rc": 24,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "unresolved",
+      "strict_status": "unresolved",
+      "task_id": "git-multibranch",
+      "r5g_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "unresolved_ids": [
+          "git-multibranch"
+        ]
+      },
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/git-multibranch/git-multibranch.1-of-1.tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/git-multibranch/git-multibranch.1-of-1.tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/git-multibranch/git-multibranch.1-of-1.tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/git-multibranch/git-multibranch.1-of-1.tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/git-multibranch/git-multibranch.1-of-1.tb21_full89_batched_batch_01_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log"
+      ],
+      "canary8_counts": {
+        "resolved": 0,
+        "clean_pass": 0,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "gpt2-codegolf"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "agent51_single_task_green",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_20260702t195027z/results.json",
+      "notes": "agent51 single-task fix/verify merged after audit challenge",
+      "source": "agent51_single_task_fix",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "headless-terminal",
+      "agent51_result": {
+        "n_resolved": 1,
+        "n_unresolved": 0,
+        "resolved_ids": [
+          "headless-terminal"
+        ],
+        "unresolved_ids": []
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "hf-model-inference"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "agent51_single_task_green",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_20260702t200229z/results.json",
+      "notes": "agent51 single-task fix/verify merged after audit challenge",
+      "shell_rc": 0,
+      "source": "agent51_single_task_fix",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "install-windows-3.11",
+      "agent51_result": {
+        "n_resolved": 1,
+        "n_unresolved": 0,
+        "resolved_ids": [
+          "install-windows-3.11"
+        ],
+        "unresolved_ids": []
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "kv-store-grpc"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "large-scale-text-editing"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "largest-eigenval"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "llm-inference-batching-scheduler"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "log-summary-date-ranges"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "mailman"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "x11",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_02_of_08/tb21_strict_summary.json",
+      "notes": "Pod A canary8 reached oracle/test injection after symlink materialize; oracle compile still fails on `doomgeneric_xlib.c:11:10: fatal error: 'X11/Xlib.h' file not found`, so frame.bmp is never produced. Follow-up: evaluate whether this is our missing virtual-display/X11 closure. surface55 executed; surface85 review PASS per orchestrator approval.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "unresolved",
+      "strict_status": "unresolved",
+      "task_id": "make-doom-for-mips",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "make-doom-for-mips"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p make-doom-for-mips-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_make-doom-for-mips_pg89q_rlov2_20260702t233635z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/make-doom-for-mips/docker-compose.yaml up -d\nSTDERR:  Container make-doom-for-mips-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_make-doom-for-mips_pg89q_rlov2_20260702t233635z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/make-doom-for-mips/make-doom-for-mips.1-of-1.tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/make-doom-for-mips/make-doom-for-mips.1-of-1.tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/make-doom-for-mips/make-doom-for-mips.1-of-1.tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/make-doom-for-mips/make-doom-for-mips.1-of-1.tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/make-doom-for-mips/make-doom-for-mips.1-of-1.tb21_full89_batched_batch_02_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt"
+      ],
+      "canary8_counts": {
+        "resolved": 0,
+        "clean_pass": 0,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "make-mips-interpreter"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "mcmc-sampling-stan"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "merge-diff-arc-agi-task"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "model-extraction-relu-logits"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "modernize-scientific-stack"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_mteb-leaderboard_pg89q_rlvfs_shim_20260702t193210z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "mteb-leaderboard"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "mteb-retrieve"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r5b_multi-source-data-merger_pg89q_rlvfs_20260702t214903z_targeted_batch_01_of_01/results.json",
+      "notes": "r5b image fix resolved",
+      "shell_rc": 0,
+      "source": "r5_targeted",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "multi-source-data-merger"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "nginx-request-logging"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "openssl-selfsigned-cert"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_overfull-hbox_rlvfs_20260702t11081782990491z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "overfull-hbox"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "password-recovery"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_path-tracing_pg89q_rlvfs_shim_20260702t195316z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "path-tracing"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_path-tracing-reverse_pg89q_rlvfs_shim_20260702t195736z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "path-tracing-reverse"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "polyglot-c-py"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "polyglot-rust-c"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "portfolio-optimization"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "protein-assembly"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "prove-plus-comm"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r4_pypi-server_pg89q_rlvfs_shim_20260702t193632z_targeted_batch_01_of_01/results.json",
+      "notes": "r4 targeted resolved",
+      "shell_rc": 0,
+      "source": "r4_targeted11",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "pypi-server"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r5b_pytorch-model-cli_pg89q_rlvfs_20260702t215626z_targeted_batch_01_of_01/results.json",
+      "notes": "r5b image fix resolved",
+      "shell_rc": 0,
+      "source": "r5_targeted",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "pytorch-model-cli"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_03_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "pytorch-model-recovery",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "pytorch-model-recovery"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p pytorch-model-recovery-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_pytorch-model-recovery_pg89q_rlov2_20260702t233324z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/pytorch-model-recovery/docker-compose.yaml up -d\nSTDERR:  Container pytorch-model-recovery-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_pytorch-model-recovery_pg89q_rlov2_20260702t233324z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/pytorch-model-recovery/pytorch-model-recovery.1-of-1.tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/pytorch-model-recovery/pytorch-model-recovery.1-of-1.tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/pytorch-model-recovery/pytorch-model-recovery.1-of-1.tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/pytorch-model-recovery/pytorch-model-recovery.1-of-1.tb21_full89_batched_batch_03_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "cleanup_timeout_warning": true,
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_r5e_qemu-alpine-ssh_pg89q_rlvfs_20260702t224903z_targeted_batch_01_of_01/results.json",
+      "notes": "r5e guest/ssh wait patch resolved; cleanup warning only",
+      "shell_rc": 0,
+      "source": "r5_targeted",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "qemu-alpine-ssh"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "qemu-startup"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "pending-official-baseline",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "Pending official baseline comparison; do not classify as infra-clean or upstream bug until baseline verdict is available.",
+      "source": "base_full89",
+      "status": "pending_baseline_verdict",
+      "strict_status": "pending_baseline_verdict",
+      "task_id": "query-optimize"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "raman-fitting"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "regex-chess"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "regex-log"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_04_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "reshard-c4-data",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "reshard-c4-data"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p reshard-c4-data-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_reshard-c4-data_pg89q_rlov2_20260702t233241z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/reshard-c4-data/docker-compose.yaml up -d\nSTDERR:  Container reshard-c4-data-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_reshard-c4-data_pg89q_rlov2_20260702t233241z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/reshard-c4-data/reshard-c4-data.1-of-1.tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/reshard-c4-data/reshard-c4-data.1-of-1.tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/reshard-c4-data/reshard-c4-data.1-of-1.tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/reshard-c4-data/reshard-c4-data.1-of-1.tb21_full89_batched_batch_04_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "unresolved",
+      "category": "pending-official-baseline",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "Pending official baseline comparison; do not classify as infra-clean or upstream bug until baseline verdict is available.",
+      "source": "base_full89",
+      "status": "pending_baseline_verdict",
+      "strict_status": "pending_baseline_verdict",
+      "task_id": "rstan-to-pystan"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_05_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "sam-cell-seg",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "sam-cell-seg"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p sam-cell-seg-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_sam-cell-seg_pg89q_rlov2_20260702t233152z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/sam-cell-seg/docker-compose.yaml up -d\nSTDERR:  Container sam-cell-seg-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_sam-cell-seg_pg89q_rlov2_20260702t233152z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sam-cell-seg/sam-cell-seg.1-of-1.tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sam-cell-seg/sam-cell-seg.1-of-1.tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sam-cell-seg/sam-cell-seg.1-of-1.tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sam-cell-seg/sam-cell-seg.1-of-1.tb21_full89_batched_batch_05_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 1
+      }
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_sanitize-git-repo_rlvfs_20260702t11311782991879z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "sanitize-git-repo"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_06_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "schemelike-metacircular-eval",
+      "files_present": {
+        "results.json": false,
+        "run.log": false,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {},
+      "compose_error_excerpt": "",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/schemelike-metacircular-eval/schemelike-metacircular-eval.1-of-1.tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/schemelike-metacircular-eval/schemelike-metacircular-eval.1-of-1.tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/schemelike-metacircular-eval/schemelike-metacircular-eval.1-of-1.tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/schemelike-metacircular-eval/schemelike-metacircular-eval.1-of-1.tb21_full89_batched_batch_06_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "sparql-university"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "sqlite-db-truncate"
+    },
+    {
+      "base_status": "unresolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_r3_a_sqlite-with-gcov_rlvfs_20260702t11341782992064z/results.json",
+      "notes": "r3 targeted resolved",
+      "shell_rc": 0,
+      "source": "r3_targeted_final",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "sqlite-with-gcov"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "torch-pipeline-parallelism"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "torch-tensor-parallelism"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_07_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "train-fasttext",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "train-fasttext"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p train-fasttext-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_train-fasttext_pg89q_rlov2_20260702t233106z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/train-fasttext/docker-compose.yaml up -d\nSTDERR:  Container train-fasttext-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_train-fasttext_pg89q_rlov2_20260702t233106z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/train-fasttext/train-fasttext.1-of-1.tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/train-fasttext/train-fasttext.1-of-1.tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/train-fasttext/train-fasttext.1-of-1.tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/train-fasttext/train-fasttext.1-of-1.tb21_full89_batched_batch_07_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "tune-mjcf"
+    },
+    {
+      "base_status": "unresolved_in_r5_final",
+      "category": "canary8_poda_privileged_resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_oracle_canary/tb21_batched_oracle_surface55_canary8_20260704t165815z/batch_08_of_08/tb21_strict_summary.json",
+      "notes": "Promoted by canary8 after approved fixes: materialize five symlink solution.sh files, fixed-digest smoke for r7/r6 task images, then Pod A privileged oracle c1 rerun. surface55 executed; surface85 review PASS per orchestrator approval. canonical map was unchanged until this r6 update.",
+      "shell_rc": 0,
+      "source": "surface55_canary8_poda_privileged_oracle_c1_20260704",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "video-processing",
+      "files_present": {
+        "results.json": true,
+        "run.log": true,
+        "commands.txt": false,
+        "post-agent.txt": false,
+        "post-test.txt": false,
+        "sessions/tests.log": false,
+        "ctrf.json": false
+      },
+      "b7_summary": {
+        "n_resolved": 0,
+        "n_unresolved": 1,
+        "resolved_ids": [],
+        "unresolved_ids": [
+          "video-processing"
+        ],
+        "failure_mode": "unknown_agent_error",
+        "parser_results": null
+      },
+      "compose_error_excerpt": "Docker compose command failed with exit code 1\nCommand: docker compose -p video-processing-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_video-processing_pg89q_rlov2_20260702t233030z_targeted_batch_01_of_01 -f /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r5-20260703/video-processing/docker-compose.yaml up -d\nSTDERR:  Container video-processing-1-of-1-tb21_full89_batched_batch_01_of_01_oracle_c1_tb21_b7_video-processing_pg89q_rlov2_20260702t233030z_targeted_batch_01_of_01  Creating\nerror during connect: Get \"http://%2Ftmp%2Frl-ov2%2Frun%2Fdocker.sock/v1.45/version\": EOF",
+      "evidence_files": [
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/video-processing/video-processing.1-of-1.tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-agent.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/video-processing/video-processing.1-of-1.tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/panes/post-test.txt",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/video-processing/video-processing.1-of-1.tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/tests.log",
+        "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/video-processing/video-processing.1-of-1.tb21_full89_batched_batch_08_of_08_oracle_c1_surface55_canary8_20260704t165815z/sessions/verifier/ctrf.json"
+      ],
+      "canary8_counts": {
+        "resolved": 1,
+        "clean_pass": 1,
+        "infra_fail": 0,
+        "parse_error": 0,
+        "timeout": 0,
+        "external_network_marker": 0
+      }
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "vulnerable-secret"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "winning-avg-corewars"
+    },
+    {
+      "base_status": "resolved",
+      "category": "resolved",
+      "evidence": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/scores/tb21_full89_summary_tb21_pg89q_full89_oracle_c2_r4_fixture_helper_20260702t0216z.json",
+      "notes": "base full89 oracle c2 resolved",
+      "source": "base_full89",
+      "status": "resolved",
+      "strict_status": "resolved",
+      "task_id": "write-compressor"
+    }
+  ]
+}
