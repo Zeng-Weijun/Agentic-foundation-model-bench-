@@ -1,0 +1,61 @@
+schema_version: agentic_bench.image_manifest.v1
+bench_id: tau3_bench
+# HIGH-1 fix: machine-readable P0 manifest (was a markdown placeholder). Structure is FROZEN;
+# digest/sha fields are PENDING until build+transport. suite/full row stays DISABLED until the gate passes.
+status: draft_pending_build_and_transport
+
+source:
+  repo: github.com/sierra-research/tau2-bench
+  ref: dev/tau3
+  commit: 17e07b1da2bbc0cadfddeea36412686e0604127b        # HIGH-2: Dockerfiles MUST checkout this, not moving HEAD
+  adapter_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/adapters/tau3-bench
+  adapter_commit: 387625f07b4bf7fdec97f27c53f42b2c208dd905
+  adapter_dirty_ignored: [uv.lock, .venv/.lock]           # HIGH-3: adapter-build artifacts, NOT dataset inputs — excluded from repro contract
+
+dataset:
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-atlas/harbor/datasets/tau3-bench
+  task_count: 375
+  domain_split: {airline: 50, retail: 114, telecom: 114, banking_knowledge: 97}
+  taskid_list_sha256: ef22ab2741b57b0fd84ed452366d63a132de58ab19b12c36376cf7eb584c9dc0
+  compose_sha256: e1aa85bb70ab83120e8e863036ea6bb41b600a35a0e5d8b65fce6d0b5a05f1c1
+  # HIGH-3: deterministic full-tree snapshot proof (COMPUTED, read-only):
+  #   cd <parent>; tar --sort=name --mtime="2026-01-01 00:00:00" --owner=0 --group=0 --numeric-owner -cf - tau3-bench | sha256sum
+  tree_tar_sha256: 350576c207e0daa8deee21a1754af1908f1df08efaf75027f39ab849844b8763
+
+contract_basis: >-
+  all 375 tasks share identical env/docker-compose.yaml (1 unique hash) + main Dockerfile (1) +
+  runtime-server Dockerfile (1) => 2-image contract covers all 375; per-task variation is data only.
+
+images:
+  - id: tau3_full_main
+    role: harbor_task_main_runtime
+    required: true
+    base_image: python:3.12-slim@sha256:<BASE_DIGEST_PENDING>     # HIGH-2: pin base by digest
+    build_context: <task>/environment                            # Dockerfile identical across 375
+    dockerfile_offline_ready: false                              # HIGH-2: must vendor tau2-bench@commit + internal apt/pip first
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-main@sha256:<DIGEST_PENDING_BUILD>
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-main_<STAMP>.tar
+    fallback_tar_sha256: <PENDING_BUILD>
+  - id: tau3_full_runtime
+    role: tau3_runtime_mcp_sidecar
+    required: true
+    base_image: python:3.12-slim@sha256:<BASE_DIGEST_PENDING>
+    build_context: <task>/environment/runtime-server            # compose build: context ./runtime-server; identical across 375
+    dockerfile_offline_ready: false
+    extra_deps: ["fastmcp>=3.0"]                                 # must stage internally
+    image_ref: 100.97.118.137:8555/swe-data-harness/tau3-full-runtime@sha256:<DIGEST_PENDING_BUILD>
+    fallback_tar: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/tau3/tau3-full-runtime_<STAMP>.tar
+    fallback_tar_sha256: <PENDING_BUILD>
+
+transport:
+  registry: "100.97.118.137:8555"       # insecure-registry, self-signed CA — same as TB2.1
+  digest_rows: 0                          # PENDING build
+  fallback_rows: 0                        # PENDING build
+  enable_gate: "scripts/check_offline_images_manifest.py --require-offline-transport --verify-fallback"   # must PASS before suite/full enable
+  compose_runtime_build: true             # MEDIUM-1: compose still has build: — must switch task compose to image: <digest> after build
+
+worker_target:                            # MEDIUM-2: NOT the retiring rootless-vfs contract
+  kind: rjob_privileged
+  docker_host: "unix:///var/run/docker.sock"
+  ulimit_nofile: 65535
+  transport_proof_required: true          # P0 by-digest pull + --network none compose-up of >=1 task/domain (4 tasks), main<->MCP-sidecar link under fuse-overlayfs = DoD-3
