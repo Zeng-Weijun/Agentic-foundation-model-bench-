@@ -1,9 +1,9 @@
 # tau3 — offline + model-contract patch (by-85, 2026-07-04) — closes 55's HIGH 1-4
 
-Spec-level patch (no build/push/launch) answering `reports/tau3_recon_adversarial_review_by55_20260704.md`. Read-only facts verified against the actual dataset/Dockerfiles.
+Spec-level patch (no build/push/launch) answering `reports/tau3_recon_adversarial_review_by55_20260704.md`. Read-only facts verified against the actual dataset/Dockerfiles. **STATUS: spec-closed / execution-blocked — build + P0 push + transport-proof await lead GO.** (Terminology corrected throughout: **375-task** dataset served by a **2-image** contract — the earlier "375-image" phrasing is a misnomer, retired.)
 
 ## HIGH 1 — machine-readable P0 manifest ✅
-Was a markdown placeholder → now `manifests/images/tau3_full_p0_20260704.yaml` (schema `agentic_bench.image_manifest.v1`, 2-image contract, structure FROZEN, digest/sha fields `PENDING` until build). `status: draft_pending_build_and_transport`; `transport.digest_rows/fallback_rows = 0`; **`enable_gate: check_offline_images_manifest.py --require-offline-transport --verify-fallback` must PASS before any suite/full enable.** `worker_target: rjob_privileged` (not rootless-vfs; MEDIUM-2). Existing smoke manifests (`tau3_bench.yaml`, `tau3_oracle_direct_smoke.yaml`) stay smoke-only; do NOT flip full until the gate is green.
+Was a markdown placeholder → now `manifests/images/tau3_full_p0_20260704.yaml` (schema `agentic_bench.image_manifest.v1`, 2-image contract, structure FROZEN, digest/sha fields `PENDING` until build). `status: draft_spec_closed_execution_blocked`; `transport.digest_rows/fallback_rows = 0`; **enable_gate (55 re-review fix — the earlier `--require-offline-transport --verify-fallback` was stale, rc=2/unknown-flag): `python3 scripts/check_offline_images_manifest.py --manifest manifests/images/tau3_full_p0_20260704.yaml --check` (current dry-run check mode) must PASS before any suite/full enable.** `worker_target: rjob_privileged` (not rootless-vfs; MEDIUM-2). Existing smoke manifests (`tau3_bench.yaml`, `tau3_oracle_direct_smoke.yaml`) stay smoke-only; do NOT flip full until the gate is green.
 
 ## HIGH 3 — dataset pin = complete reproducibility contract ✅
 - **Deterministic full-tree snapshot proof (COMPUTED, read-only):**
@@ -24,10 +24,10 @@ Both `environment/Dockerfile` and `environment/runtime-server/Dockerfile` curren
 The dataset defaults (`task.toml` `TAU2_USER_MODEL=gpt-5.2`, `TAU2_NL_ASSERTIONS_MODEL=gpt-5.2`, `TAU2_USER_REASONING_EFFORT=low`; `docker-compose.yaml` env passthrough) are placeholders — scores are NOT comparable unless all three roles are pinned. **tau3 run contract (freeze per run, inject via compose/task env, do NOT rely on defaults):**
 | role | env var | value (pin per run) | notes |
 |---|---|---|---|
-| **agent** | `--agent-llm` / Harbor `tau3_llm_agent` model | `gpt-5.4-mini` (our line) | reasoning_effort + temperature pinned; **match the anchor 口径** — for a board-comparable run use provider-default effort (see `tb21_official_anchor_check_20260704.md`), not xhigh |
-| **user-sim** | `TAU2_USER_MODEL` + `TAU2_USER_REASONING_EFFORT` | explicit gpt-5.x (OpenAI-only per policy), effort pinned (default low) | drives the dialogue; affects score — freeze it |
-| **judge** | `TAU2_NL_ASSERTIONS_MODEL` | explicit gpt-5.x (OpenAI-only) | NL-assertion scorer; freeze it |
-| all roles | `OPENAI_BASE_URL` | `http://100.97.118.137:8555`→ **relay 18540** (`http://100.96.122.22:18540/v1`, pod-facing) | `OPENAI_API_KEY` from api_config.env |
+| **agent** | `--agent-llm` / Harbor `tau3_llm_agent` model | **`gpt-5.4-mini`** (model under test; Qwen model-id in Phase 2) | reasoning_effort + temperature pinned; **match the anchor 口径** — board-comparable run uses provider-default effort (see `tb21_official_anchor_check_20260704.md`), not xhigh |
+| **user-sim** | `TAU2_USER_MODEL` + `TAU2_USER_REASONING_EFFORT` | **`gpt-5.4-mini`**, effort **`low`** — FIXED across all agent runs | drives the dialogue; affects score — hard-pinned (no default) |
+| **judge** | `TAU2_NL_ASSERTIONS_MODEL` | **`gpt-5.4`** — FIXED (stronger than agent → avoids self-grading when agent=gpt-5.4-mini) | NL-assertion scorer — hard-pinned (no default) |
+| all roles | `OPENAI_BASE_URL` | **`http://100.96.122.22:18540/v1`** — single pod-facing relay URL, no default (distinct from P0 image registry `100.97.118.137:8555`) | `OPENAI_API_KEY` from `/data/nips/shared_bench/api_config.env` |
 
 Additional contract requirements (55's HIGH-4):
 - **Real per-role completion health check** — a 1-token chat/completions to the relay **for each of agent/user-sim/judge** (not just `/v1/models`), with `--noproxy` (relay lesson). Fail-closed if any role errors.
@@ -38,7 +38,7 @@ Additional contract requirements (55's HIGH-4):
 ## MEDIUM notes (folded in)
 - **M1** — compose still has `build:` → after images are built+pushed, switch the task `docker-compose.yaml` to `image: <P0 digest>` (or Harbor prebuilt transport) so no runtime build. Tracked as `manifest.transport.compose_runtime_build: true`.
 - **M2** — target = rjob privileged (`DOCKER_HOST=unix:///var/run/docker.sock`, `ulimit -n 65535`), not the retiring rootless-vfs worker. In the manifest `worker_target`.
-- **M3** — 2 images ≈ fine for P0 capacity; the "375-image" framing is retired (2-image proven). transport-proof = 4-domain compose-up (DoD-3).
+- **M3** — P0 capacity fine for the **2 images**; "375-image" misnomer corrected → **375 TASKS served by a 2-IMAGE contract** (empirically proven). transport-proof = 4-domain compose-up (DoD-3).
 
 ## Closure checklist for 55's re-review
 - [x] HIGH-1 machine-readable manifest at `manifests/images/tau3_full_p0_20260704.yaml` (structure frozen, PENDING digests, enable-gate + rjob target)
