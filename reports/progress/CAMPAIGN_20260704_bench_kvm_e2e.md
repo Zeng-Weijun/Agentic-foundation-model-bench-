@@ -68,3 +68,43 @@
 - **V2 runner:** 设计**已批准**；smoke10 在跑，放行门槛 = **10/10 rows、0 failed**。
 - **TB2.1 收口金丝雀:** 55 执行 + 85 独立复审 **双 PASS** —— privileged 栈消除 `docker_api_eof_before_injection` 类（3 可跑任务达真 pytest 执行、0 EOF），四项最小修复清单 1:1 对应根因且覆盖全 8 → **修复放行**。
 - **运维教训三条:** ① cmux `send` 后须单发 Enter（竞态，漏则卡输入框）；② gpfs 全树 `find` 禁用（灾难性空转，按精确证据路径直读）；③ flaky ssh 长内联命令中途断连 → 改**共享盘脚本 setsid 后台跑 + 经 dev 读结果文件**验证。
+
+---
+
+## 终章 2026-07-05 — 战役闭合
+
+### 两 bench 终分（同口径,board-comparable）
+
+| bench | 口径 | 终分 | 官方锚对照 |
+|---|---|---|---|
+| **SWE-bench Verified** | gpt-5.5 high · mini-swe-agent v2.0.0 bash-only · 单次 pass@1 · 0 infra | **386/500 = 77.2%** | 同口径 gpt-5.2-high 72.8% → **+4.4pp** |
+| **Terminal-Bench 2.1** | gpt-5.5 terminus-2 medium · 单次 pass@1 · Pod A privileged | **63/89 = 70.8%**（headless-terminal parse_error 假阴性修正,原 62/89） | 官方 78.2±2.4 为 **5 跑均值**;差距=单样本方差+medium 档+env 天花板+小幅真差距 |
+
+**口径红线:** 两分均**单跑**(方差 ±3-4pp),gpt-5.5 均**不在**冻结官方榜 → 皆为**延伸官方锚的同口径新基线**,非"官方榜分"。SWE-V 可宣称对 gpt-5.2-high +4.4pp;TB2.1 单跑 70.8% 不异常于 78.2% 五跑均值,但**不可直接当榜数**。
+
+### 修复链（三大,全 dual-sign PASS）
+
+1. **tau3 DoD-③**（transport-proof)：`[all]`+build-essential 解 scipy/pyaudio import 崩溃;冻结恢复 350576c2+隔离 2 畸形目录;preflight 硬化(frozen taskid_list);Pod A 四域 transport-proof 4/4。→ spec-closed/execution-blocked。
+2. **TB2.1 收口金丝雀**：privileged 栈消除 `docker_api_eof_before_injection` 类;四修复(symlink-payload/tqdm/toml/git-protocol)→ 8 EOF 任务 6 恢复 → canonical map **79/89 → 85/89**。
+3. **SWE-V v2→v2.1**：docker-125 镜像-preflight harness bug(211/212 no_patch=agent 容器没起)→ 43.6%(harness 分) **→ 77.2%(模型分)**。★最大教训:低分先查 harness 再归模型。
+
+### 全部教训
+
+**运维:**
+- cmux `send` 后须单发 Enter(竞态,漏则卡输入框)。
+- gpfs 全树 `find` 禁用(灾难性空转)→ 按精确证据路径直读。
+- flaky ssh 长内联命令中途断连 → **共享盘脚本 setsid 后台跑 + 经 dev 读结果文件**验证。
+- 维护机杀进程树(nohup 不保)→ 脚本上共享盘 + 一键重跑;P0 registry 与 builder 同机=脆弱。
+
+**复审方法（对抗）:**
+- `eval_rc=0` 只量 eval 步,**漏 agent-side infra**(docker-125)→ 分层核 agent 与 eval 两步。
+- `parse_error`/scorer 假阴性(headless-terminal ctrf 7/7 却算未解)→ 交叉核 ctrf vs strict scorer。
+- `external_network_marker` 假阳性(匹配 pytest 警告里的 docs URL)→ marker 须排除 docs/warning URL。
+- jq 嵌套路径 bug(patch 嵌 instance_id 键下)→ 读真结构,别信首层。
+- **单跑 ≠ 5 跑均值;harness-bug 分 ≠ 模型分**——对外口径前必拆解。
+- 模型可赢过 oracle(git-multibranch/rstan 模型过 oracle 官方解挂)→ oracle map 非绝对天花板。
+
+### 红线全程守住
+所有容器 `--network none`/compose 内网 · bug-for-bug 不改官方 · 0 无授权模型调用 · Pod B full500 运行中零扰动(审计只读) · 数据集畸形目录**隔离非删**(可逆) · git 全走隔离 worktree(零触碰他人脏树 WIP)。
+
+**战役 bench-review 链正式闭合。** 交付:tau3 镜像+manifest / TB2.1 canary map 提案 85/89 / SWE-V 77.2% 终分 / E2E 复现命令包 / 全审计+归因表。
