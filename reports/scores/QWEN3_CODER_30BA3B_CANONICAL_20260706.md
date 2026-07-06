@@ -10,6 +10,8 @@
 | **SWE-bench Verified** | **48.6%**（243/500) | QwenCode 0.15.6 原生 · 单次 pass@1 | `swev_qwencode_v21_20260705T190754Z` |
 | **Terminal-Bench 2.1** | **10.1%**（9/89) | terminus-2 官方 harness · 单次 | `tb21_qwen_official_medium_c32_stage1` |
 
+> TB2.1 native-adapter 对照(非官方 harness,详见 §2):QwenCode 0.15.6 host-bridge = **16.85%**（15/89,run `qwen-code-host-bridge_c32_full89`)。canonical 仍 = 10.1%(terminus-2 官方)。
+
 ---
 
 ## 1. SWE-bench Verified = 48.6%（243/500）
@@ -28,16 +30,20 @@
   2. **无官方 Qwen 锚:** TB2.1 无 Qwen3-Coder-30B 官方分,10.1% 是我方 terminus-2 单跑,非对榜数。
   3. 与 SWE-V-native 48.6% 对读才有意义:反映**交互模式复杂度**(原生→live-终端)对 Qwen 的单调扼制。
 
+- **★ native-adapter 对照 = 16.85%（15/89,run `qwen-code-host-bridge_c32_full89`,非官方 harness):** QwenCode 0.15.6 host-bridge(host 跑 QwenCode + docker-exec into 离线容器)。**canonical 仍 = 10.1%(terminus-2 官方)**;16.85% 是原生-adapter 对照点,**非官方 terminus-2 分,勿作官方 TB2.1 引用**。
+  - 差集归因(vs terminus-2 9 pass):common=6;**QwenCode-only +9**(build/service/data/ML 命令友好型:kv-store-grpc/nginx/hf-inference/pytorch-cli/data-merger/fix-git/polyglot-rust-c…);terminus-only **-3**(git-leak-recovery/openssl-selfsigned-cert/prove-plus-comm);**~9 交互-TTY 边界**(qemu/install-windows/chess/doom…)QwenCode 命令式 docker-exec 做不了。
+  - +6.7pt 归因:原生命令式 scaffold 高效(无 terminus-2 的 105.8 轮 churning)胜在命令友好型,减掉交互-TTY 边界任务。
+
 ---
 
-## 附录:五点交互模式梯度（同 SWE-V-500 / TB2.1-89)
+## 附录:六点交互模式梯度终表（同 SWE-V-500 / TB2.1-89)
 
-| 模型 | scaffold | 交互模式 | 分 | 状态 |
-|---|---|---|---|---|
-| Qwen3-Coder-30B | QwenCode 0.15.6 | 原生多-tool-call | **48.6%** | ✅ canonical Qwen 原生 |
-| Qwen3-Coder-30B | mini-swe-agent | 单-bash-块 | 23.4% | ✗ 兼容压低(100% 多-bash 拒绝) |
-| Qwen3-Coder-30B | terminus-2 | live tmux | **10.1%** | ✅ canonical(TB2.1 官方 harness)· ✗ 交互压低 caveat 随行 |
-| gpt-5.5 | mini-swe-agent | 单-bash-块 | 77.2% | 参照(模型-scaffold 契合) |
-| gpt-5.5 | terminus-2 | live tmux | 70.8% | 参照 |
+| 模型 | scaffold | SWE-bench Verified | Terminal-Bench 2.1 |
+|---|---|---|---|
+| Qwen3-Coder-30B | 原生(QwenCode 0.15.6 / host-bridge) | **48.6%** | **16.85%**（native-adapter 对照,非官方 harness) |
+| Qwen3-Coder-30B | 官方非原生(mini / terminus-2) | 23.4% ✗ | 10.1% ✗（canonical) |
+| gpt-5.5 | 官方(mini / terminus-2) | 77.2% | 70.8% |
 
-**一句话:** Qwen3-Coder-30B 代表力 = SWE-V 原生 **48.6%**;TB2.1 官方 harness **10.1%**(交互压低,caveat 强制随行);`23.4%` scaffold-兼容压低分禁引。
+**pattern:** 两 bench 上 Qwen 原生 scaffold 都胜非原生官方 harness(SWE-V 48.6>23.4 = **+25.2pt**;TB2.1 16.85>10.1 = **+6.7pt**);gpt-5.5 在官方 harness 两边都稳(77.2/70.8)。→ **scaffold-fit 对 Qwen 是一阶因子,对 gpt-5.5 是二阶。**
+
+**一句话:** Qwen3-Coder-30B 代表力 = SWE-V 原生 **48.6%**;TB2.1 canonical(官方 terminus-2)**10.1%**(交互压低 caveat 强制随行),native-adapter 对照 **16.85%**;`23.4%` scaffold-兼容压低分禁引。
