@@ -108,3 +108,54 @@
 所有容器 `--network none`/compose 内网 · bug-for-bug 不改官方 · 0 无授权模型调用 · Pod B full500 运行中零扰动(审计只读) · 数据集畸形目录**隔离非删**(可逆) · git 全走隔离 worktree(零触碰他人脏树 WIP)。
 
 **战役 bench-review 链正式闭合。** 交付:tau3 镜像+manifest / TB2.1 canary map 提案 85/89 / SWE-V 77.2% 终分 / E2E 复现命令包 / 全审计+归因表。
+
+---
+
+## 二期总结 2026-07-06 — 复审链全收官
+
+二期 = 85 金丝雀审查位对 55/51 执行的全部真模型 run 的对抗复审。核心产出:**把 harness/scaffold/环境噪声从模型真实力里剥出来**。
+
+### ★ 五点交互模式梯度（终稿,同一 SWE-V-500 / TB2.1-89）
+
+| 模型 | scaffold | 交互模式 | 分 | 状态 |
+|---|---|---|---|---|
+| Qwen3-Coder-30B | QwenCode 0.15.6 | 原生多-tool-call | **48.6%** | ✅ canonical Qwen 原生(取代未验证 49% README 锚) |
+| Qwen3-Coder-30B | mini-swe-agent | 单-bash-块 | 23.4% | ✗ scaffold 压低(100% 多-bash 拒绝) |
+| Qwen3-Coder-30B | terminus-2 | live tmux | 10.1% | ✗ scaffold 压低(churning avg 105.8 轮) |
+| gpt-5.5 | mini-swe-agent | 单-bash-块 | 77.2% | ✅ 模型-scaffold 契合 |
+| gpt-5.5 | terminus-2 | live tmux | 70.8% | ✅ 模型-scaffold 契合 |
+
+**结论:** 交互复杂度(原生→bash-块→live-终端)单调扼住 Qwen(48.6→23.4→10.1);gpt-5.5 在两 scaffold 都稳(77.2/70.8)。**自研 harness ROI 在交互层不在模型**:mini 类需修多-bash parser;terminal 类需屏幕摘要+收敛护栏。
+
+### RepoZero 翻案链(28.2 → 67.0 → 67.55)
+
+| 跑 | 分 | 判定 |
+|---|---|---|
+| 原始 | 28.2%(127/188) | ✗ 无效:磁盘满,68% oracle_rc=126 不可评分 |
+| rejudge v1 | 67.0%(126/188) | ✗ 不可验证:rejudge 期间磁盘二次满,48/53 pass-claim 与证据矛盾 |
+| **v2** | **67.55%(127/188)** | ✅ **PASS**:证据一致断言+冻结快照+磁盘监控+3600s watchdog(0 触发);127 passes 全 storage_error=false |
+
+67.55% caveat:188 rescue 偏子集(非 400 官方)、无 LLM judge、单跑 → 非榜数、不可 vs Claude。
+
+### 补跑/报废配额记录(55/51 真模型消耗)
+
+以下 run 因 harness/环境噪声产出不可用数,需补跑(compute 报废,非模型问题):
+- SWE-V gpt-5.5 v2 **43.6%**(docker-125 镜像未 preflight,42% agent 容器没起)→ 补跑 v2.1 **77.2%**。
+- RepoZero 原始 **28.2%** + rejudge v1 **67.0%**(磁盘满×2)→ 补跑 v2 **67.55%**。
+- QwenCode 6 月 frozen **23.4%**(v4.3+116 未完成 infra 降级)→ 补跑 v2.1 **48.6%**。
+- 教训:低分先查 harness/环境(docker-start/磁盘/scaffold-fit)再归模型;`eval_rc=0` 不代表 agent 端无 infra。
+
+### ⛔ 禁引用数字清单（口径孤儿 / scaffold 压低 / 已报废）
+`23.4%`(Qwen mini)· `10.1%`(Qwen terminus-2)· `28.2%`/`67.0%`(RepoZero 磁盘)· `43.6%`(SWE-V v2 docker-125)· `23.4%`(QwenCode 6月降级)。
+
+### ✅ 可引用终分（带各自 caveat)
+| bench | 模型·scaffold | 分 |
+|---|---|---|
+| SWE-bench Verified | gpt-5.5 · mini v2.0.0 | **77.2%** |
+| SWE-bench Verified | Qwen3-Coder-30B · QwenCode 0.15.6 | **48.6%** |
+| Terminal-Bench 2.1 | gpt-5.5 · terminus-2 | **70.8%**(headless 假阴性修正后) |
+| RepoZero(188 子集) | gpt-5.5 · codex Py2JS | **67.55%** |
+
+**复审方法论沉淀:** eval_rc 只量 eval 步(漏 agent-side docker-125)· parse_error/scorer 假阴性交叉核 ctrf · extnet 假阳性排 docs-URL · 磁盘证据须冻结快照防二次覆盖 · scaffold-fit ≠ 模型力 · 单跑 ≠ 均值。
+
+**本战役 bench 复审链正式全收官。**
