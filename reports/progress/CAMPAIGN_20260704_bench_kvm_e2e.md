@@ -159,3 +159,13 @@
 **复审方法论沉淀:** eval_rc 只量 eval 步(漏 agent-side docker-125)· parse_error/scorer 假阴性交叉核 ctrf · extnet 假阳性排 docs-URL · 磁盘证据须冻结快照防二次覆盖 · scaffold-fit ≠ 模型力 · 单跑 ≠ 均值。
 
 **本战役 bench 复审链正式全收官。**
+
+---
+## Canonical 定稿同步 2026-07-06（用户拍板）
+权威卡:`reports/scores/QWEN3_CODER_30BA3B_CANONICAL_20260706.md`
+
+**Qwen3-Coder-30B-A3B canonical:**
+| Bench | 分 | scaffold | caveat |
+|---|---|---|---|
+| SWE-bench Verified | **48.6%**（243/500) | QwenCode 0.15.6 原生 | 复现官方 ~51%(-2.4pt);mini 23.4% 兼容压低禁引 |
+| Terminal-Bench 2.1 | **10.1%**（9/89) | terminus-2 官方 harness | ★交互压低 caveat 强制随行;churning 主导;无官方 Qwen 锚 |
