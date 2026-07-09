@@ -148,6 +148,43 @@ hash, scaffold + tool schema, verifier command and exit code, failure category, 
 
 Never commit secrets, API keys, raw private benchmark data, or large logs.
 
+### 1.5 What identifies a model — and what does not
+
+A trace records the `model` string an agent sent. That string is not evidence of which
+weights answered. Verified against a live sglang server, 2026-07-10:
+
+```
+POST http://<host>:30000/v1/chat/completions
+     {"model": "Qwen/Qwen3-Coder-30B-A3B-Instruct", ...}
+->   HTTP 200
+     {"model": "Qwen/Qwen3-Coder-30B-A3B-Instruct", "content": "OK", ...}
+
+GET  http://<host>:30000/get_model_info
+->   {"model_path": ".../Qwen3-30B-A3B-Instruct-2507"}     # a different model entirely
+```
+
+sglang does not validate `model`. It echoes it. A run can evaluate the wrong weights from
+the first token to the last and produce a trace that looks flawless.
+
+Ports do not identify a model either. `:30000` served `Qwen3-Coder-30B-A3B-Instruct` on the
+host that produced the canonical Qwen scores, and serves `Qwen3-30B-A3B-Instruct-2507` on the
+host that replaced it.
+
+| Recorded value | Identifies the weights? |
+|---|---|
+| `model` in the request | no — you chose that string |
+| `model` in the response | no — the server echoes it back |
+| `base_url` alone | no — same port, different host, different model |
+| **`model_path` from `/get_model_info`, fetched from that host:port at run time** | **yes** |
+
+Hence field 11 of §0. `serving_config` must be captured **during** the run, from the endpoint
+the run actually used, and stored with the run. Not looked up afterwards in a config file that
+describes some other host.
+
+Captured example: [`experiments/serving/sglang_launch_20260710.sh`](../experiments/serving/sglang_launch_20260710.sh)
+(verbatim `ps -eo args`) and `SERVING_CONFIG_20260710.json` (402 server args per port, secrets
+redacted at capture time).
+
 ---
 
 ## §2 Master table
