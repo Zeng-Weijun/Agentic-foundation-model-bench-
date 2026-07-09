@@ -65,18 +65,36 @@ baselines. Meanwhile `score = resolved/total` is computed *independently* of `re
 > A verdict rule that rejects a score *because the harness said `blocked`* rejects every real run.
 > This document shipped exactly that rule on 2026-07-09 and had to retract it. See §5.12(c).
 
-### Verdict rules (v3)
+### Verdict rules (v4)
 
 Apply in order:
 
-1. `infra_fail > 0` → **`blocked`**. Not a model score. Attribute it.
+1. **`infra_fail` must be decomposed before it is used.** The harness computes
+   `infra_fail = bool(missing_artifact or fatal_timeout or tb_rc not in (0, None))`, which folds a
+   task-level outcome in with two genuine infrastructure faults:
+   - `missing_artifact` or `tb_rc != 0` → real infrastructure fault → **`blocked`**. Attribute it.
+   - `fatal_timeout` → **a task-level result, not an infrastructure fault.** Note it; it does not
+     block. The canonical Qwen × terminus-2 run carries `infra_fail=1` purely from `timeout=1`.
+     Reading the boolean instead of its terms disqualifies this document's own anchor.
 2. `parse_error > 0` → **correctable**. Fix it, and record the correction task-by-task with its
    justification. (The canonical TB2.1 `62 → 63` was exactly this.)
-3. **Gate reports clean, but `llm_health` shows a material hard-failure rate → `forbidden`.**
-   The gate is structurally blind to the LLM layer (§5.12a). This is the *only* reason the
-   2026-07-09 TB2.1 re-measurement (`53/89`) is disqualified — **not** its `blocked` status.
+3. **`llm_health` hard failures must be split by layer**, then only one layer counts:
+   - `infra_class` — `5xx`, `429`, `connection_error`, `read_timeout`, retry exhaustion against
+     the endpoint. **A material rate here → `forbidden`**, because the harness gate is
+     structurally blind to it (§5.12a). This — not its `blocked` status — is the only reason the
+     2026-07-09 TB2.1 re-measurement (`53/89`) is disqualified.
+   - `content_class` — `400 BadRequest`, tokenizer errors, `context_length_exceeded`.
+     **Ordinary agent behaviour. Never `forbidden`.** The canonical Qwen run carries six
+     `BadRequestError`s, three of them `context_length_exceeded` from a trajectory that grew to
+     262,170 tokens against a 262,144-token window. The canonical gpt-5.5 run's single
+     `Unknown Error` was `disallowed special token <` — a tokenizer error, not a relay fault, so
+     its relay-layer hard-failure count is 0 and not 1.
 4. Scaffold/protocol mismatch (e.g. 100% of trajectories rejected by the parser) → **`forbidden`**.
+   Establish this from the trace, never from a low score (§5.13).
 5. Otherwise → eligible for `canonical`, pending dual review.
+
+Compare a run against **the counts of the run it is being compared to**, not against a threshold
+imported from another benchmark.
 
 **Hard rule.** A run that has not passed dual review never enters the quotable column,
 no matter how plausible the number looks.
@@ -809,6 +827,56 @@ Exceed a threshold → tag the score `llm_degraded`. Do not block the run; **tai
 
 ---
 
+### 5.13 The probe was correct. The thing counting its output was not.
+
+`Qwen3-30B-A3B-Instruct-2507` is served with `--tool-call-parser qwen`. `qwen-code 0.15.6` speaks
+the `qwen3_coder` tool-call dialect. The predicted failure was a clean one: the server parses no
+tool calls, the agent loops without acting, every task scores zero, and every quality gate reports
+success — a scaffold/protocol mismatch indistinguishable from "the model is bad at coding".
+
+So a protocol probe was written before the run. It ran three tasks and asked one question:
+`tool_calls_emitted_and_parsed > 0`? It reported **zero**, on all three.
+
+The probe specification — written by the orchestrator — said to count top-level `tool_calls` and
+`function_call` fields. That is the OpenAI wire format. It is not what the scaffold writes.
+qwen-code's `stream-json` nests tool activity inside `message.content[]` blocks typed `tool_use`
+and `tool_result`. The counter was looking at a level of the document where the answer never
+appears.
+
+Recounted at the right level, the same three trajectories give:
+
+| instance | `tool_use` | `tool_result` | tools actually called |
+|---|---:|---:|---|
+| `astropy__astropy-14539` | 4 | 4 | `glob`, `read_file`, `glob`, `glob` |
+| `django__django-17084` | 4 | 4 | `glob`, `grep_search`, `grep_search`, `read_file` |
+| `sympy__sympy-24443` | 4 | 4 | `read_file`, `edit`, `read_file`, `edit` |
+
+`rows_protocol_ok = 3/3`. A direct OpenAI-compatible tool call against the same endpoint returns a
+non-empty `tool_calls` array. The protocol works. The hypothesis was wrong, and the probe would
+have "confirmed" it.
+
+Had the orchestrator's instruction been followed literally, `0/3` would have been read as
+`protocol mismatch → forbidden`, and the only benchmark line in this table with a same-base
+training anchor would have been struck before it ran. The engineer running the probe checked what
+the zero *meant* before reporting it, found the counter was reading the wrong field, and said so.
+
+Two lessons, and the second is the one that generalises:
+
+- **A negative result from an instrument you have not validated is not a negative result.** Before
+  a probe can disconfirm, it must first be shown capable of confirming. A tool-call counter that
+  has never seen a *positive* trajectory cannot testify that a trajectory has no tool calls.
+- **The layer that reports a metric and the layer that produces it are different layers, and they
+  drift.** `tool_calls` is the API's word for it; `content[].type == "tool_use"` is the scaffold's.
+  Both are "the tool calls". Only one is where the data lives. Every implicit coupling in §5.10 has
+  this shape: a name that survived a layer change while its referent moved.
+
+This is the fourth time in one working session that an instruction from the orchestrating agent was
+overturned by the agent executing it — after `blocked` implying an invalid score, after the retry
+arithmetic, after `UNRECOVERABLE`. Each was caught the same way: someone declined to report a
+number they could not explain.
+
+---
+
 ## §6 Reproducibility gaps (as of 2026-07-09)
 
 An honest list of what a third party could **not** reproduce from this repo today.
@@ -863,5 +931,7 @@ Closing these is ordinary work, not a footnote.
    claim is recorded only if both fail to break it. §5.8 exists because this process caught the
    author's own error before it was published.
 3. **`ABSENT`, never invented.** A field with no on-disk source is written `ABSENT`.
-4. **Gate over score.** A run whose harness gate says `ready=false` is `blocked`, however
-   attractive its number.
+4. **Terms over booleans.** Never act on a harness's summary flag without reading how it is
+   computed. `ready=false` is mechanically true of every real run; `infra_fail=1` is often just a
+   timeout. This rule replaces an earlier "gate over score" rule that this document shipped, and
+   which would have disqualified its own baselines. See §5.12(c) and verdict rules v4.
