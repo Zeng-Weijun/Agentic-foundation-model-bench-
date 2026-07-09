@@ -1,0 +1,516 @@
+# =============================================================================
+# TB2.1 x GPT-5.5 canonical reproduction config
+#
+# Target: reproduce run `tb21_gpt55_official_medium_c89_single_20260704t195417z`
+#         corrected score 63/89 = 70.8%
+#
+# EVERY value below is transcribed from a truth-source file on the shared FS.
+# `source:` annotates where each block came from. Anything not recoverable is
+# literally `ABSENT` -- nothing here is guessed.
+#
+# Authored 2026-07-09 by surface:85 (taking over surface:55's tick3 task).
+# No run was started, no commit/push was made, while producing this file.
+# =============================================================================
+
+schema_version: bench.reproduction_config.v1
+config_generated_at: "2026-07-09"
+config_author: "surface:85 (handover from surface:55)"
+
+# -----------------------------------------------------------------------------
+# Truth sources (read-only; every field below is traceable to one of these)
+# -----------------------------------------------------------------------------
+truth_sources:
+  score_json: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/tb21_gpt55_official_20260705.json"
+  score_md: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/tb21_gpt55_official_20260705.md"
+  # The launcher's own preflight checklist -- records the EFFECTIVE (post-override)
+  # runner/manifest/image-map paths verbatim. This is the only file that pins them.
+  launch_checklist: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/reports/tb21_official_gpt55_staged/tb21_gpt55_official_medium_c89_single_20260704t195417z_medium_c89_preflight.md"
+  launch_ledger: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/reports/tb21_official_gpt55_staged/tb21_gpt55_official_medium_c89_single_20260704t195417z_medium_c89_ledger.json"
+  harness_run_metadata: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c89_tb21_gpt55_official_medium_c89_single_20260704t195417z_attempt1_medium_c89/run_metadata.json"
+  launcher_script: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/scripts/stage_tb21_official_gpt55_launcher.sh"
+  decisions_md: "_coordination/bench_kvm_e2e_20260704/DECISIONS.md (lines 556-565, 620-675, 1851-1903)"
+
+# -----------------------------------------------------------------------------
+# Canonical run identity
+# -----------------------------------------------------------------------------
+canonical:
+  run_id: "tb21_gpt55_official_medium_c89_single_20260704t195417z"
+  # source: launch_ledger
+  started_at_utc: "2026-07-04T19:54:19Z"
+  # source: harness_run_metadata (start_time / end_time)
+  harness_start_utc: "2026-07-04T19:56:58.099611+00:00"
+  harness_end_utc: "2026-07-04T21:03:10.023577+00:00"
+  # source: harness_run_metadata (commit_hash, written by the Terminal-Bench harness itself)
+  harness_recorded_commit_hash: "1a6ffa9674b571da0ed040c470cb40c4d85f9b9b"
+
+# -----------------------------------------------------------------------------
+# Bench / model / harness
+# -----------------------------------------------------------------------------
+bench: "terminal_bench_2_1_full89"          # source: score_json.bench
+model: "gpt-5.5"                             # source: score_json.model
+harness:
+  agent: "terminus-2"                        # source: score_json.agent
+  # harness_run_metadata records model_name as the litellm-prefixed form:
+  litellm_model_name: "openai/gpt-5.5"       # source: harness_run_metadata.model_name
+  # No semver is recorded anywhere in the run artifacts for terminal-bench or terminus-2.
+  terminal_bench_version: ABSENT
+  terminus_2_version: ABSENT
+  # The only version-like identifier the harness persisted:
+  harness_recorded_commit_hash: "1a6ffa9674b571da0ed040c470cb40c4d85f9b9b"
+
+reasoning_effort: "medium/default_no_reasoning_effort_arg"   # source: score_json.effort
+# Mechanically, "medium/default" means the launcher passes NO reasoning_effort arg
+# and blanks the env. Verbatim from launcher_script run_attempt(), MODE=medium branch:
+reasoning_effort_mechanics:
+  tb_agent_kwargs: "api_base=${relay_endpoint} temperature=0.0"   # no reasoning_effort key
+  env_blanked:
+    OPENAI_REASONING_EFFORT: ""      # explicitly emptied
+    REASONING_EFFORT: ""             # explicitly emptied
+    BENCH_DISABLE_REASONING_EFFORT_DEFAULT: "1"
+    TB21_SOURCE_REMOTE_BASHRC: "0"
+
+# -----------------------------------------------------------------------------
+# Run parameters (all: source = score_json + launch_checklist, cross-checked)
+# -----------------------------------------------------------------------------
+concurrency: 89                # score_json.concurrency; harness_run_metadata.n_concurrent_trials=89
+timeout_sec: 7200              # score_json.timeout_sec
+timeout_multiplier: "1.0"      # score_json.timeout_multiplier (string, launcher asserts == "1.0")
+n_attempts: 1                  # score_json.attempts; harness_run_metadata.n_attempts=1
+
+# Launcher hard-asserts these; recorded so run.sh can pre-validate before SSH.
+launcher_invariants:
+  allowed_concurrency_tiers: [32, 64, 89, 100]
+  attempts_must_equal: 1
+  timeout_multiplier_must_equal: "1.0"
+  timeout_sec_min: 7200
+  relay_total_cap: 150
+  assumed_full500_concurrency: 50
+  # guard: concurrency + assumed_full500_concurrency <= relay_total_cap
+  # 89 + 50 = 139 <= 150  -> passes without TB21_ALLOW_RELAY_OVER_CAP
+  relay_budget_headroom: 11
+
+# -----------------------------------------------------------------------------
+# Dataset
+# -----------------------------------------------------------------------------
+dataset: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703"
+dataset_task_count: 89        # launcher validates == 89 before launch
+
+# -----------------------------------------------------------------------------
+# Image manifest + digests
+# -----------------------------------------------------------------------------
+image_manifest: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/manifests/images/terminal_bench_2_1_full89_p0_closure_r7.yaml"
+image_manifest_bench_id: "terminal_bench_2_1_full89_closure_r5_overlay"   # from the yaml header
+image_manifest_sha256_ref_count: 178       # measured: grep -c '@sha256:'
+image_manifest_unique_image_digests: 89    # 178 = 89 images x 2 fields
+image_manifest_non_p0_refs: 0              # every ref points at the P0 registry
+# Verbatim first 3 (lexicographic) repo@digest refs, copied byte-for-byte:
+image_digest_examples:
+  - "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-adaptive-rejection-sampler@sha256:e4748787bc2ec1754dfa787074a755892d7d1053e44d18cac199c0ea4b3b52c7"
+  - "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-bn-fit-modify@sha256:d705c21015f373b35b384fcc9bb7a88e839a135ec3cbbe20c1f6df5aa87bcfd3"
+  - "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-break-filter-js-from-html@sha256:6ac375e0c1c88170174cb17f3e9020ec7b81638385083c991114df72f176aca9"
+# Verified 2026-07-09 from Pod A and Pod B independently:
+#   registry HEAD /v2/<repo>/manifests/<digest> -> 200 for 89/89
+#   Pod A local docker cache by digest         -> 89/89
+image_digest_registry_present: "89/89"
+image_digest_podA_local_cache: "89/89"
+
+# The image MAP is NOT the launcher default. Canonical overrode it; this exact
+# path is what launch_checklist records.
+image_map: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/_coordination/20260625_harbor_bench/reports/tb21_leaderboard_verify_gpt55_staged/tb21_prebuilt_image_map_full89_r7_leaderboard.json"
+image_map_entries: 89           # verified 2026-07-09
+image_map_mtime_caveat: "file mtime is 2026-07-05 18:03 CST, i.e. AFTER the canonical run ended (2026-07-05 05:03 CST). Content identity with the canonical-time map is UNVERIFIED."
+
+# -----------------------------------------------------------------------------
+# Launcher + runner (effective paths, from launch_checklist -- NOT script defaults)
+# -----------------------------------------------------------------------------
+launcher:
+  repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55"
+  script_rel: "scripts/stage_tb21_official_gpt55_launcher.sh"
+  mode: "medium"          # --mode ; proven by scores filename `..._medium_c89_scores.json`
+  attempts_spec: "all"    # --attempts ; resolve_attempts() maps "all" -> the single attempt 1
+  # Reconstructed CLI. run_id/mode/concurrency are proven by the artifact naming:
+  #   scores file  = <run_id>_<mode>_c<concurrency>_scores.json
+  #   artifact dir = ..._<run_id>_attempt1_<mode>_c<concurrency>
+  cli_flags: "--execute --mode medium --attempts all --concurrency 89 --model gpt-5.5 --relay-url <relay_endpoint> --run-id <run_id>"
+
+runner: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/run_terminal_bench_2_1_full89_batched_privileged_offline.sh"
+runner_note: "This is the MAIN-repo r3 worktree path recorded verbatim in launch_checklist. It is NOT what the launcher would resolve by default (default = $REPO_ROOT/scripts/..., i.e. under the s55 worktree). Canonical therefore passed it explicitly via TB21_PRIVILEGED_RUNNER or --runner."
+runner_git_state_at_canonical_time: ABSENT   # see conflicts.runner_version_unrecoverable
+
+# -----------------------------------------------------------------------------
+# Relay  (★ the ONLY intended environment deviation from the canonical run)
+# -----------------------------------------------------------------------------
+relay_endpoint: "http://100.96.122.87:18540/v1"
+relay_endpoint_canonical: "http://100.96.122.22:18540/v1"
+relay_note: >-
+  dev (pod `zwj2`) restarted on 2026-07-09 ~15:59 CST and its pod IP changed from
+  100.96.122.22 to 100.96.122.87. The relay is `openai_relay_proxy.py`, a manually
+  started process (NOT systemd-managed), so it also had to be relaunched. Verified
+  by surface:85 on 2026-07-09: dev has a listener on :18540 and 2 relay processes;
+  `GET /v1/models` returns HTTP 401 (= reachable, auth required) both from dev
+  (127.0.0.1) and from Pod A via 100.96.122.87. The OLD IP still times out at TCP
+  level from Pod A (ICMP 100% loss), confirming the host is gone, not just the port.
+  THIS IS THE ONLY DELIBERATE ENVIRONMENT DIFFERENCE vs the canonical 70.8% run.
+relay_api_env: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/api_config.env"
+relay_api_env_alias: "/data/nips/shared_bench/api_config.env"
+relay_api_key_var: "OPENAI_API_KEY"
+relay_api_key_presence_verified: true   # presence only; value never read, printed, or stored
+
+# -----------------------------------------------------------------------------
+# Score reference
+# -----------------------------------------------------------------------------
+score_reference:
+  corrected_resolved: 63
+  corrected_total: 89
+  corrected_score: 0.7078651685393258
+  corrected_pct: "70.8%"
+  corrected_is_the_board_number: true
+  correction_reason: "headless-terminal was a scorer false negative (CTRf passed=7 failed=0); strict parser choked on a pytest cacheprovider warning. surface85 mandatory correction."
+
+  raw_reducer_resolved: 62
+  raw_reducer_score: 0.6966292134831461
+  raw_reducer_do_not_quote: true
+  raw_reducer_do_not_quote_reason: "score_md line 7: 'do not quote that raw number as the board score'."
+
+  official_anchor_pct: "78.2%"
+  official_anchor_stddev: "2.4"
+  official_anchor_kind: "5-run mean"
+  official_anchor_comparable: false
+  official_anchor_note: "This run is ONE pass@1 sample. +/-4-5pp single-sample drift is expected. Never present 70.8% as a like-for-like gap against 78.2%."
+
+# -----------------------------------------------------------------------------
+# Gate evidence from the canonical run (source: score_json.infra)
+# -----------------------------------------------------------------------------
+gate_evidence:
+  run_rc: 0
+  rows: "89/89"
+  preheat_present: 89
+  preheat_tar_verified: 89
+  preheat_errors: 0
+  preheat_retagged: 248
+  # full infra scan, all zero:
+  docker_api: 0
+  docker_api_version: 0
+  readtimeout: 0
+  connection_aborted: 0
+  no_such_container: 0
+  mount_guard: 0
+  solution_missing: 0
+  rate_limit_error: 0
+  xhigh_debug_count: 0
+
+# -----------------------------------------------------------------------------
+# Artifacts written by the canonical run
+# -----------------------------------------------------------------------------
+run_artifact: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c89_tb21_gpt55_official_medium_c89_single_20260704t195417z_attempt1_medium_c89"
+run_artifact_note: "This is the Terminal-Bench harness's own output dir (harness_run_metadata.output_path = .../shared_bench/terminal-bench/runs). It is NOT the launcher's bookkeeping root."
+run_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_gpt55_poda/tb21_gpt55_official_medium_c89_single_20260704t195417z/medium_c89/attempt_1/tb21_batched_terminus-2_tb21_gpt55_official_medium_c89_single_20260704t195417z_attempt1_medium_c89"
+run_root_note: "Derived from launcher_script run_attempt(): $OUTPUT_ROOT/$RUN_ID/${MODE}_c${CONCURRENCY}/attempt_${attempt}/tb21_batched_terminus-2_${tag}. Path composition is proven; on-disk existence NOT re-verified by surface:85."
+output_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_gpt55_poda"
+scores_dir: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/reports/scores"
+
+# -----------------------------------------------------------------------------
+# Execution host
+# -----------------------------------------------------------------------------
+execution_host:
+  name: "Pod A"
+  pod: "env-kvm-15238487-rlgbn"
+  ssh: "env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn"
+  ssh_alias: "cpuworker"
+  privileged: true
+  dev_kvm_available: true            # KVM_GET_API_VERSION=12, probed 2026-07-09
+  dockerd: "up, 26.1.3, fuse-overlayfs, data-root /docker-data-15238487"
+  docker_host: "unix:///var/run/docker.sock"
+  tb21_images_local_cache: "89/89 by digest"     # probed 2026-07-09
+  disk_free_root: "2.8T (21% used)"              # probed 2026-07-09
+  inode_free_root: "348M (3% used)"              # probed 2026-07-09
+  ulimit_nofile_default: 1024
+  ulimit_nofile_required: 65535   # launcher raises it then hard-asserts >= 65535
+
+# -----------------------------------------------------------------------------
+# Deviations from canonical -- declared, justified, minimal
+# -----------------------------------------------------------------------------
+deviations_from_canonical:
+  - id: relay_ip
+    field: relay_endpoint
+    canonical: "http://100.96.122.22:18540/v1"
+    reproduction: "http://100.96.122.87:18540/v1"
+    kind: environment
+    justification: "dev pod IP changed on 2026-07-09; old host is unreachable at ICMP level. Unavoidable. This is the one deviation the brief authorizes."
+
+  - id: kvm_device_off
+    field: env TB21_ENABLE_KVM_DEVICE
+    canonical: "unset (runner default at 2026-07-04 behaved as OFF -- see evidence)"
+    reproduction: "0 (explicit)"
+    kind: deviation_guard      # a change made IN ORDER TO preserve canonical semantics
+    justification: >-
+      Today's r3 runner line 44 reads `export TB21_ENABLE_KVM_DEVICE="${TB21_ENABLE_KVM_DEVICE:-1}"`
+      -- it DEFAULTS TO ON. The canonical launcher never sets this variable. Evidence that the
+      canonical run had KVM OFF: score_json note for `make-doom-for-mips` says "qemu timeout=30 /
+      no KVM; oracle also timed out", and surface85's gap decomposition (DECISIONS 671) attributes
+      ~3-4pp to "env-ceiling (no /dev/kvm)". The KVM passthrough was added on 2026-07-07 and its
+      own rerun scored 57/89 = 64.04% (DECISIONS 1889-1895). Therefore: running the canonical
+      launcher today WITHOUT setting this to 0 would silently reproduce the 64.04% KVM run,
+      not the 70.8% baseline. run.sh sets it to 0 explicitly.
+
+  - id: run_id_freshness
+    field: run_id
+    canonical: "tb21_gpt55_official_medium_c89_single_20260704t195417z"
+    reproduction: "<run_id_prefix>_<fresh UTC stamp>"
+    kind: identity_only
+    justification: "Reusing the canonical run_id would collide with, and could overwrite, the preserved 70.8% artifacts and ledger. run_id is an identity token, not a scoring parameter."
+
+  # Added 2026-07-09 after orchestrator ruled C2 -> option A.
+  - id: closure_gate_helpers_vendored_from_main_repo
+    field: "r3 worktree scripts/{build_tb21_full89_closure_matrix.py, tb21_runtime_closure_static_gate.py}"
+    canonical: "resolvable at canonical time (the gate ran; its four output artifacts are on disk)"
+    reproduction: "copied from the main repo into the r3 worktree on 2026-07-09 (cp -p, mtime preserved)"
+    kind: environment_repair
+    justification: >-
+      TB21_STATIC_RUNTIME_CLOSURE_GATE=1 is the canonical value and is kept. Today's runner resolves
+      the two helpers relative to its own REPO_ROOT (the r3 worktree), where they were absent.
+      Both helpers are git UNTRACKED in the main repo, so their identity with the canonical-time
+      version rests on MTIME, NOT on a git object:
+        build_tb21_full89_closure_matrix.py  mtime 2026-07-02 02:52:42 +0800
+        tb21_runtime_closure_static_gate.py  mtime 2026-07-01 11:30:06 +0800
+        canonical run created_at             2026-07-04T19:54:19Z (= 2026-07-05 03:54 +0800)
+      Both predate the canonical run, so they have not been modified since it. This is weaker
+      evidence than a git object and is recorded as such. Option B (disabling the gate) was
+      rejected: it would drop the offline-closure runtime interception that the Gradle false-zero
+      reversal depended on.
+    verified_by: "surface:85, independently re-measured (mtime + sha256 + tracked=NO) before copying"
+
+# -----------------------------------------------------------------------------
+# Closure-gate helpers vendored into the r3 worktree (C2 -> option A)
+# sha256 recorded BEFORE the copy and re-verified AFTER; identical both times.
+# -----------------------------------------------------------------------------
+closure_gate_helpers:
+  vendored_at: "2026-07-09"
+  vendored_by: "surface:85"
+  method: "cp -p from main repo -> r3 worktree scripts/ ; targets were absent (never overwrote anything)"
+  source_repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo"
+  target_repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3"
+  files:
+    - path: "scripts/build_tb21_full89_closure_matrix.py"
+      mtime: "2026-07-02 02:52:42.030968968 +0800"
+      size_bytes: 34028
+      sha256: "961a3c954e4051ad02a02ca64513405633a0d8948482c59db8415761d6f8ffdb"
+      sha256_after_copy: "961a3c954e4051ad02a02ca64513405633a0d8948482c59db8415761d6f8ffdb"
+      tracked: false
+      target_existed_before_copy: false
+    - path: "scripts/tb21_runtime_closure_static_gate.py"
+      mtime: "2026-07-01 11:30:06.451269000 +0800"
+      size_bytes: 4747
+      sha256: "bcd9bccbabc35c6ee6ac71145b06c1775ea3bfcadefc9b04da421422eb8af3e5"
+      sha256_after_copy: "bcd9bccbabc35c6ee6ac71145b06c1775ea3bfcadefc9b04da421422eb8af3e5"
+      tracked: false
+      target_existed_before_copy: false
+  identity_basis: "mtime predates canonical run; NOT a git object. See deviations_from_canonical[closure_gate_helpers_vendored_from_main_repo]."
+
+run_id_prefix: "tb21_gpt55_repro_medium_c89_single"
+
+# -----------------------------------------------------------------------------
+# ★ CONFLICTS / UNRESOLVED -- read before launching. run.sh BLOCKS on these.
+# -----------------------------------------------------------------------------
+conflicts:
+  runner_version_unrecoverable:
+    severity: high
+    finding: >-
+      The canonical runner file is UNTRACKED by git (`git ls-files --error-unmatch` fails;
+      it appears under `??` in `git status`). Its on-disk mtime is 2026-07-07 23:46, i.e. it
+      was rewritten by the 2026-07-07 KVM-passthrough patch AFTER the canonical 2026-07-04 run.
+      There is therefore NO git object for the version that produced 70.8%, and it cannot be
+      restored. r3 worktree HEAD is c42f23c but that commit does not contain this file.
+    consequence: >-
+      Byte-identical runner reproduction is impossible. Beyond the KVM default (handled by the
+      kvm_device_off guard), the 2026-07-07 patch also changed the runner to (a) materialize an
+      effective dataset per tag, (b) rewrite payload bind paths, and (c) derive REPO_ROOT from the
+      runner script path. Effects of (a)-(c) on a KVM-off run are UNVERIFIED.
+    status: ACKED_2026_07_09
+    resolution: >-
+      orchestrator ACK, non-blocking. Consequence formally adopted: this canary and any follow-up
+      full89 run are a RE-MEASUREMENT under today's environment, NOT a strict reproduction. Every
+      deviation must stay explicitly declared in `deviations_from_canonical`.
+
+  static_closure_gate_helper_missing:
+    severity: high
+    finding: >-
+      The canonical run had TB21_STATIC_RUNTIME_CLOSURE_GATE=1 and the gate DID execute -- its
+      outputs exist on disk (tb21_full89_runtime_closure_static_gate_<tag>.json, plus matrix
+      .jsonl / .summary.json / vendor .sh). Today's runner does `REPO_ROOT="${REPO_ROOT:-$(cd
+      "$SCRIPT_DIR/.." && pwd -P)}"; cd "$REPO_ROOT"` then calls the RELATIVE path
+      `python3 scripts/build_tb21_full89_closure_matrix.py`. With REPO_ROOT unset that resolves
+      inside the r3 worktree, where the helper DOES NOT EXIST (verified: r3 = NO, main repo = YES,
+      s55 = NO). DECISIONS 1863 confirms the 07-07 KVM rerun had to disable this gate for exactly
+      this reason.
+    consequence: >-
+      Launching today with the canonical TB21_STATIC_RUNTIME_CLOSURE_GATE=1 will fail the gate.
+      Silently setting it to 0 would be an UNDECLARED deviation from canonical. Exporting
+      REPO_ROOT=<main repo> is NOT a safe fix: the launcher reads the same variable name for
+      itself, which would relocate STAGE_DIR / SCORES_DIR / ledger and break
+      `python3 scripts/tb21_gpt55_official_ledger.py` (that helper exists only under s55).
+    status: RESOLVED_2026_07_09_OPTION_A
+    resolution: >-
+      orchestrator ruled option A. surface:85 independently re-measured both helpers (mtime,
+      sha256, tracked=NO) BEFORE copying, confirmed both r3 targets were absent, copied with
+      `cp -p`, and re-verified sha256 after. See `closure_gate_helpers:` for the recorded hashes.
+      TB21_STATIC_RUNTIME_CLOSURE_GATE stays at the canonical value 1. If the gate still fails,
+      run.sh blocks -- it never downgrades to 0.
+    options:
+      - "A: copy scripts/build_tb21_full89_closure_matrix.py + tb21_runtime_closure_static_gate.py from the main repo into the r3 worktree (repo mutation; needs approval).  <-- CHOSEN"
+      - "B: set static_runtime_closure_gate: 0 and record it as a THIRD declared deviation.  <-- REJECTED: drops offline-closure runtime interception (cf. Gradle false-zero reversal)."
+      - "C: patch the runner to resolve the helper from an explicit TB21_CLOSURE_HELPER_ROOT.  <-- REJECTED: re-patches an already-unreproducible runner."
+  image_map_content_drift:
+    severity: medium
+    finding: "image_map mtime (2026-07-05 18:03 CST) post-dates the canonical run's end (2026-07-05 05:03 CST)."
+    consequence: "Entry count matches (89), but byte-identity with the map the canonical run consumed is unproven."
+    status: NOTED
+
+  launcher_staged_contract_vs_actual:
+    severity: low
+    finding: >-
+      DECISIONS 561-563 describes the STAGED contract as "5 independent pass@1 attempts" with
+      output root .../terminal_bench_2_1_official_gpt55_poda and tiers 32->64->100. What actually
+      ran was attempts=1, c=89. The launcher script itself hard-asserts attempts==1
+      (`official attempt count must be 1`) and its tier list is "32 64 89 100".
+    consequence: "The DECISIONS prose is stale relative to the script and the artifacts. Script + artifacts win."
+    status: RESOLVED_IN_FAVOUR_OF_SCRIPT
+
+# -----------------------------------------------------------------------------
+# Canonical env block, verbatim from launcher_script run_attempt()
+# run.sh does not re-declare these; the launcher exports them itself. Recorded
+# here so a reviewer can diff the launcher against what we believe it does.
+# -----------------------------------------------------------------------------
+launcher_exported_env_reference:
+  DOCKER_HOST: "unix:///var/run/docker.sock"
+  TB21_ALLOW_PRIVILEGED_DOCKER: "1"
+  TB21_PRIVILEGED_DOCKER_HOST: "unix:///var/run/docker.sock"
+  TB21_BATCH_SIZE: "89"
+  TB21_BATCH_START: "1"
+  TB21_BATCH_LIMIT: "0"
+  TB21_FULL_CONCURRENCY: "89"
+  TB_AGENT: "terminus-2"
+  TB_MANIFEST_AGENT: "terminus-2"
+  MODEL_NAME: "gpt-5.5"
+  LITELLM_MODEL: "openai/gpt-5.5"
+  TB_MODEL: "openai/gpt-5.5"
+  TB_GLOBAL_TIMEOUT_MULTIPLIER: "1.0"
+  TB_GLOBAL_AGENT_TIMEOUT_SEC: "7200"
+  TB_GLOBAL_TEST_TIMEOUT_SEC: "7200"
+  TB21_EXPECT_CLEAN: "0"
+  TB21_ALLOW_ORACLE_SCORE: "0"
+  TB21_STRICT_CLOSURE_GATE: "1"
+  TB21_STATIC_RUNTIME_CLOSURE_GATE: "1"
+  TB21_BIND_PAYLOAD_PREFLIGHT: "1"
+  TB21_PREHEAT_PULL: "1"
+  TB21_PREHEAT_FORCE_PULL: "0"
+  TB21_PREHEAT_LOAD_FALLBACK: "1"
+  TB21_PREHEAT_PULL_ATTEMPTS: "3"
+  TB21_PREHEAT_MAX_ATTEMPTS: "2"
+  TB21_RESTART_DOCKER_AFTER_BATCH: "0"
+  TB21_RUN_CLEANUP_HELPER: "0"
+  TB21_REMOVE_BATCH_IMAGES: "0"
+  TB_DOCKER_SDK_TIMEOUT_SEC: "300"
+  TB_DOCKER_SDK_API_VERSION: "1.45"
+  TB2_OFFLINE_TEST_BOOTSTRAP: "1"
+  TB2_SKIP_DATASET_REBUILD: "1"
+  TB2_USE_PREBUILT_IMAGES: "1"
+
+# Values run.sh passes through to the launcher's environment (overrides + guard).
+env_overrides:
+  TB21_PRIVILEGED_RUNNER: "@runner"
+  TB21_FULL89_IMAGE_MANIFEST: "@image_manifest"
+  TB21_FULL89_IMAGE_MAP: "@image_map"
+  TB21_FULL89_DATASET: "@dataset"
+  TB21_ENABLE_KVM_DEVICE: "0"
+
+static_runtime_closure_gate: 1   # canonical value; see conflicts.static_closure_gate_helper_missing
+
+# =============================================================================
+# CANARY (3 tasks) -- added 2026-07-09 per BRIEF_85_canary.md
+#
+# The canary CANNOT go through stage_tb21_official_gpt55_launcher.sh: that script
+# forces TB21_BATCH_SIZE=89 and only accepts concurrency tiers 32/64/89/100.
+# It therefore calls the r3 privileged runner directly, replicating the launcher's
+# exported env (see `launcher_exported_env_reference`) and overriding only what a
+# 3-task subset requires.
+#
+# Task selection comes from the IMAGE MANIFEST, not the dataset: the runner derives
+# its batch plan via `build_tb21_full89_batch_manifests.py --image-manifest ...`,
+# which simply chunks manifest.images. A 3-entry subset manifest therefore yields
+# exactly one batch of 3 tasks. dataset stays the full 89 so the static closure gate
+# and the bind-payload preflight run over the same 89 rows as canonical.
+# =============================================================================
+canary:
+  tasks:
+    - largest-eigenval
+    - configure-git-webserver
+    - qemu-startup
+
+  selection_rationale:
+    largest-eigenval: >-
+      Axis 1 -- an ordinary task that canonical RESOLVED (it is absent from the 27-row
+      original_unresolved_table). Plain numerical compute: no git, no network, no emulation, so a
+      failure here indicts the harness/env chain rather than any special capability. Chosen over
+      the even shorter `git-leak-recovery` (0m45s) to keep the three axes disjoint -- that one is
+      git-flavoured and would overlap axis 2. Harness duration estimate 3m30s, the 2nd cheapest
+      resolved task.
+    configure-git-webserver: >-
+      Axis 2 -- offline/network semantics. Canonical RESOLVED it. It stands up a git server over
+      HTTP inside the task container, so it exercises in-container networking while the offline
+      closure must still hold; this is the natural place to watch `external_network_marker`.
+      NOTE: per-task external_network_marker attribution for the canonical run was NOT recovered
+      (no strict summary found under the launcher output root), so this pick is justified by task
+      SEMANTICS, not by evidence that this specific task tripped the marker. Stated as hypothesis.
+    qemu-startup: >-
+      Axis 3 -- mandated by the brief. Verified present in the canonical 89 task_ids AND absent
+      from the 27 unresolved rows, i.e. canonical PASSED it with no /dev/kvm. It is the direct
+      control for `TB21_ENABLE_KVM_DEVICE=0`: if it passes without the device injected, the
+      KVM-off guard is sound. (Sibling `qemu-alpine-ssh` also resolved; `make-doom-for-mips` and
+      `install-windows-3.11` are the two qemu tasks canonical did NOT resolve, both classified
+      env_ceiling "no KVM".)
+
+  batch_size: 3        # -> exactly one batch containing all 3 tasks
+  batch_start: 1
+  batch_limit: 1
+  concurrency: 3       # TB21_FULL_CONCURRENCY; runner clamps to min(concurrency, image_count)
+
+  # Everything the canary writes lives under here. Nothing is written into the
+  # canonical run roots.
+  output_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_gpt55_canary"
+  stage_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_gpt55_canary/stage"
+  tag_prefix: "tb21_gpt55_canary3"
+
+  # Runner env that differs from `launcher_exported_env_reference` for a 3-task run.
+  env_overrides:
+    TB21_BATCH_SIZE: "3"
+    TB21_BATCH_START: "1"
+    TB21_BATCH_LIMIT: "1"
+    TB21_BATCH_RUN: "1"
+    TB21_FULL_CONCURRENCY: "3"
+    TB21_ENABLE_KVM_DEVICE: "0"
+    TB21_STATIC_RUNTIME_CLOSURE_GATE: "1"
+    TB21_STRICT_CLOSURE_GATE: "1"
+    TB21_EXPECT_CLEAN: "0"
+    TB21_ALLOW_ORACLE_SCORE: "0"
+    TB21_RUN_CLEANUP_HELPER: "0"
+    TB21_REMOVE_BATCH_IMAGES: "0"
+
+  # PASS is judged on gates, not on score. All seven must hold.
+  pass_criteria:
+    - "3/3 task containers start (no docker exit-125)"
+    - "preheat clean: present == image_count, missing == 0, errors == 0"
+    - "bind-payload preflight: blocked == 0, errors == 0"
+    - "static closure gate actually EXECUTED and PASSED (gate json emitted)"
+    - "7200s timeout visible in the emitted tb CLI command.sh"
+    - "artifact_manifest.json produced (written by the shared runner into BENCH_RUN_DIR)"
+    - "relay calls 200 (not 401/5xx)"
+    - "KVM off: log shows `kvm_device=disabled` and no /dev/kvm device injection"
+
+  # The tb CLI flags are appended CONDITIONALLY by the shared runner:
+  #   run_terminal_bench_2_1.sh only adds --global-agent-timeout-sec / --global-test-timeout-sec
+  #   if `tb run --help` advertises them. This is exactly how run 20260707T161706Z silently fell
+  #   back to the 900s default and had to be voided. Evidence file: $BENCH_RUN_DIR/command.sh
+  #   (written via `printf '%q ' "${cmd[@]}" | tee`).
+  timeout_evidence_file: "command.sh"
+  artifact_manifest_note: "written by the shared runner at $BENCH_RUN_DIR/artifact_manifest.json (one per batch run_dir; it indexes the per-task tb artifact + results.json)."
