@@ -16,19 +16,34 @@ When a run finishes, do **all four**:
 3. If it changes a canonical number, keep the old row with `status: superseded`. Never delete history.
 4. If a harness defect surfaced, append it to the [overturn log](#5-overturn-log).
 
-### The 9 mandatory fields
+### The 13 mandatory fields
 
-| # | Field | Rule |
-|---|---|---|
-| 1 | `bench` | Verbatim id from the score artifact |
-| 2 | `model` | Exact served name, not a friendly alias |
-| 3 | `harness` + version | Scaffold **and** pinned version (`mini-swe-agent v2.0.0`) |
-| 4 | `score` | Fraction **and** `resolved/total` |
-| 5 | `run_root` | Absolute path on shared storage |
-| 6 | `results` + `sha256` | Results file and its digest |
-| 7 | `image` | Registry `@sha256:` digest, **or** `ABSENT` + the transport actually used |
-| 8 | `trace_manifest` | Path to a filled `reports/trace_manifest_template.yaml` |
-| 9 | `status` | One of the enum below |
+Fields 10–13 were added on 2026-07-09. **Each one exists because its absence caused a specific
+failure that same day** — see the "why" column. Do not treat them as bureaucracy.
+
+| # | Field | Rule | Why (the incident that forced it) |
+|---|---|---|---|
+| 1 | `bench` | Verbatim id from the score artifact | |
+| 2 | `model` | Exact served name, not a friendly alias | |
+| 3 | `harness` + version | Scaffold **and** pinned version (`mini-swe-agent v2.0.0`) | |
+| 4 | `score` | Fraction **and** `resolved/total` | |
+| 5 | `run_root` | Absolute path on shared storage | |
+| 6 | `results` + `sha256` | Results file and its digest | |
+| 7 | `image` | Registry `@sha256:` digest, **or** `ABSENT` + the transport actually used | |
+| 8 | `trace_manifest` | Path to a **filled** `reports/trace_manifest_template.yaml` | The template has existed for weeks and **has never once been filled**. §6. |
+| 9 | `status` | One of the enum below | |
+| **10** | **`script_digests`** | `sha256` of **every** script on the invocation path: launcher, runner, helpers, orchestrator. Not just the entrypoint. | The runner that produced TB2.1's canonical `70.8%` was git-untracked, got overwritten by a later patch, and **is now unrecoverable**. Nobody noticed because nobody had its hash. §6 C1. |
+| **11** | **`serving_config`** | Not just `base_url`. Record: served model name, weight path + revision, `tp`, `context-length`, `mem-fraction-static`, `tool-call-parser`, serving-runtime version, GPU indices, **and the full launch command**. | Both Qwen runs recorded only `base_url`. That server is now dead; the replacement is a *different instance*, and from the artifact alone it is impossible to tell whether it was configured identically. |
+| **12** | **`relay_upstream`** | Record the upstream the relay proxies to, **separately from the endpoint URL**. | `endpoint = :18540` stayed constant while `upstream` silently moved `176.122…` → `45.78…`. The endpoint field **could not see the change**. That change cost a 2-hour run. §5.11. |
+| **13** | **`llm_health`** | Run-level: `total_calls`, `retry_exhausted`, `http_5xx`, `http_429`, `hard_fail_rate`, `token_sum` vs baseline. | The strict gate's `infra_fail` **structurally cannot see LLM-layer failures**. 125 hard failures → `infra_fail = 0` → gate reported clean. §5.12. |
+
+> **On field 10.** `mtime` and `sha256` prove *content* identity, not *behavioural* identity — a script
+> can be byte-identical and behave differently from a different directory (§5.9). Record the digest
+> **and** the absolute path it ran from.
+>
+> **On field 13.** This metric is **run-level only, never per-task.** In a `c=89` run the agents'
+> logs interleave with no task markers; per-task attribution is *impossible from disk*. A per-task
+> LLM-health number would be a lie that looks like data. §5.12.
 
 ### `status` enum
 
@@ -36,10 +51,35 @@ When a run finishes, do **all four**:
 |---|---|
 | `canonical` | Dual-signed, quotable, current best evidence for that cell |
 | `superseded` | Was canonical, replaced; kept as history — **do not quote** |
-| `blocked` | Harness gate returned `ready=false` — **not a model score** |
-| `forbidden` | Number is real but measures the harness, not the model |
+| `blocked` | **Infra failure** (`infra_fail > 0`: missing artifact / fatal timeout / non-zero runner rc) — not a model score |
+| `forbidden` | Number is real but measures the harness or the environment, not the model |
 
-**Hard rule.** A run that has not passed dual review is `blocked`, no matter how plausible the number looks.
+### ⚠️ The harness's `blocked` is **not** this table's `blocked`
+
+The strict reducer sets `status="blocked"` whenever `ready == false`, and
+`ready` requires **`unresolved == 0`**. A real model never solves every task, so
+**every real model run is `blocked` by construction** — including this table's own canonical
+baselines. Meanwhile `score = resolved/total` is computed *independently* of `ready`.
+
+> **Read `resolved/total`. Ignore `ready`/`status` from the reducer.**
+> A verdict rule that rejects a score *because the harness said `blocked`* rejects every real run.
+> This document shipped exactly that rule on 2026-07-09 and had to retract it. See §5.12(c).
+
+### Verdict rules (v3)
+
+Apply in order:
+
+1. `infra_fail > 0` → **`blocked`**. Not a model score. Attribute it.
+2. `parse_error > 0` → **correctable**. Fix it, and record the correction task-by-task with its
+   justification. (The canonical TB2.1 `62 → 63` was exactly this.)
+3. **Gate reports clean, but `llm_health` shows a material hard-failure rate → `forbidden`.**
+   The gate is structurally blind to the LLM layer (§5.12a). This is the *only* reason the
+   2026-07-09 TB2.1 re-measurement (`53/89`) is disqualified — **not** its `blocked` status.
+4. Scaffold/protocol mismatch (e.g. 100% of trajectories rejected by the parser) → **`forbidden`**.
+5. Otherwise → eligible for `canonical`, pending dual review.
+
+**Hard rule.** A run that has not passed dual review never enters the quotable column,
+no matter how plausible the number looks.
 
 ### Evidence rule
 
@@ -120,6 +160,7 @@ Never commit secrets, API keys, raw private benchmark data, or large logs.
 | SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `mini-swe-agent v2.0.0` | 23.4% | 117/500 | — | `forbidden` | [3.4](#34-swe-v--qwen--mini--234-forbidden) |
 | Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` | **70.8%** | 63/89 | 78.2% ± 2.4 | `canonical` | [3.5](#35-tb21--gpt-55--terminus-2--708-canonical) |
 | Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` + `/dev/kvm` | 64.04% | 57/89 | — | `blocked` | [3.6](#36-tb21--gpt-55--terminus-2--devkvm--6404-blocked) |
+| Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` — **re-measurement 2026-07-09** | 59.55% | 53/89 | — | `forbidden`⁵ | [3.12](#312-tb21--gpt-55--terminus-2--5955-re-measurement--forbidden) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` (medium) | `terminus-2` | **10.1%** | 9/89 | none (no Qwen anchor on TB2.1) | `canonical`¹ | [3.7](#37-tb21--qwen--terminus-2--101-canonical-with-caveat) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` host-bridge | 16.85% | 15/89 | — | contrast² | [3.8](#38-tb21--qwen--qwen-code-bridge--1685-contrast) |
 | Terminal-Bench 2.1 (oracle) | — | `terminus-2` | 95.5% | 85/89 | — | infra map³ | [3.9](#39-tb21-oracle-infra-map) |
@@ -131,6 +172,7 @@ Never commit secrets, API keys, raw private benchmark data, or large logs.
 ² Non-official harness (host QwenCode + `docker exec` bridge). A native-scaffold contrast point, not a leaderboard number.
 ³ Oracle-solution infra pass map, **not a model score**. r6 explicitly states so.
 ⁴ Reconciled and accepted in the ledger (`DECISIONS.md` L1534). Its score artifact was never filed under `reports/scores/` — an **index gap**, not an evidence gap. Mandatory caveats: 188-case rescue subset (not the official 400), no LLM judge, single attempt.
+⁵ The gate reported clean, yet the same run logged **125 retry-exhausted LLM failures** (117–120 × `503`, 5 × `429`) against a relay ingress that had silently changed upstream. The gate is structurally blind to the LLM layer, and the `c=89` single-batch design leaves no control group — the damage cannot be quantified. Disqualified on **epistemic** grounds. **Not** because the harness said `blocked`: it says that for every real run. See §5.12.
 
 ---
 
@@ -272,6 +314,56 @@ benchmark a model on a protocol it was never trained to speak and call the resul
 - cross-language degradation ≈ −5 pt (official: −6.1 pt)
 - only a `.md` artifact exists; no `.json`/`.yaml` sibling; dataset path **ABSENT**
 - See §5.5 for why the raw number's match to the anchor is a coincidence.
+
+### 3.12 TB2.1 · gpt-5.5 × terminus-2 · 59.55% re-measurement · `forbidden`
+**The first run card carrying all 13 mandatory fields.** Also the first one where fields 10–13 were the
+difference between a defensible verdict and a fabricated one.
+
+| # | Field | Value |
+|---|---|---|
+| 1 | `bench` | Terminal-Bench 2.1, 89 tasks |
+| 2 | `model` | `gpt-5.5` |
+| 3 | `harness` | `terminus-2`, effort `medium` (default; no `reasoning_effort` arg passed) |
+| 4 | `score` | **53/89 = 59.55%** (`accuracy = resolved/total`, computed independently of `ready`) |
+| 5 | `run_root` | `runs/terminal_bench_2_1_official_gpt55_poda/tb21_gpt55_repro_medium_c89_single_20260709t121819z/medium_c89/attempt_1/…` |
+| 6 | `results` + `sha256` | `results.json` under the tb artifact dir · digest recorded in the run report |
+| 7 | `image` | `terminal_bench_2_1_full89_p0_closure_r7.yaml` — **89/89 unique `@sha256:` digests**, all HEAD-200 against the P0 registry; `preheat retagged=248` (**byte-identical to canonical**) |
+| 8 | `trace_manifest` | **ABSENT** — traces exist (`sessions/{agent.cast,agent.log,tests.log,tests.cast}`) but are not indexed. §6. |
+| 9 | `status` | **`forbidden`** (verdict rule v3 §0, clause 3) |
+| 10 | `script_digests` | launcher `stage_tb21_official_gpt55_launcher.sh` (s55 worktree) → r3 privileged runner; **12-entry dependency gate green**. ⚠️ runner is git-untracked; the version that produced canonical `70.8%` no longer exists. §6 C1. |
+| 11 | `serving_config` | via relay, not sglang — see field 12 |
+| 12 | `relay_upstream` | endpoint `http://100.96.122.87:18540/v1` · **upstream `45.78.67.178:2053`** (canonical used `176.122.167.162:2053`; **the endpoint field cannot see this**). ⚠️ Relay injects ~5085 tokens of hidden prompt (`cached_tokens=4864`) and appears to ignore `max_tokens`; whether `reasoning_effort` reaches upstream is **unverifiable** from the response body. |
+| 13 | **`llm_health`** | `total_calls 2266` · `retry_exhausted 125` · `http_5xx 117–120` · `http_429 5` · **`hard_fail_rate 5.52%`** · baseline: `0/1215 = 0.00%` |
+
+**Strict counts (this run / canonical):**
+`resolved 53/62` · `unresolved 36/26` · `parse_error 0/1` · `infra_fail 0/0` · `timeout 0/0` ·
+`external_network_marker 12/10` · `token in 22,043,936 / 24,629,709` · `out 484,360 / 504,006` ·
+`status blocked / blocked` (mechanically guaranteed — §5.12c).
+
+**Like-for-like:** canonical's board figure `63/89` = raw `62` + a hand-correction of the
+`headless-terminal` scorer false-negative. This run's `headless-terminal` resolved cleanly, needing no
+correction. Same-basis delta: **`53 − 63 = −10` tasks = `−11.24 pp`**.
+
+**Declared deviations (5):** relay IP `.22→.87` · `kvm_device_off` (guard against the runner's
+`TB21_ENABLE_KVM_DEVICE=1` default) · `run_id_freshness` · `env_seam_repo_root_reset` (F2) ·
+cleanup-helper reset. Plus the **relay upstream change**, reinstated as a deviation after a `c=1` probe
+was shown insufficient (§5.11).
+
+**Burst timing:** 122/125 failures fell inside `[12:18:28Z, 12:31:08Z]` — the first 12m40s, the c89 ramp
+(12:22 → 74 errors at 85 live agents). The remaining **3 occurred with exactly one agent alive**
+(13:57–13:59), proving a second, concurrency-independent fault mode. Ramp-limiting explains 97.6%, not 100%.
+
+**Attribution:** of the 125 failures, exactly **3** are attributable (by exclusion — one live agent), to
+`feal-linear-cryptanalysis`, which then died `unknown_agent_error` after 99.4 min without reaching its
+7200 s ceiling, and appears in the `lost` set. The other 122 are `UNRESOLVABLE_FROM_DISK`. Between-run
+diff: `gained 3 (real) / lost 13`, of which 8 overlap the KVM round's losses — i.e. threshold-variance
+tasks. **No task other than `feal` can be linked to a relay failure.**
+
+**Dual sign-off:** surface:85 (score + attribution) and surface:86 (independent recompute from raw
+artifacts + reducer source, *not* a restatement — the two lanes wrote to different filesystems and never
+saw each other's reports). 86 **refuted two orchestrator claims**: that `blocked` implies an invalid
+score, and that the extra ~1051 calls were pure retries (`8.4 > 8` retry ceiling). Both retractions are
+recorded in §5.12.
 
 ---
 
@@ -421,6 +513,262 @@ artifact"; the ledger records its reconciliation at L1534.
 **Root cause**: trusting an agent's "exhaustive grep found nothing" over the ledger, and
 searching only one of the repo's worktrees.
 **Fix**: the search-order rule in §0. This entry exists so the next maintainer does not repeat it.
+
+### 5.9 Vendoring a script is not vendoring its behaviour
+While preparing the §4 recipe we needed `build_tb21_full89_closure_matrix.py`, which exists only
+in the main repo, inside a worktree that lacks it. Its mtime (`2026-07-02`) predates the canonical
+run (`2026-07-04`), which appeared to prove that copying it would restore the canonical behaviour.
+
+**Copying it broke the gate.** The script anchors one of its inputs to its own location:
+
+```python
+DEFAULT_REPO_ROOT    = Path(__file__).resolve().parents[1]                     # line 19
+DEFAULT_R2_SUMMARY_DIR = <repo>/_coordination/.../tb21_closure_full89_r2       # line 32
+```
+
+That directory holds 31 per-task summaries, and `load_closed_runtime_hf_assets()` **silently
+returns `[]`** when it cannot find them. Copy the script into a worktree, and `__file__` moves
+with it: two `hf_asset` tasks (`count-dataset-tokens`, `mteb-retrieve`) flip from `closed` to
+`open`, the gate returns `ready=false`, and the runner exits `rc=24` before the batch loop.
+
+The diagnosis was settled by a control experiment (read-only, zero containers): the **same script,
+same dataset, only the file's location changed** →
+
+| Script location | gate `open` |
+|---|---|
+| main repo | 0 |
+| copied into the worktree | 2 |
+| temp dir symlinked to main repo | **0** |
+
+Of the builder's four `__file__`-anchored defaults, three are overridden by explicit runner flags;
+`DEFAULT_R2_SUMMARY_DIR` is the only one **anchored to `__file__` and not overridable from the
+CLI**, so it is the only one that fires. The sibling `tb21_runtime_closure_static_gate.py` contains
+**zero** `__file__` references and copies safely.
+
+**Fix**: symlink, not copy. `Path(__file__).resolve()` follows symlinks, so the anchor returns to
+the main repo. Downgrading the gate (`TB21_ALLOW_OPEN_RUNTIME_CLOSURE=1`, or setting it to `0`) was
+rejected — it would have turned a real infra defect into a silent, undeclared deviation.
+
+> **Rule.** Before vendoring or relocating any script, grep it for `__file__` / `Path(__file__)`
+> and for relative-path defaults. An input that is both `__file__`-anchored and not CLI-overridable
+> makes the script **location-dependent**: identical bytes, different behaviour. mtime and sha256
+> prove content identity; they prove nothing about runtime behaviour.
+
+This also refines §6 C2: vendoring the reproduction chain into this repo is necessary, but a
+straight `cp` is not sufficient. Each component must be audited for location dependence first.
+
+### 5.10 Three implicit couplings, found by trying to re-run one benchmark
+Restoring the §4 recipe surfaced three distinct latent defects in the TB2.1 harness. All three
+are the same disease — a value silently derived from *where a file sits* or *how a string is
+spelled* — but they fail in increasingly nasty ways.
+
+#### (a) `__file__` anchoring — fails immediately (§5.9)
+Covered above. `build_tb21_full89_closure_matrix.py` anchors a data directory to its own location.
+Fixed by symlink; the gate then reproduced `closed=89 / open=0`, **field-identical to canonical**.
+
+#### (b) `$REPO_ROOT` derivation — fails immediately, three times over
+The 2026-07-07 patch changed the runner to derive `REPO_ROOT` from *its own script path*, which
+points into a worktree. Three call sites broke:
+
+```bash
+# runner L61-62 — has a ${VAR+x} seam, but the default is wrong
+if [[ -z "${TB2_RUNTIME_CLOSURE_REPAIR+x}" ]]; then
+  export TB2_RUNTIME_CLOSURE_REPAIR="$REPO_ROOT/scripts/repair_tb21_full89_runtime_closure.py"
+fi
+# runner L53 — unconditional export, not gated at all
+export TB_DOCKER_FORCE_CLEANUP_HELPER="${TB_DOCKER_FORCE_CLEANUP_HELPER:-$REPO_ROOT/scripts/cleanup_tb21_worker.sh}"
+# runner L590/610 — bare relative path, no seam (gated by TB21_RUN_CLEANUP_HELPER, `|| true`)
+```
+
+The first one is fatal: the shared runner calls `python3 "$TB2_RUNTIME_CLOSURE_REPAIR" --execute`
+under `set -euo pipefail`, the file is absent in the worktree, and Terminal-Bench is **never
+invoked** — `docker ps -aq` returns 0, so there is not even an `exit-125` to point at.
+
+**Fixed by env-seam reset**, not by moving files: the runner already offers `${VAR+x}`, so passing
+an explicit path to the main-repo script restores canonical behaviour *and* leaves that script's own
+two `__file__` anchors in their original location. (Copying it would have re-created defect (a).)
+
+A sha256 audit of every script the runner touches proved that all the relative-called scripts are
+byte-identical across both roots — which collapsed the fix space: "override the env" and "override
+`REPO_ROOT`" are behaviourally equivalent, and only the repair path actually differs.
+
+#### (c) Case-sensitive `run_id` — **fails 70 minutes later, after the whole run completes**
+```
+runner:         lowercases TB21_FULL_TAG, then builds run_root from it
+stage launcher: uses the ORIGINAL tag for record_attempt + `touch attempt.done`
+```
+Supply a `run_id` containing an uppercase character and the two paths diverge. Nothing complains.
+All 89 tasks execute. Then, at the very end, the launcher trips `set -e` on the `touch`,
+**`finalize_scores` never runs, and the entire 2–3 hour run yields no score.**
+
+The canonical run never hit this **only because its `run_id` happened to be all-lowercase.**
+
+**Fixed** by lowercasing the stamp and adding an assertion `^[a-z0-9_-]+$` on `run_id`, with a
+negative test (`--run-id BAD_UPPER_Z` → blocked). Luck became a guarantee.
+
+#### The generalisation
+> Implicit couplings that fail **immediately** are cheap: the gate catches them, nothing is wasted.
+> Implicit couplings that fail **after the workload completes** are the expensive ones — they burn
+> the entire run and produce no evidence. When auditing a harness, hunt for the second kind first:
+> look for any value that is derived (lowercased, joined, resolved) on one code path and consumed
+> raw on another.
+
+#### What we did about it, permanently
+The one-off audit was frozen into a **dependency gate** in `run.sh`, running on both the
+`--preflight-only` and `--canary` lanes:
+
+- it resolves **12** scripts the runner and shared-runner reference, under the *effective* env;
+- `required` missing → `exit 24`, hard block;
+- `latent` missing (currently gated off, e.g. `cleanup_tb21_worker.sh` behind `TB21_RUN_CLEANUP_HELPER=0`)
+  → warn, printing the expected path, the variable it derives from, and the current gate value;
+- **flip the gate to its enabling value and `latent` auto-promotes to `required`**;
+- two negative tests prove it: pointing the repair path at `/nonexistent` → `exit 24`; setting
+  `TB21_RUN_CLEANUP_HELPER=1` while the helper is absent → `exit 24`.
+
+### 5.11 A probe that proved the wrong thing
+The canonical run's relay pointed upstream at `176.122.167.162:2053`; today's points at
+`45.78.67.178:2053`. Both are reached through the same `:18540` endpoint URL, so the
+`relay_endpoint` field **cannot see this difference** — it would have shipped as an undeclared
+environment change.
+
+Rather than declare an unverified deviation, we A/B-tested the two addresses with an identical
+request and got an elegant-looking result:
+
+| field | `176.122…:2053` | `45.78…:2053` |
+|---|---|---|
+| `model` / `content` / `finish_reason` | `gpt-5.5` / `PING` / `stop` | identical |
+| `prompt_tokens` / `completion_tokens` | 5092 / 5 | identical |
+| **`prompt_tokens_details.cached_tokens`** | **4864** | **4864** |
+
+`cached_tokens` matching to the digit means both requests hit the **same prompt cache**, and a
+prompt cache is per-backend. Conclusion: two ingress IPs, one backend. The difference was
+downgraded from a deviation to an `informational` note.
+
+**That conclusion was true and useless.** The probe ran at `c=1`. It established **backend
+identity**. It said nothing about **ingress capacity or rate limiting** — and capacity is exactly
+what a benchmark at `c=89` consumes.
+
+The full-89 run then produced, in its own `run.log`:
+
+| | canonical (`176.122`, c89) | today (`45.78`, c89) |
+|---|---:|---:|
+| `ServiceUnavailableError` (503) | **0** | **117** |
+| `RateLimitError` (429) | **0** | **5** |
+| `Unknown Error in LLM interaction` | 1 | 122 |
+
+Same harness, same concurrency, same ~5k injected system prompt. The only variable was the ingress
+IP. All 122 were `tenacity` retry-exhaustion — hard failures reaching the agent, not transient
+blips. (The burst was pulse-shaped and had ended by the run's tail; a live 3/3 `HTTP 200 @1.9s`
+probe confirmed the endpoint was healthy again.)
+
+**`cached_tokens` is an identity fingerprint. `503`/`429` are throughput phenomena. Identity
+equivalence does not imply capacity equivalence.**
+
+The `relay_upstream` entry was reinstated as a **deviation**, worded:
+> backend identity verified equivalent (c=1 A/B, matching `cached_tokens`);
+> **ingress capacity / rate-limiting unverified at c=89 — and empirically NOT equivalent this run.**
+
+This makes the run's score **not同口径-comparable** to the canonical `63/89`.
+
+> **Rule (superseding the naive version).** When an environment field cannot distinguish two
+> configurations, designing a distinguishing probe is necessary but **not sufficient**. The probe
+> must exercise the **operating condition the run will actually use**, or it must explicitly state
+> which dimension it covers and which it does not. A `c=1` probe cannot vouch for a `c=89` run.
+>
+> Corollary: name the dimension. "Same backend" ≠ "same latency" ≠ "same throughput ceiling" ≠
+> "same rate-limit policy". Each is a separate claim needing separate evidence.
+
+**Note on what is still unknown.** The canonical `5xx=0` is an observation from 2026-07-04. The
+relay's capacity may have changed since. So "`176.122` would not 503 today at c89" is *not*
+established — it would itself require a controlled test. We record the asymmetry, we do not
+extrapolate from it.
+
+### 5.12 The quality gate cannot see the thing that broke the run
+A `c=89` re-measurement of TB2.1 hit **125 retry-exhausted LLM failures** (117–120 × `503`, 5 × `429`)
+against a relay ingress that had silently changed. The strict gate reported:
+
+```
+infra_fail = 0      missing_artifact = 0      timeout = 0      parse_error = 0
+```
+
+Everything looked clean. It was not. Reading the reducer source (`tb21_strict_batch_summary.py`)
+exposed **three** structural blind spots, each worse than the last.
+
+#### (a) `infra_fail` does not include the LLM layer
+```python
+infra_fail = bool(missing_artifact or fatal_timeout or tb_rc not in (0, None))   # ~L250
+```
+125 hard failures at the model-call layer → `infra_fail` stays `0`.
+
+> **Corollary: every historical score in this repo may have been degraded by an invisible LLM-layer
+> fault, with no gate ever raising a flag.** And it is not retroactively checkable — those errors live
+> only in `run.log`, which is not always retained.
+
+#### (b) `unknown_agent_error` is not `infra_fail` either
+One task (`feal-linear-cryptanalysis`) died because its model calls failed outright. In the ledger it is
+**indistinguishable from "the model could not solve it."**
+
+#### (c) `ready` requires `unresolved == 0` — so `blocked` means nothing
+```python
+ready  = bool(total > 0 and clean_pass == total and missing_artifact == 0 and timeout == 0 ...)  # L309
+status = "blocked" if (not ready and not allow_oracle_score) else ...                            # L317
+```
+
+A real model never clean-passes all 89 tasks. Therefore `unresolved > 0`, therefore `clean_pass < total`,
+therefore **`ready` is `False` and `status` is `blocked` for *every* real model run, by construction.**
+
+- The canonical `70.8%` run: `blocked`.
+- This `59.55%` run: `blocked`.
+- A 3-task canary that happened to pass all 3: `ready=true` — the only way to reach it.
+
+And crucially, **`score` never reads `ready`**: `resolved` (L299), `accuracy = resolved/total` (L318),
+and the `score` block (L338) are computed independently.
+
+> **`status=blocked` on a model run carries exactly zero information about score validity.**
+> Any rule that rejects a score *because it is blocked* rejects every real run by construction.
+> This document's first verdict rule did exactly that — and would have disqualified its own canonical
+> baseline. Corrected in §0.
+
+#### What actually disqualifies the number
+Not `blocked`. The number is disqualified because **the gate said clean while 125 model calls died**,
+and the experiment design cannot quantify the damage:
+
+- `c=89` single-batch ⇒ all 89 tasks sit inside the failure window ⇒ **no control group**;
+- `run.log` has no timestamps and no task markers, and the 89 agents' output interleaves ⇒ **per-task
+  attribution is impossible from disk**. (Exactly 3 of the 125 were attributable, by exclusion: they
+  landed at 13:57–13:59 when exactly **one** agent was alive.)
+
+⇒ Recorded as `forbidden`: *evidence insufficient to quantify, sufficient to disqualify.*
+**An epistemic judgement, not a statistical one.** Say which one you are making.
+
+#### A hypothesis that failed arithmetic
+This run made 2266 total API calls vs the baseline's 1215, while resolving **fewer** tasks. The tempting
+story — "the extra ~1051 calls are the retries behind the 125 hard failures" — **does not survive**:
+
+```
+1051 / 125 = 8.4 retries per hard failure
+nested retry ceiling = 3 × 3 − 1 = 8
+8.4 > 8  ⇒  arithmetically impossible as pure retries
+```
+
+Independent recount: ~454 of the extra calls are **additional agent turns** (churn induced by failures),
+~597 are **bounded retry/failure overhead**. The `hard_fail_rate = 5.52%` stands; the "doubling is all
+retries" narrative does not. *A number that merely looks consistent is not evidence.*
+
+#### The fix (proposed, not yet implemented)
+A separate **`llm_health`** block, emitted by a **runner-side log parser** — not the strict reducer
+(which only reads per-task artifacts, where LLM errors never appear), and not Terminal-Bench itself
+(not ours to change):
+
+```
+total_calls · retry_exhausted · http_5xx · http_429 · hard_fail_rate · token_sum_vs_baseline
+```
+Exceed a threshold → tag the score `llm_degraded`. Do not block the run; **taint the number**.
+
+> **Hard constraint: this metric is run-level and must never be per-task.** Per-task attribution is
+> impossible from disk (see above). A per-task LLM-health figure would be a lie that looks like data.
+
+**Rule adopted: no re-run happens before `llm_health` lands.** Otherwise the next round is equally blind.
 
 ---
 
