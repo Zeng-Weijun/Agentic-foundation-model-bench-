@@ -41,9 +41,13 @@ failure that same day** — see the "why" column. Do not treat them as bureaucra
 > can be byte-identical and behave differently from a different directory (§5.9). Record the digest
 > **and** the absolute path it ran from.
 >
-> **On field 13.** This metric is **run-level only, never per-task.** In a `c=89` run the agents'
-> logs interleave with no task markers; per-task attribution is *impossible from disk*. A per-task
-> LLM-health number would be a lie that looks like data. §5.12.
+> **On field 13.** Two layers. **Run-level** from `run.log`, counted in two columns (`infra_class`
+> vs `content_class`) and never one. **Task-level** from `agent-logs/episode-N/debug.json`, which is
+> already on disk: `content_class` errors are always attributable to their task; `infra_class` errors
+> only when the error killed the episode, since `debug.json` is overwritten per episode and a failure
+> a retry survives leaves nothing behind. An earlier version of this line declared per-task
+> attribution *impossible from disk*. It is not, and the file that disproves it was there the whole
+> time. §5.12.
 
 ### `status` enum
 
@@ -408,11 +412,20 @@ was shown insufficient (§5.11).
 (12:22 → 74 errors at 85 live agents). The remaining **3 occurred with exactly one agent alive**
 (13:57–13:59), proving a second, concurrency-independent fault mode. Ramp-limiting explains 97.6%, not 100%.
 
-**Attribution:** of the 125 failures, exactly **3** are attributable (by exclusion — one live agent), to
-`feal-linear-cryptanalysis`, which then died `unknown_agent_error` after 99.4 min without reaching its
-7200 s ceiling, and appears in the `lost` set. The other 122 are `UNRESOLVABLE_FROM_DISK`. Between-run
-diff: `gained 3 (real) / lost 13`, of which 8 overlap the KVM round's losses — i.e. threshold-variance
-tasks. **No task other than `feal` can be linked to a relay failure.**
+**Attribution:** exactly **1** of the 125 is attributable — `feal-linear-cryptanalysis`, whose
+`agent-logs/episode-N/debug.json` carries the only `Error code: 503` among the run's 1668 such files.
+It died `unknown_agent_error` after 99.4 min without reaching its 7200 s ceiling, and appears in the
+`lost` set. The other 124 are unattributable — not for lack of data, but because `debug.json` is
+overwritten per episode, so a failure a retry survives leaves nothing behind. Corrected classification:
+`ATTRIBUTABLE_ONLY_WHEN_THE_EPISODE_DIES`.
+
+> This paragraph previously claimed **3** attributable, argued *by exclusion* from the fact that those
+> three landed when one agent was alive. The right task, the wrong count, and an inference standing
+> where a file was. See the retraction in §5.12. Note also that `unknown_agent_error` alone proves
+> nothing about the relay: two canonical Qwen tasks died that way from a plain 400.
+
+Between-run diff: `gained 3 (real) / lost 13`, of which 8 overlap the KVM round's losses — i.e.
+threshold-variance tasks. **No task other than `feal` can be linked to a relay failure.**
 
 **Dual sign-off:** surface:85 (score + attribution) and surface:86 (independent recompute from raw
 artifacts + reducer source, *not* a restatement — the two lanes wrote to different filesystems and never
@@ -789,12 +802,35 @@ Not `blocked`. The number is disqualified because **the gate said clean while 12
 and the experiment design cannot quantify the damage:
 
 - `c=89` single-batch ⇒ all 89 tasks sit inside the failure window ⇒ **no control group**;
-- `run.log` has no timestamps and no task markers, and the 89 agents' output interleaves ⇒ **per-task
-  attribution is impossible from disk**. (Exactly 3 of the 125 were attributable, by exclusion: they
-  landed at 13:57–13:59 when exactly **one** agent was alive.)
+- most of the 125 failures cannot be tied to a task. Not because the artifacts lack the data, but
+  because `debug.json` is **overwritten each episode**: a failure that a retry survives leaves no
+  trace. Only a failure that *kills* its episode is still on disk when the run ends.
+
+> **Retraction.** This section previously said per-task attribution was *impossible from disk*, and
+> that **3** of the 125 were attributable *by exclusion* (they landed at 13:57–13:59 when one agent
+> was alive). Both claims were wrong, and the second was wrong in the more embarrassing direction —
+> it was reasoning where evidence was available.
+>
+> Per-task LLM errors **are** on disk, in `agent-logs/episode-N/debug.json`, which records the HTTP
+> error body of every call. Two searches missed it: a `find -maxdepth 4` too shallow to reach it, then
+> a grep for the *exception class name* (`ServiceUnavailableError`) in a file that stores the *HTTP
+> payload* (`Error code: 503`). Re-scanned with `"Error code: (\d{3})"`:
+>
+> | run | `debug.json` files | with an error code |
+> |---|---:|---|
+> | this run | 1668 | **4** → `{503: 1, 404: 3}` |
+> | canonical gpt-5.5 | 1214 | **0** — confirms its relay hard-fail truth is 0 |
+> | canonical Qwen | 8687 | 5 — **all 400**, i.e. all `content_class` |
+>
+> The single 503 is `feal-linear-cryptanalysis`. So the exclusion argument reached the right task by
+> the wrong route, and the count was 3 when the evidence says **1**. Corrected attribution:
+> `ATTRIBUTABLE_ONLY_WHEN_THE_EPISODE_DIES` — 1 of 125.
 
 ⇒ Recorded as `forbidden`: *evidence insufficient to quantify, sufficient to disqualify.*
 **An epistemic judgement, not a statistical one.** Say which one you are making.
+
+The verdict is unchanged. The argument behind it was defective, and a defective argument for a
+correct verdict is still a defect — it would have been reused.
 
 #### A hypothesis that failed arithmetic
 This run made 2266 total API calls vs the baseline's 1215, while resolving **fewer** tasks. The tempting
@@ -811,17 +847,33 @@ Independent recount: ~454 of the extra calls are **additional agent turns** (chu
 retries" narrative does not. *A number that merely looks consistent is not evidence.*
 
 #### The fix (proposed, not yet implemented)
-A separate **`llm_health`** block, emitted by a **runner-side log parser** — not the strict reducer
-(which only reads per-task artifacts, where LLM errors never appear), and not Terminal-Bench itself
-(not ours to change):
+`llm_health` has **two layers**, because the two layers can answer different questions and an earlier
+single-layer design conceded ground it did not have to:
 
 ```
-total_calls · retry_exhausted · http_5xx · http_429 · hard_fail_rate · token_sum_vs_baseline
-```
-Exceed a threshold → tag the score `llm_degraded`. Do not block the run; **taint the number**.
+run-level   (parse run.log)
+  total_calls · retry_exhausted · hard_fail_rate · token_sum_vs_baseline
+  counted in two columns, never one:
+    infra_class    5xx · 429 · connection_error · read_timeout · retry exhaustion
+    content_class  400 · tokenizer errors · context_length_exceeded
 
-> **Hard constraint: this metric is run-level and must never be per-task.** Per-task attribution is
-> impossible from disk (see above). A per-task LLM-health figure would be a lie that looks like data.
+task-level  (read agent-logs/episode-N/debug.json — already on disk, free)
+  llm_error_last_episode
+    content_class  always attributable per task
+    infra_class    attributable only when the error killed the episode
+                   (debug.json is overwritten per episode; survived retries leave nothing)
+```
+
+Emitted by a runner-side parser — not the strict reducer, which reads only per-task artifacts, and
+not Terminal-Bench itself, which is not ours to change. Exceed an `infra_class` threshold → tag the
+score `llm_degraded`. Do not block the run; **taint the number**.
+
+Do not tag on `content_class`. And do not infer a relay fault from `unknown_agent_error`: a task can
+die that way from a pure 400. Two canonical Qwen tasks (`tune-mjcf`, `write-compressor`) did exactly
+that, reporting `Input length (262143) exceeds the maximum allowed length (262138)` — the same
+262,144-token window seen from sglang's tokenizer-manager path, which reserves six tokens. The
+canonical Qwen run's `infra_class` count is **0**. Under v4(b) it is not `forbidden`, and it must not
+be, because it is this table's own anchor.
 
 **Rule adopted: no re-run happens before `llm_health` lands.** Otherwise the next round is equally blind.
 
