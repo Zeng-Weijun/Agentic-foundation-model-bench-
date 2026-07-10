@@ -1,0 +1,7 @@
+import sys, docker, runpy
+sys.path.insert(0, '/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702')
+import swev_offline_eval_cache_patch as _swev_cache_patch
+_swev_cache_patch.apply('/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/offline_eval_req_env_cache_20260703')
+_o=docker.from_env
+docker.from_env=lambda **k:_o(version="1.44",**{a:b for a,b in k.items() if a!="version"})
+runpy.run_module("swebench.harness.run_evaluation", run_name="__main__")
