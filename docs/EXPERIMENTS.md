@@ -227,10 +227,10 @@ redacted at capture time).
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 67.0% raw | 201/300 | 66.7% | `forbidden` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
 | SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `reproduced`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
-| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `pending`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
+| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `canonical`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
 
 ⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
-⁷ **The open question here is not arithmetic.** `no_patch` is 137/498 against 3/500 for Coder on the same bench, harness, serving host and day. If a material share of those 137 are *zero-tool-call* trajectories, then 21.6% measures the scaffold and not the model, and the row becomes `forbidden`. Classifying all 137 is the audit's first task. **Counting tool calls at the wrong level of `stream-json` would answer this question backwards — see §5.13.**
+⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 against 3/500 for Coder on the same bench, harness, serving host and day. Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
 
 ¹ Dual-signed (ledger `DECISIONS.md` L1480 reconciliation 15/15 PASS + surface:85 review PASS). The artifact's own `score_note` says: *"single pass@1 compatibility probe; no official TB2.1 Qwen anchor claimed."* **Do not put it on a leaderboard.**
 ² Non-official harness (host QwenCode + `docker exec` bridge). A native-scaffold contrast point, not a leaderboard number.
@@ -573,10 +573,10 @@ the 45×.
 harness's `resolved_ids`, not from `eval_rc`. Zero resolved instances have an empty patch; zero touch
 a test file. Model identity was re-probed 31 times across the run.
 
-#### The 30, and why they are not yet settled
+#### The fourth mechanism
 
-`context_length = 262144`. The scaffold passes `max_output_tokens = 65536`. The 400s fire near
-**~228K input tokens**, which matches none of the three obvious ceilings:
+`context_length = 262144`; the scaffold passes `max_output_tokens = 65536`. The 400s fire near 228K
+input tokens, which matches none of the three obvious ceilings:
 
 ```
 262144 − 65536 = 196608     no
@@ -584,14 +584,56 @@ a test file. Model identity was re-probed 31 times across the run.
 262138                      no   (sglang's tokenizer-manager path reserves 6)
 ```
 
-Three candidate mechanisms, none of which explains the number, means a fourth exists and has not been
-found. Until it is, one reading remains open: if those 30 tasks died because a *scaffold parameter*
-squeezed the input budget, they died of configuration, not of capability. That is 6% of the benchmark,
-and it would make **21.6% a lower bound under this configuration rather than a measurement of the
-model**. The second audit is required to quote the exact 400 message text and the exact input token
-count — not "approximately 228K" — and to confirm the Coder run used the same `max_output_tokens`.
+Three candidate ceilings, none of which produces the observed number, means a fourth exists. The
+second audit found it:
 
-**One endorsement in hand. Recorded, not quoted, until the second lands.**
+```
+229376 = 262144 − 32768
+```
+
+The effective output reservation is **32768 — half the configured 65536**. The evidence is direct
+rather than inferential: the largest input the server ever accepted in the whole run is **229,363**
+tokens; nothing above 230,000 was accepted; and a **226,271**-token request returned `200 OK`, which
+refutes the 196,608 squeeze outright. The client sees `[API Error: 400 status code (no body)]`; the
+server raises it at `serving_chat.py:938 create_error_response`.
+
+**And the causal story inverts.** Those 30 tasks did not die because `max_output_tokens` squeezed
+their input budget. They died at 229,376 because Instruct-2507 fills a context that Coder, on the same
+host against the same ceiling, barely approaches. The configuration contributes the 32K reservation;
+the model contributes the other 229K. This is capability, not configuration — and the orchestrator's
+suspicion that it was configuration was wrong.
+
+#### Dual review
+
+Both auditors worked from raw artifacts, blind to each other. Both endorse. Their censuses agree
+exactly where it matters and differ where judgement enters:
+
+| | auditor A | auditor B |
+|---|---:|---:|
+| **(a) parser failure** | **0** | **0** |
+| (b) tool calls, no diff | 94 | 90 |
+| (c) timeout | 13 | 12 |
+| (d) crash / 400 | 30 | 31 |
+| (e) voluntary stop | 0 | 4 |
+| | 137 | 137 |
+
+The load-bearing number — the one the whole audit existed to produce — is the one they agree on. The
+rest is where a trajectory that stops after a failed edit could be filed under (b) or (e), and
+reasonable auditors put it in different columns. **Two independent censuses that agreed on everything
+would have been evidence of collusion or of a shared script, not of truth.**
+
+Both traced the two literally-zero-tool-call trajectories (`pytest-5787`, `pytest-5809`) to the same
+place, separately: `peak_input = 0`, `num_turns = 1`, `duration ≈ 483 s`, literal
+`Request timeout after 483s`. No response ever arrived, so no parse could fail. `(a) = 0` survives.
+
+#### ⚠️ Caveat: this is a lower bound
+
+`43/500 = 8.6%` of the benchmark ended at an envelope limit — the 229,376-token ceiling, a rollout
+timeout, or a crash — rather than at the model's judgement. One further genuine resolve
+(`django__django-12050`) was silently discarded by the denominator defect. **21.6% is the score
+Instruct-2507 achieves under this scaffold configuration. It is not an upper bound on the model.**
+
+Status `canonical` for this cell, with that caveat attached to the number wherever it is quoted.
 
 ---
 
