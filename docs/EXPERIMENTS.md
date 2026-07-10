@@ -313,22 +313,72 @@ To use the anchor, run the official protocol over all 400. The paper's per-diffi
 
 Hold the model fixed (`Qwen3-Coder-30B-A3B-Instruct`) and vary only the harness:
 
-| Interaction mode | Harness | SWE-V | TB2.1 |
-|---|---|---:|---:|
-| Native multi-tool-call | `qwen-code 0.15.6` | **48.6%** | 16.85% (bridge) |
-| Single bash block | `mini-swe-agent v2.0.0` | 23.4% | — |
-| Live terminal (tmux) | `terminus-2` | — | **10.1%** |
+| Interaction mode | Harness | SWE-V (n=500) |
+|---|---|---:|
+| Native multi-tool-call | `qwen-code 0.15.6` | **48.6%** (243/500) |
+| Single bash block | `mini-swe-agent v2.0.0` | 23.4% (117/500) |
 
 Same axis, `gpt-5.5`: **77.2%** (mini) vs **70.8%** (terminus-2) — nearly flat.
 
-**Reading.** A 30B model loses ~25 pt moving from its native tool protocol to a bash-only
-protocol, and lands at 10.1% on a live terminal. A frontier model barely notices. The
-bottleneck **migrates** with interaction complexity:
+#### ⚠️ The TB2.1 column of this table has been withdrawn
+
+It read `16.85% (bridge)` on the *native multi-tool-call* row against `10.1%` on the *live terminal*
+row, and invited exactly one conclusion. Both halves were wrong.
+
+**The bridge is not a native multi-tool harness.** `tb21_qwencode_agent.py` starts `qwen` with
+`--allowed-tools run_tb_command` and excludes `Shell`, `Bash`, `ReadFile`, `WriteFile`, `Edit`,
+`ListDirectory` and the rest by name. An auditor confirmed it from the traces: one tool, a shell
+command posted into the container, nothing else. It is a *single-shell* harness that happens to be
+driven by `qwen`, and it sat on the row describing the opposite thing.
+
+**And the difference was never established.** All four TB2.1 measurements of this model, on the same
+89 tasks:
+
+| harness | affordance (trace-verified) | score |
+|---|---|---:|
+| `terminus-2`, 2026-07-10 | types into a live tmux screen | 12/89 = 13.48% |
+| `terminus-2`, canonical | same | 9/89 = 10.11% |
+| `qwen-code 0.16.2`, **container-native** | full native toolset, in-container (18 `tool_use` in one task: `read_file`, `edit`, `glob`, `grep`, shell) | 10/89 = 11.24% |
+| `qwen-code` host-bridge | one tool (`run_tb_command`), via `docker exec` | 15/89 (canon) · 12/89 · 13/89 |
+
+McNemar, exact two-sided, computed pairwise from the `resolved_id` sets:
+
+```
+terminus-2 today vs canonical        p = 0.3750
+terminus-2       vs container-native p = 0.7744
+container-native vs bridge (today)   p = 0.4531
+bridge canonical vs bridge today     p = 0.7539
+```
+
+**Nothing here is distinguishable from anything else.** The genuinely native harness scores *below*
+the single-tool bridge, which is the opposite of the withdrawn row's direction, and that too is
+inside the noise.
+
+Worse, the cells are not comparable even in principle. Sampling differs — `terminus-2` sends
+`temperature=0.0` (verified per-call in `debug.json`); `qwen-code` sends **no sampling parameters at
+all**. Serving differs — only the two 2026-07-10 runs are provably the same never-restarted sglang
+process (`random_seed 598954308`, bracketed at three points); the canonical runs' serving stack was
+never recorded and its host is dead.
+
+> An auditor was asked whether this table could be published as evidence of an interaction-mode
+> effect, and was told to prefer an honest *"we cannot tell"* over a table with a story in it. Its
+> answer: **`INSUFFICIENT_EVIDENCE`.** Establishing a collapse — or a gradient — on TB2.1 needs 3–5
+> repeats per cell, one dataset, one sampling policy, one serving process, and a benchmark whose base
+> rate is not 10%.
+
+The author of this document wrote *"on TB2.1 the interaction-mode effect collapses"* on the strength
+of four numbers between 9 and 15. That is a story told inside a noise band.
+
+**Reading (SWE-V only).** A 30B model loses ~25 pt moving from its native tool protocol to a bash-only
+protocol. A frontier model barely notices. The bottleneck **migrates** with interaction complexity:
 
 - at the **bash layer** it is output-format compliance — 498/498 SWE-V trajectories rejected;
-- at the **terminal layer** it is screen comprehension and convergence — the 89-task Qwen run
-  shows `83 unset / 3 context_length_exceeded / 2 unknown_agent_error / 1 test_timeout`, i.e.
-  the agent mostly never converges rather than failing a test.
+- at the **terminal layer** the failure *shape* is convergence rather than test failure — the
+  canonical 89-task Qwen run shows `83 unset / 3 context_length_exceeded / 2 unknown_agent_error /
+  1 test_timeout`, i.e. the agent mostly never converges. **This describes how it fails, not how much
+  worse it does; the terminal-vs-native score difference is not established.** (The 2026-07-10
+  `terminus-2` run shows the same shape: `79 unset / 7 context_length_exceeded / 2 test_timeout /
+  1 agent_timeout`.)
 
 **Consequences for harness design.** The ROI is in the interaction layer, not the prompt:
 screen-state summarisation, environment-constraint pre-announcement, an explicit turn budget
