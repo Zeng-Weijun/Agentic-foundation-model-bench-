@@ -1,0 +1,124 @@
+suite:
+  id_prefix: qwen3_30b_a3b_base_codebench
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: Qwen3-30B-A3B-Base
+  served_name: Qwen3-30B-A3B-Base
+  slug: qwen3_30b_a3b_base
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Base
+  status: complete_16_shards
+  expected_shards: 16
+  base_url: http://127.0.0.1:8503/v1
+  api_key: EMPTY
+  reasoning_effort: ""
+  temperature: 0.0
+  max_tokens: 4096
+  max_input_tokens: 32768
+  litellm_model: openai/Qwen3-30B-A3B-Base
+
+server:
+  suggested_host: worker_a_or_worker_b
+  port: 8503
+  sglang_command: "python -m sglang.launch_server --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Base --served-model-name Qwen3-30B-A3B-Base --host 0.0.0.0 --port 8503 --tp 8 --trust-remote-code --context-length 32768"
+  vllm_command: "vllm serve /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Base --served-model-name Qwen3-30B-A3B-Base --host 0.0.0.0 --port 8503 --tensor-parallel-size 8 --trust-remote-code --max-model-len 32768 --gpu-memory-utilization 0.90"
+
+workers:
+  full:
+    smoke: 1
+    full: 2
+  docker:
+    smoke: 1
+    full: 1
+  cocoa:
+    smoke: 1
+    full: 1
+
+benchmarks:
+  smoke:
+    - repozero_py2js
+    - swebench_verified
+    - terminal_bench_2_0
+  full:
+    - repozero_py2js
+    - swebench_verified
+    - terminal_bench_2_0
+
+experiment:
+  purpose: pretraining_start_point_for_code_training
+  interpretation: "Base model; use as training delta baseline, not as a fair agent-chat model."
+  created_at: 2026-05-28
+  checked_host: dev
+  target_eval_host: swe_dev
+  target_serving_host: worker_a_or_worker_b
+  readiness: runnable_after_openai_compatible_server_is_up
+  local_file_audit:
+    checked_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Base
+    directory_size: 57G
+    config_model_type: qwen3_moe
+    torch_dtype: bfloat16
+    num_hidden_layers: 48
+    num_experts: 128
+    num_experts_per_tok: 8
+    safetensors:
+      expected_from_index: 16
+      existing: 16
+      missing: []
+      complete: true
+  launch_notes:
+    endpoint_assumption: "YAML default uses http://127.0.0.1:8503/v1; either run bench on same host as server or create an SSH tunnel to the GPU host."
+    check_server: "curl -s http://127.0.0.1:8503/v1/models"
+    print_config: "BENCH_PRINT_CONFIG=1 ./run_qwen3_30b_a3b_base_codebench.sh smoke"
+    smoke_command: "./run_qwen3_30b_a3b_base_codebench.sh smoke"
+    full_command: "./run_qwen3_30b_a3b_base_codebench.sh full"
+  benchmark_contract:
+    repozero_py2js:
+      primary_metric: cases_all_pass / cases_total
+      secondary_metric: tests_passed / tests_total
+      smoke_cases: [base58/test1.py, bech32/test1.py, bencoder/test1.py, fractions/test1.py]
+      full_cases: 400
+      output_summary: "RepoZero/Py2JS/output_codex/<run_name>/summary.json"
+    swebench_verified:
+      primary_metric: resolved / total
+      smoke_instances: 5
+      full_instances: 500
+      output_summary: "SWE-agent/trajectories/*__<suffix>/preds.json plus swebench harness report"
+    terminal_bench_2_0:
+      primary_metric: resolved / total
+      smoke_tasks: 1
+      full_tasks: all
+      output_summary: "shared_bench/terminal-bench/runs/<job_name>"
+  observed_results:
+    local_runs: []
+    comparison_baselines:
+      gpt5_4_mini_repozero_py2js_full:
+        score: 225/400
+        percent: 56.25
+        tests: 16850/19296
+        tests_percent: 87.32
+        caveat: "24 env-impacted failures observed; raw score is the official local number."
+        path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero/Py2JS/output_codex/gpt-5.4-mini_ab_cocoa_gpt54mini_full_fixed_20260526_160340_full/summary.json
+  result_fill_template:
+    status: pending
+    run_id: null
+    started_at: null
+    finished_at: null
+    endpoint: http://127.0.0.1:8503/v1
+    repozero_py2js:
+      cases_all_pass: null
+      cases_total: null
+      percent: null
+      summary_json: null
+    swebench_verified:
+      resolved: null
+      total: null
+      percent: null
+      report_path: null
+    terminal_bench_2_0:
+      resolved: null
+      total: null
+      percent: null
+      run_dir: null

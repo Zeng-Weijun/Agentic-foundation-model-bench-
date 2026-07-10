@@ -1,0 +1,27 @@
+model:
+  model_name: "openai/qwen3-coder-30b-a3b-instruct"
+  cost_tracking: "ignore_errors"
+  model_kwargs:
+    custom_llm_provider: "openai"
+    api_base: "http://100.103.11.77:8503/v1"
+    api_key: "EMPTY"
+    temperature: 0.0
+    max_tokens: 65536
+    max_output_tokens: 65536
+    max_context_tokens: 262144
+    context_accounting: "input/history/output share the 262144-token serving context; this is not 262144 input plus 65536 output."
+    drop_params: true
+
+agent:
+  step_limit: 0
+  cost_limit: 0
+  wall_time_limit_seconds: 0
+  mode: yolo
+
+environment:
+  env:
+    PAGER: cat
+    MANPAGER: cat
+    LESS: -R
+    PIP_PROGRESS_BAR: "off"
+    TQDM_DISABLE: "1"

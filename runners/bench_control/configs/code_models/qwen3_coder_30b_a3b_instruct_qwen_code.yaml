@@ -1,0 +1,122 @@
+suite:
+  id_prefix: qwen3_coder_30b_a3b_instruct_qwen_code
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: qwen3-coder-30b-a3b-instruct
+  served_name: qwen3-coder-30b-a3b-instruct
+  openai_model: qwen3-coder-30b-a3b-instruct
+  slug: qwen3_coder_30b_a3b_instruct
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+  status: complete_16_shards
+  expected_shards: 16
+  base_url: http://100.103.11.77:8503/v1
+  api_key: EMPTY
+  reasoning_effort: none
+  temperature: 0.0
+  max_tokens: 65536
+  max_output_tokens: 65536
+  max_input_tokens: 262144
+  max_context_tokens: 262144
+  token_profile: native_262k_context_out64k
+  context_accounting: "input/history/output share the 262144-token serving context; this is not 262144 input plus 65536 output."
+  output_token_policy: "65536 follows the Qwen3-Coder README recommended output length; report this as an out64k rerun profile, not the original raw 4096-token reproduction."
+  litellm_model: qwen3-coder-30b-a3b-instruct
+
+serving:
+  host_alias: worker_rkn9p
+  host_ip: 100.103.11.77
+  port: 8503
+  context_profile: native_262k_no_yarn
+  sglang_version: 0.5.10.post1
+  sglang_target_version: 0.5.12.post1
+  sglang_min_version_from_qwen36_card: 0.5.10
+  active_python: /mnt/shared-storage-user/mineru2-shared/zengweijun/conda_envs/swedh/bin/python
+  active_sglang_version_checked: 0.5.10.post1
+  model_native_context_length: 262144
+  active_context_length: 262144
+  yarn_enabled: false
+  serving_context_accounting: "SGLang --context-length 262144 is the total native window. Do not interpret this as 262144 input tokens plus 65536 output tokens."
+  previous_stable_context_length: 65536
+  active_sglang_note: "Use the pre-existing shared swedh env on worker_rkn9p for smoke/full runs; it satisfies Qwen's sglang>=0.5.10 guidance. Keep sglang_target_version as the desired install target, but record sglang_version as the live checked runtime."
+  install_command: "uv pip install 'sglang[all]==0.5.12.post1'"
+  install_fallback_command: "uv pip install 'sglang[all]==0.5.10.post1'"
+  launch_command: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+    --served-model-name qwen3-coder-30b-a3b-instruct
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 262144
+    --tool-call-parser qwen3_coder
+  health_check: "curl -s http://100.103.11.77:8503/v1/models"
+
+agent:
+  scaffold: qwen_code
+  qwen_code_version: 0.15.6
+  qwen_code_latest_checked: 0.16.2
+  qwen_code_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root
+  proxy_policy: "Use the cluster HTTP proxy from ~/.bashrc for downloads and image pulls, but unset HTTP(S)_PROXY inside the Qwen Code agent process so OpenAI-compatible calls go directly to the internal SGLang endpoint."
+  headless_command_shape: >-
+    env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY
+    qwen --channel CI -p '<prompt>' --yolo --auth-type openai
+    --openai-base-url http://100.103.11.77:8503/v1
+    --openai-api-key EMPTY
+    --model qwen3-coder-30b-a3b-instruct
+    --output-format stream-json
+  swebench:
+    scaffold: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/scripts/run_qwen_code_swebench.py
+    subset:
+      smoke: smoke_n20
+      full: paper_n500
+    max_session_turns: 80
+  terminal_bench:
+    agent_import_path: terminal_bench.agents.installed_agents.qwen_code.qwen_code:QwenCodeAgent
+    agent_kwargs:
+      api_key: EMPTY
+      base_url: http://100.103.11.77:8503/v1
+
+workers:
+  docker:
+    smoke: 4
+    full: 6
+  full:
+    smoke: 1
+    full: 2
+
+benchmarks:
+  smoke:
+    - swebench_verified_qwen_code
+    - terminal_bench_2_0
+  full:
+    - swebench_verified_qwen_code
+    - terminal_bench_2_0
+
+experiment:
+  purpose: first_native_qwen_code_agent_reproduction
+  interpretation: "Best first reproduction target: complete local weights, Qwen Code-native scaffold, and agentic coding objective aligned with our training plan."
+  target_eval_host: swe_dev
+  target_serving_host: worker_rkn9p
+  model_audit:
+    directory_size: 57G
+    model_type: qwen3_moe
+    total_parameters: 30.5B
+    activated_parameters: 3.3B
+    experts: 128
+    active_experts: 8
+    safetensors_existing: 16
+    safetensors_expected: 16
+    complete: true
+  native_references:
+    qwen_code: https://github.com/QwenLM/qwen-code
+    qwen_code_headless: https://qwenlm.github.io/qwen-code-docs/en/users/features/headless/
+    qwen3_coder_model_card: https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct
+  commands:
+    print_config: "BENCH_PRINT_CONFIG=1 ./run_code_model_suite_from_yaml.sh configs/code_models/qwen3_coder_30b_a3b_instruct_qwen_code.yaml smoke"
+    smoke: "./run_code_model_suite_from_yaml.sh configs/code_models/qwen3_coder_30b_a3b_instruct_qwen_code.yaml smoke"
+    full: "./run_code_model_suite_from_yaml.sh configs/code_models/qwen3_coder_30b_a3b_instruct_qwen_code.yaml full"

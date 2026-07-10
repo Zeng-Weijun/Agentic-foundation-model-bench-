@@ -1,0 +1,103 @@
+suite:
+  id_prefix: qwen3_coder_30b_a3b_instruct_swebench_mini_swe_agent
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: qwen3-coder-30b-a3b-instruct
+  served_name: qwen3-coder-30b-a3b-instruct
+  openai_model: qwen3-coder-30b-a3b-instruct
+  litellm_model: openai/qwen3-coder-30b-a3b-instruct
+  slug: qwen3_coder_30b_a3b_instruct
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+  status: complete_16_shards
+  expected_shards: 16
+  base_url: http://100.103.11.77:8503/v1
+  api_key: EMPTY
+  reasoning_effort: none
+  temperature: 0.0
+  max_tokens: 65536
+  max_output_tokens: 65536
+  max_input_tokens: 262144
+  max_context_tokens: 262144
+  token_profile: native_262k_context_out64k
+  context_accounting: "input/history/output share the 262144-token serving context; this is not 262144 input plus 65536 output."
+  output_token_policy: "65536 follows the Qwen3-Coder README recommended output length; report this as an out64k rerun profile, not the original raw 4096-token reproduction."
+
+serving:
+  host_alias: worker_rkn9p
+  host_ip: 100.103.11.77
+  port: 8503
+  backend: sglang
+  context_profile: native_262k_no_yarn
+  active_context_length: 262144
+  model_native_context_length: 262144
+  yarn_enabled: false
+  serving_context_accounting: "SGLang --context-length 262144 is the total native window. Do not interpret this as 262144 input tokens plus 65536 output tokens."
+  launch_command: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+    --served-model-name qwen3-coder-30b-a3b-instruct
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 262144
+    --tool-call-parser qwen3_coder
+
+agent:
+  scaffold: mini_swe_agent
+  mini_swe_agent_version_checked: "2.3.0"
+  scaffold_versions_manifest: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/configs/code_models/swebench_agents/scaffold_versions.yaml
+  status_on_swe_dev_20260529: installed_help_verified_needs_model_smoke
+  mini_swe_agent_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0
+  mini_swe_agent_bin: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv/bin/mini-extra
+  install_command_on_dev_or_swe_dev: "uv venv --python /data/conda_envs/swebench/bin/python /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv && uv pip install --python /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv/bin/python -e /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0"
+  official_usage_reference: https://mini-swe-agent.com/latest/usage/swebench/
+  prompt_policy: "Use mini-swe-agent built-in swebench.yaml system_template and instance_template; this overlay only changes model and budget fields."
+  budget_policy:
+    step_limit: 0
+    cost_limit: 0
+    wall_time_limit_seconds: 0
+    note: "0 disables mini-swe-agent limits; command-level environment timeout remains from the official swebench.yaml unless explicitly overridden."
+  mini_swe_agent:
+    env:
+      MINI_SWE_BIN: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv/bin/mini-extra
+      MINI_SWE_CONFIG: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/configs/code_models/swebench_agents/mini_swe_agent_swebench_qwen3_coder_30b_a3b.yaml
+      MINI_SWE_MODEL: openai/qwen3-coder-30b-a3b-instruct
+      MINI_SWE_SUBSET: verified
+      MINI_SWE_SPLIT: test
+      MINI_SWE_WORKERS:
+        smoke: 1
+        full: 4
+      MINI_SWE_SLICE:
+        smoke: "0:2"
+        full: ""
+      MINI_SWE_ENVIRONMENT_CLASS: docker
+
+workers:
+  docker:
+    smoke: 1
+    full: 4
+
+benchmarks:
+  smoke:
+    - swebench_verified_mini_swe_agent
+  full:
+    - swebench_verified_mini_swe_agent
+
+experiment:
+  purpose: qwen3_coder_sglang_mini_swe_agent_swebench_reproduction
+  target_eval_host: swe_dev
+  target_serving_host: worker_rkn9p
+  artifact_contract:
+    suite_config_snapshot: config.snapshot.yaml
+    mini_swe_agent_config_snapshot: swebench_verified_mini_swe_agent/mini_swe_agent.config.snapshot.yaml
+    required_manifest: swebench_verified_mini_swe_agent/artifact_manifest.json
+    trace_root: swebench_verified_mini_swe_agent/mini_swe_agent_outputs
+    predictions: swebench_verified_mini_swe_agent/mini_swe_agent_outputs/preds.json
+  commands:
+    smoke_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_mini_swe_agent.sh smoke"
+    full_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_mini_swe_agent.sh full"

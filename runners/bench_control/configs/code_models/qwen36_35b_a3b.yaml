@@ -1,0 +1,130 @@
+suite:
+  id_prefix: qwen36_35b_a3b_codebench
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: Qwen3.6-35B-A3B
+  served_name: Qwen3.6-35B-A3B
+  slug: qwen36_35b_a3b
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B
+  status: incomplete_missing_model_00025_of_00026_safetensors
+  expected_shards: 26
+  base_url: http://127.0.0.1:8503/v1
+  api_key: EMPTY
+  reasoning_effort: ""
+  temperature: 0.0
+  max_tokens: 4096
+  max_input_tokens: 32768
+  litellm_model: openai/Qwen3.6-35B-A3B
+
+server:
+  suggested_host: worker_a_or_worker_b
+  port: 8503
+  sglang_command: "python -m sglang.launch_server --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B --served-model-name Qwen3.6-35B-A3B --host 0.0.0.0 --port 8503 --tp 8 --trust-remote-code --context-length 32768"
+  vllm_command: "vllm serve /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B --served-model-name Qwen3.6-35B-A3B --host 0.0.0.0 --port 8503 --tensor-parallel-size 8 --trust-remote-code --max-model-len 32768 --gpu-memory-utilization 0.90"
+
+workers:
+  full:
+    smoke: 1
+    full: 2
+  docker:
+    smoke: 1
+    full: 1
+  cocoa:
+    smoke: 1
+    full: 1
+
+benchmarks:
+  smoke:
+    - repozero_py2js
+    - swebench_verified
+    - terminal_bench_2_0
+  full:
+    - repozero_py2js
+    - swebench_verified
+    - terminal_bench_2_0
+
+experiment:
+  purpose: near_scale_strong_qwen_reference
+  interpretation: "Use as adjacent strong Qwen reference after missing shard is fixed."
+  created_at: 2026-05-28
+  checked_host: dev
+  target_eval_host: swe_dev
+  target_serving_host: worker_a_or_worker_b
+  readiness: blocked_until_missing_shard_downloaded
+  local_file_audit:
+    checked_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B
+    directory_size: 60G
+    config_model_type: qwen3_5_moe
+    safetensors:
+      expected_from_index: 26
+      existing: 25
+      missing:
+        - model-00025-of-00026.safetensors
+      complete: false
+  external_reference:
+    source: Qwen model card
+    official_benchmarks:
+      SWE_bench_Verified: 73.4
+      SWE_bench_Pro: 49.5
+      Terminal_Bench_2_0: 51.5
+      LiveCodeBench_v6: 80.4
+      VITA_Bench: 35.6
+  launch_notes:
+    endpoint_assumption: "YAML default uses http://127.0.0.1:8503/v1; either run bench on same host as server or create an SSH tunnel to the GPU host."
+    check_server: "curl -s http://127.0.0.1:8503/v1/models"
+    print_config: "BENCH_PRINT_CONFIG=1 ./run_qwen36_35b_a3b_codebench.sh smoke"
+    smoke_command: "./run_qwen36_35b_a3b_codebench.sh smoke"
+    full_command: "./run_qwen36_35b_a3b_codebench.sh full"
+    repair_download: "modelscope download --model Qwen/Qwen3.6-35B-A3B --local_dir /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B"
+  benchmark_contract:
+    repozero_py2js:
+      primary_metric: cases_all_pass / cases_total
+      secondary_metric: tests_passed / tests_total
+      smoke_cases: [base58/test1.py, bech32/test1.py, bencoder/test1.py, fractions/test1.py]
+      full_cases: 400
+      output_summary: "RepoZero/Py2JS/output_codex/<run_name>/summary.json"
+    swebench_verified:
+      primary_metric: resolved / total
+      smoke_instances: 5
+      full_instances: 500
+      output_summary: "SWE-agent/trajectories/*__<suffix>/preds.json plus swebench harness report"
+    terminal_bench_2_0:
+      primary_metric: resolved / total
+      smoke_tasks: 1
+      full_tasks: all
+      output_summary: "shared_bench/terminal-bench/runs/<job_name>"
+  observed_results:
+    local_runs: []
+    comparison_baselines:
+      gpt5_4_mini_repozero_py2js_full:
+        score: 225/400
+        percent: 56.25
+        tests: 16850/19296
+        tests_percent: 87.32
+        caveat: "24 env-impacted failures observed; raw score is the official local number."
+        path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero/Py2JS/output_codex/gpt-5.4-mini_ab_cocoa_gpt54mini_full_fixed_20260526_160340_full/summary.json
+  result_fill_template:
+    status: pending
+    run_id: null
+    started_at: null
+    finished_at: null
+    endpoint: http://127.0.0.1:8503/v1
+    repozero_py2js:
+      cases_all_pass: null
+      cases_total: null
+      percent: null
+      summary_json: null
+    swebench_verified:
+      resolved: null
+      total: null
+      percent: null
+      report_path: null
+    terminal_bench_2_0:
+      resolved: null
+      total: null
+      percent: null
+      run_dir: null

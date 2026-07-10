@@ -1,0 +1,19 @@
+suite:
+  id_prefix: ab_cocoa_gpt54mini_full
+  concurrency: 10
+
+model:
+  profile: gpt54mini_8130
+
+workers:
+  full: 2
+  docker: 1
+  cocoa: 1
+
+benches:
+  - tau2_paper_core
+  - vitabench_full
+  - swebench_verified
+  - terminal_bench_2_0
+  - repozero_py2js
+  - cocoabench

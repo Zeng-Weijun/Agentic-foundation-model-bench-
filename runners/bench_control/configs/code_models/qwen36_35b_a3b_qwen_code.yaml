@@ -1,0 +1,117 @@
+suite:
+  id_prefix: qwen36_35b_a3b_qwen_code
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: qwen3.6-35b-a3b
+  served_name: qwen3.6-35b-a3b
+  openai_model: qwen3.6-35b-a3b
+  slug: qwen36_35b_a3b
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B
+  status: complete_26_shards
+  expected_shards: 26
+  base_url: http://100.103.11.77:8503/v1
+  api_key: EMPTY
+  reasoning_effort: ""
+  temperature: 0.0
+  max_tokens: 4096
+  max_input_tokens: 131072
+  litellm_model: qwen3.6-35b-a3b
+
+serving:
+  host_alias: worker_rkn9p
+  host_ip: 100.103.11.77
+  port: 8503
+  sglang_version: 0.5.12.post1
+  sglang_min_version_from_model_card: 0.5.10
+  install_command: "uv pip install 'sglang[all]==0.5.12.post1'"
+  install_fallback_command: "uv pip install 'sglang[all]==0.5.10.post1'"
+  launch_command: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B
+    --served-model-name qwen3.6-35b-a3b
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 131072
+    --reasoning-parser qwen3
+    --tool-call-parser qwen3_coder
+  fallback_launch_if_oom: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3.6-35B-A3B
+    --served-model-name qwen3.6-35b-a3b
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 65536
+    --reasoning-parser qwen3
+    --tool-call-parser qwen3_coder
+  health_check: "curl -s http://100.103.11.77:8503/v1/models"
+
+agent:
+  scaffold: qwen_code
+  qwen_code_version: 0.15.6
+  qwen_code_latest_checked: 0.16.2
+  qwen_code_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root
+  headless_command_shape: >-
+    qwen -p '<prompt>' --yolo --auth-type openai
+    --openai-base-url http://100.103.11.77:8503/v1
+    --openai-api-key EMPTY
+    --model qwen3.6-35b-a3b
+    --output-format json
+  swebench:
+    scaffold: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/scripts/run_qwen_code_swebench.py
+    subset:
+      smoke: smoke_n20
+      full: paper_n500
+    max_session_turns: 80
+  terminal_bench:
+    agent_import_path: terminal_bench.agents.installed_agents.qwen_code.qwen_code:QwenCodeAgent
+    agent_kwargs:
+      api_key: EMPTY
+      base_url: http://100.103.11.77:8503/v1
+
+workers:
+  docker:
+    smoke: 4
+    full: 6
+  full:
+    smoke: 1
+    full: 2
+
+benchmarks:
+  smoke:
+    - swebench_verified_qwen_code
+    - terminal_bench_2_0
+  full:
+    - swebench_verified_qwen_code
+    - terminal_bench_2_0
+
+experiment:
+  purpose: strong_open_qwen_moe_agent_reference
+  interpretation: "Second reproduction target after Qwen3-Coder-30B-A3B. It has official SWE-bench Verified and Terminal-Bench 2.0 numbers, so it is the best sanity check for our scaffold."
+  target_eval_host: swe_dev
+  target_serving_host: worker_rkn9p
+  model_audit:
+    directory_size: 67G
+    model_type: qwen3_5_moe
+    safetensors_existing: 26
+    safetensors_expected: 26
+    complete: true
+  official_reference_scores:
+    SWE_bench_Verified: 73.4
+    Terminal_Bench_2_0: 51.5
+    VITA_Bench: 35.6
+    LiveCodeBench_v6: 80.4
+  native_references:
+    qwen_code: https://github.com/QwenLM/qwen-code
+    qwen36_model_card: https://huggingface.co/Qwen/Qwen3.6-35B-A3B
+  commands:
+    print_config: "BENCH_PRINT_CONFIG=1 ./run_code_model_suite_from_yaml.sh configs/code_models/qwen36_35b_a3b_qwen_code.yaml smoke"
+    smoke: "./run_code_model_suite_from_yaml.sh configs/code_models/qwen36_35b_a3b_qwen_code.yaml smoke"
+    full: "./run_code_model_suite_from_yaml.sh configs/code_models/qwen36_35b_a3b_qwen_code.yaml full"

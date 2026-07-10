@@ -1,0 +1,123 @@
+suite:
+  id_prefix: qwen3_coder_30b_a3b_instruct_swebench_openhands
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: qwen3-coder-30b-a3b-instruct
+  served_name: qwen3-coder-30b-a3b-instruct
+  openai_model: qwen3-coder-30b-a3b-instruct
+  litellm_model: openai/qwen3-coder-30b-a3b-instruct
+  slug: qwen3_coder_30b_a3b_instruct
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+  status: complete_16_shards
+  expected_shards: 16
+  base_url: http://100.103.11.77:8503/v1
+  api_key: EMPTY
+  reasoning_effort: none
+  temperature: 0.0
+  max_tokens: 65536
+  max_output_tokens: 65536
+  max_input_tokens: 262144
+  max_context_tokens: 262144
+  token_profile: native_262k_context_out64k
+  context_accounting: "input/history/output share the 262144-token serving context; this is not 262144 input plus 65536 output."
+  output_token_policy: "65536 follows the Qwen3-Coder README recommended output length; report this as an out64k rerun profile, not the original raw 4096-token reproduction."
+
+serving:
+  host_alias: worker_rkn9p
+  host_ip: 100.103.11.77
+  port: 8503
+  backend: sglang
+  context_profile: native_262k_no_yarn
+  active_context_length: 262144
+  model_native_context_length: 262144
+  yarn_enabled: false
+  serving_context_accounting: "SGLang --context-length 262144 is the total native window. Do not interpret this as 262144 input tokens plus 65536 output tokens."
+  launch_command: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+    --served-model-name qwen3-coder-30b-a3b-instruct
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 262144
+    --tool-call-parser qwen3_coder
+
+agent:
+  scaffold: openhands
+  openhands_version_checked: "0.54.0"
+  scaffold_versions_manifest: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/configs/code_models/swebench_agents/scaffold_versions.yaml
+  openhands_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0
+  current_runtime:
+    version_imported: "0.54.0"
+    runtime_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0
+    runtime_python: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0/.venv/bin/python
+    status: runnable_existing_env_dirty_or_reconstructed_checkout
+  recommended_pin_for_current_harness:
+    tag: "0.54.0"
+    source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/OpenHands-0.54.0
+    source_commit: 4aae68ae53477d05010a509f1f1e3f02e61b1831
+  latest_stable_candidate:
+    tag: "1.7.0"
+    source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/OpenHands-1.7.0
+    source_commit: 43bd8d12e59d2e9254fa8b490ad3e1234902e33b
+    switch_policy: install_deps_and_smoke_before_wiring
+  openhands:
+    prompt_policy: "Use OpenHands official SWE-bench prompt selector; mode=swe with this model resolves to prompts/swe_default.j2."
+    budget_policy:
+      max_iterations:
+        smoke: 500
+        full: 5000
+      max_budget_per_task: null
+      per_instance_timeout_s: 28800
+      action_timeout_s: 600
+      llm_timeout_s: 600
+      note: "OpenHands does not expose a true unlimited max_iterations mode here; 5000 is a relaxed cap while official per-instance/action timeouts remain."
+    env:
+      OPENHANDS_ROOT: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0
+      OPENHANDS_AGENT: CodeActAgent
+      OPENHANDS_LLM_CONFIG: llm.qwen_sglang
+      OPENHANDS_MAX_ITER:
+        smoke: 500
+        full: 5000
+      OPENHANDS_LLM_TIMEOUT_S: 600
+      OPENHANDS_EVAL_LIMIT:
+        smoke: 2
+        full: 500
+      OPENHANDS_NUM_WORKERS:
+        smoke: 1
+        full: 1
+      OPENHANDS_DATASET: princeton-nlp/SWE-bench_Verified
+      OPENHANDS_SPLIT: test
+      OPENHANDS_N_RUNS: 1
+      OPENHANDS_MODE: swe
+
+workers:
+  docker:
+    smoke: 1
+    full: 1
+
+benchmarks:
+  smoke:
+    - swebench_verified_openhands
+  full:
+    - swebench_verified_openhands
+
+experiment:
+  purpose: qwen3_coder_sglang_openhands_swebench_reproduction
+  target_eval_host: swe_dev
+  target_serving_host: worker_rkn9p
+  artifact_contract:
+    suite_config_snapshot: config.snapshot.yaml
+    generated_agent_config: swebench_verified_openhands/openhands.config.snapshot.toml
+    required_manifest: swebench_verified_openhands/artifact_manifest.json
+    trace_pointer: swebench_verified_openhands/openhands_output
+    predictions: openhands_output/output.jsonl
+    evaluator_log: swebench_verified_openhands/openhands_eval.log
+  commands:
+    smoke_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_openhands.sh smoke"
+    full_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_openhands.sh full"

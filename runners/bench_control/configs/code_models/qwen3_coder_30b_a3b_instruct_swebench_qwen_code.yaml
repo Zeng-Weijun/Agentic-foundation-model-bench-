@@ -1,0 +1,204 @@
+suite:
+  id_prefix: qwen3_coder_30b_a3b_instruct_swebench_qwen_code
+  output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites
+  concurrency:
+    smoke: 1
+    full: 1
+
+model:
+  name: qwen3-coder-30b-a3b-instruct
+  served_name: qwen3-coder-30b-a3b-instruct
+  openai_model: qwen3-coder-30b-a3b-instruct
+  slug: qwen3_coder_30b_a3b_instruct
+  path: /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+  status: complete_16_shards
+  expected_shards: 16
+  base_url: http://100.103.11.77:8503/v1
+  api_key: EMPTY
+  reasoning_effort: none
+  temperature: 0.0
+  max_tokens: 65536
+  max_output_tokens: 65536
+  max_input_tokens: 262144
+  max_context_tokens: 262144
+  token_profile: native_262k_context_out64k
+  context_accounting: "input/history/output share the 262144-token serving context; this is not 262144 input plus 65536 output."
+  output_token_policy: "65536 follows the Qwen3-Coder README recommended output length; report this as an out64k rerun profile, not the original raw 4096-token reproduction."
+  litellm_model: qwen3-coder-30b-a3b-instruct
+
+serving:
+  host_alias: worker_rkn9p
+  host_ip: 100.103.11.77
+  port: 8503
+  context_profile: native_262k_no_yarn
+  sglang_version: 0.5.10.post1
+  sglang_target_version: 0.5.12.post1
+  sglang_min_version_from_qwen36_card: 0.5.10
+  active_python: /mnt/shared-storage-user/mineru2-shared/zengweijun/conda_envs/swedh/bin/python
+  active_sglang_version_checked: 0.5.10.post1
+  model_native_context_length: 262144
+  active_context_length: 262144
+  yarn_enabled: false
+  serving_context_accounting: "SGLang --context-length 262144 is the total native window. Do not interpret this as 262144 input tokens plus 65536 output tokens."
+  previous_stable_context_length: 65536
+  active_sglang_note: "Use the pre-existing shared swedh env on worker_rkn9p for smoke; it satisfies Qwen's sglang>=0.5.10 guidance and avoids slow cluster pip proxy downloads."
+  launch_env_note: "The serve script prepends the selected Python bin directory to PATH for ninja, extends NO_PROXY/no_proxy with 127.0.0.1,localhost,::1,0.0.0.0, serves the model at the native 262144-token context length, and defaults to no reasoning parser because this Qwen3-Coder checkpoint is non-thinking; only the qwen3_coder tool-call parser is enabled."
+  venv_path: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/venvs/sglang-0.5.12.post1-py310
+  install_host: dev
+  install_command: "python3 -m venv --system-site-packages /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/venvs/sglang-0.5.12.post1-py310 && . /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/venvs/sglang-0.5.12.post1-py310/bin/activate && python -m pip install 'sglang==0.5.12.post1'"
+  install_fallback_command: "python -m pip install 'sglang==0.5.10.post1'"
+  install_note: "Smoke uses the minimal sglang package first because sglang[all] pulls large optional FlashInfer packages on this network; add extras only if launch reports a missing optional runtime."
+  launch_command: >-
+    python -m sglang.launch_server
+    --model-path /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct
+    --served-model-name qwen3-coder-30b-a3b-instruct
+    --host 0.0.0.0
+    --port 8503
+    --tp-size 2
+    --mem-fraction-static 0.82
+    --context-length 262144
+    --tool-call-parser qwen3_coder
+  health_check: "curl -s http://100.103.11.77:8503/v1/models"
+
+agent:
+  scaffold: qwen_code
+  qwen_code_version: 0.15.6
+  qwen_code_latest_checked: 0.16.2
+  scaffold_versions_manifest: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/configs/code_models/swebench_agents/scaffold_versions.yaml
+  qwen_code_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root
+  qwen_code_executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/qwen
+  qwen_code_node: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/node
+  qwen_code_reproduction_pin_note: "Keep 0.15.6 for the completed 49.0% SWE-bench reproduction; 0.16.2 is installed separately for new-run smoke."
+  qwen_code_latest_candidate:
+    package: "@qwen-code/qwen-code"
+    version: 0.16.2
+    source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-v0.16.2
+    source_commit: 7aba6967cc357bd3e83ed221a1e0f83d01c2f11b
+    npm_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2
+    executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2/node_modules/.bin/qwen
+    node: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2/node_modules/.bin/node
+    status: installed_but_not_yet_smoked_on_swebench
+  proxy_policy: "Use the cluster HTTP proxy from ~/.bashrc for downloads and image pulls, but unset HTTP(S)_PROXY inside the Qwen Code agent process so OpenAI-compatible calls go directly to the internal SGLang endpoint."
+  qwen_env:
+    QWEN_DEFAULT_AUTH_TYPE: openai
+    QWEN_TELEMETRY_ENABLED: "false"
+    QWEN_TELEMETRY_TARGET: local
+    QWEN_CODE_UNATTENDED_RETRY: "0"
+    QWEN_CODE_AUTO_ACCEPT: "true"
+    NO_PROXY: 127.0.0.1,localhost,::1,100.96.0.0/12,100.103.11.77,100.103.65.18
+  headless_command_shape: >-
+    env -u http_proxy -u https_proxy -u HTTP_PROXY -u HTTPS_PROXY
+    qwen --channel CI -p '<prompt>' --yolo --auth-type openai
+    --openai-base-url http://100.103.11.77:8503/v1
+    --openai-api-key EMPTY
+    --model qwen3-coder-30b-a3b-instruct
+    --output-format stream-json
+    --max-session-turns -1
+  swebench:
+    prompt_policy: "Use a clean SWE-bench issue prompt aligned with OpenHands/SWE-agent official prompt shape; Qwen Code does not ship its own official SWE-bench prompt in the installed package."
+    budget_policy:
+      max_session_turns: -1
+      agent_timeout_s: 28800
+      verifier_timeout_s: 7200
+      note: "-1 is Qwen Code's documented unlimited maxSessionTurns value; timeouts remain operational guards."
+    scaffold: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/scripts/run_qwen_code_swebench.py
+    subset:
+      smoke: smoke_n20
+      full: paper_n500
+    pull_missing_images: true
+    limit:
+      smoke: 2
+      full: null
+    max_session_turns: -1
+    env:
+      QWEN_NATIVE_MAX_SESSION_TURNS: -1
+      QWEN_NATIVE_AGENT_TIMEOUT_S: 28800
+      QWEN_NATIVE_VERIFIER_TIMEOUT_S: 7200
+    namespace: swebench
+    runner_decode_policy: "As of 2026-05-29, docker exec output is decoded with utf-8 errors=replace so non-UTF-8 git diff/status output is recorded instead of crashing the runner."
+
+workers:
+  docker:
+    smoke: 4
+    full: 10
+  full:
+    smoke: 1
+    full: 1
+
+benchmarks:
+  smoke:
+    - swebench_verified_qwen_code
+  full:
+    - swebench_verified_qwen_code
+
+experiment:
+  purpose: qwen3_coder_sglang_qwen_code_swebench_reproduction
+  target_eval_host: swe_dev
+  target_serving_host: worker_rkn9p
+  model_audit:
+    directory_size: 57G
+    model_type: qwen3_moe
+    total_parameters: 30.5B
+    activated_parameters: 3.3B
+    layers: 48
+    experts: 128
+    active_experts: 8
+    dtype: bfloat16
+    safetensors_existing: 16
+    safetensors_expected: 16
+    complete: true
+  run_contract:
+    smoke_subset: smoke_n20
+    smoke_limit: 2
+    full_subset: paper_n500
+    metric: resolved / total
+    output_summary: "bench/runs/code_model_suites/<suite_id>/swebench_verified_qwen_code/qwen_native_outputs/<run_name>/summary.json"
+    output_results_jsonl: "bench/runs/code_model_suites/<suite_id>/swebench_verified_qwen_code/qwen_native_outputs/<run_name>/results.jsonl"
+    model_native_context_length: 262144
+    serving_context_length: 262144
+  completed_runs:
+    full_20260528_181844:
+      run_name: qwen_code_qwen3_coder_30b_a3b_instruct_qwen3_coder_30b_a3b_instruct_swebench_qwen_code_full_262k_retag_20260528_181844_paper_n500
+      result_summary: "245/500 resolved = 49.0%; completed=486, errors=1, empty_patch=14."
+      note: "Original one-shot full run. Keep this as the raw pass@1 reproduction score."
+  selective_retry_after_runner_fix:
+    enabled_for_diagnostics: true
+    score_policy: "If merged into a corrected score, report explicitly as full run plus selective retry, not as the raw one-shot pass@1 run."
+    reason: "Three cases had runtime-budget/runner symptoms in the original full run: two max-session-turn exits, one agent timeout; sphinx-doc__sphinx-9591 also exposed a runner UTF-8 decode bug while collecting patch output."
+    runner_fix: "run_qwen_code_swebench.py docker_exec now decodes subprocess stdout/stderr with errors=replace."
+    wrapper_fix: "run_code_model_suite_from_yaml.sh now respects pre-set QWEN_NATIVE_MAX_WORKERS, QWEN_NATIVE_BUILD_WORKERS, MAX_CONCURRENCY, QWEN_NATIVE_AGENT_TIMEOUT_S, and QWEN_NATIVE_VERIFIER_TIMEOUT_S for qwen native SWE-bench runs."
+    instance_ids:
+      - matplotlib__matplotlib-26208
+      - sphinx-doc__sphinx-9591
+      - sphinx-doc__sphinx-11510
+    historical_budget_note: "The run_overrides below record the completed 2026-05-29 selective retry exactly as it was run before prompt cleanup and relaxed-budget defaults; use experiment.commands.selective_retry_three_cases_on_swe_dev for new reruns."
+    run_overrides:
+      QWEN_NATIVE_SUBSET: paper_n500
+      QWEN_NATIVE_INSTANCE_IDS: "matplotlib__matplotlib-26208 sphinx-doc__sphinx-9591 sphinx-doc__sphinx-11510"
+      QWEN_NATIVE_MAX_WORKERS: 3
+      QWEN_NATIVE_BUILD_WORKERS: 3
+      QWEN_NATIVE_MAX_SESSION_TURNS: 80
+      QWEN_NATIVE_AGENT_TIMEOUT_S: 1800
+      QWEN_NATIVE_VERIFIER_TIMEOUT_S: 1800
+      QWEN_NATIVE_PULL_MISSING: 1
+    output_summary: "bench/runs/code_model_suites/<suite_id>/swebench_verified_qwen_code/qwen_native_outputs/<run_name>/summary.json"
+    completed_run:
+      suite_id: qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916
+      run_name: qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500
+      output_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites/qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916/swebench_verified_qwen_code/qwen_native_outputs/qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500
+      result_summary: "0/3 resolved; completed=1, errors=0, empty_patch=2."
+      case_outcomes:
+        matplotlib__matplotlib-26208: "Original qwen_returncode=53/max-session-turn style empty patch; retry qwen_returncode=0 but still empty_patch, resolved=false."
+        sphinx-doc__sphinx-9591: "Original runner UnicodeDecodeError during patch collection; retry produced a 1002-byte patch and verifier ran, resolved=false."
+        sphinx-doc__sphinx-11510: "Original qwen_returncode=124/agent timeout empty patch; retry qwen_returncode=0 but still empty_patch, resolved=false."
+    corrected_reproduction_score:
+      score_kind: selective_retry_corrected
+      result_summary: "245/500 resolved = 49.0% after replacing these three original runtime/runner cases with selective retry outcomes; retry added 0 resolved cases."
+      raw_one_shot_reference: "245/500 resolved = 49.0%; completed=486, errors=1, empty_patch=14."
+      artifact_json: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites/qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916/swebench_verified_qwen_code/qwen_native_outputs/qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500/selective_retry_corrected_score.json
+  commands:
+    serve_on_worker: "./scripts/serve_qwen3_coder_30b_a3b_sglang.sh"
+    print_config_on_swe_dev: "BENCH_PRINT_CONFIG=1 ./run_qwen3_coder_30b_a3b_swebench_qwen_code.sh smoke"
+    smoke_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_qwen_code.sh smoke"
+    full_on_swe_dev: "./run_qwen3_coder_30b_a3b_swebench_qwen_code.sh full"
+    selective_retry_three_cases_on_swe_dev: "QWEN_NATIVE_SUBSET=paper_n500 QWEN_NATIVE_INSTANCE_IDS='matplotlib__matplotlib-26208 sphinx-doc__sphinx-9591 sphinx-doc__sphinx-11510' MAX_CONCURRENCY=3 QWEN_NATIVE_MAX_WORKERS=3 QWEN_NATIVE_BUILD_WORKERS=3 QWEN_NATIVE_MAX_SESSION_TURNS=-1 QWEN_NATIVE_AGENT_TIMEOUT_S=28800 QWEN_NATIVE_VERIFIER_TIMEOUT_S=7200 QWEN_NATIVE_PULL_MISSING=1 ./run_qwen3_coder_30b_a3b_swebench_qwen_code.sh full"

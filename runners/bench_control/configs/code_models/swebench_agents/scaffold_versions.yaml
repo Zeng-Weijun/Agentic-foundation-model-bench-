@@ -1,0 +1,77 @@
+generated_at: "2026-05-29"
+remote_host: swe_dev
+shared_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026
+checkout_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds
+
+selection_policy:
+  rule: "Pin clean tags for reproducibility; do not replace existing runnable environments until a smoke run passes with the new pin."
+  qwen_code_note: "The existing Qwen Code SWE-bench score was produced with 0.15.6. Use 0.16.2 only for a new comparable run, not to reinterpret the old result."
+  openhands_note: "OpenHands 0.54.0 is the current runnable environment. 1.7.0 is cloned as the latest stable candidate but is not wired into the YAML until dependency install and smoke pass."
+
+scaffolds:
+  qwen_code:
+    current_used:
+      package: "@qwen-code/qwen-code"
+      version: "0.15.6"
+      npm_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root
+      executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/qwen
+      bundled_node: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/node
+      status: runnable_with_npm_root_bin_path
+    latest_stable_checked:
+      package: "@qwen-code/qwen-code"
+      version: "0.16.2"
+      tag: v0.16.2
+      source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-v0.16.2
+      source_commit: 7aba6967cc357bd3e83ed221a1e0f83d01c2f11b
+      npm_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2
+      executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2/node_modules/.bin/qwen
+      bundled_node: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/qwen-code-npm-v0.16.2/node_modules/.bin/node
+      verified_command: "PATH=<npm_root>/node_modules/.bin:$PATH qwen --version"
+      verified_output: "0.16.2"
+      status: installed_but_not_yet_smoked_on_swebench
+
+  swe_agent:
+    current_used:
+      version_reported: "1.1.0"
+      source_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swe_dev/repos/SWE-agent
+      branch: aci-baseline-frozen-n500
+      commit: 038f021940428b425aa798442a2852226d2239b7
+      describe: v1.1.0-154-g038f0219-dirty
+      executable: /data/conda_envs/sweagent/bin/sweagent
+      status: runnable_existing_env_not_clean_release
+    recommended_pin:
+      tag: v1.1.0
+      source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/SWE-agent-v1.1.0
+      source_commit: 0f3acafacabc0def8cc76b4e48acb4b6cf302cb9
+      status: clean_source_cloned_needs_env_smoke_before_switch
+
+  openhands:
+    current_used:
+      version_imported: "0.54.0"
+      runtime_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0
+      runtime_python: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/openhands_qwen/OpenHands-0.54.0/.venv/bin/python
+      runtime_commit: 8d96cb1293116fc43b7432e6e7f1735359842efd
+      status: runnable_existing_env_dirty_or_reconstructed_checkout
+    recommended_pin_for_current_harness:
+      tag: "0.54.0"
+      source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/OpenHands-0.54.0
+      source_commit: 4aae68ae53477d05010a509f1f1e3f02e61b1831
+      status: clean_source_cloned_matches_current_major_harness
+    latest_stable_candidate:
+      tag: "1.7.0"
+      source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/OpenHands-1.7.0
+      source_commit: 43bd8d12e59d2e9254fa8b490ad3e1234902e33b
+      status: clean_source_cloned_needs_dependency_install_and_smoke
+
+  mini_swe_agent:
+    recommended_pin:
+      package: mini-swe-agent
+      version: "2.3.0"
+      tag: v2.3.0
+      source_checkout: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0
+      source_commit: adfe20233d456104c38c3129161b54f0fd39f2c7
+      venv: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv
+      executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/agent_scaffolds/mini-swe-agent-v2.3.0/.venv/bin/mini-extra
+      verified_command: "<venv>/bin/mini-extra swebench --help"
+      verified_output_contains: "Run mini-SWE-agent on SWEBench instances."
+      status: installed_help_verified_needs_model_smoke

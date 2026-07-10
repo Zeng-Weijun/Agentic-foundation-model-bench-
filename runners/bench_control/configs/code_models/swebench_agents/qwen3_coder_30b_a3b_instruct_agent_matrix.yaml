@@ -1,0 +1,45 @@
+model:
+  name: qwen3-coder-30b-a3b-instruct
+  serving_base_url: http://100.103.11.77:8503/v1
+  serving_host: worker_rkn9p
+  eval_host: swe_dev
+
+agents:
+  qwen_code:
+    status: full_run_completed
+    suite_yaml: ../qwen3_coder_30b_a3b_instruct_swebench_qwen_code.yaml
+    run_script: ../../run_qwen3_coder_30b_a3b_swebench_qwen_code.sh
+    raw_full_score: "245/500 = 49.0%"
+    corrected_score_after_selective_retry: "245/500 = 49.0%"
+    prompt_policy: "Current runner now uses a minimal SWE-bench style issue prompt; prior completed score used the older custom Qwen Code prompt."
+    budget_policy: "max_session_turns=-1, agent_timeout_s=28800, verifier_timeout_s=7200 for future runs."
+    latest_trace_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites/qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916/swebench_verified_qwen_code/qwen_native_outputs/qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500
+  swe_agent:
+    status: configured_existing_env
+    suite_yaml: qwen3_coder_30b_a3b_instruct_swe_agent.yaml
+    run_script: ../../run_qwen3_coder_30b_a3b_swebench_swe_agent.sh
+    expected_trace_pointer: swebench_verified_swe_agent/sweagent_output
+    prompt_policy: "SWE-agent template config; no wrapper prompt injection."
+    budget_policy: "per_instance_call_limit=0, per_instance_cost_limit=0, total_cost_limit=0; command timeout remains 300s."
+  openhands:
+    status: configured_existing_env
+    suite_yaml: qwen3_coder_30b_a3b_instruct_openhands.yaml
+    run_script: ../../run_qwen3_coder_30b_a3b_swebench_openhands.sh
+    expected_trace_pointer: swebench_verified_openhands/openhands_output
+    prompt_policy: "OpenHands official SWE-bench selector, mode=swe -> swe_default.j2."
+    budget_policy: "max_iterations=500 smoke / 5000 full; no max_budget_per_task; per-instance/action timeouts remain official guards."
+  mini_swe_agent:
+    status: installed_help_verified_needs_model_smoke
+    suite_yaml: qwen3_coder_30b_a3b_instruct_mini_swe_agent.yaml
+    run_script: ../../run_qwen3_coder_30b_a3b_swebench_mini_swe_agent.sh
+    expected_trace_pointer: swebench_verified_mini_swe_agent/mini_swe_agent_outputs
+    prompt_policy: "mini-swe-agent official swebench.yaml prompt; overlay only changes model and budget."
+    budget_policy: "step_limit=0, cost_limit=0, wall_time_limit_seconds=0; command timeout remains from official swebench.yaml."
+
+artifact_contract:
+  suite_snapshot: config.snapshot.yaml
+  per_benchmark_manifest: artifact_manifest.json
+  qwen_code_trace: qwen_native_outputs/<run_name>/instances/<instance_id>/
+  swe_agent_trace: sweagent_output/
+  openhands_trace: openhands_output/
+  mini_swe_agent_trace: mini_swe_agent_outputs/<instance_id>/
