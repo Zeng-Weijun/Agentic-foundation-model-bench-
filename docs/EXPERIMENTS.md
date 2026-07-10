@@ -226,11 +226,11 @@ redacted at capture time).
 | RepoZero (188 option-b subset) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | — | `canonical`⁴ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 67.0% raw | 201/300 | 66.7% | `forbidden` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
-| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `pending`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
-| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `pending`⁶ ⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
+| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `reproduced`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
+| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `pending`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
 
-⁶ **Awaiting dual review.** One independent auditor has endorsed the 48.4% re-measurement; the second was lost when its session died mid-audit. The 21.6% has one audit in flight. Neither number may be quoted until two auditors, working from the raw artifacts and blind to each other, both fail to break it.
-⁷ **And the open question is not arithmetic.** `no_patch` is 137/498 here against 3/500 for Coder on the same bench, harness, serving host and day. If a material share of those 137 are *zero-tool-call* trajectories, then 21.6% measures the scaffold and not the model, and the row becomes `forbidden`. The audit's first task is to classify all 137. **Counting tool calls at the wrong level of `stream-json` would answer this question backwards — see §5.13.**
+⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
+⁷ **The open question here is not arithmetic.** `no_patch` is 137/498 against 3/500 for Coder on the same bench, harness, serving host and day. If a material share of those 137 are *zero-tool-call* trajectories, then 21.6% measures the scaffold and not the model, and the row becomes `forbidden`. Classifying all 137 is the audit's first task. **Counting tool calls at the wrong level of `stream-json` would answer this question backwards — see §5.13.**
 
 ¹ Dual-signed (ledger `DECISIONS.md` L1480 reconciliation 15/15 PASS + surface:85 review PASS). The artifact's own `score_note` says: *"single pass@1 compatibility probe; no official TB2.1 Qwen anchor claimed."* **Do not put it on a leaderboard.**
 ² Non-official harness (host QwenCode + `docker exec` bridge). A native-scaffold contrast point, not a leaderboard number.
@@ -453,7 +453,29 @@ recorded in §5.12.
 | `llm_health` | `infra_class = 0` |
 | `score` | **242/500 = 48.4%** · conservative `240/500` · **never `240/496`** |
 | `results.jsonl` | `132e8a26…` (canonical) / this run recomputed from artifacts |
-| `status` | `pending` — one endorsement, second auditor lost mid-audit |
+| `status` | **`reproduced`** — dual-signed |
+
+**Dual review.** Two auditors, each told to prove the score fake and to stamp only on failure. They
+never saw each other's report — they were writing to different filesystems, which began as an
+orchestration bug and turned out to be the property that made the review independent.
+
+Auditor A audited the run **live**, at 478 rows, and began by verifying `run_id` against
+`run_manifest.json` rather than trusting the score — a habit this table earned the hard way, since
+`10.11%` appears on two entirely unrelated runs (`gpt-5.4-mini c=89` and `Qwen c=32`, both 9/89) and
+the coincidence once fooled its author. Auditor B audited after completion, at 496 rows, and
+recomputed `resolved` from the harness's own `resolved_ids` rather than from `eval_rc`.
+
+Auditor A returned `INSUFFICIENT_EVIDENCE` on one line — the exact `ps -o args` match against the
+serving process — with this note:
+
+> No discrepancy was found — I simply could not perform the exact process-cmdline comparison the
+> brief requested. What is missing: SSH access to the sglang host.
+
+It had discovered that the run host has no GPU at all (`nvidia-smi` empty) and declined to `curl`
+the live serving endpoint rather than risk perturbing the run. **That is what the verdict is for.**
+Auditor B, which did have a path to the serving host, closed the line independently: `PID 673`,
+`--port 30001 --model-path .../Qwen3-Coder-30B-A3B-Instruct --tool-call-parser qwen3_coder`, running
+since `2026-07-09T08:24 UTC`, spanning the entire run window.
 
 **Denominator.** `results.jsonl` holds 496 rows, not 500. Four instances finished their tests and were
 then dropped: `full500_qwencode_orchestrator_v21.py:912-921` routes `eval_error`/`infra_error` through
