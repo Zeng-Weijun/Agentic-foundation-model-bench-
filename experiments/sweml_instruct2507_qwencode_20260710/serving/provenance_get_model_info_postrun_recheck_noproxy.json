@@ -1,0 +1,7 @@
+{
+  "checked_at_utc": "2026-07-10T15:05:17.417015+00:00",
+  "curl_rc": 28,
+  "http_status": "000",
+  "probe_role": "single direct --noproxy post-run identity recheck; preserves launcher and urllib timeout evidence",
+  "status": "invalid_postrun_identity_unproven"
+}

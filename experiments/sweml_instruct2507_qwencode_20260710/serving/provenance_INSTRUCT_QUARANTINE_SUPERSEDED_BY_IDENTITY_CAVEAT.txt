@@ -1,0 +1,4 @@
+The historical INSTRUCT_RUN_QUARANTINE_STATUS.json is preserved unchanged.
+It is superseded by INSTRUCT_FINAL_STATUS_WITH_IDENTITY_CAVEAT.json.
+Corrected rule: a model_path/random_seed mismatch invalidates the run; an unavailable after-capture is UNVERIFIABLE, not a mismatch.
+This run retains 22/274 (8.03%) with a mandatory primary caveat.

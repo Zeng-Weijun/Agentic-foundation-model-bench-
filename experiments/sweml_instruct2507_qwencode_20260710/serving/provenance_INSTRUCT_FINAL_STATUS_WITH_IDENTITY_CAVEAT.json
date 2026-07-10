@@ -1,0 +1,117 @@
+{
+  "agent_llm_transport_supporting_evidence": {
+    "audit_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/AGENT_LLM_ERROR_MARKER_AUDIT.json",
+    "connection_refused": 0,
+    "http_5xx": 0,
+    "read_timeout": 0,
+    "weight": "SUPPORTING_EVIDENCE_NOT_PROOF"
+  },
+  "artifact_schema": "sweml.instruct_final_status.v2",
+  "created_at_utc": "2026-07-10T16:35:08.464503+00:00",
+  "cross_run_comparison_caveat": "Coder and Instruct results must not be presented as a clean paired comparison: Coder main 271 rows lack the guard and the original launch wrapper is lost, while Instruct used the pinned guard throughout and proves launch/final wrapper identity.",
+  "eval_environment": {
+    "eval_wrap_mtime_ns": 1783679833033570808,
+    "eval_wrap_sha256": "81cb668d25cecce85f0c86799716895ce2671c8db8aa2c4c320c1009da777d25",
+    "eval_wrap_size": 839,
+    "final_verify_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/EVAL_WRAP_FINAL_VERIFY.json",
+    "launch_final_byte_identity": true,
+    "launch_pin_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/EVAL_WRAP_LAUNCH_PIN.json",
+    "statement": "The launch and final eval_wrap fingerprints match byte-for-byte and by mtime_ns/size."
+  },
+  "identity_adjudication_rule": {
+    "after_capture_unavailable": "MARK_AFTER_UNVERIFIABLE_AND_RETAIN_SCORE_WITH_PRIMARY_CAVEAT",
+    "before_after_model_path_or_random_seed_mismatch": "INVALIDATE_RUN",
+    "observed_case": "AFTER_CAPTURE_UNAVAILABLE"
+  },
+  "lombok_audit": {
+    "finding": "SAME_OBSERVABLE_TEST_INSTANCE_PATCH_FAILURE_MODE_CONFIRMED",
+    "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/LOMBOK_FAILURE_PATTERN_AUDIT.json",
+    "resolved": 0,
+    "total": 17
+  },
+  "primary_caveat_required": true,
+  "qwen_execution_state": "PAUSED_PENDING_SERVING_RECOVERY",
+  "run_id": "sweml_instruct2507_qwencode0162_clean274_20260710t103651z",
+  "score": {
+    "denominator": 274,
+    "duplicates": 0,
+    "fraction": 0.080292,
+    "per_language": {
+      "C": {
+        "resolved": 3,
+        "score": 0.1,
+        "total": 30
+      },
+      "C++": {
+        "resolved": 3,
+        "score": 0.25,
+        "total": 12
+      },
+      "Go": {
+        "resolved": 2,
+        "score": 0.047619,
+        "total": 42
+      },
+      "Java": {
+        "resolved": 0,
+        "score": 0.0,
+        "total": 17
+      },
+      "JavaScript": {
+        "resolved": 2,
+        "score": 0.060606,
+        "total": 33
+      },
+      "PHP": {
+        "resolved": 1,
+        "score": 0.023256,
+        "total": 43
+      },
+      "Ruby": {
+        "resolved": 6,
+        "score": 0.136364,
+        "total": 44
+      },
+      "Rust": {
+        "resolved": 3,
+        "score": 0.069767,
+        "total": 43
+      },
+      "TypeScript": {
+        "resolved": 2,
+        "score": 0.2,
+        "total": 10
+      }
+    },
+    "percent": 8.0292,
+    "resolved": 22,
+    "results_jsonl_mtime_utc": "2026-07-10T14:05:23.816828+00:00",
+    "results_rows": 274,
+    "subset": "clean274=full300-26 offline-Gradle false-zero tasks",
+    "unique_instance_ids": 274,
+    "unresolved": 252
+  },
+  "serving_identity_after": {
+    "failed_capture_evidence": [
+      "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/get_model_info_postrun_recheck.json",
+      "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/get_model_info_postrun_recheck_noproxy.json",
+      "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/get_model_info_postrun_recheck_noproxy.stderr.txt"
+    ],
+    "model_path": null,
+    "random_seed": null,
+    "reason": "The serving endpoint became unreachable before the post-run capture. The final result row predates the bounded failed captures; this is unknown identity-after evidence, not an observed mismatch.",
+    "status": "UNVERIFIABLE"
+  },
+  "serving_identity_before": {
+    "model_info_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/serving_config/get_model_info_before.json",
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "random_seed": 525168126,
+    "server_info_redacted_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/serving_config/get_server_info_before.redacted.json"
+  },
+  "status": "VALID_COMPLETE_WITH_SERVING_IDENTITY_AFTER_UNVERIFIABLE",
+  "supersedes_without_deleting": {
+    "artifact": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/INSTRUCT_RUN_QUARANTINE_STATUS.json",
+    "reason": "The earlier artifact treated an unavailable after-capture as quarantine. The corrected adjudication distinguishes UNVERIFIABLE from a mismatched identity."
+  },
+  "valid_score_report_allowed": true
+}

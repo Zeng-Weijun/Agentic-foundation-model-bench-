@@ -1,0 +1,10 @@
+{
+  "checked_at_utc": "2026-07-10T14:19:58.901539+00:00",
+  "error": "<urlopen error timed out>",
+  "error_type": "URLError",
+  "latency_seconds": 20.022,
+  "original_after_probe_status": "timeout; launcher get_model_info_after.json absent",
+  "original_launcher_final_rc": 3,
+  "probe_role": "single bounded post-run recheck after launcher after-probe timeout",
+  "status": "invalid_postrun_identity_unproven"
+}

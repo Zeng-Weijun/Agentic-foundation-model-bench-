@@ -1,0 +1,80 @@
+{
+  "eval_wrap_launch_contract": {
+    "ignore_removed_present": true,
+    "mtime_ns": 1783679833033570808,
+    "mtime_utc": "2026-07-10T10:37:13.033571+00:00",
+    "required_final_match": true,
+    "sha256": "81cb668d25cecce85f0c86799716895ce2671c8db8aa2c4c320c1009da777d25",
+    "size": 839
+  },
+  "files": {
+    "adapter_source_observed": {
+      "mtime_ns": 1783675647089830348,
+      "mtime_utc": "2026-07-10T09:27:27.089830+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/scripts/full274_swemultilingual_qwencode_orchestrator_v21.py",
+      "sha256": "1f57d23b50edcaf46ade9235b4e19814c34d2186ef043794a5832e622c316a26",
+      "size": 26642
+    },
+    "base_runner_source_observed": {
+      "mtime_ns": 1783278298531739000,
+      "mtime_utc": "2026-07-05T19:04:58.531739+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swev-qwencode-v21-agent51/scripts/full500_qwencode_orchestrator_v21.py",
+      "sha256": "4027619e50a0d0096df9e9c74584ec75577920cee73564156b05afbfcad2f3d7",
+      "size": 63832
+    },
+    "clean274_ids": {
+      "mtime_ns": 1783659581019257000,
+      "mtime_utc": "2026-07-10T04:59:41.019257+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/manifests/candidates/swemultilingual_clean274_instance_ids_20260710.txt",
+      "sha256": "d68a0cb1ba9daebd35378ab21d448f04bf75daac66e868057050037361acb6c1",
+      "size": 6328
+    },
+    "command": {
+      "mtime_ns": 1783679815744400851,
+      "mtime_utc": "2026-07-10T10:36:55.744401+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/COMMAND.sh",
+      "sha256": "5284bcec9cecf5cd78ea3fdc6ac4a227cd1bb8e500fd63e861999790dc0d293d",
+      "size": 265
+    },
+    "contract": {
+      "mtime_ns": 1783672185899911137,
+      "mtime_utc": "2026-07-10T08:29:45.899911+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/manifests/candidates/swemultilingual_clean274_contract_20260710.json",
+      "sha256": "f9b50469c3806664374c0145d7516489b6c3a1063a30c474216c034c0851e86e",
+      "size": 3296
+    },
+    "eval_wrap": {
+      "mtime_ns": 1783679833033570808,
+      "mtime_utc": "2026-07-10T10:37:13.033571+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/eval_wrap.py",
+      "sha256": "81cb668d25cecce85f0c86799716895ce2671c8db8aa2c4c320c1009da777d25",
+      "size": 839
+    },
+    "launcher_source_observed": {
+      "mtime_ns": 1783672183756277501,
+      "mtime_utc": "2026-07-10T08:29:43.756278+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/scripts/launch_swemultilingual_qwencode_clean274.sh",
+      "sha256": "66e04d2d6ed513d564073b9254fa9df40286b14c68347ae79a5347897544baa1",
+      "size": 27574
+    },
+    "overlay": {
+      "mtime_ns": 1783679833022331795,
+      "mtime_utc": "2026-07-10T10:37:13.022332+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/overlay.yaml",
+      "sha256": "bb128ed6c9b8708269e34f356ea514c23980cbfa679bbf38ddfaeddaaea04b15",
+      "size": 283
+    },
+    "runner_config": {
+      "mtime_ns": 1783679833029254000,
+      "mtime_utc": "2026-07-10T10:37:13.029254+00:00",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/runner_config.json",
+      "sha256": "dddbaf8089249342230e28af10cff67320cf08ac2390f8b9382e6da839aa0764",
+      "size": 1516
+    }
+  },
+  "observed_at_utc": "2026-07-10T13:48:05.854093+00:00",
+  "pin_timing": "Retrospective pin created immediately after provenance issue discovery while the run was active. eval_wrap mtime is its launch-generation time; no run file was rewritten to create this manifest.",
+  "run_id": "sweml_instruct2507_qwencode0162_clean274_20260710t103651z",
+  "run_started_utc": "2026-07-10T10:36:51Z",
+  "status": "pinned_running"
+}

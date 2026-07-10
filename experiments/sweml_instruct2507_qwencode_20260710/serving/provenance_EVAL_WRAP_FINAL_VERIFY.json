@@ -1,0 +1,13 @@
+{
+  "checked_at_utc": "2026-07-10T14:08:11.335130+00:00",
+  "exact_match": true,
+  "final_mtime_ns": 1783679833033570808,
+  "final_sha256": "81cb668d25cecce85f0c86799716895ce2671c8db8aa2c4c320c1009da777d25",
+  "final_size": 839,
+  "ignore_removed_present_final": true,
+  "launch_mtime_ns": 1783679833033570808,
+  "launch_pin_manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/sweml_instruct2507_qwencode0162_clean274_20260710t103651z/provenance/EVAL_WRAP_LAUNCH_PIN.json",
+  "launch_sha256": "81cb668d25cecce85f0c86799716895ce2671c8db8aa2c4c320c1009da777d25",
+  "launch_size": 839,
+  "status": "pass"
+}
