@@ -226,6 +226,11 @@ redacted at capture time).
 | RepoZero (188 option-b subset) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | — | `canonical`⁴ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 67.0% raw | 201/300 | 66.7% | `forbidden` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
+| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `pending`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
+| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `pending`⁶ ⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
+
+⁶ **Awaiting dual review.** One independent auditor has endorsed the 48.4% re-measurement; the second was lost when its session died mid-audit. The 21.6% has one audit in flight. Neither number may be quoted until two auditors, working from the raw artifacts and blind to each other, both fail to break it.
+⁷ **And the open question is not arithmetic.** `no_patch` is 137/498 here against 3/500 for Coder on the same bench, harness, serving host and day. If a material share of those 137 are *zero-tool-call* trajectories, then 21.6% measures the scaffold and not the model, and the row becomes `forbidden`. The audit's first task is to classify all 137. **Counting tool calls at the wrong level of `stream-json` would answer this question backwards — see §5.13.**
 
 ¹ Dual-signed (ledger `DECISIONS.md` L1480 reconciliation 15/15 PASS + surface:85 review PASS). The artifact's own `score_note` says: *"single pass@1 compatibility probe; no official TB2.1 Qwen anchor claimed."* **Do not put it on a leaderboard.**
 ² Non-official harness (host QwenCode + `docker exec` bridge). A native-scaffold contrast point, not a leaderboard number.
@@ -432,6 +437,96 @@ artifacts + reducer source, *not* a restatement — the two lanes wrote to diffe
 saw each other's reports). 86 **refuted two orchestrator claims**: that `blocked` implies an invalid
 score, and that the extra ~1051 calls were pure retries (`8.4 > 8` retry ceiling). Both retractions are
 recorded in §5.12.
+
+---
+
+### 3.13 SWE-V · Qwen-Coder × qwen-code · 48.4% re-measurement
+
+| Field | Value |
+|---|---|
+| `run_id` | `swev_qwencode_full500_surface55_20260709t160554z/full500_c20` |
+| `bench` / `dataset` | SWE-bench Verified · `princeton-nlp/SWE-bench_Verified` `test` |
+| `model` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` — **verified by `model_path`, not by the `model` field** |
+| `harness` | `qwen-code 0.15.6`, `c=20`, `attempts=1`, `reasoning_effort` unset |
+| `serving_config` | `:30001` · `tp=2` · `ctx=262144` · `mem_frac=0.85` · `fa3` · `qwen3_coder` · sglang `0.5.13` |
+| `relay_upstream` | none — self-hosted sglang |
+| `llm_health` | `infra_class = 0` |
+| `score` | **242/500 = 48.4%** · conservative `240/500` · **never `240/496`** |
+| `results.jsonl` | `132e8a26…` (canonical) / this run recomputed from artifacts |
+| `status` | `pending` — one endorsement, second auditor lost mid-audit |
+
+**Denominator.** `results.jsonl` holds 496 rows, not 500. Four instances finished their tests and were
+then dropped: `full500_qwencode_orchestrator_v21.py:912-921` routes `eval_error`/`infra_error` through
+`preserve_failure` + `append_event` but **never `append_score`**. The stack top is
+`swebench/harness/reporting.py:107 make_run_report → containers.list → docker.errors.NotFound: 404 No
+such container` — a cleanup race *after* the tests ran. Recovered from their `report.json`: two are
+genuinely resolved (`django__django-11276`, `sympy__sympy-19346`), two are not.
+
+`240/496 = 48.39%` and the honest `242/500 = 48.4%` differ by 0.01 pt. **Had nobody opened those four
+`report.json` files, the number would have been right and the denominator wrong, permanently and
+invisibly.** The bug under-counts; a bug that over-counted would have been caught by its own
+implausibility. This one hides behind a plausible answer.
+
+**Anti-cheat.** 17 resolved instances touched a test file. All 17 are void: the harness runs
+`git checkout <base_commit> <testfile>` and re-applies the gold `test_patch` before evaluating
+(`instances/django_u_django-13821/eval/.../eval.sh`). Empty patch yet resolved: **0/496**.
+
+**Serving deviation.** The stack differs from the 2026-07-05 canonical (whose host,
+`100.103.228.120`, is dead). This is a re-measurement under today's environment, not a strict
+reproduction. It is worth stating plainly that **the aggregate landed within one task of canonical
+anyway**, while individual trajectories on TB2.1 were shown to diverge deterministically under the
+same serving change. Trajectory instability and score instability are not the same quantity.
+
+---
+
+### 3.14 SWE-V · Instruct-2507 × qwen-code · 21.6% `pending`
+
+| Field | Value |
+|---|---|
+| `run_id` | `swev_instruct2507_qwencode_full500_poda_20260709t183239z` |
+| `model` | `Qwen/Qwen3-30B-A3B-Instruct-2507` |
+| `harness` | `qwen-code 0.15.6`, `c=16`, `attempts=1` |
+| `serving_config` | `:30000` · `tp=2` · `ctx=262144` · `mem_frac=0.85` · `fa3` · **`tool_call_parser=qwen`** · sglang `0.5.13` |
+| `script_digests` | `SHA256SUMS` + `SHA256SUMS.prelaunch` |
+| `runner_rc` | `0`, `finished_utc 2026-07-09T23:39:21Z` (in `logs/runner.rc`, **not** at the run root) |
+| `score` | **108/500 = 21.6%** · conservative `107/500` · **never `107/498`** |
+| `anchor` | ≈25.7% — nebius's reported figure for this base model |
+| `status` | `pending` — audit in flight |
+
+**Model identity, established four ways.** `get_model_info` and `get_server_info`, captured both before
+and after the run, all four report `model_path = .../Qwen3-30B-A3B-Instruct-2507`. This is not
+ceremony: sglang echoes whatever `model` string you send it (§1.5), so a run pointed at the wrong port
+would have produced a flawless-looking trace of the wrong model.
+
+**Denominator, again.** Two instances dropped, same 404 cleanup race, same missing `append_score`.
+`django__django-12050` is a **real resolved** — `report.json` gives `FAIL_TO_PASS 1/1`,
+`PASS_TO_PASS 10/10`, and its `patch.diff` is 649 bytes. `matplotlib__matplotlib-23299` has no
+`report.json` and is counted unresolved. **The defect has now reproduced independently on two runs with
+an identical stack top. It is systematic, not incidental.**
+
+#### The number that has to be explained before this row can be quoted
+
+| | `patch` | `no_patch` | resolved | score |
+|---|---:|---:|---:|---:|
+| `Qwen3-Coder-30B-A3B-Instruct` | 497 | **3** | 242 | 48.4% |
+| `Qwen3-30B-A3B-Instruct-2507` | 361 | **137** | 108 | 21.6% |
+
+Same bench, same harness, same serving host, same day. `no_patch` rises 45×.
+
+Two readings, and they are not close in consequence:
+
+- **Model.** Instruct-2507 is not coder-tuned. It explores, then stops without producing a diff. Then
+  21.6% is a capability figure, sits plausibly beside nebius's 25.7%, and the row is `canonical`.
+- **Scaffold.** `:30000` runs `--tool-call-parser qwen`; qwen-code speaks the `qwen3_coder` dialect. If
+  a material share of those 137 trajectories emit **zero parsed tool calls**, then 21.6% measures the
+  parser and the row is `forbidden`.
+
+A three-task protocol probe (§5.13) already showed tool calls are parsed and executed — `12` `tool_use`
+blocks across `3/3` trajectories, running `glob`, `grep_search`, `read_file`, `edit`. That rules out a
+*total* mismatch. It does not rule out a partial one, and 3 tasks cannot speak for 137. The audit
+classifies all 137: zero-tool-call, tool calls but no diff, timeout, crash, or voluntary stop.
+
+**Until that classification exists, this row is a number without a referent.** Recorded, not quoted.
 
 ---
 
