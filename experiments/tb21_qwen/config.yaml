@@ -1,0 +1,755 @@
+# =============================================================================
+# TB2.1 x Qwen3-Coder-30B-A3B-Instruct x terminus-2 — re-measurement config
+#
+# Target: canonical run `tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z`
+#         9/89 = 10.11%  (mean_pass_at_1 = 0.10112359550561797)
+#
+# ★ There is NO official TB2.1 Qwen anchor. The canonical artifact says so itself:
+#   "Qwen lane is a single pass@1 compatibility probe; no official TB2.1 Qwen anchor
+#    is claimed."  This number must never be placed against a leaderboard.
+#
+# Every value below is transcribed from a truth-source file. Nothing is guessed;
+# anything unrecoverable is literally `ABSENT`.
+#
+# Authored 2026-07-09 by surface:85 (Task #5).
+# =============================================================================
+
+schema_version: bench.reproduction_config.v1
+config_generated_at: "2026-07-09"
+config_author: "surface:85"
+
+truth_sources:
+  scores_json: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/reports/scores/tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z_medium_c32_scores.json"
+  launch_checklist: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/reports/tb21_official_qwen_staged/tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z_medium_c32_preflight.md"
+  strict_summary: ".../runs/terminal_bench_2_1_official_qwen_poda/<run_id>/medium_c32/attempt_1/tb21_batched_terminus-2_<tag>/batch_01_of_01/tb21_strict_summary.json"
+  launcher_script: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/scripts/stage_tb21_official_qwen_launcher.sh"
+  double_sign: "DECISIONS.md L1480 (surface:86 reconciliation 15/15 PASS) + the surface:85 REVIEW PASS that follows it"
+
+canonical:
+  run_id: "tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z"
+  generated_at_utc: "2026-07-05T18:00:05Z"
+  serving_endpoint: "http://100.103.228.120:30000/v1"   # DEAD as of 2026-07-09
+
+main_repo: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo"
+runner_repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3"
+
+# -----------------------------------------------------------------------------
+# Bench / model / harness   (source: scores_json.config)
+# -----------------------------------------------------------------------------
+bench: "terminal_bench_2_1_full89"
+model: "Qwen/Qwen3-Coder-30B-A3B-Instruct"
+harness:
+  agent: "terminus-2"
+  litellm_model_name: "openai/Qwen/Qwen3-Coder-30B-A3B-Instruct"
+  terminal_bench_version: ABSENT
+  terminus_2_version: ABSENT
+
+reasoning_effort: "medium/default_no_reasoning_effort_arg"
+reasoning_effort_mechanics:
+  tb_agent_kwargs: "api_base=${relay_endpoint} temperature=0.0"
+  env_blanked:
+    OPENAI_REASONING_EFFORT: ""
+    REASONING_EFFORT: ""
+    BENCH_DISABLE_REASONING_EFFORT_DEFAULT: "1"
+    TB21_SOURCE_REMOTE_BASHRC: "0"
+
+# -----------------------------------------------------------------------------
+# Run parameters  — ★ c=32, NOT 89
+# -----------------------------------------------------------------------------
+concurrency: 32
+timeout_sec: 7200
+timeout_multiplier: "1.0"
+n_attempts: 1
+
+launcher_invariants:
+  allowed_concurrency_tiers: [32, 64, 89, 100]
+  attempts_must_equal: 1
+  timeout_multiplier_must_equal: "1.0"
+  timeout_sec_min: 7200
+  relay_total_cap: 150
+  assumed_full500_concurrency: 50
+  # guard: 32 + 50 = 82 <= 150. (The guard is about the 中转站 relay; this lane does
+  # not touch the relay at all, but the launcher still evaluates it.)
+
+dataset: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703"
+dataset_task_count: 89
+
+image_manifest: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/manifests/images/terminal_bench_2_1_full89_p0_closure_r7.yaml"
+image_manifest_sha256_ref_count: 178
+image_manifest_unique_image_digests: 89
+# The Qwen lane has its own image-map PATH (under tb21_official_qwen_staged), but its CONTENT is
+# byte-identical to the gpt-5.5 lane's map -- verified 2026-07-09: both sha256 5199a0ab73a643e1,
+# 89 entries, same task->tag mapping. Only the file location differs.
+image_map: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/reports/tb21_official_qwen_staged/tb21_prebuilt_image_map_full89_r7_official_qwen.json"
+image_map_entries: 89
+image_map_sha256_prefix: "5199a0ab73a643e1"      # identical to the gpt-5.5 lane's map
+image_map_tags_are_not_resident: >-
+  The map points at tags like `tb2-offline/<task>:20260425-closure-r2`, which do NOT exist on Pod A
+  at rest. preheat creates them: `agentic_bench_images.py check --retag-local` pulls each image from
+  the P0 registry BY DIGEST and retags it locally. Evidence that this works with this exact map on
+  this exact pod: the gpt-5.5 full89 run (same map) reported
+  preheat_counts={present:89, missing:0, errors:0, tar_verified:89, retagged:248}.
+  So a "0/89 locally present" reading before preheat is expected, not a defect.
+
+runner: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/run_terminal_bench_2_1_full89_batched_privileged_offline.sh"
+
+launcher:
+  repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55"
+  script_rel: "scripts/stage_tb21_official_qwen_launcher.sh"
+  mode: "medium"
+  attempts_spec: "all"
+
+output_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_qwen_poda"
+scores_dir: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/reports/scores"
+tb_runs_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs"
+
+# -----------------------------------------------------------------------------
+# Serving endpoint.  ★ This lane does NOT touch the 中转站 relay at all.
+# `relay_endpoint` keeps its name only because run.sh is shared with the gpt-5.5 lane.
+# -----------------------------------------------------------------------------
+relay_endpoint: "http://100.100.104.140:30001/v1"
+relay_endpoint_canonical: "http://100.103.228.120:30000/v1"
+relay_api_env: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/api_config.env"
+relay_api_key_var: "OPENAI_API_KEY"
+serving:
+  today_host: "pod slime-96879589, pod_ip 100.100.104.140"
+  today_port: 30001
+  today_parser: "qwen3_coder"      # Qwen3-Coder XML tool-call format, NOT `qwen`
+  today_max_model_len: 262144
+  canonical_endpoint_status: "DEAD -- probed 2026-07-09 from Pod A and Pod B: ICMP 100% loss, TCP timeout"
+  note: >-
+    sglang ignores the Authorization header (started without --api-key). The runner nonetheless
+    requires OPENAI_API_KEY to be set and != "EMPTY" for any non-oracle agent, so the key is still
+    sourced from api_config.env; it is never read, printed, or stored by run.sh.
+
+# -----------------------------------------------------------------------------
+# Score reference (canonical)  — NOT a leaderboard number
+# -----------------------------------------------------------------------------
+score_reference:
+  resolved: 9
+  total: 89
+  # `corrected_*` aliases exist only because run.sh is shared with the gpt-5.5 lane, where the
+  # board number required a manual headless-terminal correction. NO correction was applied here:
+  # canonical Qwen's parse_error is 0, so corrected == raw.
+  corrected_resolved: 9
+  corrected_total: 89
+  corrected_pct: "10.11%"
+  correction_applied: false
+  mean_pass_at_1: 0.10112359550561797
+  pct: "10.11%"
+  official_anchor: ABSENT
+  official_anchor_note: >-
+    There is NO official TB2.1 Qwen anchor. The canonical artifact's own score_note reads:
+    "Qwen lane is a single pass@1 compatibility probe; no official TB2.1 Qwen anchor is claimed."
+    Do not compare this number to any leaderboard, and do not compare it to gpt-5.5's 63/89.
+  double_signed: "surface:86 reconciliation 15/15 PASS (DECISIONS L1480) + surface:85 REVIEW PASS"
+
+canonical_strict_summary:
+  clean_pass: 9
+  resolved: 9
+  unresolved: 79
+  timeout: 1
+  parse_error: 0
+  missing_artifact: 0
+  infra_fail: 1              # <- comes from timeout=1 (fatal_timeout => infra_fail)
+  cleanup_timeout_warning: 0
+  external_network_marker: 10
+  token_sum: {input: 32474635, output: 593529}
+  status: blocked
+  ready: false
+  partition_check: "9 + 79 + 1 = 89 exactly (86's reconciliation)"
+
+canonical_llm_health:            # measured by surface:85 on 2026-07-09 from the canonical run.log
+  total_calls: 8726
+  hard_fail_retry_exhausted: 6
+  exception_types: {BadRequestError: 6}
+  http_5xx: 0
+  http_429: 0
+  hard_fail_rate: 0.000688
+  mean_input_tokens_per_call: 3722
+  mean_output_tokens_per_call: 68
+  note: >-
+    The canonical Qwen lane's 6 hard failures are BadRequestError (HTTP 400), i.e. content/client
+    errors -- almost certainly the 3 `context_length_exceeded` tasks. Its relay/5xx/429 count is 0.
+    So the v2 rule-A row-3 test ("gate=clean but LLM hard failures exist") must be applied
+    COMPARATIVELY (0 5xx -> N 5xx), not absolutely: this canonical itself is not at 0 hard failures.
+
+canonical_failure_modes:
+  qemu-alpine-ssh: test_timeout             # the single `timeout` -> the single `infra_fail`
+  tune-mjcf: unknown_agent_error
+  write-compressor: unknown_agent_error
+  bn-fit-modify: context_length_exceeded
+  sam-cell-seg: context_length_exceeded
+  log-summary-date-ranges: context_length_exceeded
+
+canonical_resolved_tasks:
+  - build-pmars
+  - cancel-async-tasks
+  - configure-git-webserver
+  - constraints-scheduling
+  - git-leak-recovery
+  - openssl-selfsigned-cert
+  - portfolio-optimization
+  - prove-plus-comm
+  - pypi-server
+
+# -----------------------------------------------------------------------------
+# Execution host
+# -----------------------------------------------------------------------------
+execution_host:
+  name: "Pod A"
+  pod: "env-kvm-15238487-rlgbn"
+  ssh: "env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn"
+  privileged: true
+  dev_kvm_available: true
+  dockerd: "up, 26.1.3, fuse-overlayfs, data-root /docker-data-15238487"
+  docker_host: "unix:///var/run/docker.sock"
+  ulimit_nofile_required: 65535
+  foreign_process_do_not_touch: "PID 607977 -- someone else's SIGSTOP-ed launcher from 2026-07-04. Do not kill."
+
+# -----------------------------------------------------------------------------
+# Deviations
+# -----------------------------------------------------------------------------
+deviations_from_canonical:
+  - id: serving_instance
+    field: serving endpoint
+    canonical: "http://100.103.228.120:30000/v1"
+    reproduction: "http://100.100.104.140:30001/v1 (parser qwen3_coder, max_model_len 262144)"
+    kind: environment
+    eliminable: false
+    severity: first_class_caveat
+    justification: >-
+      The canonical sglang host is DEAD (ICMP 100% loss from both KVM pods, 2026-07-09). This is a
+      DIFFERENT SERVING INSTANCE: potentially different sglang build, quantization, sampling defaults,
+      max_model_len and prefix-cache state. Same model weights name, not the same server.
+      => This lane is a RE-MEASUREMENT, never a strict reproduction. Any delta from 9/89 must carry
+      this caveat before any harness/env/scaffold/model attribution is attempted.
+    known_concrete_difference: >-
+      canonical hit `context_length_exceeded` on 3 tasks (bn-fit-modify, sam-cell-seg,
+      log-summary-date-ranges). Today's serving advertises max_model_len=262144, so those tasks may
+      behave differently. This is exactly why bn-fit-modify is in the canary.
+
+  - id: kvm_device_off
+    field: env TB21_ENABLE_KVM_DEVICE
+    canonical: "unset (canonical Qwen lane was no-KVM)"
+    reproduction: "0 (explicit)"
+    kind: deviation_guard
+    justification: "r3 runner L44 defaults it to 1. Not setting it silently runs a different口径."
+
+  - id: run_id_freshness
+    field: run_id
+    kind: identity_only
+    justification: "never overwrite the preserved canonical artifacts/ledger"
+
+  - id: env_seam_repo_root_reset
+    field: "env TB2_RUNTIME_CLOSURE_REPAIR, TB_DOCKER_FORCE_CLEANUP_HELPER"
+    kind: env_seam_reset
+    justification: >-
+      The 2026-07-07 runner patch anchors both defaults at $REPO_ROOT = the r3 worktree, where
+      neither file exists. The runner exposes the seams (${VAR+x} / ${VAR:-default}); pre-setting them
+      makes each script run IN PLACE in the main repo, keeping its own __file__ anchors canonical.
+
+  - id: closure_gate_helpers_symlinked
+    field: "r3 worktree scripts/{build_tb21_full89_closure_matrix.py, tb21_runtime_closure_static_gate.py}"
+    kind: environment_repair
+    justification: >-
+      Symlinks -> main repo (C2 option A-prime, applied 2026-07-09). Path(__file__).resolve() follows
+      symlinks, so DEFAULT_R2_SUMMARY_DIR resolves in the main repo exactly as it did for canonical.
+      A plain copy was proven NOT behaviour-preserving.
+
+# -----------------------------------------------------------------------------
+# Launcher env (verbatim from stage_tb21_official_qwen_launcher.sh run_attempt();
+# the variable SET is identical to the gpt-5.5 launcher -- verified by diff)
+# -----------------------------------------------------------------------------
+launcher_exported_env_reference:
+  DOCKER_HOST: "unix:///var/run/docker.sock"
+  TB21_ALLOW_PRIVILEGED_DOCKER: "1"
+  TB21_PRIVILEGED_DOCKER_HOST: "unix:///var/run/docker.sock"
+  TB21_BATCH_SIZE: "89"
+  TB21_BATCH_START: "1"
+  TB21_BATCH_LIMIT: "0"
+  TB21_FULL_CONCURRENCY: "32"
+  TB_AGENT: "terminus-2"
+  TB_MANIFEST_AGENT: "terminus-2"
+  MODEL_NAME: "Qwen/Qwen3-Coder-30B-A3B-Instruct"
+  LITELLM_MODEL: "openai/Qwen/Qwen3-Coder-30B-A3B-Instruct"
+  TB_MODEL: "openai/Qwen/Qwen3-Coder-30B-A3B-Instruct"
+  TB_GLOBAL_TIMEOUT_MULTIPLIER: "1.0"
+  TB_GLOBAL_AGENT_TIMEOUT_SEC: "7200"
+  TB_GLOBAL_TEST_TIMEOUT_SEC: "7200"
+  TB21_EXPECT_CLEAN: "0"
+  TB21_ALLOW_ORACLE_SCORE: "0"
+  TB21_STRICT_CLOSURE_GATE: "1"
+  TB21_STATIC_RUNTIME_CLOSURE_GATE: "1"
+  TB21_BIND_PAYLOAD_PREFLIGHT: "1"
+  TB21_PREHEAT_PULL: "1"
+  TB21_PREHEAT_FORCE_PULL: "0"
+  TB21_PREHEAT_LOAD_FALLBACK: "1"
+  TB21_PREHEAT_PULL_ATTEMPTS: "3"
+  TB21_PREHEAT_MAX_ATTEMPTS: "2"
+  TB21_RESTART_DOCKER_AFTER_BATCH: "0"
+  TB21_RUN_CLEANUP_HELPER: "0"
+  TB21_REMOVE_BATCH_IMAGES: "0"
+  TB_DOCKER_SDK_TIMEOUT_SEC: "300"
+  TB_DOCKER_SDK_API_VERSION: "1.45"
+  TB2_OFFLINE_TEST_BOOTSTRAP: "1"
+  TB2_SKIP_DATASET_REBUILD: "1"
+  TB2_USE_PREBUILT_IMAGES: "1"
+
+env_overrides:
+  TB21_PRIVILEGED_RUNNER: "@runner"
+  TB21_FULL89_IMAGE_MANIFEST: "@image_manifest"
+  TB21_FULL89_IMAGE_MAP: "@image_map"
+  TB21_FULL89_DATASET: "@dataset"
+  TB21_ENABLE_KVM_DEVICE: "0"
+  TB2_RUNTIME_CLOSURE_REPAIR: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+  TB_DOCKER_FORCE_CLEANUP_HELPER: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
+
+static_runtime_closure_gate: 1
+run_id_prefix: "tb21_qwen_repro_medium_c32_single"
+
+# -----------------------------------------------------------------------------
+# D1 — runner script dependency gate (identical to the gpt-5.5 lane: same runner)
+# -----------------------------------------------------------------------------
+runner_script_dependencies:
+  - name: build_tb21_full89_closure_matrix.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/build_tb21_full89_closure_matrix.py"
+    required_when: "TB21_STATIC_RUNTIME_CLOSURE_GATE==1"
+    note: "symlink -> main (C2/A'). __file__-anchored: DEFAULT_R2_SUMMARY_DIR."
+  - name: tb21_runtime_closure_static_gate.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/tb21_runtime_closure_static_gate.py"
+    required_when: "TB21_STATIC_RUNTIME_CLOSURE_GATE==1"
+    note: "symlink -> main"
+  - name: build_tb21_full89_batch_manifests.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/build_tb21_full89_batch_manifests.py"
+    required_when: always
+    note: "byte-identical in both roots"
+  - name: agentic_bench_images.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/agentic_bench_images.py"
+    required_when: always
+    note: "preheat"
+  - name: tb21_closure_gate.sh
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/tb21_closure_gate.sh"
+    required_when: "TB21_STRICT_CLOSURE_GATE==1"
+    note: "post-run strict batch gate"
+  - name: cleanup_tb21_worker.sh
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3), lines 590/610"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/cleanup_tb21_worker.sh"
+    required_when: "TB21_RUN_CLEANUP_HELPER==1"
+    status: LATENT
+    note: "MISSING in r3; gated off and suffixed `|| true`. Flip the flag and it becomes a hard failure."
+  - name: repair_tb21_full89_runtime_closure.py
+    resolved_from: "env seam TB2_RUNTIME_CLOSURE_REPAIR (runner L61 tests ${VAR+x})"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+    required_when: always
+    note: "F2 reset. Shared runner L35 invokes it under `set -euo pipefail` -> missing = fatal."
+  - name: TB_DOCKER_FORCE_CLEANUP_HELPER
+    resolved_from: "env seam (runner L53 ${VAR:-$REPO_ROOT/scripts/cleanup_tb21_worker.sh})"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
+    required_when: always
+    note: "unconditionally exported, not gated by TB21_RUN_CLEANUP_HELPER. consumer_verified: false."
+  - name: run_terminal_bench_2_1.sh
+    resolved_from: "env seam TB21_RUNNER (absolute default, runner L595)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh"
+    required_when: always
+    note: "the shared runner"
+  - name: bench_common.sh
+    resolved_from: "sourced by the shared runner relative to its OWN dir (../lib)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/lib/bench_common.sh"
+    required_when: always
+    note: "defines NIPS_ROOT / BENCH_ROOT / bench_require_exe"
+  - name: tb
+    resolved_from: "TB_BIN (default $TB_ROOT/.venv/bin/tb)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/.venv/bin/tb"
+    required_when: always
+    note: "the Terminal-Bench CLI"
+  - name: build_terminal_bench_2_1_yaml_dataset.sh
+    resolved_from: "$BENCH_ROOT/shared/scripts/... (shared runner L32)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/scripts/build_terminal_bench_2_1_yaml_dataset.sh"
+    required_when: "TB2_SKIP_DATASET_REBUILD==0"
+    status: LATENT
+    note: "skipped (we set =1 and the dataset is valid). Present anyway."
+
+# =============================================================================
+# S1 — sglang stress at the TARGET operating condition (NOT a c=1 smoke)
+#
+# The gpt-5.5 lane's c=1 A/B "proved" two relay entries equivalent; the c89 ramp then
+# produced 125 hard failures. A probe is only worth what its operating condition is.
+# =============================================================================
+s2_preflight_2026_07_09:
+  dep_gate: "12/12 -- 10 required OK, 2 LATENT (cleanup_tb21_worker.sh gated off; dataset builder skipped)"
+  sglang_models_endpoint: "HTTP 200"
+  closure_gate_zero_cost: "build_rc=0 gate_rc=0 -> status=closed tasks=89 open=0"
+  docker: "sock ok, docker info ok, /dev/kvm present"
+  dataset_manifest_map_runner: "all present"
+  verdict: PASS
+
+s1_stress_2026_07_09:
+  endpoint: "http://100.100.104.140:30001/v1"
+  operating_condition_derived_from_canonical:
+    canonical_total_calls: 8726
+    canonical_mean_input_tokens_per_call: 3722
+    canonical_mean_output_tokens_per_call: 68
+  probe_a_small_payload:
+    pattern: "c=32 fired simultaneously x 3 rounds = 96 calls, tiny prompt"
+    http_200: 96
+    http_5xx: 0
+    http_429: 0
+    transport_errors: 0
+    p50_s: 0.55
+    p95_s: 1.00
+    tool_calls_parsed: "24/24 (parser qwen3_coder verified under load)"
+  probe_b_realistic_payload:
+    pattern: "sustained c=32 x 4 sequential calls per worker = 128 calls, ~3.7k-token context"
+    prompt_tokens_median: 5128           # deliberately ABOVE canonical's 3,722 mean
+    http_200: 128
+    http_5xx: 0
+    http_429: 0
+    http_4xx_other: 0
+    transport_errors: 0
+    p50_s: 0.23
+    p95_s: 1.32
+    throughput_calls_per_s: 63.4
+    served_model: "Qwen/Qwen3-Coder-30B-A3B-Instruct"
+  total_calls: 224
+  total_failures: 0
+  verdict: PASS
+  honest_caveat: >-
+    Both probes reuse an identical prompt, so sglang's prefix cache is hit and the p50 (0.23s) is
+    optimistic versus a real run with 32 divergent agent contexts. The PASS criterion is 5xx / 429 /
+    transport errors, none of which prefix caching can mask. Throughput and latency numbers here are
+    NOT a capacity forecast.
+
+# =============================================================================
+# CANARY (3 tasks) — gates, not score
+# =============================================================================
+canary:
+  # ★ BATCH 3 (2026-07-10): NEGATIVE control, n=4. Drawn from the 80 tasks canonical Qwen FAILED.
+  # Logic (orchestrator): a shuffle moves outcomes BOTH ways. Losing some and gaining none is not a
+  # shuffle. Positive control alone (sampled only from canonical's wins) cannot separate
+  # "trajectory reshuffle" from "capability collapse" -- it only looks where a collapse would show.
+  #   >=1 solved today -> capability conserved, trajectory reshuffle -> full89 may proceed
+  #   0/4              -> same direction as the positive control's 1/4 -> capability drop, fix serving first
+  # Batch 1 archived in s3_canary_result; batch 2 in positive_control_n4.
+  tasks:
+    - fix-git
+    - kv-store-grpc
+    - query-optimize
+    - compile-compcert
+
+  selection_rule_batch3_negative_control: >-
+    Explicit, stated before running. A task qualifies iff ALL hold:
+    (1) canonical Qwen FAILED it (is_resolved = false);
+    (2) canonical failure_mode == `unset` -- i.e. the agent died of its own accord, NOT of
+        test_timeout / unknown_agent_error / context_length_exceeded. This removes environment- and
+        content-class deaths so that what we measure is capability, not the environment;
+    (3) not already used in canary batch 1 (qemu-startup, bn-fit-modify) and not a known env-ceiling
+        task (install-windows-3.11 / make-doom-for-mips are qemu ceilings);
+    (4) 1:1 TASK-FAMILY pairing with each of the four positive controls;
+    (5) cost-matched: canonical agent_sec, total_input_tokens and command count each fall INSIDE the
+        range observed across the four positive controls (sec 40-74, tok_in 31,937-124,078, cmds 17-32);
+    (6) prefer mid-band over cheapest -- the three shortest candidates (install-windows-3.11 28s,
+        extract-moves-from-video 31s, video-processing 37s) were deliberately NOT taken, so this is
+        not a cherry-pick of easy tasks.
+    73 of the 80 canonical failures survive (2); 28 survive (5); the 4 below are the family-paired picks.
+
+  selection_rationale_batch3:
+    fix-git:          {pairs_with: git-leak-recovery,       family: git,                    canon_sec: 45, canon_tok_in: 57218,  canon_cmds: 22}
+    kv-store-grpc:    {pairs_with: cancel-async-tasks,      family: "async/concurrent service", canon_sec: 40, canon_tok_in: 44768,  canon_cmds: 20}
+    query-optimize:   {pairs_with: constraints-scheduling,  family: "optimization/solver",  canon_sec: 54, canon_tok_in: 68308,  canon_cmds: 23}
+    compile-compcert: {pairs_with: prove-plus-comm,         family: "formal/verified compiler (CompCert is Coq-based, as is prove-plus-comm)", canon_sec: 62, canon_tok_in: 69899, canon_cmds: 27}
+
+  selection_rationale_batch2:
+    cancel-async-tasks: "canonical Qwen RESOLVED, agent 42.9s -- 2nd cheapest of the 9"
+    constraints-scheduling: "canonical Qwen RESOLVED, agent 65.2s -- 3rd cheapest"
+    git-leak-recovery: "canonical Qwen RESOLVED, agent 74.5s -- 5th cheapest"
+    decision_rule: >-
+      0/3 -> systematic serving degradation: STOP, fix the serving口径, do not spend a full89.
+      >=1/3 -> task-level path divergence: full89 may proceed, carrying the first-class caveat
+      that the serving instance is provably NOT equivalent (verdict v4 ruling 3).
+    metric_to_record: "per task: tok_in, tok_out, command count, unique commands, converged? -- side by side with canonical"
+
+  selection_rationale_batch1:
+    prove-plus-comm: >-
+      Axis 1 -- POSITIVE CONTROL. It is one of the 9 tasks canonical Qwen actually RESOLVED, and the
+      cheapest of them (agent phase 40.3s). If the whole chain works -- sglang + the qwen3_coder
+      tool-call parser + terminus-2 + the container + the tests -- this task must pass. With a model
+      that only solves 9/89, a random pick would almost certainly fail and would tell us nothing
+      about whether the chain is wired correctly.
+    qemu-startup: >-
+      Axis 2 -- KVM-OFF GUARD CONTROL, carried over from the gpt-5.5 lane. canonical Qwen did NOT
+      resolve it (agent 75s), so an unresolved outcome here is the EXPECTED, matching result. What we
+      are checking is that with TB21_ENABLE_KVM_DEVICE=0 the container still starts, runs and exits
+      cleanly with no /dev/kvm injection -- i.e. the guard, not the score.
+    bn-fit-modify: >-
+      Axis 3 -- probes the ONE deviation we cannot eliminate. canonical Qwen failed this task with
+      `context_length_exceeded` (an HTTP 400 / BadRequestError; 3 of the 6 canonical hard failures are
+      of this family). Today's serving advertises max_model_len=262144. So this task directly asks:
+      does the new serving instance change the failure MODE? Whatever it shows is a finding about the
+      serving deviation, recorded as such -- not as a capability signal.
+
+  batch_size: 4
+  batch_start: 1
+  batch_limit: 1
+  concurrency: 4          # c=4. Pod A is shared with surface:51's c=16 full500 -- must not disturb it.
+
+  output_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_qwen_canary"
+  stage_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_qwen_canary/stage"
+  tag_prefix: "tb21_qwen_canary3"
+
+  env_overrides:
+    TB2_RUNTIME_CLOSURE_REPAIR: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+    TB_DOCKER_FORCE_CLEANUP_HELPER: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
+    TB21_BATCH_SIZE: "4"
+    TB21_BATCH_START: "1"
+    TB21_BATCH_LIMIT: "1"
+    TB21_BATCH_RUN: "1"
+    TB21_FULL_CONCURRENCY: "4"
+    TB21_ENABLE_KVM_DEVICE: "0"
+    TB21_STATIC_RUNTIME_CLOSURE_GATE: "1"
+    TB21_STRICT_CLOSURE_GATE: "1"
+    TB21_EXPECT_CLEAN: "0"
+    TB21_ALLOW_ORACLE_SCORE: "0"
+    TB21_RUN_CLEANUP_HELPER: "0"
+    TB21_REMOVE_BATCH_IMAGES: "0"
+
+  pass_criteria:
+    - "closure gate closed=89 open=0 ready=true, GATE_IDENTICAL to canonical"
+    - "3/3 task containers start, no docker exit-125"
+    - "preheat + bind-payload preflight green"
+    - "7200s timeout visible in the emitted command.sh"
+    - "artifact_manifest.json present (one per batch)"
+    - "sglang real 200 observed (an actual completion, not just /v1/models reachable)"
+    - "KVM off: log shows kvm_device=disabled, no /dev/kvm injection"
+    - "positive control prove-plus-comm resolves (else the chain is mis-wired, not the model)"
+
+# =============================================================================
+# Verdict rules v2 (inherited) — applied AFTER the score lands
+# =============================================================================
+verdict_rules_v2:
+  blocked_due_to_parse_error: "correctable; log every correction (task, original verdict, basis, signer)"
+  blocked_due_to_infra_fail: "not for the main table; archive as `blocked` + attribute"
+  gate_clean_but_llm_hard_failures: "archive as `forbidden` (measures harness/env, not the model)"
+  ready_is_uninformative: >-
+    `ready` requires unresolved==0, so ANY real benchmark run is `blocked`. It is not an infra signal.
+  ★ qwen_lane_caveat: >-
+    canonical Qwen ITSELF has infra_fail=1 (from timeout=1 on qemu-alpine-ssh) and 6 LLM hard
+    failures (BadRequestError). A literal reading of rule-A row 2 would disqualify the canonical
+    anchor itself. For this lane the rules must be applied COMPARATIVELY against the canonical's own
+    counts, not against zero. Flag to orchestrator before any verdict is issued.
+
+# =============================================================================
+# S3 CANARY RESULT — 2026-07-09 — gates GREEN, positive control FAILED -> stopped
+# =============================================================================
+s3_canary_result:
+  tag: "tb21_qwen_canary3_20260709t154300z"
+  runner_rc: 0
+  started_utc: "2026-07-09T15:43:11Z"
+  ended_utc: "2026-07-09T15:47:11Z"
+  gates:
+    closure_gate: "PASS -- closed=89 open=0 tasks=89 status=closed ready=true"
+    containers: "PASS -- 3/3, exit-125 count 0, zero left behind"
+    preheat_and_bind: "PASS -- preheat {present:3, missing:0, errors:0, tar_verified:3, retagged:9}; bind {blocked:0, errors:0, ok:89/89} ready=true"
+    timeout_7200: "PASS -- command.sh carries global-agent-timeout-sec 7200 / global-test-timeout-sec 7200 / multiplier 1.0"
+    artifact_manifest: "PASS -- present"
+    sglang_real_200: "PASS -- token_sum {input: 695283, output: 18615}; Making call=94; Unknown Error in LLM interaction=0"
+    kvm_off: "PASS -- kvm_device=disabled, no /dev/kvm injection"
+  positive_control: FAIL
+  strict_summary:
+    clean_pass: 0
+    resolved: 0
+    unresolved: 3
+    timeout: 0
+    parse_error: 0
+    missing_artifact: 0
+    infra_fail: 0
+    external_network_marker: 0
+    token_sum: {input: 695283, output: 18615}
+    total: 3
+    status: blocked      # == unresolved != 0; NOT an infra signal
+    ready: false
+
+  attribution:
+    layer: env            # harness / env / scaffold / model  -> env (serving instance)
+    ruled_out_harness_scaffold: >-
+      The agent really issues shell commands (Sending keys = 98; commands.txt 50/32/16 lines).
+      No tool-call XML leaked into or was stripped from the terminal: `tool_call` / `<function`
+      count is 0 in BOTH this run's and the canonical's commands.txt. Zero LLM hard failures
+      (canonical had 6). All infra counters 0. So the chain is wired correctly.
+    measured_divergence_prove_plus_comm:
+      canonical: {resolved: true,  input_tokens: 33522,  output_tokens: 2260,  commands: 18, unique_commands: 13}
+      this_run:  {resolved: false, input_tokens: 397870, output_tokens: 10154, commands: 50, unique_commands: 33}
+      input_token_ratio: 11.9
+      trajectory: >-
+        Both start identically (ls -la /workspace; cat plus_comm.v). canonical then goes straight to a
+        `cat > ... << 'EOF'` heredoc and compiles. This run first uses `echo "...\n..."`, writing literal
+        backslash-n into the file, fails coqc, inspects with `cat -A`, rm's, and only then switches to a
+        heredoc -- burning ~32 turns without converging.
+    determinism_probe:
+      method: "same prompt, temperature=0, 3 calls against the new sglang"
+      result: "all 3 outputs byte-identical (sha256 prefix 68be5b4a2a64)"
+      conclusion: >-
+        The new server is DETERMINISTIC at temp=0. The divergence from canonical is therefore NOT
+        run-to-run sampling noise; it is a DIFFERENT deterministic greedy path. On that simple prompt the
+        model in fact goes straight to a heredoc, so it is not inherently worse. => attribution is the
+        serving instance (sglang build / quantization / batching / chat template / prefix-cache state).
+    second_confirmed_serving_difference:
+      task: bn-fit-modify
+      canonical_failure_mode: context_length_exceeded    # HTTP 400, 3 of canonical's 6 hard failures
+      this_run_failure_mode: unset
+      cause: "new serving advertises max_model_len=262144; the agent is no longer truncated, it loops instead"
+      implication: >-
+        canonical's 3 context_length_exceeded tasks may all stop dying early, converting into ordinary
+        `unresolved`. That reshapes the strict partition, so even the PARTITION comparison against 9/89
+        is no longer like-for-like.
+    evidence_strength: "n=1. Proves (a) the chain is correct, (b) old and new servings take different deterministic paths on this task, (c) that path is longer, costlier and non-convergent. It does NOT establish a systematic full89 shift."
+
+  stopped_at: S3
+  s4_launched: false
+  s4_requires: "orchestrator confirmation (brief red line)"
+  recommendation: >-
+    Option A (recommended): one more 3-task positive-control batch drawn from canonical's 9 resolved
+    tasks -- cancel-async-tasks (43s), constraints-scheduling (65s), git-leak-recovery (74s). ~10 min,
+    c=3, no relay. 0/3 => systematic serving degradation, fix the serving口径 before spending a full89.
+    >=1/3 => task-level path divergence, full89 may proceed WITH the §0 caveat.
+    Option B: go straight to S4 full89 (c=32) and triage the score under verdict rules v2.
+
+# =============================================================================
+# POSITIVE-CONTROL EXPANSION n=4 (2026-07-10, orchestrator option A) + forensics
+# =============================================================================
+positive_control_n4:
+  batch2_tag: "tb21_qwen_canary3_20260709t163914z"
+  batch2_rc: 0
+  batch2_gates: "all green; infra_fail 0; timeout 0; LLM hard failures 0 (Making call = 48)"
+  reproduced: "1/4"
+  verdict: "task-level path divergence (>=1/3), NOT systematic degradation -> full89 MAY proceed with a first-class caveat"
+  table:
+    prove-plus-comm:        {canon: {res: true, tin: 33522,  tout: 2260,  cmds: 18, uniq: 13}, new: {res: false, tin: 397870, tout: 10154, cmds: 50, uniq: 33}, tin_ratio: 11.9}
+    cancel-async-tasks:     {canon: {res: true, tin: 31937,  tout: 2099,  cmds: 17, uniq: 14}, new: {res: false, tin: 17795,  tout: 1434,  cmds: 14, uniq: 12}, tin_ratio: 0.6}
+    constraints-scheduling: {canon: {res: true, tin: 124078, tout: 4500,  cmds: 24, uniq: 22}, new: {res: true,  tin: 271841, tout: 27342, cmds: 16, uniq: 14}, tin_ratio: 2.2}
+    git-leak-recovery:      {canon: {res: true, tin: 95914,  tout: 3361,  cmds: 32, uniq: 27}, new: {res: false, tin: 112335, tout: 3455,  cmds: 33, uniq: 27}, tin_ratio: 1.2}
+
+  retraction_by_surface85:
+    claim: "this run's trajectories are longer, costlier and non-convergent"
+    based_on: "n=1 (prove-plus-comm)"
+    refuted_by: >-
+      cancel-async-tasks FAILS more cheaply (0.6x tokens, 14 vs 17 commands);
+      git-leak-recovery flips outcome at EQUAL cost (1.2x tokens, 33 vs 32 commands);
+      constraints-scheduling RESOLVES with FEWER commands (16 vs 24).
+    corrected: >-
+      There is no consistent token/command signature. The divergence is trajectory-level and its cost
+      goes both ways. git-leak-recovery is the cleanest sample: equal cost, pure outcome flip -> a small
+      early decoding divergence changes the terminal state; it is NOT "a weaker model" nor "a runaway loop".
+
+canonical_serving_forensics:
+  context_length:
+    value: 262144
+    status: RECOVERED
+    evidence:
+      - "bn-fit-modify debug.json: The input (262216 tokens) is longer than the model's context length (262144 tokens)"
+      - "sam-cell-seg  debug.json: ... (262260 tokens) ... (262144 tokens)"
+      - "log-summary-date-ranges debug.json: ... (262170 tokens) ... (262144 tokens)"
+      - "tune-mjcf / write-compressor debug.json: Input length (262143) exceeds the maximum allowed length (262138) -- the tokenizer-manager path, 6 tokens reserved; consistent with 262144"
+    consequence: "surface:85's earlier evidence-1 (smaller canonical window) is RETRACTED. Causality was inverted."
+  api_base:
+    value: "http://100.103.228.120:30000/v1/"
+    status: RECOVERED
+    source: "every debug.json -> litellm_params.api_base"
+    note: "corrects the addendum: base_url IS persisted per-call in debug.json, just not in run_metadata.json"
+  client_sampling_params:
+    value: {temperature: 0.0, extra_body: {}, stream: false}
+    status: RECOVERED
+    source: "debug.json -> optional_params"
+    key_implication: "no top_p / top_k was sent => the SERVER's default sampling config governs the greedy path"
+  server_flags:
+    tp_size: NOT_PERSISTED
+    sglang_version: NOT_PERSISTED
+    mem_fraction_static: NOT_PERSISTED
+    tool_call_parser: NOT_PERSISTED
+    dtype_or_quantization: NOT_PERSISTED
+    chat_template: NOT_PERSISTED
+    search_performed: "no file under /data/nips/bench, /data/nips/shared_bench or swe/bench names 100.103.228.120 or `--port 30000`"
+    do_not_say: "UNRECOVERABLE -- the flags may still exist on the dead host's local disk/tmux. The correct statement is: not persisted with the run, and not present on the shared FS."
+  the_yaml_is_a_different_deployment:
+    file: "/data/nips/bench/configs/code_models/qwen3_coder_30b_a3b_instruct_qwen_code.yaml"
+    describes: "worker_rkn9p:8503, --served-model-name qwen3-coder-30b-a3b-instruct, --tp-size 2, sglang 0.5.10.post1"
+    canonical_tb21_used: ":30000, served-model-name Qwen/Qwen3-Coder-30B-A3B-Instruct"
+    conclusion: "the config EXISTS (orchestrator's correction 1 stands) but it belongs to the SWE-bench lane deployment, NOT to the TB2.1 canonical :30000"
+  schema_probe_for_sglang_version:
+    result: INCONCLUSIVE
+    detail: "canonical original_response carries metadata.weight_version / matched_stop / reasoning_tokens, exactly as today's 0.5.13 does. Schema cannot separate 0.5.10 from 0.5.13."
+    false_positive_recorded: >-
+      surface:85's first attempt extracted original_response with a regex that truncated at the first
+      escaped quote, making every field read `absent`. Nearly claimed "canonical lacks metadata => different
+      version". json.load() reversed the finding. Recorded as a self-inflicted false positive.
+
+h1_h2_discriminator:
+  status: NOT_EXECUTED
+  blocker: >-
+    serving pod slime-96879589: cards 4-7 are held by :30000 / :30001; cards 0-3 carry a co-tenant
+    workload (126-137 GiB each). Spinning a --tp-size 2 or sglang-0.5.12 instance needs either
+    someone else's GPUs or a restart of a live serving -- both cross the red lines.
+  recommendation: "do NOT run it now. It remains the cleanest discriminator (temp=0, same prompt, same weights, one variable) if free GPUs appear."
+  established_regardless: >-
+    A deterministic divergence at temp=0 EXISTS and its cause is UNKNOWN.
+    => temp=0 guarantees reproducibility WITHIN one server, not ACROSS serving stacks.
+
+# =============================================================================
+# ★ Correction to the gpt-5.5 lane's Q1 verdict (FULL89_TB21_GPT55_20260709.md)
+# =============================================================================
+correction_to_gpt55_lane_Q1:
+  original_claim: "Q1 = UNRESOLVABLE_FROM_DISK -- no per-task artifact carries the 125 hard failures"
+  why_it_was_wrong_procedurally:
+    - "`find -maxdepth 4 -name '*debug*'` missed <task>/<trial>/agent-logs/episode-N/debug.json"
+    - "the follow-up scan grepped for EXCEPTION CLASS names (ServiceUnavailableError / RateLimitError) while debug.json stores the HTTP PAYLOAD (`Error code: 503 - {...}`)"
+    - "both are 'not found => does not exist'. The burden of proof is on the claimant. Same error class the orchestrator made with UNRECOVERABLE."
+  exhaustive_rescan:
+    key: "regex `Error code: (\\d{3})` over EVERY debug.json"
+    gpt55_full89_mine:   {debug_json: 1668, with_error_code: 4, histogram: {503: 1, 404: 3}, attribution: {feal-linear-cryptanalysis: "503 x1", configure-git-webserver: "404 x3 (task's own HTTP, not the LLM)"}}
+    gpt55_canonical:     {debug_json: 1214, with_error_code: 0}
+    qwen_canonical:      {debug_json: 8687, with_error_code: 5, histogram: {400: 5}}
+  corrected_verdict: ATTRIBUTABLE_ONLY_WHEN_THE_EPISODE_DIES
+  corrected_statement: >-
+    Per-task artifacts (agent-logs/episode-N/debug.json) DO exist and DO record HTTP error bodies, but each
+    episode keeps only its last response. Therefore: a failure that TERMINATES the episode is per-task
+    attributable; a failure swallowed by retry or overwritten by a later success is not. Of the 125 hard
+    failures, exactly 1 is attributable this way (feal-linear-cryptanalysis, Error code: 503).
+  what_survives: >-
+    The n=1 exclusion-based attribution of feal is now INDEPENDENTLY CONFIRMED by a direct artifact.
+    gpt-5.5 canonical's 0 error-bearing debug.json corroborates its relay-layer hard-failure count of 0.
+    The `forbidden` verdict is unaffected; only the Q1 reasoning chain needed repair.
+  llm_health_proposal_revision:
+    was: "run-level only; per-task attribution impossible"
+    now: >-
+      TWO layers. (1) run-level counters parsed from run.log. (2) task-level `llm_error_last_episode`
+      read straight from agent-logs/episode-N/debug.json -- free, and it is the most direct evidence for
+      "was this task killed by infrastructure?". 400/content-class is always per-task attributable
+      (the response has a body); 5xx/429 only when it ends the episode.
+  also_corrected: >-
+    `unknown_agent_error` can be caused by a plain HTTP 400 content error -- canonical Qwen's tune-mjcf and
+    write-compressor both died that way. So inferring "relay fault" from `unknown_agent_error` alone is
+    unsound. (For feal the conclusion happens to hold, but only because the 503 artifact exists.)
+
+verdict_rules_v4_applied:
+  infra_fail_decomposed:
+    canonical_qwen: "infra_fail=1, entirely from timeout=1 (qemu-alpine-ssh test_timeout) -> task-level result, NOT blocked"
+    this_canary: "infra_fail=0"
+  llm_hard_failures_by_class:
+    canonical_qwen: {infra_class: 0, content_class: 6}
+    this_canary: {infra_class: 0, content_class: 0}
+  baseline: "canonical's own counts"
+  consequence: "the canonical Qwen anchor is NOT disqualified by its own rules; v4 fixed the v2/v3 hole"
+
+s4_status:
+  launched: false
+  gate: "orchestrator confirmation required before launch"
+  first_class_caveat_text: >-
+    The serving instance is PROVEN to behave differently: a deterministic divergence at temp=0 with an
+    UNKNOWN cause. context-length is identical (262144 both sides). canonical's server-side launch flags
+    (--tp-size / sglang version / dtype / chat template) were not persisted with the run and are absent
+    from the shared FS. => this run's score is not, in principle, a like-for-like comparison against 9/89.

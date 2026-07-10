@@ -1,0 +1,11 @@
+{
+  "results_jsonl_sha256": "f69198e2380230c72a8e7cd84ace7bd1ee1b0ba93e9df4cdb4fecab3b946641c",
+  "rows": 496,
+  "unique_instances": 496,
+  "duplicates": 0,
+  "resolved_in_results_jsonl": 240,
+  "agent_status_counts": {
+    "patch": 490,
+    "no_patch": 6
+  }
+}

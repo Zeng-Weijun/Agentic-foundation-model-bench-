@@ -1,0 +1,12 @@
+{
+  "agent_status_counts": {
+    "no_patch": 137,
+    "patch": 361
+  },
+  "duplicates": 0,
+  "no_patch_rows": 137,
+  "resolved": 107,
+  "results_jsonl_sha256": "49b1f5f41e492eae2a39b869308fbc698a71d6972d34eb7a9633c754f8bafe98",
+  "rows": 498,
+  "unique_instances": 498
+}

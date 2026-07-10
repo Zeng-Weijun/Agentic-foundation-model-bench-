@@ -121,6 +121,128 @@ image_map_entries: 89           # verified 2026-07-09
 image_map_mtime_caveat: "file mtime is 2026-07-05 18:03 CST, i.e. AFTER the canonical run ended (2026-07-05 05:03 CST). Content identity with the canonical-time map is UNVERIFIED."
 
 # -----------------------------------------------------------------------------
+# main repo (anchor for the F2 env-seam reset)
+# -----------------------------------------------------------------------------
+main_repo: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo"
+runner_repo_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3"   # what the 2026-07-07 patch makes the runner derive
+
+# -----------------------------------------------------------------------------
+# D1 — runner script dependencies, asserted by `run.sh` preflight on every lane.
+#
+# Enumerated from BOTH the r3 privileged runner AND the shared runner
+# (/mnt/.../swe/bench/shared/runners/run_terminal_bench_2_1.sh). 12 entries; the
+# earlier one-off audit covered only the 7 that live in <repo>/scripts.
+#
+# `path` is the absolute path under the EFFECTIVE environment (i.e. after the F2
+# env-seam resets below). `required_when` drives fail-vs-LATENT:
+#   always            -> missing = hard fail
+#   VAR==value        -> missing = hard fail only if the effective env has VAR==value,
+#                        otherwise print a LATENT warning and continue
+# -----------------------------------------------------------------------------
+runner_script_dependencies:
+  - name: build_tb21_full89_closure_matrix.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/build_tb21_full89_closure_matrix.py"
+    required_when: "TB21_STATIC_RUNTIME_CLOSURE_GATE==1"
+    main_sha10: "961a3c954e"
+    r3_sha10: "961a3c954e"
+    note: "symlink -> main (C2 option A-prime). __file__-anchored: DEFAULT_R2_SUMMARY_DIR."
+
+  - name: tb21_runtime_closure_static_gate.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/tb21_runtime_closure_static_gate.py"
+    required_when: "TB21_STATIC_RUNTIME_CLOSURE_GATE==1"
+    main_sha10: "bcd9bccbab"
+    r3_sha10: "bcd9bccbab"
+    note: "symlink -> main. Zero __file__ refs; symlinked only for consistency."
+
+  - name: build_tb21_full89_batch_manifests.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/build_tb21_full89_batch_manifests.py"
+    required_when: always
+    main_sha10: "2e61abf584"
+    r3_sha10: "2e61abf584"
+    note: "byte-identical in both roots"
+
+  - name: agentic_bench_images.py
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/agentic_bench_images.py"
+    required_when: always
+    main_sha10: "d074075f1b"
+    r3_sha10: "d074075f1b"
+    note: "preheat. Shows as ` M` in r3 git status but `diff main r3` = 0 lines."
+
+  - name: tb21_closure_gate.sh
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/tb21_closure_gate.sh"
+    required_when: "TB21_STRICT_CLOSURE_GATE==1"
+    main_sha10: "6baa77346e"
+    r3_sha10: "6baa77346e"
+    note: "post-run strict batch gate; byte-identical in both roots"
+
+  - name: cleanup_tb21_worker.sh
+    resolved_from: "relative to runner cwd = $REPO_ROOT (r3), lines 590/610"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/scripts/cleanup_tb21_worker.sh"
+    required_when: "TB21_RUN_CLEANUP_HELPER==1"
+    main_sha10: "c8b9cc3c26"
+    r3_sha10: MISSING
+    status: LATENT
+    note: >-
+      MISSING in r3. Call site is a bare relative path with NO env seam, but it is gated by
+      TB21_RUN_CLEANUP_HELPER (currently 0) and suffixed `|| true`, so today it can neither run
+      nor kill the run. Flip that flag to 1 and it breaks. See conflicts.cleanup_helper_missing_in_worktree.
+
+  - name: repair_tb21_full89_runtime_closure.py
+    resolved_from: "env seam TB2_RUNTIME_CLOSURE_REPAIR (runner line 61 tests ${VAR+x})"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+    required_when: always
+    main_sha10: "ccc8938499"
+    r3_sha10: MISSING
+    note: >-
+      F2 reset. Invoked by the SHARED runner line 35 under `set -euo pipefail` -> missing = fatal
+      (this is exactly what killed canary round 2). Has 2 `__file__` refs, so it must be called
+      IN PLACE in the main repo; F2 does precisely that.
+
+  - name: TB_DOCKER_FORCE_CLEANUP_HELPER
+    resolved_from: "env seam (runner line 53: ${TB_DOCKER_FORCE_CLEANUP_HELPER:-$REPO_ROOT/scripts/cleanup_tb21_worker.sh})"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
+    required_when: always
+    main_sha10: "c8b9cc3c26"
+    r3_sha10: MISSING
+    note: >-
+      Found while answering D2. UNCONDITIONALLY exported and NOT gated by TB21_RUN_CLEANUP_HELPER;
+      its default pointed at the missing r3 copy. No consumer was found inside our execution path
+      (swe/bench/shared/{lib,runners,scripts}) -- consumer_verified: false -- but it has the same
+      `${VAR:-...}` seam, so per D2 it is reset to the main repo. Zero-risk, canonical-restoring.
+
+  - name: run_terminal_bench_2_1.sh
+    resolved_from: "env seam TB21_RUNNER (absolute default, runner line 595)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/runners/run_terminal_bench_2_1.sh"
+    required_when: always
+    note: "the shared runner. Not repo-anchored; default is an absolute shared-FS path."
+
+  - name: bench_common.sh
+    resolved_from: "sourced by the shared runner relative to its OWN dir (../lib)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/lib/bench_common.sh"
+    required_when: always
+    note: "defines NIPS_ROOT / BENCH_ROOT / bench_require_exe"
+
+  - name: tb
+    resolved_from: "TB_BIN (default $TB_ROOT/.venv/bin/tb); shared runner calls bench_require_exe on it"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/.venv/bin/tb"
+    required_when: always
+    note: "the Terminal-Bench CLI itself"
+
+  - name: build_terminal_bench_2_1_yaml_dataset.sh
+    resolved_from: "$BENCH_ROOT/shared/scripts/... (shared runner line 32)"
+    path: "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/shared/scripts/build_terminal_bench_2_1_yaml_dataset.sh"
+    required_when: "TB2_SKIP_DATASET_REBUILD==0"
+    status: LATENT
+    note: >-
+      Only invoked when TB2_SKIP_DATASET_REBUILD != 1 OR the dataset fails its task.yaml probe.
+      We set it to 1 and the dataset is valid, so it is skipped. Present anyway.
+
+# -----------------------------------------------------------------------------
 # Launcher + runner (effective paths, from launch_checklist -- NOT script defaults)
 # -----------------------------------------------------------------------------
 launcher:
@@ -155,6 +277,43 @@ relay_api_env: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shar
 relay_api_env_alias: "/data/nips/shared_bench/api_config.env"
 relay_api_key_var: "OPENAI_API_KEY"
 relay_api_key_presence_verified: true   # presence only; value never read, printed, or stored
+
+# The relay's UPSTREAM also moved between the canonical run and today. surface:85 raised it as a
+# possible undeclared difference; the orchestrator then A/B-tested both entry IPs from dev with the
+# same prompt and parameters. Verdict: SAME BACKEND. Downgraded from `deviation` to `informational`.
+relay_upstream:
+  classification: deviation          # tick-12: reverted from `informational` (tick-9) after the c89 evidence
+  reverted_at: "2026-07-09 (orchestrator tick-12, adopting surface:85's correction)"
+  statement: >-
+    Backend identity IS verified-equivalent (c=1 A/B: cached_tokens 4864 on both entries,
+    prompt_tokens 5092 on both). Entry CAPACITY / RATE-LIMITING at c89 is NOT verified equivalent,
+    and this run measured it to be NOT equivalent: canonical relay-layer 5xx = 0, this run = 125
+    (120 ServiceUnavailableError + 5 RateLimitError, all tenacity-retry-exhausted).
+    Identity equivalence does not imply capacity equivalence; 503/429 are throughput phenomena.
+  first_class_caveat: "this run's score is NOT a like-for-like comparison against 63/89"
+  canonical_relay_hard_failures_true_value: 0
+  canonical_single_llm_error_is_not_relay: >-
+    canonical run.log has exactly 1 `Unknown Error in LLM interaction`, and its payload is
+    "Encountered text corresponding to disallowed special token '<'" -- a tokenizer/content error,
+    NOT a relay error. So canonical's relay-layer hard-failure count is truly 0, not 1.
+  canonical: "http://176.122.167.162:2053"   # DECISIONS.md:613, set 2026-07-05
+  current: "http://45.78.67.178:2053"        # live `pgrep -af openai_relay_proxy`, 2026-07-09
+  verdict: "same backend, A/B-measured cached_tokens identical"
+  ab_test_2026_07_09:
+    prompt: "identical prompt and parameters, issued from dev to each entry IP"
+    fields:
+      model:             {canonical_entry: "gpt-5.5", current_entry: "gpt-5.5"}
+      content:           {canonical_entry: "PING",    current_entry: "PING"}
+      finish_reason:     {canonical_entry: "stop",    current_entry: "stop"}
+      prompt_tokens:     {canonical_entry: 5092,      current_entry: 5092}
+      completion_tokens: {canonical_entry: 5,         current_entry: 5}
+      cached_tokens:     {canonical_entry: 4864,      current_entry: 4864}
+  reasoning: >-
+    prompt_tokens_details.cached_tokens is identical (4864). Prompt cache is per-backend: two entries
+    pointing at different backends could not report the same cache hit count. prompt_tokens=5092
+    (the relay's injected ~5k system prompt) also matches exactly. Therefore: two entry IPs of the
+    same 中转站, one backend. Chain: 8.130 -> 176.122:2053 -> 45.78:2053. Key and model names unchanged.
+  corroboration: "a real gpt-5.5 completion through the current entry returned HTTP 200 from Pod A (canary R3, criterion 6)"
 
 # -----------------------------------------------------------------------------
 # Score reference
@@ -207,6 +366,7 @@ run_artifact_note: "This is the Terminal-Bench harness's own output dir (harness
 run_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_gpt55_poda/tb21_gpt55_official_medium_c89_single_20260704t195417z/medium_c89/attempt_1/tb21_batched_terminus-2_tb21_gpt55_official_medium_c89_single_20260704t195417z_attempt1_medium_c89"
 run_root_note: "Derived from launcher_script run_attempt(): $OUTPUT_ROOT/$RUN_ID/${MODE}_c${CONCURRENCY}/attempt_${attempt}/tb21_batched_terminus-2_${tag}. Path composition is proven; on-disk existence NOT re-verified by surface:85."
 output_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_gpt55_poda"
+tb_runs_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs"   # where the tb harness itself writes (harness_run_metadata.output_path)
 scores_dir: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/reports/scores"
 
 # -----------------------------------------------------------------------------
@@ -260,6 +420,23 @@ deviations_from_canonical:
     kind: identity_only
     justification: "Reusing the canonical run_id would collide with, and could overwrite, the preserved 70.8% artifacts and ledger. run_id is an identity token, not a scoring parameter."
 
+  # Added 2026-07-09, orchestrator ruling on C6: F2 approved, F1 not adopted.
+  - id: env_seam_repo_root_reset
+    field: "env TB2_RUNTIME_CLOSURE_REPAIR, TB_DOCKER_FORCE_CLEANUP_HELPER"
+    canonical: "$REPO_ROOT/scripts/<f>, where canonical's $REPO_ROOT was the MAIN repo"
+    reproduction: "explicitly set to <main repo>/scripts/<f>"
+    kind: env_seam_reset      # NOT a repo mutation: nothing is moved, copied, or symlinked
+    justification: >-
+      The 2026-07-07 patch made the runner derive REPO_ROOT from its own script path, so both
+      defaults now point into the r3 worktree, where neither file exists. The runner itself exposes
+      the seam (line 61 tests ${TB2_RUNTIME_CLOSURE_REPAIR+x}; line 53 uses ${VAR:-default}), so a
+      pre-set value wins. F2 leaves repair_tb21_full89_runtime_closure.py to be invoked IN PLACE in
+      the main repo, which keeps its own 2 `__file__` anchors canonical -- precisely the failure mode
+      that the C2 "copy" ruling walked into. F1 (export REPO_ROOT=<main>) is provably equivalent
+      (all 5 relatively-invoked scripts are byte-identical across both roots) but was rejected as
+      broader than necessary: it also relocates cwd and several unrelated defaults.
+    verified_by: "surface:85 sha256 audit of all 12 runner script dependencies (see runner_script_dependencies)"
+
   # Added 2026-07-09 after orchestrator ruled C2 -> option A.
   - id: closure_gate_helpers_vendored_from_main_repo
     field: "r3 worktree scripts/{build_tb21_full89_closure_matrix.py, tb21_runtime_closure_static_gate.py}"
@@ -306,6 +483,36 @@ closure_gate_helpers:
       tracked: false
       target_existed_before_copy: false
   identity_basis: "mtime predates canonical run; NOT a git object. See deviations_from_canonical[closure_gate_helpers_vendored_from_main_repo]."
+
+  # ★ 2026-07-09, discovered by the canary: a plain copy is CONTENT-identical but NOT
+  #   BEHAVIOUR-identical. See conflicts.closure_helper_file_anchored_repo_root.
+  copy_is_behaviour_preserving: false
+  status: RESOLVED_2026_07_09_OPTION_A_PRIME_SYMLINK
+  a_prime_applied:
+    at: "2026-07-09"
+    method: "ln -sfn <main>/scripts/<f> <r3>/scripts/<f>  (both files; only the r3 worktree was touched)"
+    audit: "both scripts are stdlib-only with no sibling imports, so sys.path[0] semantics are irrelevant; builder has exactly 1 __file__ ref, gate py has 0"
+    build_tb21_full89_closure_matrix_py:
+      is_symlink: true
+      readlink_f: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/build_tb21_full89_closure_matrix.py"
+      sha256_via_symlink: "961a3c954e4051ad02a02ca64513405633a0d8948482c59db8415761d6f8ffdb"
+      resolve_parents1: "<main repo>"
+    tb21_runtime_closure_static_gate_py:
+      is_symlink: true
+      readlink_f: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/tb21_runtime_closure_static_gate.py"
+      sha256_via_symlink: "bcd9bccbabc35c6ee6ac71145b06c1775ea3bfcadefc9b04da421422eb8af3e5"
+    zero_cost_gate_verification: "build_rc=0 gate_rc=0 -> closed=89 open=0 tasks=89 families={} status=closed ready=true; field-identical to the canonical 2026-07-04 gate json"
+  proven_fix: >-
+    Replace the copied build_tb21_full89_closure_matrix.py in the r3 worktree with a SYMLINK to the
+    main-repo file. `DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[1]` and `.resolve()`
+    follows symlinks, so the anchor lands back in the main repo and every derived default
+    (notably DEFAULT_R2_SUMMARY_DIR) resolves exactly as it did for the canonical run.
+    tb21_runtime_closure_static_gate.py contains zero `__file__` references, so its plain copy is safe.
+  proven_fix_command: |
+    R=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo
+    W3=$R/.worktrees/tb21-image-fixes-r3
+    ln -sfn $R/scripts/build_tb21_full89_closure_matrix.py $W3/scripts/build_tb21_full89_closure_matrix.py
+  proven_fix_evidence: "same file, same dataset, only location varied -> main copy open=0 / r3 copy open=2 / tmp symlink open=0 (2026-07-09, read-only, no containers)"
 
 run_id_prefix: "tb21_gpt55_repro_medium_c89_single"
 
@@ -360,6 +567,118 @@ conflicts:
       - "A: copy scripts/build_tb21_full89_closure_matrix.py + tb21_runtime_closure_static_gate.py from the main repo into the r3 worktree (repo mutation; needs approval).  <-- CHOSEN"
       - "B: set static_runtime_closure_gate: 0 and record it as a THIRD declared deviation.  <-- REJECTED: drops offline-closure runtime interception (cf. Gradle false-zero reversal)."
       - "C: patch the runner to resolve the helper from an explicit TB21_CLOSURE_HELPER_ROOT.  <-- REJECTED: re-patches an already-unreproducible runner."
+
+  # Discovered 2026-07-09 by the canary. This is the reason the canary blocked.
+  closure_helper_file_anchored_repo_root:
+    severity: high
+    finding: >-
+      `build_tb21_full89_closure_matrix.py` line 19 does
+      `DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[1]`, and line 32 derives
+      `DEFAULT_R2_SUMMARY_DIR = DEFAULT_REPO_ROOT / "_coordination/20260625_harbor_bench/artifacts/tb21_closure_full89_r2"`.
+      That directory holds 31 per-task summary files. `load_closed_runtime_hf_assets()` reads
+      `<r2_summary_dir>/<task_id>.json` and returns [] when the file is absent -- silently, with no
+      warning. Of the script's four `__file__`-anchored defaults, three (output / summary-output /
+      vendor-commands-output) ARE overridden by the runner's explicit flags. DEFAULT_R2_SUMMARY_DIR
+      is the only one that is NOT overridable: neither the runner nor the script's argparse exposes it.
+    consequence: >-
+      Copying the helper into the r3 worktree (C2 option A, as literally instructed) moved its anchor,
+      so it looked for the r2 summaries under the r3 worktree, where they do not exist. The two
+      hf_asset tasks `count-dataset-tokens` and `mteb-retrieve` therefore flipped from
+      closed -> open, the static closure gate returned `status=runtime_closure_open open=2`, and the
+      runner exited 24 before starting any container. Content identity (sha256) did NOT imply
+      behaviour identity.
+    evidence: >-
+      Controlled, read-only, no containers: same script content, same dataset, only the file's
+      LOCATION varied. main-repo copy -> open=0 (matches canonical). r3 copy -> open=2. temp-dir
+      SYMLINK to the main copy -> open=0, and Path(...).resolve().parents[1] printed the main repo.
+      Independently, a per-row diff of the canonical (2026-07-04) vs canary (2026-07-09) closure
+      matrices shows 87/89 rows byte-identical and the 2 changed rows differ ONLY in
+      closed_runtime_hf_assets <-> runtime_hf_assets. So neither the dataset nor the builder logic
+      drifted; the anchor did.
+    rules_out:
+      dataset_drift: "87/89 matrix rows identical; the 2 changed rows carry the same hf:// asset lists, only re-classified"
+      builder_version_drift: "sha256 identical to the main-repo file, which itself predates the canonical run (mtime 2026-07-02)"
+      model: "never invoked -- the gate blocks before the batch loop, 0 containers, 0 relay completions"
+    status: NEEDS_ORCHESTRATOR_APPROVAL_TO_APPLY_SYMLINK
+    fix: "see closure_gate_helpers.proven_fix / proven_fix_command"
+    not_applied_because: "BRIEF_85_canary.md: gate failure => stop, do not downgrade, do not self-retry."
+
+
+  # Discovered 2026-07-09 by canary round 2 (AFTER the symlink fixed C2/C5).
+  runner_repo_root_anchored_repair_script:
+    severity: high
+    finding: >-
+      r3 runner line 61-62:
+        if [[ -z "${TB2_RUNTIME_CLOSURE_REPAIR+x}" ]]; then
+          export TB2_RUNTIME_CLOSURE_REPAIR="$REPO_ROOT/scripts/repair_tb21_full89_runtime_closure.py"
+      Since the 2026-07-07 patch made REPO_ROOT derive from the runner's own script path, this resolves
+      into the r3 worktree, which does NOT contain repair_tb21_full89_runtime_closure.py (it holds only
+      the differently-hashed variants _r3.py and _r4.py). The shared runner
+      (/mnt/.../swe/bench/shared/runners/run_terminal_bench_2_1.sh, line 34-35) then does
+      `python3 "$TB2_RUNTIME_CLOSURE_REPAIR" --dataset "$TB_DATASET_PATH" --execute` under
+      `set -euo pipefail`, so the missing file is fatal.
+    consequence: >-
+      Canary round 2 passed the closure gate (closed=89 open=0) and preheat, then died with
+      `python3: can't open file .../r3/scripts/repair_tb21_full89_runtime_closure.py` -> rc=2, before
+      Terminal-Bench was ever invoked. 0 containers, no command.sh, no artifact_manifest.json.
+      This is the SAME CLASS as the C2/C5 bug (a path anchored into the isolated worktree) but a
+      DISTINCT instance, and it is NOT caused by the symlink -- it was simply masked earlier because
+      the gate blocked first.
+    dependency_audit_2026_07_09: >-
+      All 7 scripts the runner references were compared main-vs-r3 by sha256.
+      IDENTICAL in both roots: agentic_bench_images.py, build_tb21_full89_batch_manifests.py,
+      tb21_closure_gate.sh, build_tb21_full89_closure_matrix.py, tb21_runtime_closure_static_gate.py.
+      (agentic_bench_images.py shows as ` M` in git but `diff main r3` = 0 lines.)
+      MISSING in r3: repair_tb21_full89_runtime_closure.py (called -> fatal),
+                     cleanup_tb21_worker.sh (NOT called while TB21_RUN_CLEANUP_HELPER=0 -- latent trap).
+      Because every relatively-invoked script is byte-identical across the two roots, fixing this via
+      the env seam and fixing it via REPO_ROOT are behaviourally equivalent. The fork collapses.
+    canonical_repo_root_inference: >-
+      Canonical must have run the runner with REPO_ROOT = the MAIN repo. Proof: the runner invokes
+      `python3 scripts/build_tb21_full89_closure_matrix.py` relative to cwd=$REPO_ROOT, and that
+      builder anchors DEFAULT_R2_SUMMARY_DIR on its own __file__. Canonical's gate returned closed=89,
+      which is only possible if the builder it executed lived in the main repo. The same $REPO_ROOT
+      therefore also made TB2_RUNTIME_CLOSURE_REPAIR point at <main>/scripts/repair_...py, whose mtime
+      (2026-07-02 12:13:06 +0800) predates the canonical run (2026-07-04T19:54:19Z).
+    status: RESOLVED_2026_07_09_F2
+    resolution: "orchestrator approved F2 (tick7). Applied as canary.env_overrides + full89 env_overrides. F1 not adopted; aliasing _r3.py/_r4.py explicitly rejected."
+    fix_preferred: >-
+      F2 (surgical, no repo mutation): export
+      TB2_RUNTIME_CLOSURE_REPAIR=<main>/scripts/repair_tb21_full89_runtime_closure.py
+      The runner tests `${TB2_RUNTIME_CLOSURE_REPAIR+x}`, i.e. it explicitly honours a pre-set value.
+      This is the seam the runner itself provides. Note the repair script has 2 `__file__` refs, so
+      pointing at the main-repo path also keeps ITS anchor canonical.
+    fix_alternative: >-
+      F1: export REPO_ROOT=<main repo> for the runner. Restores canonical anchoring wholesale and is
+      provably equivalent (see dependency_audit), but it also changes cwd -> `mkdir -p runs` inside the
+      main repo and shifts several unrelated defaults. Rejected as broader than necessary.
+    rejected: "symlinking repair_...py into r3 would work too, but F2 needs no repo mutation at all."
+    not_applied_because: "BRIEF_85_canary_r2.md: any failed criterion => stop, attribute, do not retry."
+
+
+  # D2 answer, 2026-07-09.
+  cleanup_helper_missing_in_worktree:
+    severity: medium
+    finding: >-
+      `cleanup_tb21_worker.sh` exists only in the main repo. The r3 runner touches it TWO ways:
+      (a) lines 590/610 call the bare relative path `scripts/cleanup_tb21_worker.sh` -- NO env seam --
+          but that call site is gated by `TB21_RUN_CLEANUP_HELPER` (we keep it at 0) and is suffixed
+          `|| true`, so today it can neither execute nor abort the run;
+      (b) line 53 `export TB_DOCKER_FORCE_CLEANUP_HELPER="${TB_DOCKER_FORCE_CLEANUP_HELPER:-$REPO_ROOT/scripts/cleanup_tb21_worker.sh}"`
+          is UNCONDITIONAL and NOT gated by that flag -- it was silently exporting a path to a
+          nonexistent file.
+    consumer_verified: false
+    consumer_note: >-
+      No consumer of TB_DOCKER_FORCE_CLEANUP_HELPER was found under swe/bench/shared/{lib,runners,scripts};
+      the only hits in the repo are a DIFFERENT runner (run_terminal_bench_2_1_full89_batched_offline.sh)
+      and a unit test. Whether Terminal-Bench itself reads the env var was NOT exhaustively verified.
+    action_taken: >-
+      (b) has a `${VAR:-...}` seam, so per D2 it is reset to the main repo via the same F2 mechanism
+      (deviation env_seam_repo_root_reset). (a) has no seam and is not patched: run.sh preflight
+      reports it as LATENT, and hard-fails if anyone sets TB21_RUN_CLEANUP_HELPER=1 while the file
+      is missing from the runner's REPO_ROOT.
+    status: LATENT_GUARDED
+
   image_map_content_drift:
     severity: medium
     finding: "image_map mtime (2026-07-05 18:03 CST) post-dates the canonical run's end (2026-07-05 05:03 CST)."
@@ -423,6 +742,10 @@ env_overrides:
   TB21_FULL89_IMAGE_MAP: "@image_map"
   TB21_FULL89_DATASET: "@dataset"
   TB21_ENABLE_KVM_DEVICE: "0"
+  # F2 env-seam reset (deviation #5). Both vars default to $REPO_ROOT/... which the
+  # 2026-07-07 patch points at the r3 worktree, where neither file exists.
+  TB2_RUNTIME_CLOSURE_REPAIR: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+  TB_DOCKER_FORCE_CLEANUP_HELPER: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
 
 static_runtime_closure_gate: 1   # canonical value; see conflicts.static_closure_gate_helper_missing
 
@@ -483,6 +806,9 @@ canary:
 
   # Runner env that differs from `launcher_exported_env_reference` for a 3-task run.
   env_overrides:
+    # F2 env-seam reset (deviation #5) -- see runner_script_dependencies
+    TB2_RUNTIME_CLOSURE_REPAIR: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/repair_tb21_full89_runtime_closure.py"
+    TB_DOCKER_FORCE_CLEANUP_HELPER: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/scripts/cleanup_tb21_worker.sh"
     TB21_BATCH_SIZE: "3"
     TB21_BATCH_START: "1"
     TB21_BATCH_LIMIT: "1"
@@ -514,3 +840,142 @@ canary:
   #   (written via `printf '%q ' "${cmd[@]}" | tee`).
   timeout_evidence_file: "command.sh"
   artifact_manifest_note: "written by the shared runner at $BENCH_RUN_DIR/artifact_manifest.json (one per batch run_dir; it indexes the per-task tb artifact + results.json)."
+
+# =============================================================================
+# CANARY RESULT — round 3 — 2026-07-09 — PASS (7/7)
+# Gates only. Score is incidental and is NOT a board number.
+# =============================================================================
+canary_result:
+  round: 3
+  tag: "tb21_gpt55_canary3_20260709t104707z"
+  verdict: PASS
+  runner_rc: 0
+  tb_rc: 0
+  started_utc: "2026-07-09T10:47:14Z"
+  ended_utc: "2026-07-09T10:51:35Z"
+  wall_clock: "4m21s"
+  run_root: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_gpt55_canary/tb21_batched_terminus-2_tb21_gpt55_canary3_20260709t104707z"
+  tb_artifact: "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c3_tb21_gpt55_canary3_20260709t104707z"
+
+  criteria:
+    1_closure_gate: "PASS — closed=89 open=0 tasks=89 families={} status=closed ready=true; GATE_IDENTICAL_TO_CANONICAL=YES"
+    2_containers: "PASS — 3/3 tasks each produced sessions/{agent.cast,agent.log,tests.log,tests.cast} + panes/*; exit-125 count=0; strict infra_fail=0"
+    3_preheat_and_bind: "PASS — preheat present=3 missing=0 errors=0 tar_verified=3; bind blocked=0 errors=0 ok=89/89 ready=true"
+    4_timeout_7200: "PASS — command.sh contains `global-timeout-multiplier 1.0`, `global-agent-timeout-sec 7200`, `global-test-timeout-sec 7200`"
+    5_artifact_manifest: "PASS — artifact_manifest.json present in the batch run_dir (one per batch, as calibrated)"
+    6_relay_real_200: "PASS — direct real completion from Pod A -> HTTP=200, served_model=gpt-5.5, finish=stop; agent-side corroboration token_sum input=110570 output=8769 (usage only exists on a 200 body)"
+    7_kvm_off: "PASS — log line `kvm_device=disabled`; no /dev/kvm injection; no effective-dataset rewrite"
+
+  strict_summary:
+    clean_pass: 3
+    resolved: 3
+    unresolved: 0
+    total: 3
+    infra_fail: 0
+    missing_artifact: 0
+    timeout: 0
+    parse_error: 0
+    external_network_marker: 0
+    token_sum: {input: 110570, output: 8769}
+    status: clean
+    ready: true
+
+  incidental_score: "3/3 resolved (accuracy 1.0). NOT a board number: n=3, hand-picked, gate-oriented."
+  external_network_marker_note: >-
+    configure-git-webserver was chosen as the offline/network probe on a SEMANTIC hypothesis.
+    It scored external_network_marker=0. That neither confirms nor refutes the hypothesis --
+    the canonical per-task marker attribution was never recovered, so there is no baseline to
+    compare against. Recorded as an open observation, not a finding.
+  containers_left_behind: 0
+  infra_events: none
+
+# =============================================================================
+# FULL89 RESULT — 2026-07-09 — archived as `forbidden` (NOT a capability score)
+# =============================================================================
+full89_result:
+  run_id: "tb21_gpt55_repro_medium_c89_single_20260709t121819z"
+  launcher_rc: 0
+  started_utc: "2026-07-09T12:18:28Z"
+  ended_utc: "2026-07-09T14:00:55Z"
+  wall_clock: "1h42m27s"
+
+  verdict: forbidden
+  verdict_rule: "BRIEF_85_verdict_rules_v2.md, table A row 3: gate=clean-of-infra but LLM/relay-layer hard failures exist"
+  verdict_kind: epistemic     # NOT statistical: evidence cannot quantify the impact, but disqualifies the number
+  verdict_basis:
+    - "125 tenacity-retry-exhausted hard failures (120x503 + 5x429)"
+    - "canonical's same metric is 0 (its single 'Unknown Error' is a tokenizer error, not relay)"
+    - "strict gate is structurally blind to it (infra_fail definition excludes the LLM layer)"
+    - "c89 single-batch design makes the impact non-quantifiable (no untriggered control group)"
+  do_not_quote_as_capability_score: true
+  comparable_to_63_89: false
+
+  ledger:
+    resolved: 53
+    total: 89
+    mean_pass_at_1: 0.5955056179775281
+    clean_pass: 53
+    unresolved: 36
+    parse_error: 0
+    infra_fail: 0
+    timeout: 0
+    missing_artifact: 0
+    cleanup_timeout_warning: 0
+    external_network_marker: 12
+    token_sum: {input: 22043936, output: 484360}
+    status: blocked           # see structural_blind_spots.status_blocked_is_uninformative
+    ready: false
+
+  like_for_like: "canonical board number 63/89 (raw 62 + manual headless-terminal correction). This run needed no correction (parse_error=0). delta = -10 tasks = -11.24pp."
+
+  llm_health:                 # the metric that DOES NOT EXIST in the gate today
+    total_calls: 2266
+    hard_fail_retry_exhausted: 125
+    http_5xx: 120
+    http_429: 5
+    hard_fail_rate: 0.0552
+    canonical_total_calls: 1215
+    canonical_hard_fail: 0
+    canonical_hard_fail_rate: 0.0
+
+  attribution:
+    Q1: UNRESOLVABLE_FROM_DISK
+    Q1_exception: >-
+      3 of the 125 ARE attributable by exclusion: they land at 13:57/13:58/13:59 when exactly ONE agent
+      was active (feal-linear-cryptanalysis), which then ended with failure_mode=unknown_agent_error
+      after 99.4min (under the 7200s cap) and is in the `lost` set. n=1, not extrapolable, but it proves
+      the causal chain physically exists.
+    Q4: NOT_IDENTIFIABLE_BY_DESIGN
+    Q4_reason: "c89 single batch: all 89 agents were active inside the burst window 12:22-12:23. No untriggered control group exists."
+    R2_gained: [cancel-async-tasks, count-dataset-tokens, fix-ocaml-gc, headless-terminal]
+    R2_gained_caveat: "headless-terminal is NOT a real gain -- canonical scored it parse_error (scorer bug); real gained = 3"
+    R2_lost: [code-from-image, compile-compcert, db-wal-recovery, extract-elf, feal-linear-cryptanalysis, gcode-to-text, kv-store-grpc, large-scale-text-editing, log-summary-date-ranges, mailman, pytorch-model-recovery, sqlite-with-gcov, torch-tensor-parallelism]
+    R2_mandatory_caveat: "The KVM round proved gained/lost churn is pass@1 sampling variance. The diff gives the TOTAL change (-10), NOT the relay-caused part. No task except feal-linear-cryptanalysis can be linked to a relay failure."
+    R3_burst: "122/125 (97.6%) fell in 12:22-12:23, exactly the c89 ramp (85 then 68 active agents; peak 89). 93 consecutive error-free minutes followed at concurrency <=54. The remaining 3 occurred at concurrency=1 -> the entry also has sporadic concurrency-independent 503s."
+    R3_method: "run.log is single-process append-only, so line order == time order. 88 anchors from the last `docker compose ... down` line per task, mapped to that task's trial_ended_at. monotone(line->time)=True. Errors interpolated onto wall-clock."
+    R3_engineering_conclusion: "supports 'entry throttles during the high-concurrency ramp', NOT 'backend down'. Fix direction = ramp rate-limiting / connection-pool warmup / client-side concurrency gate; NOT swapping the backend."
+
+# =============================================================================
+# ★ Structural blind spots in the strict gate — the most important output of this run
+# =============================================================================
+structural_blind_spots:
+  infra_fail_excludes_llm_layer:
+    code: 'scripts/tb21_strict_batch_summary.py L250: "infra_fail": bool(missing_artifact or fatal_timeout or tb_rc not in (0, None))'
+    consequence: "125 hard LLM failures -> infra_fail still 0. Every historical TB2.1 score may have been affected by invisible LLM-layer faults with no gate ever warning."
+  unknown_agent_error_not_infra:
+    finding: "feal-linear-cryptanalysis died with failure_mode=unknown_agent_error and was bucketed as `unresolved`, indistinguishable from 'the model just failed the task'."
+  status_blocked_is_uninformative:
+    code: 'L309: ready = bool(total>0 and clean_pass==total and missing_artifact==0 and timeout==0 and infra_fail==0 and parse_error==0 and unresolved==0)'
+    finding: "`ready` requires unresolved==0, so ANY real benchmark run is `blocked`. canonical was blocked (parse_error=1); this run is blocked (purely unresolved=36). `status=blocked` carries ZERO infra signal."
+    implication: "The original rule 'status=blocked => not for main table' would reject every real run, canonical included. The v2 cause-based triage is the correct fix."
+
+  proposal_not_implemented:
+    metric: llm_health
+    fields: [total_calls, retry_exhausted_count, http_5xx_count, http_429_count, hard_fail_rate, token_sum_vs_baseline]
+    action: "any threshold breach -> ready=false, or at minimum stamp `llm_degraded` on the score (preferred: taint, don't block)"
+    owner: runner_side_log_parser
+    owner_rationale:
+      tb_upstream: "most accurate (holds the HTTP response) but we do not control Terminal-Bench, and it already swallows the exception into a single log line"
+      strict_summary_reducer: "WRONG PLACE -- it only reads results.json and per-task artifacts, and the LLM errors are not in any per-task artifact (see attribution.Q1)"
+      runner_side_log_parser: "RECOMMENDED -- run.log is the only carrier; the runner already invokes tb21_closure_gate.sh, so bolt on `tb21_llm_health.py --run-log <path>`; zero upstream change"
+    hard_limit: "This metric can only ever be RUN-level, never TASK-level (run.log has no timestamps and no task tags; c89 interleaves 89 tasks). Must be stated in the proposal so nobody later assumes per-task localisation is possible."

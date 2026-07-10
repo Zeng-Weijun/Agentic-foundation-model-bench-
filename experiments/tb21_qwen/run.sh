@@ -2,33 +2,33 @@
 set -euo pipefail
 
 # =============================================================================
-# Reproduce: TB2.1 x GPT-5.5 x terminus-2, single pass@1, c89, medium/default
+# TB2.1 x Qwen3-Coder-30B-A3B-Instruct x terminus-2, single pass@1, c32, medium
 #
-#   canonical run_id : tb21_gpt55_official_medium_c89_single_20260704t195417z
-#   expected score   : 63/89 = 70.8%   (corrected; raw reducer 62/89 is DO-NOT-QUOTE)
-#   official anchor  : 78.2% +/- 2.4   (5-run mean -- NOT comparable to one sample)
+#   canonical run_id : tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z
+#   canonical score  : 9/89 = 10.11%   (mean_pass_at_1 = 0.10112359550561797)
+#   NO official TB2.1 Qwen anchor exists -- the artifact itself says
+#   "single pass@1 compatibility probe; no official TB2.1 Qwen anchor is claimed".
+#   DO NOT put this number against any leaderboard.
 #
-# Per orchestrator ruling 2026-07-09 (C1 = ACK), this is a RE-MEASUREMENT under
-# today's environment, not a strict reproduction: the canonical runner file is git
-# untracked and was rewritten on 2026-07-07, so it cannot be restored.
+# ONE NON-ELIMINABLE DEVIATION: canonical drove http://100.103.228.120:30000/v1,
+# which is DEAD (probed 2026-07-09, ICMP 100% loss). Today the only Qwen3-Coder
+# serving is http://100.100.104.140:30001/v1 (parser qwen3_coder). Different
+# serving instance => this is a RE-MEASUREMENT, never a strict reproduction.
 #
-# Intended difference from the canonical run:
-#   relay   canonical http://100.96.122.22:18540/v1  ->  here http://100.96.122.87:18540/v1
-# Two further changes exist only to PRESERVE canonical semantics, both declared in
-# config.yaml -> deviations_from_canonical:
-#   - TB21_ENABLE_KVM_DEVICE=0  (today's runner defaults it to 1; canonical was no-KVM)
-#   - a fresh run_id / canary tag (never overwrite the preserved 70.8% artifacts)
-# Plus, per C2 = option A, the two closure-gate helpers were vendored into the r3
-# worktree; their sha256 are recorded in config.yaml -> closure_gate_helpers.
+# Hard-won guards carried over from the gpt-5.5 lane (all cost us a failed run):
+#   - TB21_ENABLE_KVM_DEVICE=0     r3 runner L44 defaults to 1
+#   - run_id must be ^[a-z0-9_-]+$ runner lowercases the tag, the launcher does not
+#   - F2 env seams                 TB2_RUNTIME_CLOSURE_REPAIR / TB_DOCKER_FORCE_CLEANUP_HELPER
+#   - dep_gate                     12 runner script dependencies asserted every lane
+#   - setsid + nohup               an SSH drop must not take the run with it
 #
 # Every constant lives in ./config.yaml. This script holds none of its own.
-# No API key is read, printed, or stored here: it is sourced on the pod from the
-# api_config.env recorded in config.yaml.
+# No API key is read, printed, or stored here.
 #
 # Usage:
 #   ./run.sh --dry-run              # full89: print resolved env + remote command
 #   ./run.sh --preflight-only       # full89: read-only remote gate checks, launch nothing
-#   ./run.sh --execute              # full89: preflight, then launch via the stage launcher
+#   ./run.sh --execute              # full89: preflight, then launch (needs orchestrator GO)
 #   ./run.sh --canary --dry-run     # canary: print the 3-task plan + runner env
 #   ./run.sh --canary               # canary: preflight, build subset manifest, launch 3 tasks
 # =============================================================================
@@ -279,8 +279,8 @@ PY
 [canary] image_map (full 89) = $IMAGE_MAP
 [canary] runner              = $RUNNER
 [canary] runner REPO_ROOT    = $RUNNER_ROOT
-[canary] relay (canonical)   = $RELAY_CANONICAL
-[canary] relay (this run)    = $RELAY_URL     <-- ONLY intended deviation
+[canary] serving (canonical) = $RELAY_CANONICAL  (DEAD)
+[canary] serving (this run)  = $RELAY_URL     <-- NON-ELIMINABLE deviation
 [canary] kvm_device          = $KVM_DEVICE   <-- guard: runner default is 1
 [canary] static_closure_gate = $STATIC_GATE  <-- canonical value, helpers vendored (C2/A)
 [canary] stage dir           = $STAGE_DIR
@@ -346,6 +346,7 @@ PF
               closure_helper=ok closure_gate_py=ok api_key=present; do
     echo "$PRE" | grep -qx "$want" || { echo "blocked: preflight expected '$want'" >&2; fail=1; }
   done
+  # the expected image count is the canary batch size, not a hardcoded 3
   n_expect="$(printf '%s\n' "$CANARY_TASKS" | wc -w | tr -d ' ')"
   echo "$PRE" | grep -q "^subset_manifest=ok images=${n_expect}\b" \
     || { echo "blocked: subset manifest not built with exactly ${n_expect} images" >&2; fail=1; }
@@ -407,7 +408,7 @@ print_plan() {
   cat <<PLAN
 [repro] config              = $CONFIG
 [repro] canonical_run_id    = $CANONICAL_RUN_ID
-[repro] expected_score      = ${EXPECTED_RESOLVED}/${EXPECTED_TOTAL} = ${EXPECTED_PCT} (corrected; raw 62/89 is do-not-quote)
+[repro] canonical_score     = ${EXPECTED_RESOLVED}/${EXPECTED_TOTAL} = ${EXPECTED_PCT}  (compatibility probe; NO official TB2.1 Qwen anchor exists)
 [repro] new_run_id          = $RUN_ID
 [repro] bench               = $BENCH
 [repro] model / agent       = $MODEL / $AGENT
@@ -419,8 +420,8 @@ print_plan() {
 [repro] image_manifest      = $IMAGE_MANIFEST
 [repro] image_map           = $IMAGE_MAP
 [repro] runner              = $RUNNER
-[repro] relay (canonical)   = $RELAY_CANONICAL
-[repro] relay (this run)    = $RELAY_URL     <-- ONLY intended deviation
+[repro] serving (canonical) = $RELAY_CANONICAL  (DEAD)
+[repro] serving (this run)  = $RELAY_URL     <-- NON-ELIMINABLE deviation: canonical host is DEAD
 [repro] api_env             = $API_ENV  (key var $API_KEY_VAR; never read by this script)
 [repro] execution_host      = $POD_SSH
 [repro] kvm_device          = $KVM_DEVICE   <-- guard: runner default is 1; canonical was OFF

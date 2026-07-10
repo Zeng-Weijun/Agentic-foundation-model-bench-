@@ -230,7 +230,7 @@ redacted at capture time).
 | SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `canonical`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
 
 ⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
-⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 against 3/500 for Coder on the same bench, harness, serving host and day. Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
+⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 (27.5%) against 6/496 (1.2%) for Coder on the same bench, harness, serving host and day — a 23× rise. (An earlier version of this footnote said 45×, having compared against the *canonical* Coder run's 3/500 instead of the same-day one. See §3.14.) Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
 
 ¹ Dual-signed (ledger `DECISIONS.md` L1480 reconciliation 15/15 PASS + surface:85 review PASS). The artifact's own `score_note` says: *"single pass@1 compatibility probe; no official TB2.1 Qwen anchor claimed."* **Do not put it on a leaderboard.**
 ² Non-official harness (host QwenCode + `docker exec` bridge). A native-scaffold contrast point, not a leaderboard number.
@@ -528,12 +528,20 @@ an identical stack top. It is systematic, not incidental.**
 
 #### The number that has to be explained before this row can be quoted
 
-| | `patch` | `no_patch` | resolved | score |
-|---|---:|---:|---:|---:|
-| `Qwen3-Coder-30B-A3B-Instruct` | 497 | **3** | 242 | 48.4% |
-| `Qwen3-30B-A3B-Instruct-2507` | 361 | **137** | 108 | 21.6% |
+| run | rows | `patch` | `no_patch` | `no_patch` rate | resolved | score |
+|---|---:|---:|---:|---:|---:|---:|
+| Coder, **2026-07-10** (this comparison) | 496 | 490 | **6** | 1.21% | 240 → 242 | 48.4% |
+| Instruct-2507, **2026-07-10** | 498 | 361 | **137** | 27.51% | 107 → 108 | 21.6% |
+| *Coder, canonical 2026-07-05* | *500* | *497* | *3* | *0.60%* | *243* | *48.6%* |
 
-Same bench, same harness, same serving host, same day. `no_patch` rises 45×.
+Same bench, same harness, same serving host, same day: `no_patch` rises **23×**.
+
+> **Correction.** This table first shipped comparing Instruct-2507's `137` against the *canonical*
+> Coder run's `3/500`, yielding "45×", while taking `242` and `48.4%` from the 2026-07-10
+> re-measurement — two different runs in one row. The like-for-like figure is **23×**. The direction
+> of the finding is unchanged and the conclusion does not depend on the factor; the published number
+> was still wrong. Mixing runs is precisely the failure §0's search rule exists to prevent, and the
+> author committed it while writing the section that warns about it.
 
 Two readings, and they are not close in consequence:
 
