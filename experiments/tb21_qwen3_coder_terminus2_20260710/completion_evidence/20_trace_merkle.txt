@@ -1,0 +1,6 @@
+per_trial_results_json_count = 89
+per_trial_results_json_merkle = c640203b5df32df9f39e2ce9331af71f819c4bfc6c442a67fd7502175e9d50a5
+agent_trace_pointer = <run_root>/<task>/<trial>/agent-logs/episode-N/debug.json
+episode_debug_json_count = 8559
+agent_cast_count = 89
+episode_debug_json_bytes = 12142720792 (12142.7 MB)

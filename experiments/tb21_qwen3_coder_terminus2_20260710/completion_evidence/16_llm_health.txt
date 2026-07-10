@@ -1,0 +1,11 @@
+debug.json scanned = 8559
+
+HTTP "Error code: NNN" hits: {'400': 7}   (tasks: 7)
+  per-task: {'tune-mjcf.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'fix-ocaml-gc.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'write-compressor.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'large-scale-text-editing.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'password-recovery.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'compile-compcert.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1, 'vulnerable-secret.1-of-1.tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32': 1}
+
+responses with original_response = 8551
+finish_reason  : {'stop': 8551}
+response shape : {'content_json_leading': 8551, 'orig_unparseable': 7, 'no_original_response': 1}
+
+infra_class  (5xx/429/conn/read-timeout/retry-exhausted) = 0
+content_class(400/tokenizer/context_length_exceeded)     = 7  [+ see failure_mode context_length_exceeded=7]

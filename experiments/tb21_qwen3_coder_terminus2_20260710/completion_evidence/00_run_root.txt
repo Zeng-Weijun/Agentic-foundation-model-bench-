@@ -1,0 +1,1 @@
+RUN_ROOT=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32

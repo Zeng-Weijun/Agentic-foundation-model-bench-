@@ -1,0 +1,8 @@
+--- tb21_coder_t2_c32_0710064916_attempt1_medium_c32
+  total 'Parser warnings' = 6311
+   5713 Parser warnings: - Extra text detected after JSON object
+    598 Parser warnings: - No valid JSON object found
+--- tb21_qwen_official_medium_c32_stage1_20260705t15481783266492z_attempt1_medium_c32
+  total 'Parser warnings' = 4469
+   4468 Parser warnings: - Extra text detected after JSON object
+      1 Parser warnings: - AUTO-CORRECTED: Extracted JSON from mixed content

@@ -1,0 +1,14 @@
+{
+  "counts": {
+    "families": {},
+    "runtime_closure_closed": 89,
+    "runtime_closure_open": 0,
+    "tasks": 89
+  },
+  "generated_at_utc": "2026-07-10T05:05:03Z",
+  "matrix": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_coder_terminus2_20260710/gate/matrix.jsonl",
+  "open_tasks": [],
+  "ready": true,
+  "schema_version": "tb21.runtime_closure_static_gate.v1",
+  "status": "closed"
+}

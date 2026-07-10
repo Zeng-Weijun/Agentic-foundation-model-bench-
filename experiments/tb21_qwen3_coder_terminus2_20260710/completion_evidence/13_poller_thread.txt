@@ -1,0 +1,7 @@
+tid=1211588 comm=tb wchan=do_poll.constprop.0
+--- kernel stack:
+[<0>] do_poll.constprop.0+0x22a/0x390
+[<0>] do_sys_poll+0x1c8/0x250
+[<0>] __x64_sys_poll+0xad/0x140
+[<0>] do_syscall_64+0x59/0xc0
+[<0>] entry_SYSCALL_64_after_hwframe+0x62/0xcc

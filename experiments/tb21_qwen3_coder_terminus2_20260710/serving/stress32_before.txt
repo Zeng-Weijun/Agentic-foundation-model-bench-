@@ -1,0 +1,8 @@
+calls=128 wall=2.9s c=32 rounds=4
+HTTP200=128 5xx=0 429=0 other4xx=0 exceptions=0
+raw_codes={'200': 128}
+prompt_tokens median=19662 min=19661 max=19662
+lat p50=0.59s p95=0.90s max=0.95s  throughput=44.3 calls/s
+finish_reasons={'stop': 128}
+served_model={'Qwen/Qwen3-Coder-30B-A3B-Instruct': 128}
+STRESS_OK

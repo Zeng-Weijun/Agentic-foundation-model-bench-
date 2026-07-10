@@ -1,0 +1,39 @@
+=== INDEPENDENT RECOMPUTE (not taken on trust)
+rows=89  unique task_ids=89  duplicates=[]
+is_resolved==True count = 12
+results.json n_resolved = 12 ; resolved_ids len = 12
+sets agree: True
+accuracy(results.json) = 0.1348314606741573
+accuracy(run_metadata) = 0.1348314606741573
+recomputed  12/89      = 0.1348314606741573
+single_pass_at_1 == raw reducer (n_attempts=1): True
+
+failure_mode: {'unset': 79, 'context_length_exceeded': 7, 'test_timeout': 2, 'agent_timeout': 1}
+
+=== resolved_ids TODAY (12):
+  build-pmars
+  cancel-async-tasks
+  cobol-modernization
+  configure-git-webserver
+  constraints-scheduling
+  fix-code-vulnerability
+  git-leak-recovery
+  nginx-request-logging
+  portfolio-optimization
+  prove-plus-comm
+  pypi-server
+  qemu-startup
+
+=== canonical resolved_ids (9):
+  build-pmars  cancel-async-tasks  configure-git-webserver  constraints-scheduling  git-leak-recovery  openssl-selfsigned-cert  portfolio-optimization  prove-plus-comm  pypi-server
+
+=== McNemar b/c recomputed from set diff (NOT from counts)
+  a both      = 8 : ['build-pmars', 'cancel-async-tasks', 'configure-git-webserver', 'constraints-scheduling', 'git-leak-recovery', 'portfolio-optimization', 'prove-plus-comm', 'pypi-server']
+  b only_can  = 1 : ['openssl-selfsigned-cert']
+  c only_new  = 4 : ['cobol-modernization', 'fix-code-vulnerability', 'nginx-request-logging', 'qemu-startup']
+  d neither   = 76
+  discordant b+c = 5
+  jaccard = 0.615
+  exact two-sided binomial p = 0.375
+
+delta = 12 - 9 = +3 tasks (+3.37 pp)

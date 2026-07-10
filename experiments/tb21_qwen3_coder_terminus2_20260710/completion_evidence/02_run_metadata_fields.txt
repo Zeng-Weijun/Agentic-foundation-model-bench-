@@ -1,0 +1,12 @@
+run_id                 'tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32'
+uuid                   'ea134590-3898-4b70-8c7f-7c29081eb717'
+dataset_size           89
+n_concurrent_trials    32
+n_attempts             1
+accuracy               0.1348314606741573
+commit_hash            '1a6ffa9674b571da0ed040c470cb40c4d85f9b9b'
+start_time             '2026-07-10T06:52:08.557039+00:00'
+end_time               '2026-07-10T08:58:08.646521+00:00'
+agent_kwargs           None
+dataset_path           '/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703'
+task_ids_n            89
