@@ -1,0 +1,57 @@
+{
+  "asset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench",
+  "bench_id": "repozero_py2js_smoke",
+  "counts": {
+    "errors": 0,
+    "loaded": 0,
+    "missing": 0,
+    "present": 0,
+    "pulled": 0,
+    "retagged": 0,
+    "smoke_passed": 0,
+    "tar_mismatch": 0,
+    "tar_missing": 0,
+    "tar_verified": 1,
+    "unchecked": 1
+  },
+  "docker_host": "unix:///tmp/rl/run/docker.sock",
+  "images": [
+    {
+      "fallback": {
+        "missing_paths": [],
+        "present_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar"
+        ],
+        "sha256": "06195ec45e6ac02b3c7256f5fcfdacb280612abfc4a820cee5af6d66eb5ea342",
+        "sha256_actual": "06195ec45e6ac02b3c7256f5fcfdacb280612abfc4a820cee5af6d66eb5ea342",
+        "sha256_proof_method": "sha256_tar_bytes",
+        "sha256_status": "match",
+        "tar_paths": [
+          "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar"
+        ]
+      },
+      "id": "repozero_py2js_repoarena_runtime",
+      "image_refs": [
+        "100.97.118.137:8555/swe-data-harness/repozero-repoarena-new@sha256:b3ced2dcf006c8af8b733b74326f55c76d7c251210d2bbb903bb3dc550372cb3"
+      ],
+      "inspect_attempts": [],
+      "local_refs": [
+        "ghcr.io/jessezzzzz/repoarena-new:latest"
+      ],
+      "required": true,
+      "role": "repoarena_runtime",
+      "status": "unchecked"
+    }
+  ],
+  "manifest": "manifests/images/repozero.yaml",
+  "mode": {
+    "allow_pull": false,
+    "existing_catalog": "",
+    "force_pull": false,
+    "load_fallback": false,
+    "retag_local": false,
+    "run_smoke": false,
+    "skip_docker": true
+  },
+  "schema_version": "agentic_bench.image_check.v1"
+}
