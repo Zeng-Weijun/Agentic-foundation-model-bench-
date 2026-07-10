@@ -283,6 +283,7 @@ redacted at capture time).
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` (medium) | `terminus-2` | **10.1%** | 9/89 | none (no Qwen anchor on TB2.1) | `canonical`¹ | [3.7](#37-tb21--qwen--terminus-2--101-canonical-with-caveat) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` host-bridge | 16.85% | 15/89 | — | contrast² | [3.8](#38-tb21--qwen--qwen-code-bridge--1685-contrast) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `terminus-2` — **re-measurement 2026-07-10** | 13.48% | 12/89 | 10.11% (this table, 2026-07-05) | `reproduced`⁹ | [3.15](#315-tb21--qwen-coder--terminus-2--1348-reproduced) |
+| Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` — **container-native** | 11.24% | 10/89 | none | `valid`¹⁰ | [3.16](#316-tb21--qwen-coder--qwen-code-native--1124-valid) |
 | Terminal-Bench 2.1 (oracle) | — | `terminus-2` | 95.5% | 85/89 | — | infra map³ | [3.9](#39-tb21-oracle-infra-map) |
 | RepoZero (188-case **rescue pool**) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | 54.70% ± 2.55 — **on 400 cases, not these** | `forbidden`⁸ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
@@ -292,6 +293,8 @@ redacted at capture time).
 
 ⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
 ⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 (27.5%) against 6/496 (1.2%) for Coder on the same bench, harness, serving host and day — a 23× rise. (An earlier version of this footnote said 45×, having compared against the *canonical* Coder run's 3/500 instead of the same-day one. See §3.14.) Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
+
+¹⁰ **Valid, and not comparable to the row above it.** Dual-signed. `qwen-code` running *inside* the task container with its full native toolset — `docker exec` appears zero times, `--allowed-tools` and `--exclude-tools` zero times across all 89 tasks. Against `terminus-2`'s `12/89`, exact McNemar gives `p = 0.7744`. Against the host-bridge's `13/89`, `p = 0.4531`. **There is no established difference between any pair of TB2.1 harnesses for this model** — see §2.1, whose TB2.1 column was withdrawn for exactly this reason. §3.16.
 
 ⁹ **`reproduced`, not strict.** Dual-signed. Two auditors, blind to each other: one asked whether this is an official reproduction, the other whether the artifacts let a stranger redo it. The first tried to refute it on six conditions and failed on five. The sixth — *is the serving stack the same as canonical's* — is **unprovable in principle**: `run_metadata`, `preflight`, `ledger` and the launch log record no sglang version, `tp_size`, attention backend, `mem_fraction_static` or `tool_call_parser` for the canonical run, and the host that produced it (`100.103.228.120`) is dead. Against canonical `9/89`, McNemar on the resolved-id sets gives `b=1, c=4, discordant=5, p=0.375`: **no detectable difference.** Do not read `13.48% > 10.11%` as an improvement. §3.15.
 
@@ -845,6 +848,74 @@ The 598 `No valid JSON object found` warnings (canonical: 0) are `content_class`
 responses, `finish_reason` is `stop` every time, `tool_calls` never appears, nothing is null or empty,
 and every body begins with `{`. sglang's `qwen3_coder` tool-call parser truncated nothing — a
 hypothesis this project carried for hours, killed by the evidence gathered to test it.
+
+---
+
+### 3.16 TB2.1 · Qwen-Coder × qwen-code native · 11.24% `valid`
+
+| Field | Value |
+|---|---|
+| `run_id` | `tb21_native_qwencode0162_promptfixed_bridgefix_full89_c32_20260710t1002z` |
+| `harness` | `qwen-code 0.16.2`, executing **inside the task container**, full native toolset, no restrictions |
+| `model` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` @ `:30001` |
+| `serving_config` | `random_seed 598954308` before **and** after — the sglang process was never restarted |
+| `score` | **10/89 = 11.24%** · `failure_mode { unset: 89 }` |
+| `llm_health` | `infra_class 3` (body timeouts) · `content_class 0` · `4xx/5xx 0` · `context_length_exceeded 0` |
+| `status` | `valid` — dual-signed |
+
+**It is genuinely native, and that had to be proven rather than assumed.** `docker exec` appears zero
+times in `run.log`. All 89 `commands.txt` invoke `qwen --channel CI --yolo --auth-type openai
+--output-format stream-json --prompt=…` inside the container's own tmux. `--allowed-tools` and
+`--exclude-tools` appear zero times. The host-bridge it replaced did the opposite: one tool
+(`run_tb_command`), every native file tool excluded by name, `qwen` on the host.
+
+**Tool activity, counted three ways and agreeing.** `2061` `tool_use` blocks by independent count,
+`2061` in `control/native_tool_events.json`, `2061` in `final_evidence`'s stream record. Every task has
+`tool_use > 0`; all `2061` are paired with a `tool_result`.
+
+**A previous run of this cell reported the same 10/89 and was void.** One task's prompt begins with
+`- `, and `--prompt` consumed it as a flag; `pytorch-model-recovery` never ran, and the denominator
+contained a task that was never attempted. The number was right and the run was not. Fixed with
+`--prompt=<quoted>`, a regression test that round-trips a leading-dash multiline prompt, and a scan of
+all 89 prompts (exactly one begins with `-`; none with `--`). It now runs for 6.5 minutes, issues 30
+tool calls, and writes `model.pt`. It is still unresolved. **The bug cost nothing in the score and
+everything in the claim.**
+
+#### Two things the auditor found that its own report had gotten wrong
+
+`llm_health.read_timeout = 0` undercounts three body-timeouts. All three tasks were unresolved, so the
+error only depresses. `infra_class` is **3**, not 0 — the third time tonight a health counter was first
+reported as zero and was not.
+
+`qwen_result_success = 88/89`: `install-windows-3.11` issues 29 tool calls and never emits a terminal
+result. It was unresolved regardless, and the orchestrator had already disclosed it under
+`effective_attempts` rather than letting it pass as a clean 89.
+
+#### The check that should have existed six hours earlier
+
+```
+find <run_root> -newermt "<end_time>"   →   empty
+sha256(final_evidence.json)             →   12195cc4…c3e8a1d, char-exact on recompute
+```
+
+Zero files in the run root were modified after the run ended. This is stated as evidence because in
+another run tonight it would have failed: a wrapper was edited in place ninety minutes after the
+failure it was written to prevent, inside the directory of a run that had already produced most of its
+results — and the edit made two different runs hash identically. See
+[`experiments/eval_wrap_integrity_20260710/`](../experiments/eval_wrap_integrity_20260710/).
+
+#### And an accident of harness design worth keeping
+
+TB2.1 mounts `/tests` **read-only**. The model cannot touch the tests, whatever it intends.
+
+SWE-bench relies instead on resetting test files *after* the agent runs — `git checkout <base> <file>`,
+then the gold `test_patch`. That works only for files on the reset list. On SWE-bench Multilingual,
+`buildScripts/tests.ant.xml` is not on it, and `Qwen3-Coder-30B` edited it on **8 of 8** sampled
+`projectlombok/lombok` tasks — adding the very `test.instance` target the gold patch adds — after which
+`ant test.instance` reported the target did not exist and 16 of 17 Java tasks scored a build failure.
+`gpt-5.5`, on the same images, never touched the file and resolved 14 of 17.
+
+**A read-only mount prevents what a post-hoc reset merely tries to undo.**
 
 ---
 
