@@ -1,0 +1,41 @@
+{
+  "after_counts": {
+    "direct_network_hits": 0,
+    "direct_network_samples": [],
+    "public_index_or_proxy_hits": 0,
+    "public_index_or_proxy_samples": [],
+    "runtime_resolver_hits": 0,
+    "runtime_resolver_samples": [],
+    "solution_network_hits": 0,
+    "solution_network_samples": [],
+    "test_outputs_network_hits": 0,
+    "test_outputs_network_samples": []
+  },
+  "before_counts": {
+    "direct_network_hits": 0,
+    "direct_network_samples": [],
+    "public_index_or_proxy_hits": 0,
+    "public_index_or_proxy_samples": [],
+    "runtime_resolver_hits": 0,
+    "runtime_resolver_samples": [],
+    "solution_network_hits": 0,
+    "solution_network_samples": [],
+    "test_outputs_network_hits": 0,
+    "test_outputs_network_samples": []
+  },
+  "changes": [],
+  "compose_files": 89,
+  "compose_files_changed": 0,
+  "compose_removed_lines": 0,
+  "dataset": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703",
+  "execute": true,
+  "expected_tasks": 89,
+  "generated_at_utc": "2026-07-05T15:54:24Z",
+  "run_tests": 89,
+  "run_tests_changed": 0,
+  "schema_version": "agentic_bench.tb21_runtime_closure_repair.v2",
+  "solution_files": 89,
+  "solution_files_changed": 0,
+  "test_output_files": 89,
+  "test_outputs_changed": 0
+}
