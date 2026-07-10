@@ -545,10 +545,53 @@ Two readings, and they are not close in consequence:
 
 A three-task protocol probe (§5.13) already showed tool calls are parsed and executed — `12` `tool_use`
 blocks across `3/3` trajectories, running `glob`, `grep_search`, `read_file`, `edit`. That rules out a
-*total* mismatch. It does not rule out a partial one, and 3 tasks cannot speak for 137. The audit
-classifies all 137: zero-tool-call, tool calls but no diff, timeout, crash, or voluntary stop.
+*total* mismatch. It does not rule out a partial one, and 3 tasks cannot speak for 137.
 
-**Until that classification exists, this row is a number without a referent.** Recorded, not quoted.
+#### The census
+
+All 137 classified, not sampled:
+
+| | count | |
+|---|---:|---|
+| (a) zero tool calls — protocol/parser failure | **0** | the hypothesis this audit existed to test |
+| (b) tool calls issued, no diff produced | **94** | |
+| (c) rollout or request timeout | 13 | 8 × `ROLLOUT_TIMEOUT after 3000s`, 5 × request-level 483 s |
+| (d) crash / API 400 at the context ceiling | 30 | see below |
+| (e) voluntary stop | 0 | |
+| | **137** | |
+
+Two trajectories *do* contain literally zero tool calls. The auditor traced both to a 483-second
+serving timeout on the first request and filed them under (c) rather than (a) — the distinction being
+that the parser never got a response to fail on. Even taken as (a), the count is 2/137, and the
+scaffold reading dies either way.
+
+So Instruct-2507 calls tools, reads code, edits files. It does not converge. It issues tool calls and
+produces no diff 94 times, and talks until it overruns its context 30 times. Coder converges. That is
+the 45×.
+
+`eval` genuinely ran: **42,456 individual unit-test executions**. `resolved` is taken from the
+harness's `resolved_ids`, not from `eval_rc`. Zero resolved instances have an empty patch; zero touch
+a test file. Model identity was re-probed 31 times across the run.
+
+#### The 30, and why they are not yet settled
+
+`context_length = 262144`. The scaffold passes `max_output_tokens = 65536`. The 400s fire near
+**~228K input tokens**, which matches none of the three obvious ceilings:
+
+```
+262144 − 65536 = 196608     no
+262144                      no
+262138                      no   (sglang's tokenizer-manager path reserves 6)
+```
+
+Three candidate mechanisms, none of which explains the number, means a fourth exists and has not been
+found. Until it is, one reading remains open: if those 30 tasks died because a *scaffold parameter*
+squeezed the input budget, they died of configuration, not of capability. That is 6% of the benchmark,
+and it would make **21.6% a lower bound under this configuration rather than a measurement of the
+model**. The second audit is required to quote the exact 400 message text and the exact input token
+count — not "approximately 228K" — and to confirm the Coder run used the same `max_output_tokens`.
+
+**One endorsement in hand. Recorded, not quoted, until the second lands.**
 
 ---
 
