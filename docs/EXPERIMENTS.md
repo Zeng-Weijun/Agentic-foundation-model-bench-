@@ -1500,6 +1500,22 @@ dividing by it.
 
 An honest list of what a third party could **not** reproduce from this repo today.
 
+> **Progress note (2026-07-11).** Several gaps below are now partly closed. What changed, and what
+> did not:
+>
+> | Gap | 07-09 | 07-11 |
+> |---|---|---|
+> | C1 — canonical 70.8% runner lost | unrecoverable | still unrecoverable, but the four untracked scripts it *depended* on are vendored with provenance in `runners/tb21_harness/` (`PROVENANCE.tsv` + hashes) |
+> | C2 — TB2.1 chain outside git | entirely | 37 runners + the harness scripts committed to `runners/`; **archive copies, not execution paths** (they anchor `$REPO_ROOT` to `$0`) |
+> | Qwen serving dead (`100.103.228.120`) | no config recorded | **the replacement** (`100.100.104.140`, also now shut down) *is* fully recorded — verbatim launch command, 402 server args, `random_seed` fingerprints, in `experiments/serving/`. The dead one stays unrecoverable; the point is the new discipline held. |
+> | No trace manifests | empty template | 994 SWE-V agent traces committed (`experiments/*/traces/agent_traces.tar.gz`, 16 MB) + per-instance hash index; TB2.1's 12 GB stays on shared storage behind a merkle root |
+> | Multilingual no machine-readable score | `.md` only | `results.jsonl` + `sha256` + per-language split committed for both Qwen runs |
+> | **Offline transport to Harbor** | not started | RepoZero path `ready`; DeepSWE (98 unique images, dedup-verified) and Multilingual-Java (18/26) pushing; NL2Repo needs a ~30–80 MB build-backend wheelhouse; a KVM-worker pull-and-run check is the final gate. Tracked live in `_coordination/`, digests land in `runners/bench_manifests/`. |
+>
+> And two gaps this document *created and closed* on 07-10, both under `experiments/`: the
+> `eval_wrap.py` overwritten in-run (`eval_wrap_integrity_20260710/`, status `ORIGINAL_LOST`), and
+> the `tb_rc=143` process-hang that reddened a complete run (verdict rules v5).
+
 ### C1 — The canonical TB2.1 runner is gone (HIGH)
 `run_terminal_bench_2_1_full89_batched_privileged_offline.sh` is **untracked by git** in the r3
 worktree (`git status` shows `??`). Its mtime is `2026-07-07 23:46` — it was **rewritten by the
