@@ -31,21 +31,29 @@ other lost none.
 
 ## Recovering what actually ran
 
-No `.orig`, no `.bak`. The original content is gone from that directory. It is recoverable by comparison,
-not by proof:
+No `.orig`, no `.bak`, no launch-time pin, no snapshot. **Status: `ORIGINAL_LOST`.**
 
-| | `sha256` | bytes | `ignore_removed` | run start | rows dropped to the 404 race |
+The engineer who owns that run reviewed a first draft of this note, which claimed the pre-patch content
+was "recovered by comparison," and rejected the promotion. It is a **recovery candidate**, not a
+recovered file. The distinction is the whole subject of this directory.
+
+The candidate, and its witnesses:
+
+| | `sha256` | bytes | `ignore_removed` | when | rows dropped to the 404 race |
 |---|---|---:|---:|---|---:|
+| Multilingual **canary**, same lane | `dca24b59d3a4…` | 532 | **0** | `2026-07-10 08:07Z` — 32 min before launch | — |
 | SWE-V × Coder | `dca24b59d3a4…` | 532 | **0** | `2026-07-09 16:05:54Z` | 4 |
 | SWE-V × Instruct-2507 | `dca24b59d3a4…` | 532 | **0** | `2026-07-09 18:32:39Z` | 2 |
-| Multilingual × Coder | `81cb668d25ce…` | 839 | 3 | `2026-07-10 08:39:16Z` | **3** |
+| **Multilingual × Coder**, as found on disk | `81cb668d25ce…` | 839 | 3 | mtime `2026-07-10 10:27:03Z` | **3** |
 
-Two contemporaneous runs, never edited afterwards, carry the same 532-byte wrapper with no monkeypatch,
-and both were bitten by the same race. The Multilingual Coder run was bitten too. The inference is that
-it also ran the 532-byte version and was overwritten afterwards.
+Three runs, none edited afterwards, carry the same 532-byte wrapper with no monkeypatch. The closest is
+that run's own canary, thirty-two minutes before its launch. Two of the three were bitten by the race,
+as the full run was.
 
-**`RECOVERED_BY_COMPARISON`, not `PROVEN`.** Both files are committed here. The pre-patch version is
-what the evidence says ran; the post-patch version is what is on disk.
+**None of that proves what the full run loaded at `08:39:16Z`.** A witness standing thirty-two minutes
+away is a better witness than one standing a day away. Neither was in the room. The candidate is
+committed here beside the file that overwrote it; the run's own status carries `ORIGINAL_LOST`, and the
+superseded hash freeze is retained rather than deleted.
 
 ## What this run's numbers still mean
 
@@ -57,7 +65,22 @@ inconsistency inside a single run:
 > The 3 rows repaired afterwards were evaluated **with** it.
 > One run, two evaluation environments. It must be declared, and it now is.
 
-## The rule
+## The rule, and it is already in force
+
+The `Multilingual × Instruct-2507` run, launched two hours later, pins its wrapper at launch:
+
+```json
+// provenance/EVAL_WRAP_LAUNCH_PIN.json
+{ "sha256": "81cb668d…", "mtime": "2026-07-10T10:37:13.033571Z", "size": 839, "guard": true }
+```
+
+Re-verified at teardown. **A mismatch invalidates the run.** That run genuinely uses `ignore_removed`
+throughout, and can say so with a hash taken before a single task started.
+
+The Coder run cannot. Its final status now carries `MIXED_EVAL_ENVIRONMENTS_DISCLOSED`: its 271 main
+rows were evaluated **without** the guard, and the 3 rows repaired afterwards **with** it. Which means
+the two Multilingual runs — `Coder` and `Instruct-2507`, the pair anyone would want to compare — did
+not share an evaluation environment, and only one of them can prove which environment it had.
 
 Never edit a file inside a run directory. Not to fix a bug, not after the run, not ever. Fix the source
 and start a new run. Pin the sha256 of every executed script at launch, and re-verify it at teardown; a
