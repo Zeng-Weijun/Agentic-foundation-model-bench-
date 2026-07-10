@@ -282,6 +282,7 @@ redacted at capture time).
 | Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` — **re-measurement 2026-07-09** | 59.55% | 53/89 | — | `forbidden`⁵ | [3.12](#312-tb21--gpt-55--terminus-2--5955-re-measurement--forbidden) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` (medium) | `terminus-2` | **10.1%** | 9/89 | none (no Qwen anchor on TB2.1) | `canonical`¹ | [3.7](#37-tb21--qwen--terminus-2--101-canonical-with-caveat) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` host-bridge | 16.85% | 15/89 | — | contrast² | [3.8](#38-tb21--qwen--qwen-code-bridge--1685-contrast) |
+| Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `terminus-2` — **re-measurement 2026-07-10** | 13.48% | 12/89 | 10.11% (this table, 2026-07-05) | `reproduced`⁹ | [3.15](#315-tb21--qwen-coder--terminus-2--1348-reproduced) |
 | Terminal-Bench 2.1 (oracle) | — | `terminus-2` | 95.5% | 85/89 | — | infra map³ | [3.9](#39-tb21-oracle-infra-map) |
 | RepoZero (188-case **rescue pool**) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | 54.70% ± 2.55 — **on 400 cases, not these** | `forbidden`⁸ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
@@ -291,6 +292,8 @@ redacted at capture time).
 
 ⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
 ⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 (27.5%) against 6/496 (1.2%) for Coder on the same bench, harness, serving host and day — a 23× rise. (An earlier version of this footnote said 45×, having compared against the *canonical* Coder run's 3/500 instead of the same-day one. See §3.14.) Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
+
+⁹ **`reproduced`, not strict.** Dual-signed. Two auditors, blind to each other: one asked whether this is an official reproduction, the other whether the artifacts let a stranger redo it. The first tried to refute it on six conditions and failed on five. The sixth — *is the serving stack the same as canonical's* — is **unprovable in principle**: `run_metadata`, `preflight`, `ledger` and the launch log record no sglang version, `tp_size`, attention backend, `mem_fraction_static` or `tool_call_parser` for the canonical run, and the host that produced it (`100.103.228.120`) is dead. Against canonical `9/89`, McNemar on the resolved-id sets gives `b=1, c=4, discordant=5, p=0.375`: **no detectable difference.** Do not read `13.48% > 10.11%` as an improvement. §3.15.
 
 ⁸ **Not a RepoZero score, and not comparable to the anchor.** The official figure, `54.70% ± 2.55`, is measured on **400** Py2JS cases — verified from three independent sources that agree verbatim: the paper (`arxiv.org/html/2605.07122v3`), the repo README's 24-library / 400-file table, and the harness itself, whose `valid_ids` has `len == 400`. Its protocol is `mini-swe-agent` + `Claude-4.6-Sonnet`, All-Pass Rate, single-attempt `pass@1`.
 
@@ -708,6 +711,90 @@ timeout, or a crash — rather than at the model's judgement. One further genuin
 Instruct-2507 achieves under this scaffold configuration. It is not an upper bound on the model.**
 
 Status `canonical` for this cell, with that caveat attached to the number wherever it is quoted.
+
+---
+
+### 3.15 TB2.1 · Qwen-Coder × terminus-2 · 13.48% `reproduced`
+
+| Field | Value |
+|---|---|
+| `run_id` | `..._terminus-2_c32_tb21_coder_t2_c32_0710064916_attempt1_medium_c32` |
+| `harness` | `terminus-2` — Terminal-Bench 2.1's own agent · `c=32` · `attempts=1` |
+| `model` | `Qwen/Qwen3-Coder-30B-A3B-Instruct` via `:30001` (no relay; `--relay-url` is a misnomer) |
+| `serving_config` | `tp=2` · `ctx=262144` · `mem_frac=0.85` · `fa3` · `qwen3_coder` · sglang `0.5.13` · `random_seed 598954308` before **and** after |
+| `dataset` | `terminal-bench-2.1-yaml-full89-r7-final-20260703`, merkle `4e0416e0…e18e`, frozen since `2026-07-04 05:26Z` |
+| `script_digests` | four untracked scripts, `runners/tb21_harness/PROVENANCE.tsv` |
+| `llm_health` | `content_class 7` (all `context_length_exceeded`) · **`infra_class 1`** (one `RetryError[Timeout]`, 1/8559) |
+| `score` | **12/89 = 13.48%** · `full.rc = 143` |
+| `status` | `reproduced` — dual-signed, serving stack differs |
+| evidence | [`experiments/tb21_qwen3_coder_terminus2_20260710/`](../experiments/tb21_qwen3_coder_terminus2_20260710/) |
+
+**Against canonical.** `9/89` then, `12/89` now. McNemar on the resolved-id sets — `b=1`
+(`openssl-selfsigned-cert`, solved then, not now), `c=4` (`cobol-modernization`,
+`fix-code-vulnerability`, `nginx-request-logging`, `qemu-startup`), `d=76`, discordant `5`, exact
+two-sided binomial **`p = 0.375`**. There is no detectable difference. `Jaccard = 0.615`, against
+`0.389` between two identically-configured runs of the host-bridge harness — the official harness's
+trajectories are markedly *more* stable across serving instances than the bridge's are across
+nothing at all.
+
+An earlier note here compared the `+3` tasks against a `σ_diff ≈ 3.32` measured on the bridge
+harness. That is a variance estimate borrowed across harnesses, which the engineer who measured it
+had explicitly forbidden in the report that produced it. **McNemar borrows nothing.**
+
+#### The harness is official. The checkout is not clean.
+
+```
+$ git status --porcelain   # vendored terminal-bench
+ M terminus_2.py
+ M harness.py
+ M lite_llm.py
+```
+
+The auditor did not stop there, and did not wave it through. It read the diffs: `lite_llm.py` gates
+its change on `if self._reasoning_effort is not None`, and this run sets `REASONING_EFFORT=` — empty.
+The prompt and the parser are `git`-clean. So the modification is **inert under this configuration**.
+
+That is a narrower claim than "we ran the unmodified official harness," and it is the true one. It
+also has an expiry date: the first run that gives `reasoning_effort` a value invokes code that no
+upstream release contains, and this row's provenance quietly stops meaning what it says.
+
+#### `full.rc = 143`, and why the score survives it
+
+`tb run` finished scoring at `08:58:08.646521Z`, released every container, and did not exit — 62
+threads, 61 parked in `futex_wait_queue_me` including the main thread, 0.0% CPU, one leftover `ESTAB`
+socket to the inference endpoint. `threading._shutdown()`, joining a non-daemon thread. An operator
+sent `SIGTERM` at `09:15:37Z`, **17m28s after the work was done**.
+
+`infra_fail = bool(missing_artifact or fatal_timeout or tb_rc not in (0, None))`, so `strict_summary`
+reports `infra_fail = 89` — every task — each row's `notes` containing nothing but `['tb_rc=143']`,
+with `missing_artifact = 0` and `parse_error = 0`. `resolved = 12` reads from `raw_status` and is
+untouched. The order in `full_run.out` settles it: `Results written…` → `Terminated` → `tb_rc=143`.
+
+> **Verdict rules v5.** `tb_rc` must be read **relative to `end_time`**. A non-zero exit produced
+> *after* the run finished is a process-lifecycle artifact, not a measurement fault. v4's rule 1
+> cannot tell the two apart, and would have marked a complete run infrastructure-failed on the
+> strength of a signal the operator sent. The official ledger script reads `strict_summary.json`
+> directly, and would have copied `infra_fail=89` into the ledger as fact.
+
+Nothing was faked: `full.rc`'s `sha256` is identical before and after the reducer ran, and
+`scores.yaml` opens with `# RED-BUT-HONEST. This run's exit code is non-zero and stays non-zero.`
+
+#### One log string, two opposite meanings
+
+`llm_health` was first reported as `infra_class = 0`. It is **1**. A `RetryError[… raised Timeout]`
+at `terminal_bench.log:6745` exhausted its retries on a read timeout. It appears in no `debug.json`,
+because a later retry succeeded within the same episode and overwrote it; it survives only in the
+harness log. One in 8559 is not material and does not make this run `forbidden` — and reporting it as
+zero would still have been false.
+
+**Canonical's six `Unknown Error in LLM interaction` lines all wrap `BadRequestError` — `content_class`.
+This run's one wraps `Timeout` — `infra_class`.** The same string, carrying opposite meanings.
+Classify by the wrapped exception, never by the message.
+
+The 598 `No valid JSON object found` warnings (canonical: 0) are `content_class`: across 8551
+responses, `finish_reason` is `stop` every time, `tool_calls` never appears, nothing is null or empty,
+and every body begins with `{`. sglang's `qwen3_coder` tool-call parser truncated nothing — a
+hypothesis this project carried for hours, killed by the evidence gathered to test it.
 
 ---
 
