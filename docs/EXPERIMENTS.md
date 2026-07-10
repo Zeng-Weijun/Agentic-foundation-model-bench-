@@ -287,8 +287,8 @@ redacted at capture time).
 | Terminal-Bench 2.1 (oracle) | — | `terminus-2` | 95.5% | 85/89 | — | infra map³ | [3.9](#39-tb21-oracle-infra-map) |
 | RepoZero (188-case **rescue pool**) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | 54.70% ± 2.55 — **on 400 cases, not these** | `forbidden`⁸ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
-| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` | 20.80% | 57/274 | none (no Qwen anchor) | `pending`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
-| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.16.2` | 8.03% | 22/274 | none | `pending`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
+| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` | 20.80% | 57/274 | none (no Qwen anchor) | `valid`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
+| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.16.2` | 8.03% | 22/274 | none | `valid`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 67.0% raw | 201/300 | 66.7% | `forbidden` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
 | SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `reproduced`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
 | SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `canonical`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
@@ -298,7 +298,7 @@ redacted at capture time).
 
 ¹⁰ **Valid, and not comparable to the row above it.** Dual-signed. `qwen-code` running *inside* the task container with its full native toolset — `docker exec` appears zero times, `--allowed-tools` and `--exclude-tools` zero times across all 89 tasks. Against `terminus-2`'s `12/89`, exact McNemar gives `p = 0.7744`. Against the host-bridge's `13/89`, `p = 0.4531`. **There is no established difference between any pair of TB2.1 harnesses for this model** — see §2.1, whose TB2.1 column was withdrawn for exactly this reason. §3.16.
 
-¹¹ **One endorsement each; second audit in flight; and the pair does not compare cleanly.** Both are `clean274` = the official 300 minus 26 Java/Gradle tasks whose offline build chain is broken (§5.5) — **not a 300 score.** An auditor tried to inflate, cheat, fake-zero, pollute the denominator, or find a post-run edit, and failed on all five. But the two are provenance-asymmetric: the Coder run's `eval_wrap.py` for its 271 main rows is **`ORIGINAL_LOST`** (overwritten in place at 10:27:03Z when a repair added `ignore_removed`; the 3 repaired rows ran under a different eval env — `MIXED_EVAL_ENVIRONMENTS_DISCLOSED`), while the Instruct run pins its wrapper at launch and re-verifies at teardown but has `serving_identity_after = UNVERIFIABLE` (sglang was shut down 14 min after its last row). `20.8%` vs `8.0%` is a 2.6× gap, far larger than any `ignore_removed` effect — a **directional** comparison stands; a clean side-by-side does not. §3.17.
+¹¹ **Dual-signed, and the pair does not compare cleanly.** Two auditors, blind to each other, each tried to inflate/cheat/fake-zero/pollute-denominator/find-a-post-run-edit and failed on all five; both endorse `valid-with-caveat`. Both are `clean274` = the official 300 minus 26 Java/Gradle tasks whose offline build chain is broken (§5.5) — **not a 300 score.** An auditor tried to inflate, cheat, fake-zero, pollute the denominator, or find a post-run edit, and failed on all five. But the two are provenance-asymmetric: the Coder run's `eval_wrap.py` for its 271 main rows is **`ORIGINAL_LOST`** (overwritten in place at 10:27:03Z when a repair added `ignore_removed`; the 3 repaired rows ran under a different eval env — `MIXED_EVAL_ENVIRONMENTS_DISCLOSED`), while the Instruct run pins its wrapper at launch and re-verifies at teardown but has `serving_identity_after = UNVERIFIABLE` (sglang was shut down 14 min after its last row). `20.8%` vs `8.0%` is a 2.6× gap, far larger than any `ignore_removed` effect — a **directional** comparison stands; a clean side-by-side does not. §3.17.
 
 ⁹ **`reproduced`, not strict.** Dual-signed. Two auditors, blind to each other: one asked whether this is an official reproduction, the other whether the artifacts let a stranger redo it. The first tried to refute it on six conditions and failed on five. The sixth — *is the serving stack the same as canonical's* — is **unprovable in principle**: `run_metadata`, `preflight`, `ledger` and the launch log record no sglang version, `tp_size`, attention backend, `mem_fraction_static` or `tool_call_parser` for the canonical run, and the host that produced it (`100.103.228.120`) is dead. Against canonical `9/89`, McNemar on the resolved-id sets gives `b=1, c=4, discordant=5, p=0.375`: **no detectable difference.** Do not read `13.48% > 10.11%` as an improvement. §3.15.
 
@@ -932,7 +932,7 @@ then the gold `test_patch`. That works only for files on the reset list. On SWE-
 | `results.jsonl sha256` | `aab29ee4…` | `cc41b1de…` |
 | model identity | `model_path` before/after/post-repair all `…Qwen3-Coder-30B-A3B-Instruct` | before `…Instruct-2507`; **after `UNVERIFIABLE`** |
 | eval-wrapper provenance | **`ORIGINAL_LOST`** — overwritten 10:27:03Z; `MIXED_EVAL_ENVIRONMENTS_DISCLOSED` | pinned at launch, re-verified at teardown, exact match |
-| status | `pending` | `pending` |
+| status | `valid`-with-caveat (dual-signed) | `valid`-with-caveat (dual-signed) |
 
 Both are `clean274`: the official 300 minus the 26 Java/Gradle tasks whose offline build chain never
 resolves (§5.5). **Neither is a 300 score**, and both must be quoted per-language.
@@ -952,6 +952,13 @@ the other cannot. See [`experiments/eval_wrap_integrity_20260710/`](../experimen
 `20.8%` vs `8.0%` is 2.6×, an order of magnitude beyond the difference `ignore_removed` could make.
 The direction — Coder well above Instruct-2507 on multilingual repair — is safe. The exact ratio,
 placed side by side without the asymmetry stated, is not.
+
+The second auditor added the check that rules out the simplest failure of all — that these are one run
+relabelled twice. The resolved sets overlap in 19 instances, with 38 unique to Coder and 3 unique to
+Instruct-2507 (`faker-2970`, `redis-10095`, `bat-2650`). Both directions non-empty: two genuinely
+separate runs, not a copy or a subset. It also confirmed the self-inflicted Java failure per task —
+Coder edits `tests.ant.xml` on 15 of 17, Instruct-2507 on all 17, `gpt-5.5` on none — and found zero
+resolved instances with an empty patch and zero with no tool calls, in either run.
 
 #### Java 0/17 is the model breaking its own evaluation, not the environment
 
