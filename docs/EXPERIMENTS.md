@@ -199,6 +199,35 @@ host that replaced it.
 | `base_url` alone | no — same port, different host, different model |
 | **`model_path` from `/get_model_info`, fetched from that host:port at run time** | **yes** |
 
+#### The same fault, in a system that shares no code with sglang
+
+The API relay used for every `gpt-5.x` row in this table behaves identically, and worse. Probed
+2026-07-10:
+
+```
+POST /v1/chat/completions  {"model": "gpt-5.7-doesnotexist", ...}
+->  200. The response's `model` field echoes `gpt-5.7-doesnotexist`.
+    The response's *content* introduces itself as GPT-5.1.
+
+POST /v1/chat/completions  {"model": "gpt-5.6-sol", ...}
+->  200. The content also introduces itself as GPT-5.1.
+```
+
+A fabricated model name is served. Two different real names produce a reply claiming the same
+identity. **Nothing in the response body distinguishes them.** The only names that fail are `-codex`
+variants and the entire `claude` family, which return `400` — so an endpoint that refuses a *valid*
+model with a clear error will happily serve an *invented* one without any.
+
+Two systems with nothing in common — a self-hosted inference server and a third-party proxy — fail
+the same way: **they accept the name you assert and let you believe it.** The lesson is not about
+either implementation. It is that a model identifier travels through a request as data, and data does
+not verify itself. Record the endpoint and probe it; never record the name and trust it.
+
+A consequence worth stating plainly, because it is easy to claim otherwise: **cross-family
+adversarial review is not possible through this relay.** There is one family behind it. Any pipeline
+asserting that a `claude-*` judge reviewed a `gpt-*` generator through this endpoint asserts something
+that returned `400` and never ran.
+
 Hence field 11 of §0. `serving_config` must be captured **during** the run, from the endpoint
 the run actually used, and stored with the run. Not looked up afterwards in a config file that
 describes some other host.
