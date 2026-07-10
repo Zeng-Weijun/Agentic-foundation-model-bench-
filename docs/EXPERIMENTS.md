@@ -228,6 +228,37 @@ adversarial review is not possible through this relay.** There is one family beh
 asserting that a `claude-*` judge reviewed a `gpt-*` generator through this endpoint asserts something
 that returned `400` and never ran.
 
+#### ⚠️ Every `gpt-5.x` row in this table carries an undeclared scaffold
+
+The relay is a proxy in front of a **ChatGPT-Codex account**, not the OpenAI API. It says so itself,
+in the error it returns for the models it refuses:
+
+```
+"The 'claude-opus-4-6-thinking' model is not supported when using [ChatGPT-Codex account]"
+```
+
+and in the ~5000 tokens of system prompt that arrive with every request — the figure this table first
+recorded as a mysterious `prompt_tokens: 5087` for a two-token message, and mistook for a relay
+defect. It is not a defect. It is Codex's system prompt, prepended to every call we made.
+
+So the `gpt-5.5` in these rows is not a bare model. It is a model wrapped in a harness we never chose,
+never versioned, and never recorded — and it is being compared against official anchors
+(`72.8%` for `gpt-5.2-high` on SWE-V bash-only, `78.2%` for `gpt-5.5` on TB2.1) that were almost
+certainly measured through the plain API.
+
+This does not invalidate the rows. It means the comparison to the anchors was never like-for-like,
+and nothing in the pipeline said so. `serving_config` (field 11) covers self-hosted endpoints; there
+is no equivalent field capturing *what a proxy does to a request on its way through*, and
+`relay_upstream` (field 12) records only where it went, not what it became.
+
+The `Qwen` rows are unaffected: they call self-hosted sglang directly, with no relay in the path. That
+is now an argument for the self-hosted lane beyond cost — **it is the only lane whose prompt we can
+account for.**
+
+**Open, not closed.** The claim that the injected prompt changes benchmark behaviour is plausible and
+unmeasured. The experiment that settles it is a paired run of one bench through the relay and through
+a bare API key, and this repo has not run it.
+
 Hence field 11 of §0. `serving_config` must be captured **during** the run, from the endpoint
 the run actually used, and stored with the run. Not looked up afterwards in a config file that
 describes some other host.
@@ -1165,6 +1196,35 @@ This is the fourth time in one working session that an instruction from the orch
 overturned by the agent executing it — after `blocked` implying an invalid score, after the retry
 arithmetic, after `UNRECOVERABLE`. Each was caught the same way: someone declined to report a
 number they could not explain.
+
+### 5.14 Three ways to get the denominator wrong, none of which raises an error
+
+Within one night, on one benchmark family, the same quantity was corrupted three different ways.
+
+**By omission.** `full500_qwencode_orchestrator_v21.py:912-921` routes `eval_error` and `infra_error`
+through `preserve_failure` and `append_event`, and never calls `append_score`. Instances that finished
+their tests and then lost a container-cleanup race disappear from `results.jsonl` rather than being
+recorded as unresolved. Six vanished across two runs; three of them were genuinely resolved.
+
+**By reporting.** `results.jsonl` has rows, and the benchmark has a size, and they are not the same
+number. `240/496 = 48.39%` and the honest `242/500 = 48.4%` differ by 0.01 pt. The wrong denominator
+does not produce a wrong-looking answer. It produces a right-looking one.
+
+**By accretion.** A TB2.1 launch wrote its own preflight summary as JSON into the directory the task
+loader globs, and the loader counted it. `dataset_size` became 90. The engineer noticed before any
+task ran, stopped the launch, removed only that run's containers, fixed the guard, added eight tests,
+and relaunched with `run_metadata` independently confirming `dataset_size=89, task_ids=89, no
+pseudo-task`.
+
+The third is the one worth generalising. **An output written beside its input becomes an input.** The
+directory was not a directory of tasks; it was a directory of files, and something decided that files
+are tasks. Nothing in that chain was wrong on its own.
+
+None of the three raises an exception, fails a gate, or produces an implausible number. The only
+defence that caught any of them was someone asking what a number was the denominator *of*, before
+dividing by it.
+
+---
 
 ---
 
