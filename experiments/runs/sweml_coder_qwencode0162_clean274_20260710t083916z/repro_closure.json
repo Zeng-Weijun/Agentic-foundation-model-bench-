@@ -11,6 +11,43 @@
     },
     "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/harness/offline_pydeps/mini_swe_agent_v2_0_0_swebench_py311_20260704"
   },
+  "artifact_retrieval": {
+    "dataset_parquet": {
+      "bytes": 1165968,
+      "dataset_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26",
+      "dataset_dir_SHA256SUMS_sha256": "de7f7decec989c5719f95036e296b22c88fac4def2faaab2af8675ecc4333081",
+      "kind": "dataset parquet",
+      "missing": null,
+      "row_count": 300,
+      "sha256": "28b7f874e48496399077d276f9f2b163a077ddf0a70dc507c148d58da826baa9",
+      "source_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26/data/test-00000-of-00001.parquet"
+    },
+    "note": "Bulky artifacts are NOT in git. Fetch from these internal/shared-disk or registry sources and verify sha256.",
+    "scaffold_tree": {
+      "du": "315M",
+      "file_count": 2619,
+      "internal_archive": {
+        "bytes": 62582520,
+        "content_addressed_by": "namelist_manifest_sha256[:12]",
+        "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/artifacts/repro_retention/scaffold_qwencode_0.16.2_0619ac7e06ae.tar.gz",
+        "sha256": "bcbf92a464e29d017eb5448450e5464d2afba953ef1cb7f6ba9f8478e61897d6"
+      },
+      "kind": "qwen-code scaffold tree",
+      "namelist_manifest_sha256": "0619ac7e06ae4a5efbc9ab852a2147b5db3e4beb50d1529070e385973ee5208b",
+      "package_json_sha256": "775d0911f7d45f30c361ee0aec244a20163dc5534620911cbba231c4f1834c9b",
+      "package_lock_json_sha256": "3797e52afc614946df1a81a052efe3e557864d44dbae096c787b8e4b1105e0e0",
+      "rebuild_hint": "npm install --prefix /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root-0.16.2 @qwen-code/qwen-code@0.16.2 node@20",
+      "source_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root-0.16.2",
+      "version": "0.16.2"
+    },
+    "task_images": {
+      "kind": "harbor registry images",
+      "note": "Images live in the Harbor registry; pull by RepoDigest for byte-exact reproduction. Local build tag: swebench/sweb.eval.x86_64.<mangled>:latest.",
+      "per_task_digests_in": "repro_closure.json:task_images.per_task_digests",
+      "pull_pattern": "docker pull 100.97.118.137:8555/<project>-sweb.eval.x86_64.<instance __->_1776_ >@<repo_digest>",
+      "registry": "100.97.118.137:8555"
+    }
+  },
   "base_url": "http://100.100.104.140:30001/v1",
   "bench": "SWE-bench Multilingual",
   "conda_key_packages": {
@@ -37,6 +74,7 @@
     "dataset_id": "swebench-multilingual-2025-08-26",
     "dataset_parquet_sha256_config": "28b7f874e48496399077d276f9f2b163a077ddf0a70dc507c148d58da826baa9",
     "dataset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26",
+    "parquet_bytes": 1165968,
     "parquet_file": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26/data/test-00000-of-00001.parquet",
     "parquet_sha256_live": "28b7f874e48496399077d276f9f2b163a077ddf0a70dc507c148d58da826baa9",
     "parquet_sha256_matches_config": true,
@@ -51,7 +89,7 @@
     "subset_ids_file": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/manifests/candidates/swemultilingual_clean274_instance_ids_20260710.txt",
     "subset_ids_sha256": "d68a0cb1ba9daebd35378ab21d448f04bf75daac66e868057050037361acb6c1"
   },
-  "generated_utc": "2026-07-11T17:46:08Z",
+  "generated_utc": "2026-07-11T18:24:42Z",
   "max_output_tokens": 65536,
   "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
   "orchestrator_scripts": {
@@ -100,7 +138,8 @@
         "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest"
       ]
     },
-    "missing": "per-task image digests are NOT persisted in results.jsonl nor any run image-manifest; only the pre-flight canary image digest is available. Images were run with --pull=never --network none by deterministic local tag (pattern in naming_pattern); to rebuild the full digest manifest, `docker image inspect` each task tag on the exec host while images are still present (keep_images=True).",
+    "capture_note": "per-task digest capture NOT run (CAPTURE_IMAGE_DIGESTS!=1). Run this collector ON the exec host with keep_images while images are present.",
+    "missing": "per-task image digests not captured; only pre-flight canary image digest available. Images run --pull=never --network none by deterministic local tag swebench/sweb.eval.x86_64.<instance __->_1776_ >:latest. Re-run with CAPTURE_IMAGE_DIGESTS=1 on the exec host.",
     "naming_pattern": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest",
     "per_task_digests": {},
     "registry": "100.97.118.137:8555"
