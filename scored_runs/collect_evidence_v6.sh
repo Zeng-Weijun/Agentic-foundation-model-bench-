@@ -21,11 +21,14 @@
 #   TRAJ_MAX_BLOCKS    max trajectory blocks/instance (default 400)
 #   TRAJ_SUMMARY_CHARS per-block summary char cap (default 240)
 #   TRAJ_MAX_BYTES     per-instance trajectory byte cap (default 80000)
+#   --- (3) bulky-artifact internal retention (NOT pushed to git) ---
+#   RETAIN_ARTIFACTS=1 archive scaffold tree to RETAIN_DIR (content-addressed, idempotent)
+#   RETAIN_DIR         internal shared-disk retention dir (required if RETAIN_ARTIFACTS=1)
 #
 # What it produces under OUT_DIR (each element = a reproducibility/adjudication seam):
 #   launch.sh              发射脚本 (exact orchestrator entrypoint) + COMMAND.sh
 #   repro_closure.json     复现闭包: script sha256+git, scaffold ver+pkg sha, conda pkgs,
-#                          dataset id+parquet sha, task-image digest manifest (or gap note)
+#                          dataset id+parquet sha, per-task image digests, artifact_retrieval
 #   serving/               get_model_info + get_server_info  BEFORE + AFTER
 #   results.jsonl          verbatim run results
 #   verdict_pack.tar.gz    判定证据: per-instance prediction.patch + test_output_tail + report.json
@@ -59,6 +62,8 @@ export IMAGE_ARCH="${IMAGE_ARCH:-x86_64}"
 export TRAJ_MAX_BLOCKS="${TRAJ_MAX_BLOCKS:-400}"
 export TRAJ_SUMMARY_CHARS="${TRAJ_SUMMARY_CHARS:-240}"
 export TRAJ_MAX_BYTES="${TRAJ_MAX_BYTES:-80000}"
+export RETAIN_ARTIFACTS="${RETAIN_ARTIFACTS:-0}"
+export RETAIN_DIR="${RETAIN_DIR:-}"
 
 mkdir -p "$OUT_DIR" || v6_die "cannot mkdir OUT_DIR $OUT_DIR"
 OUT_DIR="$(cd -- "$OUT_DIR" && pwd)"
@@ -126,6 +131,7 @@ CAP_IMG=os.environ.get("CAPTURE_IMAGE_DIGESTS","0")=="1"
 IMG_CMD=os.environ.get("IMAGE_INSPECT_CMD","docker"); IMG_ARCH=os.environ.get("IMAGE_ARCH","x86_64")
 TRAJ_MAX=int(os.environ.get("TRAJ_MAX_BLOCKS","400")); TRAJ_CH=int(os.environ.get("TRAJ_SUMMARY_CHARS","240"))
 TRAJ_BYTES=int(os.environ.get("TRAJ_MAX_BYTES","80000"))
+RETAIN=os.environ.get("RETAIN_ARTIFACTS","0")=="1"; RETAIN_DIR=os.environ.get("RETAIN_DIR","")
 
 def sha256_file(p):
     try:
@@ -156,6 +162,24 @@ def git_info(path):
         except Exception:
             out[key]=None
     return out
+
+def du_sh(p):
+    try:
+        r=subprocess.run(["du","-sh",p],capture_output=True,text=True,timeout=180)
+        return r.stdout.split()[0] if r.returncode==0 else "?"
+    except Exception: return "?"
+
+def tree_namelist_sha(root):
+    """cheap content-independent anchor: sha256 over sorted relpath<TAB>size (no file reads)."""
+    buf=io.StringIO(); n=0
+    for r,dirs,files in os.walk(root):
+        dirs.sort()
+        for fn in sorted(files):
+            full=os.path.join(r,fn)
+            try: sz=os.path.getsize(full)
+            except Exception: sz=-1
+            buf.write("%s\t%d\n"%(os.path.relpath(full,root),sz)); n+=1
+    return sha256_bytes(buf.getvalue().encode()), n
 
 cfg = jload(os.path.join(RUN,"runner_config.json")) or {}
 rows=[json.loads(l) for l in open(os.path.join(RUN,"results.jsonl")) if l.strip()]
@@ -274,6 +298,7 @@ if os.path.isdir(dr):
     if pq:
         ds["parquet_file"]=pq[0]
         ds["parquet_sha256_live"]=sha256_file(pq[0])
+        ds["parquet_bytes"]=os.path.getsize(pq[0])
         ds["parquet_sha256_matches_config"]= (ds["parquet_sha256_live"]==cfg.get("dataset_parquet_sha256"))
     rc=jload(os.path.join(dr,"ROW_COUNT.json"))
     if rc: ds["row_count"]=rc
@@ -362,6 +387,46 @@ else:
         "Images run --pull=never --network none by deterministic local tag "
         "swebench/sweb.eval.%s.<instance __->_1776_ >:latest. Re-run with CAPTURE_IMAGE_DIGESTS=1 on the exec host."%IMG_ARCH)
 closure["task_images"]=img
+
+# =========================================================================
+# (3) artifact_retrieval — where to fetch bulky artifacts + verify (internal, NOT git)
+# =========================================================================
+retr={"note":"Bulky artifacts are NOT in git. Fetch from these internal/shared-disk or registry sources and verify sha256."}
+qr=cfg.get("qwen_root","") or ""
+sc={"kind":"qwen-code scaffold tree","source_path":qr,"version":cfg.get("qwen_code_version")}
+if os.path.isdir(qr):
+    tsha,tn=tree_namelist_sha(qr)
+    sc["du"]=du_sh(qr); sc["namelist_manifest_sha256"]=tsha; sc["file_count"]=tn
+    sc["package_json_sha256"]=qwen.get("package_json_sha256"); sc["package_lock_json_sha256"]=qwen.get("package_lock_json_sha256")
+    sc["rebuild_hint"]="npm install --prefix %s @qwen-code/qwen-code@%s node@20"%(qr,cfg.get("qwen_code_version"))
+    if RETAIN:
+        if RETAIN_DIR:
+            os.makedirs(RETAIN_DIR,exist_ok=True)
+            ap=os.path.join(RETAIN_DIR,"scaffold_qwencode_%s_%s.tar.gz"%(cfg.get("qwen_code_version"),tsha[:12]))
+            if os.path.isfile(ap):
+                sc["internal_archive"]={"path":ap,"sha256":sha256_file(ap),"bytes":os.path.getsize(ap),"reused_existing":True}
+            else:
+                parent=os.path.dirname(qr.rstrip("/")); bn=os.path.basename(qr.rstrip("/"))
+                rr=subprocess.run(["tar","-C",parent,"-czf",ap,bn],capture_output=True,text=True,timeout=1800)
+                if rr.returncode==0 and os.path.isfile(ap):
+                    sc["internal_archive"]={"path":ap,"sha256":sha256_file(ap),"bytes":os.path.getsize(ap),"content_addressed_by":"namelist_manifest_sha256[:12]"}
+                else:
+                    sc["internal_archive"]={"missing":"tar failed rc=%d: %s"%(rr.returncode,(rr.stderr or '')[:200])}
+        else:
+            sc["internal_archive"]={"missing":"RETAIN_ARTIFACTS=1 but RETAIN_DIR unset; recorded source+sha only"}
+else:
+    sc["missing"]="scaffold tree not present at collect time"
+retr["scaffold_tree"]=sc
+retr["dataset_parquet"]={"kind":"dataset parquet","source_path":ds.get("parquet_file"),"sha256":ds.get("parquet_sha256_live"),
+    "bytes":ds.get("parquet_bytes"),"dataset_dir":dr,"dataset_dir_SHA256SUMS_sha256":ds.get("dataset_SHA256SUMS_sha256"),
+    "row_count":(ds.get("row_count") or {}).get("row_count") if isinstance(ds.get("row_count"),dict) else None,
+    "missing":(None if ds.get("parquet_file") else "parquet not located under dataset_root/data")}
+reg=img.get("registry")
+retr["task_images"]={"kind":"harbor registry images","registry":reg,
+    "pull_pattern":("docker pull %s/<project>-sweb.eval.%s.<instance __->_1776_ >@<repo_digest>"%(reg,IMG_ARCH)) if reg else None,
+    "per_task_digests_in":"repro_closure.json:task_images.per_task_digests",
+    "note":"Images live in the Harbor registry; pull by RepoDigest for byte-exact reproduction. Local build tag: swebench/sweb.eval.%s.<mangled>:latest."%IMG_ARCH}
+closure["artifact_retrieval"]=retr
 
 open(os.path.join(OUT,"repro_closure.json"),"w").write(json.dumps(closure,indent=2,sort_keys=True)+"\n")
 
@@ -688,11 +753,6 @@ open(os.path.join(OUT,"calibration.md"),"w").write("\n".join(md)+"\n")
 # =========================================================================
 # (8) TRACE.md — full-trace location + du + top-level manifest sha
 # =========================================================================
-def du_sh(p):
-    try:
-        r=subprocess.run(["du","-sh",p],capture_output=True,text=True,timeout=120)
-        return r.stdout.split()[0] if r.returncode==0 else "?"
-    except Exception: return "?"
 # cheap top-level integrity anchor: sha256 over sorted "relpath\tsize" manifest (names+sizes, no 225M read)
 manifest=io.StringIO()
 for root,dirs,files in os.walk(RUN):
