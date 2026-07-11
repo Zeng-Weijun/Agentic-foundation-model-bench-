@@ -38,3 +38,23 @@ is not a verdict; read the thing the verdict was computed from.**
 `gson-2061/2134/2158/2311/2479` first scored offline failures because proguard/log4j2 tried to resolve
 the container's own hostname under `--network none` and printed an error line the driver read as an
 eval failure. The tests had passed. Marked `"rescue": true` in the manifest.
+
+## `nl2repo_transport.jsonl`
+
+104 per-task images (`ghcr.io/multimodal-art-projection/nl2repobench/<task>:1.0`, 0.1–0.4 GB each),
+transported to Harbor. The manifest count corrects the vendored `expected_required_images=108`, which
+counted `pip install` mentions rather than images; the real number is 104 (103 pushed, one finishing).
+
+Two things this bench needs that a plain `docker pull` does not give:
+
+- **A build-backend wheelhouse.** `pip install -e .` inside these images fetches its PEP-517 backend
+  from PyPI, so `--network none` fails (`ModuleNotFoundError: hatchling`, then `aiofiles` for
+  src-layout packages under a PYTHONPATH-only workaround). The fix is a ~75 MB offline wheelhouse of
+  the backends the 104 `pyproject.toml` files declare (hatchling / poetry-core / flit-core /
+  pdm-backend), used with `pip install -e . --no-build-isolation --no-index --find-links <wheelhouse>`.
+  Runtime deps are already baked into the images; only the backends are missing.
+- **Per-task pinned gold, for a 100% clean oracle.** The images are cleanroom (source removed), so a
+  model-free gold check needs the upstream `repo@commit` fetched online once. The transport path and
+  the offline harness are proven — KVM cross-machine ran `boltons` at 423 passed / 0 failed, and the
+  oracle sample is 7/11 clean across all four backends. Full per-task pinned-gold is deferred until an
+  actual scored run needs it; it does not gate offline reproducibility.
