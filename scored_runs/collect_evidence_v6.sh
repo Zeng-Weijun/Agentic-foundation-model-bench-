@@ -13,6 +13,10 @@
 #   CONDA_SWEBENCH_PY  eval-harness python (pip freeze source)
 #   TAIL_LINES         test_output tail lines per instance (default 400)
 #   TAIL_BYTES         test_output tail byte cap per instance (default 60000)
+#   --- (1) per-task image digest capture (run ON the exec host while keep_images) ---
+#   CAPTURE_IMAGE_DIGESTS=1   enable capture (default off; off keeps a documented gap)
+#   IMAGE_INSPECT_CMD  docker command prefix (default "docker"; e.g. "ssh <host> docker")
+#   IMAGE_ARCH         swebench image arch token (default x86_64)
 #
 # What it produces under OUT_DIR (each element = a reproducibility/adjudication seam):
 #   launch.sh              发射脚本 (exact orchestrator entrypoint) + COMMAND.sh
@@ -45,6 +49,9 @@ RUN_DIR="$(cd -- "$RUN_DIR" 2>/dev/null && pwd)" || v6_die "RUN_DIR not a dir: $
 CONDA_SWEBENCH_PY="${CONDA_SWEBENCH_PY:-/mnt/shared-storage-user/mineru2-shared/zengweijun/conda_envs/swebench/bin/python}"
 TAIL_LINES="${TAIL_LINES:-400}"
 TAIL_BYTES="${TAIL_BYTES:-60000}"
+export CAPTURE_IMAGE_DIGESTS="${CAPTURE_IMAGE_DIGESTS:-0}"
+export IMAGE_INSPECT_CMD="${IMAGE_INSPECT_CMD:-docker}"
+export IMAGE_ARCH="${IMAGE_ARCH:-x86_64}"
 
 mkdir -p "$OUT_DIR" || v6_die "cannot mkdir OUT_DIR $OUT_DIR"
 OUT_DIR="$(cd -- "$OUT_DIR" && pwd)"
@@ -105,9 +112,11 @@ fi
 VP_STAGE="$(mktemp -d)"      # verdict_pack staging root
 
 python3 - "$RUN_DIR" "$OUT_DIR" "$EXPECT_N_ARG" "$VP_STAGE" "$FREEZE_TXT" "$TAIL_LINES" "$TAIL_BYTES" "$CONDA_SWEBENCH_PY" <<'PY'
-import sys, os, json, hashlib, subprocess, glob, io, tarfile, datetime
+import sys, os, json, hashlib, subprocess, glob, io, tarfile, datetime, shlex
 RUN, OUT, EXPECT_ARG, VP, FREEZE, TAILL, TAILB, CONDA_PY = sys.argv[1:9]
 TAILL=int(TAILL); TAILB=int(TAILB)
+CAP_IMG=os.environ.get("CAPTURE_IMAGE_DIGESTS","0")=="1"
+IMG_CMD=os.environ.get("IMAGE_INSPECT_CMD","docker"); IMG_ARCH=os.environ.get("IMAGE_ARCH","x86_64")
 
 def sha256_file(p):
     try:
@@ -290,22 +299,59 @@ if isinstance(canary,dict):
         # derive naming pattern by blanking the instance token
         if "sweb.eval" in t_:
             img["naming_pattern"]=t_
-# try to lift per-task digests from results rows or a run image manifest (if any)
-lifted=0
-for r in rows:
-    for k in ("image_digest","harbor_digest","image","image_ref"):
-        if r.get(k):
-            img["per_task_digests"][r["instance_id"]]=r[k]; lifted+=1; break
-# scan for a run-level image manifest
-for cand in ("image_manifest.jsonl","images_manifest.jsonl","harbor_manifest.jsonl","image_digests.json"):
-    p=os.path.join(RUN,cand)
-    if os.path.isfile(p): img["run_image_manifest"]=p
-if lifted==0 and "run_image_manifest" not in img:
-    img["missing"]=("per-task image digests are NOT persisted in results.jsonl nor any run "
-        "image-manifest; only the pre-flight canary image digest is available. Images were run "
-        "with --pull=never --network none by deterministic local tag "
-        "(pattern in naming_pattern); to rebuild the full digest manifest, `docker image inspect` "
-        "each task tag on the exec host while images are still present (keep_images=%s)."%str(cfg.get("keep_images")))
+# --- (1) live per-task digest capture on the exec host (opt-in) ---
+def _mangle(iid): return iid.replace("__","_1776_").lower()
+def _capture_digests(rows, cmd, arch):
+    base=shlex.split(cmd)
+    try:
+        r=subprocess.run(base+["images","--no-trunc","--format","{{.Repository}}:{{.Tag}}\t{{.ID}}"],capture_output=True,text=True,timeout=600)
+    except Exception as e:
+        return {"error":"image listing failed: %s"%e}
+    if r.returncode!=0:
+        return {"error":"docker images rc=%d: %s"%(r.returncode,(r.stderr or '')[:200])}
+    tagmap={}
+    for line in r.stdout.splitlines():
+        if "\t" not in line: continue
+        rt,_id=line.split("\t",1)
+        repo_comp=rt.rsplit(":",1)[0]
+        if "sweb.eval." not in repo_comp: continue
+        tagmap.setdefault(repo_comp.lower(), rt)  # first tag per repo component
+    per={}; found=miss=0
+    for row in rows:
+        iid=row["instance_id"]; tok=_mangle(iid); suffix="sweb.eval.%s.%s"%(arch,tok)
+        cand=[tag for rc,tag in tagmap.items() if rc.endswith(suffix)]
+        if not cand:
+            per[iid]={"missing":"no local image whose repo ends with %s"%suffix}; miss+=1; continue
+        cand.sort(key=lambda t:(0 if (t.startswith("swebench/") and t.endswith(":latest")) else 1, t))
+        tag=cand[0]
+        try:
+            ri=subprocess.run(base+["image","inspect",tag,"--format","{{.Id}}||{{range .RepoDigests}}{{.}} {{end}}"],capture_output=True,text=True,timeout=90)
+            if ri.returncode!=0:
+                per[iid]={"missing":"inspect rc=%d for %s"%(ri.returncode,tag)}; miss+=1; continue
+            out=ri.stdout.strip(); imgid,_,digs=out.partition("||")
+            digs=[d for d in digs.split() if d]
+            per[iid]={"image_ref":tag,"image_id":imgid.strip(),"repo_digest":(digs[0] if digs else None),"repo_digests_all":digs}
+            if not digs: per[iid]["repo_digest_note"]="no RepoDigests (locally built, never pushed); image_id pins content"
+            found+=1
+        except Exception as e:
+            per[iid]={"missing":"inspect error %s"%e}; miss+=1
+    return {"captured_found":found,"captured_missing":miss,"inspect_cmd":cmd,"arch":arch,"per_task":per}
+
+if CAP_IMG:
+    res=_capture_digests(rows, IMG_CMD, IMG_ARCH)
+    if "error" in res:
+        img["capture_error"]=res["error"]
+        img["missing"]="per-task digest capture attempted but failed (%s); only canary digest available."%res["error"]
+    else:
+        img["per_task_digests"]=res["per_task"]
+        img["capture_summary"]={k:res[k] for k in ("captured_found","captured_missing","inspect_cmd","arch")}
+        if res["captured_found"]==0:
+            img["missing"]="capture ran but matched 0 images (wrong exec host / images gone / arch mismatch)."
+else:
+    img["capture_note"]="per-task digest capture NOT run (CAPTURE_IMAGE_DIGESTS!=1). Run this collector ON the exec host with keep_images while images are present."
+    img["missing"]=("per-task image digests not captured; only pre-flight canary image digest available. "
+        "Images run --pull=never --network none by deterministic local tag "
+        "swebench/sweb.eval.%s.<instance __->_1776_ >:latest. Re-run with CAPTURE_IMAGE_DIGESTS=1 on the exec host."%IMG_ARCH)
 closure["task_images"]=img
 
 open(os.path.join(OUT,"repro_closure.json"),"w").write(json.dumps(closure,indent=2,sort_keys=True)+"\n")
@@ -616,6 +662,9 @@ open(os.path.join(OUT,"TRACE.md"),"w").write("\n".join(tm)+"\n")
 print("[v6][py] repro_closure/verdict_pack/calibration/denom/TRACE written")
 print("[v6][py] verdict_pack: instances=%d patch=%d report=%d test=%d resolved(results)=%d resolved(report)=%d mismatches=%d"%(
       len(index),n_patch,n_report,n_test,resolved_results,resolved_report,len(mism)))
+_ti=closure.get("task_images",{})
+if _ti.get("capture_summary"): print("[v6][py] image digests: found=%s missing=%s"%(_ti["capture_summary"].get("captured_found"),_ti["capture_summary"].get("captured_missing")))
+elif CAP_IMG: print("[v6][py] image digest capture: %s"%_ti.get("capture_error","(no summary)"))
 print("[v6][py] denom: rows=%d unique=%d declared=%d -> %s"%(N,uniq,declared,verdict))
 PY
 rc=$?
