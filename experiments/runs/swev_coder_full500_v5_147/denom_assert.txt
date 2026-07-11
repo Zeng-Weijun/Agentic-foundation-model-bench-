@@ -1,0 +1,7 @@
+DENOMINATOR ASSERTION (v6)
+run_id            : swev_coder_full500_v5_147_20260711T165758Z
+results.jsonl rows: 500   (wc -l)
+unique instance_id: 500
+declared dataset_size (EXPECT_N): 500   [source: arg]
+
+ASSERT rows==declared AND unique==rows  =>  PASS
