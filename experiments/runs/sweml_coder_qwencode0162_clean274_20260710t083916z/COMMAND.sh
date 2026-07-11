@@ -1,0 +1,1 @@
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/scripts/launch_swemultilingual_qwencode_clean274.sh --execute --run-id sweml_coder_qwencode0162_clean274_20260710t083916z 

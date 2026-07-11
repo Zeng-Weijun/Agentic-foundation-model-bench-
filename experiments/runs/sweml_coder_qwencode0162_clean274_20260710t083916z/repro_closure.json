@@ -1,0 +1,108 @@
+{
+  "agent_runtime_bundle": {
+    "key_dist_info_versions": {
+      "httpx": "0.28.1",
+      "litellm": "1.90.3",
+      "mini_swe_agent": "2.0.0",
+      "openai": "2.44.0",
+      "pydantic": "2.13.4",
+      "swebench": "4.1.0",
+      "tiktoken": "0.13.0"
+    },
+    "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/bench/swe-bench-verified/harness/offline_pydeps/mini_swe_agent_v2_0_0_swebench_py311_20260704"
+  },
+  "base_url": "http://100.100.104.140:30001/v1",
+  "bench": "SWE-bench Multilingual",
+  "conda_key_packages": {
+    "eval_harness_python": "/mnt/shared-storage-user/mineru2-shared/zengweijun/conda_envs/swebench/bin/python",
+    "key_packages": {
+      "datasets": "datasets==4.8.4",
+      "docker": "docker==7.1.0",
+      "ghapi": "ghapi==1.0.13",
+      "modal": "modal==1.4.2",
+      "swebench": "-e git+https://github.com/SWE-bench/SWE-bench.git@f7bbbb2ccdf479001d6467c9e34af59e44a840f9#egg=swebench",
+      "unidiff": "unidiff==0.7.5"
+    },
+    "swebench_git": {
+      "branch": "main",
+      "commit": "f7bbbb2ccdf479001d6467c9e34af59e44a840f9",
+      "dirty": "dirty"
+    },
+    "swebench_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/SWE-bench/swebench",
+    "swebench_version": "4.1.0"
+  },
+  "context_limit": 262144,
+  "dataset": {
+    "dataset_SHA256SUMS_sha256": "de7f7decec989c5719f95036e296b22c88fac4def2faaab2af8675ecc4333081",
+    "dataset_id": "swebench-multilingual-2025-08-26",
+    "dataset_parquet_sha256_config": "28b7f874e48496399077d276f9f2b163a077ddf0a70dc507c148d58da826baa9",
+    "dataset_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26",
+    "parquet_file": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/swebench-multilingual-2025-08-26/data/test-00000-of-00001.parquet",
+    "parquet_sha256_live": "28b7f874e48496399077d276f9f2b163a077ddf0a70dc507c148d58da826baa9",
+    "parquet_sha256_matches_config": true,
+    "row_count": {
+      "expected_task_count": 300,
+      "matches_expected": true,
+      "parquet": "data/test-00000-of-00001.parquet",
+      "row_count": 300,
+      "status": "verified_from_parquet_footer"
+    },
+    "subset_ids_count": 274,
+    "subset_ids_file": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/manifests/candidates/swemultilingual_clean274_instance_ids_20260710.txt",
+    "subset_ids_sha256": "d68a0cb1ba9daebd35378ab21d448f04bf75daac66e868057050037361acb6c1"
+  },
+  "generated_utc": "2026-07-11T17:46:08Z",
+  "max_output_tokens": 65536,
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "orchestrator_scripts": {
+    "base_runner": {
+      "config_declared_sha256_matches": true,
+      "git": {
+        "branch": "feat/swev-qwencode-v21-agent51",
+        "commit": "2c4cc83fee022cab33d16ed44d4fc958d88524f3",
+        "dirty": "dirty"
+      },
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swev-qwencode-v21-agent51/scripts/full500_qwencode_orchestrator_v21.py",
+      "sha256": "4027619e50a0d0096df9e9c74584ec75577920cee73564156b05afbfcad2f3d7"
+    },
+    "launcher": {
+      "git": {
+        "branch": "feat/swemultilingual-v21-agent51",
+        "commit": "2c4cc83fee022cab33d16ed44d4fc958d88524f3",
+        "dirty": "dirty"
+      },
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/swemultilingual-v21-agent51/scripts/launch_swemultilingual_qwencode_clean274.sh",
+      "sha256": "66e04d2d6ed513d564073b9254fa9df40286b14c68347ae79a5347897544baa1"
+    }
+  },
+  "qwen_code_scaffold": {
+    "package_json_sha256": "775d0911f7d45f30c361ee0aec244a20163dc5534620911cbba231c4f1834c9b",
+    "package_json_text": "{\n  \"dependencies\": {\n    \"@qwen-code/qwen-code\": \"^0.16.2\",\n    \"node\": \"^20.20.2\"\n  }\n}\n",
+    "package_lock_json_sha256": "3797e52afc614946df1a81a052efe3e557864d44dbae096c787b8e4b1105e0e0",
+    "qwen_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root-0.16.2",
+    "version": "0.16.2"
+  },
+  "run_id": "sweml_coder_qwencode0162_clean274_20260710t083916z",
+  "runner_config_sha256": "c8568aaecd06e7c6d4f70cc42d710cb59a49d2e24fcfcf2518559b55cdc79b27",
+  "scaffold": {
+    "agent_scaffold": "qwencode",
+    "name": "qwen-code"
+  },
+  "schema": "repro_closure/v6",
+  "task_images": {
+    "canary_image": {
+      "Id": "sha256:6c06309774446d5f101fab5cbee3f46ef924a1e548ebbb8dcb168f24e223a431",
+      "RepoDigests": [
+        "100.97.118.137:8555/swe-data-harness/swemultilingual-sweb.eval.x86_64.astral-sh_1776_ruff-15309@sha256:ec9da0666847e64a0179f4519339c04054d350e01ab76dc63c5f780c152c0b55"
+      ],
+      "RepoTags": [
+        "100.97.118.137:8555/swe-data-harness/swemultilingual-sweb.eval.x86_64.astral-sh_1776_ruff-15309:2025-08-26",
+        "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest"
+      ]
+    },
+    "missing": "per-task image digests are NOT persisted in results.jsonl nor any run image-manifest; only the pre-flight canary image digest is available. Images were run with --pull=never --network none by deterministic local tag (pattern in naming_pattern); to rebuild the full digest manifest, `docker image inspect` each task tag on the exec host while images are still present (keep_images=True).",
+    "naming_pattern": "swebench/sweb.eval.x86_64.astral-sh_1776_ruff-15309:latest",
+    "per_task_digests": {},
+    "registry": "100.97.118.137:8555"
+  }
+}

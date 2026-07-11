@@ -1,0 +1,9 @@
+DENOMINATOR ASSERTION (v6)
+run_id            : sweml_coder_qwencode0162_clean274_20260710t083916z
+results.jsonl rows: 274   (wc -l)
+unique instance_id: 274
+declared dataset_size (EXPECT_N): 274   [source: runner_config.expected_score_rows]
+subset_ids manifest count       : 274
+dataset parquet row_count       : 300 (superset; subset selected via subset_ids)
+
+ASSERT rows==declared AND unique==rows  =>  PASS
