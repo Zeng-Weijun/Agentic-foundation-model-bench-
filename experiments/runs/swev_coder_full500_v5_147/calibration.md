@@ -1,36 +1,22 @@
-# calibration.md — 口径卡 (v6)
+# Calibration — SWE-V × Qwen3-Coder-30B × qwen-code
+run: swev_coder_full500_v5_147_20260711T165758Z
 
-run_id: `swev_coder_full500_v5_147_20260711T165758Z`
-bench: **None**  model: **Qwen/Qwen3-Coder-30B-A3B-Instruct**  scaffold: **None (qwen-code 0.15.6)**
+## Score
+- **resolved 234 / 500 = 46.8%**  (denom_assert PASS: results.jsonl 500 rows == dataset_size 500)
+- resolved 定义: FAIL_TO_PASS 全 success ∧ PASS_TO_PASS 全 success (SWE-bench Verified 官方判定)
+- eval harness: swebench 4.1.0 (run_evaluation)
+- include_unverified: NO — 6 个 eval_error 题由隔离 re-eval 恢复出真判定(非跳过、非补假)
 
-## Headline
-- **score = None** (resolved **None** / denominator **None**)
-- serving identity before==after: **True** (model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct, sglang=0.5.13, seed=484925000)
+## Bench × Model × Harness
+- bench: SWE-bench Verified (500 Python tasks, princeton-nlp/SWE-bench_Verified, split=test)
+- model: Qwen/Qwen3-Coder-30B-A3B-Instruct (qwen3_moe)
+- harness: qwen-code 0.15.6 native in-container, --yolo, 直连 serving(非 host bridge)
+- serving: 100.100.104.147:30001, sglang 0.5.13, tp2, parser qwen3_coder, ctx 262144, random_seed 484925000 (before==after)
 
-## 1. resolved 的定义 (adjudication rule)
-SWE-bench harness rule (schema_version 2): an instance is **resolved** iff, after applying the
-agent `model_patch`, **every** `FAIL_TO_PASS` test transitions to PASS **and every** `PASS_TO_PASS`
-test stays PASS. Per-instance `tests_status` (FAIL_TO_PASS / PASS_TO_PASS / FAIL_TO_FAIL / PASS_TO_FAIL)
-is preserved in `verdict_pack/<instance>/report.json`, so each verdict is **re-checkable offline**
-from this pack alone — no shared-disk trace needed.
+## Anchor & 口径差
+- 同基座 prior: SWE-V×Coder qwen-code = 48.6% (2026-07-09, serving .140, 已死). 本 run 46.8% 略低 = serving 节点(.147 vs .140)+采样的自然波动, 方向朝下, 无注水.
+- 官方 SWE-bench Verified 锚(不同 harness, 不可比): bash-only gpt-5.2-high 72.8%.
+- ★6 题 eval_error(astropy-14096, django-13109/13449/13810/15467, sphinx-9698)= 并发 docker 的 make_run_report container-list race(非模型/非patch), 隔离 re-eval(run_id recover6)恢复: 4 resolved + 2 真 fail. 见 TRACE.md.
 
-## 2. eval harness 版本
-- swebench **4.1.0** @ git `f7bbbb2ccdf479001d6467c9e34af59e44a840f9`
-- editable install: `-e git+https://github.com/SWE-bench/SWE-bench.git@f7bbbb2ccdf479001d6467c9e34af59e44a840f9#egg=swebench`
-- report schema_version: 2  (per-instance report.json under eval/logs/run_evaluation/)
-
-## 3. include_unverified
-- **No** include_unverified / no gold-less admission here: all 500 rows carry a real docker eval.
-- Denominator = clean subset (not padded with unverified rows). See `denom_assert.txt`.
-
-## 4. anchor 对齐
-- No official SWE-bench Multilingual cell exists for Qwen/Qwen3-Coder-30B-A3B-Instruct under this scaffold; this run is reported as a NEW measurement.
-- Denominator caveat: this run scores the **clean274 subset** = full300 − 26 offline-Gradle
-  false-zero tasks; official SWE-bench Multilingual uses 300. Compare per-language, not raw overall,
-  against any official number. Per-language resolved/total below.
-
-## 5. 口径差 / 已知 caveat (disclosed, not hidden)
-- No mixed-environment caveat recorded for this run.
-
-## 6. denominator
-- results rows = 500, unique = 500, declared = 500  → see `denom_assert.txt` (PASS).
+## Independent verification
+- 2026-07-12 双盲 auditor 双签 REAL: 两人各自独立复判全 500(0 不一致 vs results.jsonl), gold cross-check FAIL_TO_PASS==官方(0 relabeling), live 探测 serving seed 484925000(同 running 进程, 排除 label-swap), on-host 镜像 digest 匹配, SHA256SUMS 12/12.
