@@ -1516,6 +1516,23 @@ An honest list of what a third party could **not** reproduce from this repo toda
 > `eval_wrap.py` overwritten in-run (`eval_wrap_integrity_20260710/`, status `ORIGINAL_LOST`), and
 > the `tb_rc=143` process-hang that reddened a complete run (verdict rules v5).
 
+> **Offline Harbor transport — status 2026-07-11.** The goal was that any KVM worker reproduces any of
+> these benchmarks by `docker pull` from Harbor, `--network none`, gold patch, official `FAIL_TO_PASS` —
+> no model, no internet. Manifests are in `runners/bench_manifests/`.
+>
+> | bench | images | Harbor | KVM-verified offline | note |
+> |---|---|---|---|---|
+> | **Multilingual (the 26 Java tasks clean274 drops)** | 26/26 | digests recorded | gson-1014 `reward=1`, lucene-11760 | **completes SWE-bench Multilingual to a full 300 offline** |
+> | **NL2Repo** | 104 | pushed | boltons 423/0 cross-machine | needs a 75 MB build-backend wheelhouse; per-task pinned gold deferred |
+> | **DeepSWE** | 113 → 98 unique | `ok=109 fail=4` | go/rust/ts `reward=1` | per-repo image sharing; ~30–50 GB, not 120–350 |
+> | **RepoZero** | staging policy | ready | base58 Py2JS | the **188 is a rescue pool, not a score**; official is 400 |
+>
+> Each figure above was corrected by measuring, not by trusting a manifest: NL2Repo `108→104`,
+> DeepSWE `113→98` and `350→50 GB`, and five gson plus one lucene "failures" that were parser
+> false-negatives, not broken images (§5.11–5.14, and the `bench_manifests/README`). The recurring
+> rule of this whole document, one more time: **a line of output is not a verdict, and a manifest
+> number is not a count.**
+
 ### C1 — The canonical TB2.1 runner is gone (HIGH)
 `run_terminal_bench_2_1_full89_batched_privileged_offline.sh` is **untracked by git** in the r3
 worktree (`git status` shows `??`). Its mtime is `2026-07-07 23:46` — it was **rewritten by the
