@@ -17,6 +17,10 @@
 #   CAPTURE_IMAGE_DIGESTS=1   enable capture (default off; off keeps a documented gap)
 #   IMAGE_INSPECT_CMD  docker command prefix (default "docker"; e.g. "ssh <host> docker")
 #   IMAGE_ARCH         swebench image arch token (default x86_64)
+#   --- (2) agent trajectory condensation into verdict_pack ---
+#   TRAJ_MAX_BLOCKS    max trajectory blocks/instance (default 400)
+#   TRAJ_SUMMARY_CHARS per-block summary char cap (default 240)
+#   TRAJ_MAX_BYTES     per-instance trajectory byte cap (default 80000)
 #
 # What it produces under OUT_DIR (each element = a reproducibility/adjudication seam):
 #   launch.sh              发射脚本 (exact orchestrator entrypoint) + COMMAND.sh
@@ -25,7 +29,7 @@
 #   serving/               get_model_info + get_server_info  BEFORE + AFTER
 #   results.jsonl          verbatim run results
 #   verdict_pack.tar.gz    判定证据: per-instance prediction.patch + test_output_tail + report.json
-#                          (resolved re-checkable OFFLINE, no shared-disk trace)
+#                          + trajectory.jsonl (verdict AND process re-checkable OFFLINE, no shared-disk trace)
 #   calibration.md         口径卡: resolved def, harness ver, include_unverified, anchor, caveats
 #   denom_assert.txt       wc -l results == declared dataset_size  (PASS/FAIL)
 #   TRACE.md               full-trace location + du + top-level manifest sha (big trace stays on FS)
@@ -52,6 +56,9 @@ TAIL_BYTES="${TAIL_BYTES:-60000}"
 export CAPTURE_IMAGE_DIGESTS="${CAPTURE_IMAGE_DIGESTS:-0}"
 export IMAGE_INSPECT_CMD="${IMAGE_INSPECT_CMD:-docker}"
 export IMAGE_ARCH="${IMAGE_ARCH:-x86_64}"
+export TRAJ_MAX_BLOCKS="${TRAJ_MAX_BLOCKS:-400}"
+export TRAJ_SUMMARY_CHARS="${TRAJ_SUMMARY_CHARS:-240}"
+export TRAJ_MAX_BYTES="${TRAJ_MAX_BYTES:-80000}"
 
 mkdir -p "$OUT_DIR" || v6_die "cannot mkdir OUT_DIR $OUT_DIR"
 OUT_DIR="$(cd -- "$OUT_DIR" && pwd)"
@@ -117,6 +124,8 @@ RUN, OUT, EXPECT_ARG, VP, FREEZE, TAILL, TAILB, CONDA_PY = sys.argv[1:9]
 TAILL=int(TAILL); TAILB=int(TAILB)
 CAP_IMG=os.environ.get("CAPTURE_IMAGE_DIGESTS","0")=="1"
 IMG_CMD=os.environ.get("IMAGE_INSPECT_CMD","docker"); IMG_ARCH=os.environ.get("IMAGE_ARCH","x86_64")
+TRAJ_MAX=int(os.environ.get("TRAJ_MAX_BLOCKS","400")); TRAJ_CH=int(os.environ.get("TRAJ_SUMMARY_CHARS","240"))
+TRAJ_BYTES=int(os.environ.get("TRAJ_MAX_BYTES","80000"))
 
 def sha256_file(p):
     try:
@@ -403,9 +412,61 @@ def tail_text(path, nlines, nbytes):
     if len(lines)>nlines: lines=lines[-nlines:]
     return ("\n".join(lines)).rstrip("\n")+"\n"
 
+# --- (2) condensed agent trajectory (tool_use/tool_result summaries; not full payload) ---
+def summarize_input(inp):
+    if not isinstance(inp,dict): return str(inp)[:TRAJ_CH]
+    for k in ("command","cmd","file_path","path","filePath","absolute_path","pattern","query","url","content","new_string","old_string","prompt"):
+        if inp.get(k) is not None:
+            v=inp[k]; s=v if isinstance(v,str) else json.dumps(v)
+            return "%s=%s"%(k, s.replace("\n","\\n")[:TRAJ_CH])
+    return "keys=%s"%(",".join(list(inp.keys())[:8]))
+def extract_trajectory(agent_dir):
+    cands=sorted(glob.glob(os.path.join(agent_dir,"*stdout*.jsonl")))
+    if not cands: return None,None
+    f=cands[0]; steps=[]
+    def push(s): steps.append(s); return len(steps)>=TRAJ_MAX
+    stop=False
+    for i,line in enumerate(open(f,errors="replace")):
+        line=line.strip()
+        if not line: continue
+        try: d=json.loads(line)
+        except Exception: continue
+        t=d.get("type")
+        if t=="system":
+            tools=d.get("tools") or []
+            if push({"i":i,"role":"system","tools":(tools if isinstance(tools,list) and len(tools)<=60 else len(tools)),"cwd":d.get("cwd")}): stop=True
+        elif t in ("assistant","user"):
+            msg=d.get("message") or {}; content=msg.get("content"); role=msg.get("role",t)
+            if isinstance(content,str):
+                if push({"i":i,"role":role,"block":"text","text":content[:TRAJ_CH]}): stop=True
+            elif isinstance(content,list):
+                for b in content:
+                    if not isinstance(b,dict): continue
+                    bt=b.get("type")
+                    if bt=="text":
+                        if push({"i":i,"role":role,"block":"text","text":(b.get("text") or "")[:TRAJ_CH]}): stop=True
+                    elif bt=="tool_use":
+                        if push({"i":i,"role":role,"block":"tool_use","name":b.get("name"),"input":summarize_input(b.get("input"))}): stop=True
+                    elif bt=="tool_result":
+                        c=b.get("content")
+                        if isinstance(c,list): txt=" ".join((x.get("text","") if isinstance(x,dict) else str(x)) for x in c)
+                        else: txt=str(c)
+                        if push({"i":i,"role":role,"block":"tool_result","is_error":bool(b.get("is_error")),"text":txt[:TRAJ_CH]}): stop=True
+                    if stop: break
+        elif t=="result":
+            push({"i":i,"role":"result","subtype":d.get("subtype"),"is_error":d.get("is_error"),"num_turns":d.get("num_turns"),"duration_ms":d.get("duration_ms")})
+        if stop:
+            steps.append({"note":"TRUNCATED at %d blocks"%TRAJ_MAX}); break
+    buf=io.StringIO()
+    for s in steps:
+        buf.write(json.dumps(s,ensure_ascii=False)+"\n")
+        if buf.tell()>TRAJ_BYTES:
+            buf.write(json.dumps({"note":"TRUNCATED at %d bytes"%TRAJ_BYTES})+"\n"); break
+    return buf.getvalue(), f
+
 index=[]
 mism=[]
-n_patch=n_report=n_test=0
+n_patch=n_report=n_test=n_traj=0
 for r in rows:
     iid=r["instance_id"]; ed=r.get("evidence_dir","")
     safe=iid.replace("/","__")
@@ -479,6 +540,20 @@ for r in rows:
             rec["test_output_source"]=os.path.relpath(tp,ed) if ed else tp
             n_test+=1
     rec["has_test_output"]=os.path.isfile(os.path.join(dst,"test_output_tail.txt"))
+    # --- (2) trajectory.jsonl (condensed agent process, for cheat auditing) ---
+    mang=iid.replace("__","_u_")
+    agent_dirs=[]
+    if ed: agent_dirs.append(os.path.join(ed,"agent"))
+    agent_dirs+=[os.path.join(RUN,"instances",mang,"agent"), os.path.join(RUN,"failed",mang,"agent"), os.path.join(RUN,".running",mang,"agent")]
+    traj=None; tsrc=None
+    for adir in agent_dirs:
+        if os.path.isdir(adir):
+            traj,tsrc=extract_trajectory(adir)
+            if traj: break
+    if traj:
+        open(os.path.join(dst,"trajectory.jsonl"),"w").write(traj)
+        rec["trajectory_source"]=tsrc; rec["trajectory_blocks"]=traj.count("\n"); n_traj+=1
+    rec["has_trajectory"]=os.path.isfile(os.path.join(dst,"trajectory.jsonl"))
     # cross-check adjudication consistency
     if report_resolved is not None and bool(report_resolved)!=bool(r.get("resolved")):
         mism.append({"instance_id":iid,"resolved_results":bool(r.get("resolved")),"resolved_report":bool(report_resolved)})
@@ -493,13 +568,16 @@ vp_summary={
     "with_prediction_patch":n_patch,
     "with_report_json":n_report,
     "with_test_output_tail":n_test,
+    "with_trajectory":n_traj,
     "resolved_by_results_jsonl":resolved_results,
     "resolved_by_report_json":resolved_report,
     "report_coverage":"%d/%d"%(sum(1 for x in index if x.get("resolved_report") is not None),len(index)),
     "adjudication_mismatches":mism,
     "note":("resolved_by_report_json counts only instances whose deep report.json carried tests_status; "
             "instances lacking a deep report (eval error / empty patch / cleanup-race) show resolved_report=null "
-            "and are NOT independently re-adjudicable from this pack — see has_report=false rows."),
+            "and are NOT independently re-adjudicable from this pack — see has_report=false rows. "
+            "trajectory.jsonl is a condensed agent process log (tool_use/tool_result summaries) for auditing "
+            "process cheating (peeking gold/answer files, polluting tests) — not the full payload."),
 }
 open(os.path.join(VP,"INDEX.json"),"w").write(json.dumps({"summary":vp_summary,"instances":index},indent=2,sort_keys=True)+"\n")
 
@@ -660,8 +738,8 @@ open(os.path.join(OUT,"TRACE.md"),"w").write("\n".join(tm)+"\n")
 
 # console summary
 print("[v6][py] repro_closure/verdict_pack/calibration/denom/TRACE written")
-print("[v6][py] verdict_pack: instances=%d patch=%d report=%d test=%d resolved(results)=%d resolved(report)=%d mismatches=%d"%(
-      len(index),n_patch,n_report,n_test,resolved_results,resolved_report,len(mism)))
+print("[v6][py] verdict_pack: instances=%d patch=%d report=%d test=%d traj=%d resolved(results)=%d resolved(report)=%d mismatches=%d"%(
+      len(index),n_patch,n_report,n_test,n_traj,resolved_results,resolved_report,len(mism)))
 _ti=closure.get("task_images",{})
 if _ti.get("capture_summary"): print("[v6][py] image digests: found=%s missing=%s"%(_ti["capture_summary"].get("captured_found"),_ti["capture_summary"].get("captured_missing")))
 elif CAP_IMG: print("[v6][py] image digest capture: %s"%_ti.get("capture_error","(no summary)"))
