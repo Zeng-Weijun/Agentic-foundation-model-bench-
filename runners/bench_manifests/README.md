@@ -58,3 +58,28 @@ Two things this bench needs that a plain `docker pull` does not give:
   the offline harness are proven — KVM cross-machine ran `boltons` at 423 passed / 0 failed, and the
   oracle sample is 7/11 clean across all four backends. Full per-task pinned-gold is deferred until an
   actual scored run needs it; it does not gate offline reproducibility.
+
+## `deepswe_transport.jsonl`
+
+DeepSWE's 113 tasks map to **98 unique images** — its environments are per-repo@commit, not per-task,
+so `httpx`, `koota`, `obsidian-linter` and others are shared across tasks. The images are prebuilt on
+`public.ecr.aws`, pulled anonymously (**no build step**; the in-repo `environment/Dockerfile` is an
+offline fallback recipe only). Round74's "coverage 0/113" meant nobody had moved them into Harbor, not
+that they were missing.
+
+Transport: `ok=109, fail=4, dedup=11, unique_tars=98, total=113`. The `dedup=11` is Harbor
+content-addressing collapsing 11 tasks onto an image another task already pushed — two tasks with the
+same config digest, layers, and base commit are byte-identical and correctly share a Harbor digest;
+their `docker save` tars differ only because the per-task RepoTag is written into tar metadata. The 4
+failures were push stalls (one-shot, not network loss — a killed pull re-ran in 60 s), left for the
+retry pass. Full Harbor footprint ≈ 30–50 GB, far below the 120–350 GB first estimated before the
+per-repo sharing was measured. Three languages (go/rust/typescript) were pulled from Harbor by exact
+digest and re-run `--network none` against gold at `reward=1`.
+
+## `offline_images.repozero.yaml`
+
+RepoZero's staging policy, verbatim: stage from an internet-enabled host with ghcr access, place the
+tar under the shared asset root, load on the worker from the shared tar only, never pull from the
+worker's public internet. Transport path is `ready` and was KVM-verified (`base58` Py2JS pulled and
+run offline). Note the scope: the local **188 rescue pool** is not a RepoZero score and must not be
+advertised as one — the official benchmark is **400** cases. See §3.10.
