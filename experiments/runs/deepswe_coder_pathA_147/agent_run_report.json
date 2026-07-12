@@ -1,0 +1,70 @@
+{
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/full113_20260712T114730Z",
+  "ts": "2026-07-12T14:33:33Z",
+  "manifest_total": 113,
+  "scored": 113,
+  "elapsed_seconds": 9962.9,
+  "status_counts": {
+    "unsolved": 106,
+    "unsolved_no_patch": 7
+  },
+  "resolved": 0,
+  "resolve_rate": 0.0,
+  "by_lang": {
+    "python": {
+      "unsolved": 33,
+      "unsolved_no_patch": 1
+    },
+    "go": {
+      "unsolved": 30,
+      "unsolved_no_patch": 4
+    },
+    "typescript": {
+      "unsolved": 33,
+      "unsolved_no_patch": 2
+    },
+    "rust": {
+      "unsolved": 5
+    },
+    "javascript": {
+      "unsolved": 5
+    }
+  },
+  "resolved_by_lang": {
+    "python": "0/34",
+    "go": "0/34",
+    "typescript": "0/35",
+    "rust": "0/5",
+    "javascript": "0/5"
+  },
+  "serving_before": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30001/get_model_info",
+    "_ok": true
+  },
+  "serving_after": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30001/get_model_info",
+    "_ok": true
+  }
+}

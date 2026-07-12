@@ -1,0 +1,99 @@
+{
+  "run_id": "deepswe_coder_pathA_147",
+  "bench": "DeepSWE SWE-bench-style full113 (Path A: qwen-code CLI agent)",
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "serving_endpoint": "http://100.100.104.147:30001/v1 (self-hosted sglang, Coder port 30001)",
+  "host": "KVM Pod env-kvm-57740737-bzw56",
+  "agent_run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/full113_20260712T114730Z",
+  "audit_run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/audit_full113_20260712T173528Z",
+  "date_utc": "agent 2026-07-12T11:47Z; audit 2026-07-12T17:35Z->17:59Z",
+  "score": {
+    "resolved": 0,
+    "headline": {
+      "denominator": 113,
+      "score": 0.0,
+      "pct": "0.00%",
+      "rule": "resolved/manifest_total"
+    },
+    "valid_only": {
+      "denominator": 102,
+      "score": 0.0,
+      "pct": "0.00%",
+      "rule": "resolved/gold_valid (11 gold_broken excluded)"
+    }
+  },
+  "audit": {
+    "gold_valid": 102,
+    "gold_broken": 11,
+    "gold_evalerror": 0,
+    "agent_resolved_on_valid": 0,
+    "honest_resolve_rate": 0.0,
+    "resolved_task_ids": [],
+    "broken_task_ids": [
+      "happy-dom-abort-pending-body-reads",
+      "httpx-deterministic-cookie-store",
+      "httpx-streaming-json-iteration",
+      "httpx-multipart-response-parsing",
+      "langchain-request-coalescing",
+      "eicrud-keyset-pagination-cursor",
+      "mnamer-daemon-watch-lifecycle",
+      "narwhals-rolling-window-suite",
+      "prometheus-transactional-reload-status",
+      "quill-shared-toolbar-focus",
+      "skrub-duration-encoding"
+    ]
+  },
+  "by_lang": {
+    "go": {
+      "valid": 34,
+      "broken": 0,
+      "resolved": 0
+    },
+    "python": {
+      "valid": 28,
+      "broken": 6,
+      "resolved": 0
+    },
+    "typescript": {
+      "valid": 30,
+      "broken": 5,
+      "resolved": 0
+    },
+    "rust": {
+      "valid": 5,
+      "broken": 0,
+      "resolved": 0
+    },
+    "javascript": {
+      "valid": 5,
+      "broken": 0,
+      "resolved": 0
+    }
+  },
+  "agent_reward_distribution_on_valid": {
+    "0": 87,
+    "None(no applicable patch)": 15
+  },
+  "serving_identity": {
+    "agent_phase": {
+      "before": "ok model_path=Qwen3-Coder-30B-A3B-Instruct (2026-07-12T11:47Z)",
+      "after": "ok model_path=Qwen3-Coder-30B-A3B-Instruct (2026-07-12T14:33Z)",
+      "per_task": "every qwen_command.txt: --openai-base-url http://100.100.104.147:30001/v1 --model Qwen/Qwen3-Coder-30B-A3B-Instruct"
+    },
+    "audit_phase": {
+      "note": "mode=audit performs NO serving calls; probes only confirm :30001 still served Coder weights",
+      "before": "ok model_path=Qwen3-Coder-30B-A3B-Instruct",
+      "after": "ok model_path=Qwen3-Coder-30B-A3B-Instruct"
+    }
+  },
+  "zero_is_real_not_a_judging_bug": {
+    "claim": "The 0 is genuine agent-capability failure, not a scoring/environment bug.",
+    "proof": [
+      "gold_valid=102: on 102 tasks the gold solution patch passes the exact task verifier (reward=1) -> judging env is correct.",
+      "On those SAME 102 judging-correct tasks the agent's patch scores reward=0 for every one -> 0/102.",
+      "The 11 gold_broken tasks (gold itself fails) are excluded from the valid denominator so they cannot explain the 0.",
+      "Per-sample: agent really ran on :30001 Coder and produced substantial patches, but they fail the same verifier that gold passes (see verdict/samples).",
+      "This audit was created specifically after a venv/pytest verifier bug was FIXED; the honest re-score is still 0."
+    ]
+  }
+}

