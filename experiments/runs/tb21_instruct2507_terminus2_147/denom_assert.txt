@@ -1,0 +1,23 @@
+DENOMINATOR ASSERTION — TB2.1 x Qwen3-30B-A3B-Instruct-2507 x terminus-2
+=======================================================================
+declared_dataset_size = 89   (Terminal-Bench 2.1 full-89, r7-final-20260703)
+tb_native results.json rows = 89
+n_resolved  = 3
+n_unresolved = 86
+n_resolved + n_unresolved = 89
+DENOM = 89   PASS  (rows == declared_dataset_size == 89)
+
+SCORE = 3 / 89 = 0.03370787 = 3.37%   (single-attempt pass@1; accuracy == mean_pass_at_1)
+
+WHY DENOM IS 89 (not 88):
+- terminus tb-native results.json already scores all 89 task rows. is_resolved distribution:
+  True=3  False=84  null=2.
+- The 2 null rows are mailman (failure_mode=test_timeout) and tune-mjcf (failure_mode=unknown_agent_error).
+  The tb-native harness folds BOTH nulls into n_unresolved (86=84 false + 2 null). Neither is resolved.
+- mailman is EXPLICITLY counted (adjudicated FALSE, reason=agent_not_converged): the agent left postfix/mailman3
+  non-functional (SMTP :25 ConnectionRefused in its pane); the task test hung 2h and hit the test-timeout.
+  This is agent-side non-convergence, NOT infra (serving healthy: 0 RateLimit/429/5xx/connection errors).
+- tune-mjcf likewise counted FALSE (agent stuck at 'Time pctg ~100%%, need 60.00%%', never met threshold).
+- Therefore denom = 89, numerator = 3. The score is 3/89 = 3.37%, NOT 3/88.
+
+resolved_ids (3): configure-git-webserver, hf-model-inference, modernize-scientific-stack

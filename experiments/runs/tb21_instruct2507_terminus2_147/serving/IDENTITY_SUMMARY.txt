@@ -1,0 +1,28 @@
+# Serving identity — before + after (IDENTITY_OK both)
+
+Read-only `/get_model_info` + `/get_server_info` captured by the launcher `identity_capture_147.py`
+immediately BEFORE the tb run started (2026-07-12T17:08Z) and immediately AFTER it finished
+(2026-07-12T20:29Z). The capture never runs inference.
+
+| field | before | after |
+|---|---|---|
+| verdict | IDENTITY_OK | IDENTITY_OK |
+| model_path | /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 | /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 |
+| tokenizer_path | /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 | /mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 |
+| architecture | Qwen3MoeForCausalLM | Qwen3MoeForCausalLM |
+| model_type | qwen3_moe | qwen3_moe |
+
+Server config (from get_server_info_after.json, sglang):
+
+- endpoint: `http://100.100.104.147:30000/v1`  (slime GPU pod .147, Instruct-2507 port 30000)
+- served_model_name: Qwen/Qwen3-30B-A3B-Instruct-2507
+- sglang version 0.5.13 | context_length 262144 | tp 2 | dp 1
+- tool_call_parser qwen | reasoning_parser None
+- mem_fraction_static 0.85 | attention_backend fa3 | **random_seed 61643818**
+- max_total_num_tokens 1946895 | max_prefill_tokens 16384 | api_key = None (no auth)
+- request-side: temperature 0.0, api_base http://100.100.104.147:30000/v1
+
+IDENTITY verdict: **before == after == Qwen3-30B-A3B-Instruct-2507** (model_path + tokenizer_path identical
+in both captures; random_seed 61643818 stable). On this stack the request/response
+`model` string is NOT validated (self-hosted sglang echoes any name); only `/get_model_info -> model_path`
+proves the weights that answered. Identity is established by endpoint + weights, not a trusted name field.

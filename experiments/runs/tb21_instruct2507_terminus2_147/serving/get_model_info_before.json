@@ -1,0 +1,13 @@
+{
+ "architectures": [
+  "Qwen3MoeForCausalLM"
+ ],
+ "has_audio_understanding": false,
+ "has_image_understanding": false,
+ "is_generation": true,
+ "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+ "model_type": "qwen3_moe",
+ "preferred_sampling_params": null,
+ "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+ "weight_version": "default"
+}

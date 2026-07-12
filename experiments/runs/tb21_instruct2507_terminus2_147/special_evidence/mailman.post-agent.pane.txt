@@ -1,0 +1,421 @@
+lbox not found: /var/mail/b8d8d3ba6de6e3f1
+root@47621731a894:/app# cat /etc/postfix/master.cf | grep -A 2 'mailman'
+mailman   unix  -       n       n       -       -       pipe
+#  flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}
+root@47621731a894:/app# echo 'Test message' | mail -s 'Test' reading-group@local.edu
+root@47621731a894:/app# ls -la /var/mail/b8d8d3ba6de6e3f1
+ls: cannot access '/var/mail/b8d8d3ba6de6e3f1': No such file or directory
+root@47621731a894:/app# python3 /app/eval.py
+e414e03ce0b032e8 added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/e414e03ce0b032e8
+root@47621731a894:/app# sed -i 's/#  flags=FRX/flags=FRX/' /etc/postfix/master.cf
+root@47621731a894:/app# cat /etc/postfix/master.cf | grep 'mailman'
+mailman   unix  -       n       n       -       -       pipe
+flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}
+root@47621731a894:/app# /etc/init.d/postfix restart
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+python3 /app/eval.py
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+736292e90553672a added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/736292e90553672a
+root@47621731a894:/app# cat -A /etc/postfix/master.cf | grep -A 3 -B 3 'mailman'
+#  flags=Fq. user=bsmtp argv=/usr/lib/bsmtp/bsmtp -t$nexthop -f$sender $recipient$
+#scalemail-backend unix -       n       n       -       2       pipe$
+#  flags=R user=scalemail argv=/usr/lib/scalemail/bin/scalemail-store ${nexthop} ${user} ${extension}$
+mailman   unix  -       n       n       -       -       pipe$
+flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}$
+root@47621731a894:/app# sed -i 's/#  flags=FRX/flags=FRX/' /etc/postfix/master.cf
+root@47621731a894:/app# postfix check
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+/etc/init.d/postfix restart
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+root@47621731a894:/app# /etc/init.d/postfix restart
+python3 /app/eval.py
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+3de8e5dedce6d42a added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/3de8e5dedce6d42a
+root@47621731a894:/app# sed -i 's/flags=FRX user=list argv=.*$/flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}/' /etc/pos
+tfix/master.cf
+sed: -e expression #1, char 58: unknown option to `s'
+root@47621731a894:/app# postfix check
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+/etc/init.d/postfix restart
+root@47621731a894:/app# /etc/init.d/postfix restart
+python3 /app/eval.py
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+05779674e559d07b added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/05779674e559d07b
+root@47621731a894:/app# sed -i 's/flags=FRX user=list argv=.*$/flags=FRX user=list argv=\/usr\/lib\/mailman\/bin\/postfix-to-mailman.py ${nexthop} ${user}/' /et
+c/postfix/master.cf
+root@47621731a894:/app# postfix check
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+/etc/init.d/postfix restart
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+root@47621731a894:/app# /etc/init.d/postfix restart
+python3 /app/eval.py
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+e420f8a6d6f88147 added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/e420f8a6d6f88147
+root@47621731a894:/app# cat /etc/postfix/master.cf | grep -A 3 -B 3 'mailman'
+#  flags=Fq. user=bsmtp argv=/usr/lib/bsmtp/bsmtp -t$nexthop -f$sender $recipient
+#scalemail-backend unix -       n       n       -       2       pipe
+#  flags=R user=scalemail argv=/usr/lib/scalemail/bin/scalemail-store ${nexthop} ${user} ${extension}
+mailman   unix  -       n       n       -       -       pipe
+flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}
+root@47621731a894:/app# echo 'mailman   unix  -       n       n       -       -       pipe
+>   flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}' > /tmp/master.cf.new
+root@47621731a894:/app# cat /tmp/master.cf.new >> /etc/postfix/master.cf
+root@47621731a894:/app# postfix check
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+/etc/init.d/postfix restart
+root@47621731a894:/app# /etc/init.d/postfix restart
+python3 /app/eval.py
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+e999c5866f83017b added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/e999c5866f83017b
+root@47621731a894:/app# cat /etc/postfix/master.cf | grep -A 3 -B 3 'mailman'
+#  flags=Fq. user=bsmtp argv=/usr/lib/bsmtp/bsmtp -t$nexthop -f$sender $recipient
+#scalemail-backend unix -       n       n       -       2       pipe
+#  flags=R user=scalemail argv=/usr/lib/scalemail/bin/scalemail-store ${nexthop} ${user} ${extension}
+mailman   unix  -       n       n       -       -       pipe
+flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}
+mailman   unix  -       n       n       -       -       pipe
+  flags=FRX user=list argv=/usr/lib/mailman/bin/postfix-to-mailman.py ${nexthop} ${user}
+root@47621731a894:/app# sed -i 's/flags=FRX user=list argv=.*$/flags=FRX user=list argv=\/usr\/lib\/mailman\/bin\/postfix-to-mailman.py ${nexthop} ${user}/' /et
+c/postfix/master.cf
+root@47621731a894:/app# postfix check
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+/etc/init.d/postfix restart
+root@47621731a894:/app# /etc/init.d/postfix restart
+/usr/sbin/postconf: fatal: file /etc/postfix/master.cf: line 140: bad field count
+python3 /app/eval.py
+postfix/postfix-script: fatal: cannot execute /usr/sbin/postconf!
+   ...fail!
+root@47621731a894:/app# python3 /app/eval.py
+0b585c8d6fcf154b added successfully.
+Retrying in 2 seconds...
+Retrying in 4 seconds...
+Retrying in 8 seconds...
+Retrying in 16 seconds...
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 156, in test_simple_local_delivery
+    retry(_assert_mailbox_exists)
+  File "/app/eval.py", line 49, in retry
+    raise e
+  File "/app/eval.py", line 45, in retry
+    return func()
+           ^^^^^^
+  File "/app/eval.py", line 149, in _assert_mailbox_exists
+    assert os.path.exists(mbox_path), f"Mailbox not found: {mbox_path}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Mailbox not found: /var/mail/0b585c8d6fcf154b
+root@47621731a894:/app# sed -i '/mailman.*pipe/!d; /flags=FRX/d' /etc/postfix/master.cf
+root@47621731a894:/app# postfix check
+root@47621731a894:/app# /etc/init.d/postfix restart
+postfix/postfix-script: stopping the Postfix mail system
+   ...done.
+postfix/postfix-script: starting the Postfix mail system
+   ...done.
+root@47621731a894:/app# python3 /app/eval.py
+4923db9e70577adb added successfully.
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 141, in test_simple_local_delivery
+    send_email(
+  File "/app/eval.py", line 86, in send_email
+    with smtplib.SMTP("localhost", 25) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 852, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 837, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+root@47621731a894:/app# ss -tuln | grep :25
+bash: ss: command not found
+root@47621731a894:/app# cat /etc/postfix/main.cf | grep -i inet_interfaces
+inet_interfaces = all
+root@47621731a894:/app# if ! grep -q 'inet_interfaces' /etc/postfix/main.cf; then
+>   echo 'inet_interfaces = 127.0.0.1' >> /etc/postfix/main.cf
+> fi
+root@47621731a894:/app# /etc/init.d/postfix restart
+postfix/postfix-script: stopping the Postfix mail system
+   ...done.
+postfix/postfix-script: starting the Postfix mail system
+   ...done.
+root@47621731a894:/app# python3 /app/eval.py
+6d40036f10acb14e added successfully.
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 141, in test_simple_local_delivery
+    send_email(
+  File "/app/eval.py", line 86, in send_email
+    with smtplib.SMTP("localhost", 25) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 852, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 837, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+root@47621731a894:/app# ps aux | grep postfix
+root        3524  0.0  0.0  42856  2896 ?        Ss   17:53   0:00 /usr/lib/postfix/sbin/master -w
+root        3568  0.0  0.0   3912  1960 pts/1    S+   17:55   0:00 grep --color=auto postfix
+root@47621731a894:/app# if ! command -v netstat &> /dev/null; then
+>   echo 'netstat not available; assuming Postfix is running but not listening on port 25';
+> else
+>   netstat -tuln | grep :25
+> fi
+root@47621731a894:/app# python3 /app/eval.py
+729a4b71bd2e0794 added successfully.
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 141, in test_simple_local_delivery
+    send_email(
+  File "/app/eval.py", line 86, in send_email
+    with smtplib.SMTP("localhost", 25) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 852, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 837, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+root@47621731a894:/app# cat /etc/postfix/main.cf | grep -i smtpd
+smtpd_banner = $myhostname ESMTP $mail_name (Ubuntu)
+smtpd_tls_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+smtpd_tls_security_level=may
+smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+root@47621731a894:/app# if ! grep -q 'smtpd' /etc/postfix/main.cf; then
+>   echo 'smtpd_bind_address = 127.0.0.1' >> /etc/postfix/main.cf
+>   echo 'smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination' >> /etc/postfix/main.cf
+> fi
+root@47621731a894:/app# /etc/init.d/postfix restart
+postfix/postfix-script: stopping the Postfix mail system
+   ...done.
+postfix/postfix-script: starting the Postfix mail system
+   ...done.
+root@47621731a894:/app# python3 /app/eval.py
+2154b5ed09702e69 added successfully.
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 141, in test_simple_local_delivery
+    send_email(
+  File "/app/eval.py", line 86, in send_email
+    with smtplib.SMTP("localhost", 25) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 852, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 837, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+root@47621731a894:/app# cat /etc/postfix/master.cf | grep -A 2 -B 2 'smtpd'
+root@47621731a894:/app# /etc/init.d/postfix restart
+postfix/postfix-script: stopping the Postfix mail system
+   ...done.
+postfix/postfix-script: starting the Postfix mail system
+   ...done.
+root@47621731a894:/app# python3 /app/eval.py
+391cd58ade439454 added successfully.
+Traceback (most recent call last):
+  File "/app/eval.py", line 203, in <module>
+    test_simple_local_delivery()
+  File "/app/eval.py", line 141, in test_simple_local_delivery
+    send_email(
+  File "/app/eval.py", line 86, in send_email
+    with smtplib.SMTP("localhost", 25) as server:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/smtplib.py", line 312, in _get_socket
+    return socket.create_connection((host, port), timeout,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/socket.py", line 852, in create_connection
+    raise exceptions[0]
+  File "/usr/lib/python3.12/socket.py", line 837, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+root@47621731a894:/app# cat >> /etc/postfix/master.cf << 'EOF'
+>
+> # SMTP service
+> smtp      inet  n       -       n       -       -       smtpd
+>   -o smtpd_tls_security_level=may
+>   -o smtpd_sasl_auth_enable=yes
+>   -o smtpd_recipient_restrictions=permit_mynetworks,permit_sasl_authenticated,reject_unauth_destination
+>   -o smtpd_client_restrictions=permit_sasl_authenticated,reject
+>   -o mynetworks=127.0.0.0/8
+> EOF
+root@47621731a894:/app# /etc/init.d/postfix restart
+postfix/postfix-script: stopping the Postfix mail system
+   ...done.
+postfix/postfix-script: starting the Postfix mail system
+   ...done.
+root@47621731a894:/app# python3 /app/eval.py
+1cee17363e13606c added successfully.
+ss -tuln | grep :25
+ls -la /var/mail/1cee17363e13606c
+cat /var/mail/1cee17363e13606c
+

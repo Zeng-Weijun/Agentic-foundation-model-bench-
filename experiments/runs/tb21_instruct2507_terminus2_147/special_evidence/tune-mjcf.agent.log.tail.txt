@@ -1,0 +1,458 @@
+[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.93% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5351 secs
+Avg simulation time (ref): 0.5350 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.03% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5338 secs
+Avg simulation time (ref): 0.5341 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.95% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5336 secs
+Avg simulation time (ref): 0.5337 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.96% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5345 secs
+Avg simulation time (ref): 0.5343 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.04% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5329 secs
+Avg simulation time (ref): 0.5327 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.04% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5345 secs
+Avg simulation time (ref): 0.5343 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.04% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5329 secs
+Avg simulation time (ref): 0.5335 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.90% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5344 secs
+Avg simulation time (ref): 0.5338 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.11% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5337 secs
+Avg simulation time (ref): 0.5346 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.84% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5333 secs
+Avg simulation time (ref): 0.5332 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.01% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5340 secs
+Avg simulation time (ref): 0.5342 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.95% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5350 secs
+Avg simulation time (ref): 0.5348 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.03% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5344 secs
+Avg simulation time (ref): 0.5339 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.08% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5335 secs
+Avg simulation time (ref): 0.5333 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.03% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004lFinal state difference: 0.0000
+Avg simulation time: 0.5340 secs
+Avg simulation time (ref): 0.5335 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.09% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5339 secs
+Avg simulation time (ref): 0.5336 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.06% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5332 secs
+Avg simulation time (ref): 0.5332 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.01% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5364 secs
+Avg simulation time (ref): 0.5342 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.41% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5343 secs
+Avg simulation time (ref): 0.5343 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.99% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5346 secs
+Avg simulation time (ref): 0.5342 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.07% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5329 secs
+Avg simulation time (ref): 0.5339 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.81% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004lFinal state difference: 0.0000
+Avg simulation time: 0.5338 secs
+Avg simulation time (ref): 0.5336 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.04% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5340 secs
+Avg simulation time (ref): 0.5339 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.01% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5351 secs
+Avg simulation time (ref): 0.5349 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.03% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5344 secs
+Avg simulation time (ref): 0.5340 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.07% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5331 secs
+Avg simulation time (ref): 0.5335 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 99.93% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5332 secs
+Avg simulation time (ref): 0.5327 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.08% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5344 secs
+Avg simulation time (ref): 0.5344 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.00% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5337 secs
+Avg simulation time (ref): 0.5337 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.00% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000
+Avg simulation time: 0.5338 secs
+Avg simulation time (ref): 0.5335 secs
+Speedup: 1.00x
+Time pctg: 1.00
+Traceback (most recent call last):
+  File [35m"/app/eval.py"[0m, line [35m88[0m, in [35m<module>[0m
+    [31mtest_model_speed[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/app/eval.py"[0m, line [35m81[0m, in [35mtest_model_speed[0m
+    assert [1;31mact_time_pctg <= pctg[0m, (
+           [1;31m^^^^^^^^^^^^^^^^^^^^^[0m
+[1;35mAssertionError[0m: [35mTime pctg 100.06% (need 60.00%)[0m
+[?2004hroot@3bdb9767f9a1:/app# python3 eval.py
+[?2004l
+python3 eval.pyFinal state difference: 0.0000

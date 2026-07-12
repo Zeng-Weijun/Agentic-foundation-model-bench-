@@ -1,0 +1,646 @@
+{
+  "bench": "terminal-bench 2.1 (TB2.1) full-89, official terminus-2 harness",
+  "dataset": {
+    "id": "terminal-bench-2.1-yaml-full89-r7-final-20260703",
+    "image_manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/manifests/images/terminal_bench_2_1_full89_p0_closure_r7.yaml",
+    "n_tasks": 89,
+    "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703",
+    "task_ids": [
+      "adaptive-rejection-sampler",
+      "bn-fit-modify",
+      "break-filter-js-from-html",
+      "build-cython-ext",
+      "build-pmars",
+      "build-pov-ray",
+      "caffe-cifar-10",
+      "cancel-async-tasks",
+      "chess-best-move",
+      "circuit-fibsqrt",
+      "cobol-modernization",
+      "code-from-image",
+      "compile-compcert",
+      "configure-git-webserver",
+      "constraints-scheduling",
+      "count-dataset-tokens",
+      "crack-7z-hash",
+      "custom-memory-heap-crash",
+      "db-wal-recovery",
+      "distribution-search",
+      "dna-assembly",
+      "dna-insert",
+      "extract-elf",
+      "extract-moves-from-video",
+      "feal-differential-cryptanalysis",
+      "feal-linear-cryptanalysis",
+      "filter-js-from-html",
+      "financial-document-processor",
+      "fix-code-vulnerability",
+      "fix-git",
+      "fix-ocaml-gc",
+      "gcode-to-text",
+      "git-leak-recovery",
+      "git-multibranch",
+      "gpt2-codegolf",
+      "headless-terminal",
+      "hf-model-inference",
+      "install-windows-3.11",
+      "kv-store-grpc",
+      "large-scale-text-editing",
+      "largest-eigenval",
+      "llm-inference-batching-scheduler",
+      "log-summary-date-ranges",
+      "mailman",
+      "make-doom-for-mips",
+      "make-mips-interpreter",
+      "mcmc-sampling-stan",
+      "merge-diff-arc-agi-task",
+      "model-extraction-relu-logits",
+      "modernize-scientific-stack",
+      "mteb-leaderboard",
+      "mteb-retrieve",
+      "multi-source-data-merger",
+      "nginx-request-logging",
+      "openssl-selfsigned-cert",
+      "overfull-hbox",
+      "password-recovery",
+      "path-tracing",
+      "path-tracing-reverse",
+      "polyglot-c-py",
+      "polyglot-rust-c",
+      "portfolio-optimization",
+      "protein-assembly",
+      "prove-plus-comm",
+      "pypi-server",
+      "pytorch-model-cli",
+      "pytorch-model-recovery",
+      "qemu-alpine-ssh",
+      "qemu-startup",
+      "query-optimize",
+      "raman-fitting",
+      "regex-chess",
+      "regex-log",
+      "reshard-c4-data",
+      "rstan-to-pystan",
+      "sam-cell-seg",
+      "sanitize-git-repo",
+      "schemelike-metacircular-eval",
+      "sparql-university",
+      "sqlite-db-truncate",
+      "sqlite-with-gcov",
+      "torch-pipeline-parallelism",
+      "torch-tensor-parallelism",
+      "train-fasttext",
+      "tune-mjcf",
+      "video-processing",
+      "vulnerable-secret",
+      "winning-avg-corewars",
+      "write-compressor"
+    ],
+    "task_ids_sha256": "3778b86071c74c8a342222cfff41089916adb5c7338d1afa69f42c9cae21fe3e"
+  },
+  "generated_utc": "2026-07-12T20:45:15Z",
+  "harness": {
+    "agent_scaffold": "terminus-2",
+    "name": "terminal-bench",
+    "venv": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/.venv",
+    "version": "0.2.18",
+    "version_probe": "importlib.metadata.version('terminal-bench') (tb has no --version flag)"
+  },
+  "invocation": {
+    "env_flags": {
+      "TB21_ENABLE_KVM_DEVICE": "0",
+      "TB2_RUNTIME_CLOSURE_REPAIR": "",
+      "global_agent_timeout_sec": 7200,
+      "global_test_timeout_sec": 7200,
+      "global_timeout_multiplier": 1.0,
+      "n_concurrent": 32,
+      "no_rebuild": true,
+      "temperature": 0.0
+    },
+    "exact_tb_command_file": "launch.sh + verdict/tb.command (see run.env.summary tb_job_name)",
+    "tb_command": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/.venv/bin/tb run --agent terminus-2 --model openai/Qwen/Qwen3-30B-A3B-Instruct-2507 --n-concurrent 32 --run-id tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32 --output-path /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs --dataset-path /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703 --task-id adaptive-rejection-sampler --task-id bn-fit-modify --task-id break-filter-js-from-html --task-id build-cython-ext --task-id build-pmars --task-id build-pov-ray --task-id caffe-cifar-10 --task-id cancel-async-tasks --task-id chess-best-move --task-id circuit-fibsqrt --task-id cobol-modernization --task-id code-from-image --task-id compile-compcert --task-id configure-git-webserver --task-id constraints-scheduling --task-id count-dataset-tokens --task-id crack-7z-hash --task-id custom-memory-heap-crash --task-id db-wal-recovery --task-id distribution-search --task-id dna-assembly --task-id dna-insert --task-id extract-elf --task-id extract-moves-from-video --task-id feal-differential-cryptanalysis --task-id feal-linear-cryptanalysis --task-id filter-js-from-html --task-id financial-document-processor --task-id fix-code-vulnerability --task-id fix-git --task-id fix-ocaml-gc --task-id gcode-to-text --task-id git-leak-recovery --task-id git-multibranch --task-id gpt2-codegolf --task-id headless-terminal --task-id hf-model-inference --task-id install-windows-3.11 --task-id kv-store-grpc --task-id large-scale-text-editing --task-id largest-eigenval --task-id llm-inference-batching-scheduler --task-id log-summary-date-ranges --task-id mailman --task-id make-doom-for-mips --task-id make-mips-interpreter --task-id mcmc-sampling-stan --task-id merge-diff-arc-agi-task --task-id model-extraction-relu-logits --task-id modernize-scientific-stack --task-id mteb-leaderboard --task-id mteb-retrieve --task-id multi-source-data-merger --task-id nginx-request-logging --task-id openssl-selfsigned-cert --task-id overfull-hbox --task-id password-recovery --task-id path-tracing --task-id path-tracing-reverse --task-id polyglot-c-py --task-id polyglot-rust-c --task-id portfolio-optimization --task-id protein-assembly --task-id prove-plus-comm --task-id pypi-server --task-id pytorch-model-cli --task-id pytorch-model-recovery --task-id qemu-alpine-ssh --task-id qemu-startup --task-id query-optimize --task-id raman-fitting --task-id regex-chess --task-id regex-log --task-id reshard-c4-data --task-id rstan-to-pystan --task-id sam-cell-seg --task-id sanitize-git-repo --task-id schemelike-metacircular-eval --task-id sparql-university --task-id sqlite-db-truncate --task-id sqlite-with-gcov --task-id torch-pipeline-parallelism --task-id torch-tensor-parallelism --task-id train-fasttext --task-id tune-mjcf --task-id video-processing --task-id vulnerable-secret --task-id winning-avg-corewars --task-id write-compressor --global-timeout-multiplier 1.0 --global-agent-timeout-sec 7200 --global-test-timeout-sec 7200 --agent-kwarg api_base=http://100.100.104.147:30000/v1 --agent-kwarg temperature=0.0 --no-rebuild"
+  },
+  "on_disk_source_of_truth": {
+    "batched_run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_qwen_poda/tb21_inst2507_t2_c32_0712170859/medium_c32/attempt_1/tb21_batched_terminus-2_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32",
+    "full_console": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_terminus2_147_clean_20260712/tb21_instruct_run.out",
+    "launcher_log_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_terminus2_147_clean_20260712",
+    "tb_native_run_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32"
+  },
+  "orchestrator_scripts": {
+    "assert_net_isolation": {
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_terminus2_147_clean_20260712/assert_net_isolation.sh",
+      "sha256": "0f5dcc63f95b8b1c34539b50ec7b51893536221e7493a50e980abd58faae695f",
+      "vendored_as": "scripts/assert_net_isolation.sh"
+    },
+    "identity_capture_147": {
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_terminus2_147_clean_20260712/identity_capture_147.py",
+      "sha256": "7b0a1f1bcc5af233c3bfbcd1c47fb2bf3468c9fdfb56d993ed17b63feb78370f",
+      "vendored_as": "scripts/identity_capture_147.py"
+    },
+    "launcher_full_run_147": {
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/_coordination/20260625_harbor_bench/logs/tb21_terminus2_147_clean_20260712/full_run_147.sh",
+      "sha256": "71606ab0e0a3f122f710e8bc74e2ff5e1478368a4125e37c00a26c75e9e68179",
+      "vendored_as": "launch.sh"
+    },
+    "stage_launcher_terminus2": {
+      "note": "Coder launcher + 1-line model-allowlist patch to accept Qwen3-30B-A3B-Instruct-2507 (see scripts/stage_launcher_accept_instruct.patch)",
+      "path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55/scripts/stage_tb21_official_qwen_launcher_terminus2.sh",
+      "sha256": "e185eb3ea1ae4492fa22b37bfa8e0a1fdd7fc8b4b6525c6cd563ef0026a05e62",
+      "vendored_as": "scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+    }
+  },
+  "run_id": "tb21_inst2507_t2_c32_0712170859",
+  "schema": "repro_closure/tb-v1",
+  "score": {
+    "accuracy": 0.033707865168539325,
+    "denominator": 89,
+    "denominator_note": "mailman + tune-mjcf both null in tb-native -> counted unresolved; neither resolved.",
+    "mean_pass_at_1": 0.033707865168539325,
+    "resolved": 3,
+    "resolved_ids": [
+      "configure-git-webserver",
+      "hf-model-inference",
+      "modernize-scientific-stack"
+    ],
+    "score_rule": "single_attempt_pass_at_1_over_89_tasks",
+    "total": 89
+  },
+  "serving": {
+    "api_key": null,
+    "attention_backend": "fa3",
+    "base_url": "http://100.100.104.147:30000/v1",
+    "context_length": 262144,
+    "engine": "sglang",
+    "host": "100.100.104.147",
+    "identity_before_after_match": true,
+    "mem_fraction_static": 0.85,
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "port": 30000,
+    "random_seed": 61643818,
+    "served_model_name": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "tool_call_parser": "qwen",
+    "tp_size": 2,
+    "version": "0.5.13"
+  },
+  "task_images": {
+    "capture_summary": {
+      "arch": "x86_64",
+      "captured_found": 89,
+      "captured_missing": 0,
+      "inspect_cmd": "docker"
+    },
+    "image_manifest": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-image-fixes-r3/manifests/images/terminal_bench_2_1_full89_p0_closure_r7.yaml",
+    "per_task": {
+      "adaptive-rejection-sampler": {
+        "image_id": "sha256:38d89c573031836f61fb465f682ddb0d8d8ef4f298e7cbcc99eb757eb9cbc227",
+        "image_ref": "tb2-offline/adaptive-rejection-sampler:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-adaptive-rejection-sampler@sha256:e4748787bc2ec1754dfa787074a755892d7d1053e44d18cac199c0ea4b3b52c7"
+      },
+      "bn-fit-modify": {
+        "image_id": "sha256:a29e500c9abeb82e2babf4caaef7f7f8fca9742b379281619af7470a1583a846",
+        "image_ref": "tb2-offline/bn-fit-modify:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-bn-fit-modify@sha256:d705c21015f373b35b384fcc9bb7a88e839a135ec3cbbe20c1f6df5aa87bcfd3"
+      },
+      "break-filter-js-from-html": {
+        "image_id": "sha256:0b0475ff6cb9bd3746e94d911ccec17378b95fef9d4d16f4e4dfb349cdd6dca5",
+        "image_ref": "tb2-offline/break-filter-js-from-html:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-break-filter-js-from-html@sha256:6ac375e0c1c88170174cb17f3e9020ec7b81638385083c991114df72f176aca9"
+      },
+      "build-cython-ext": {
+        "image_id": "sha256:1709d35d6f4ae9b56543ac0ee4dbed716f025743dfaf572e6962d6b0356999f4",
+        "image_ref": "tb2-offline/build-cython-ext:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-build-cython-ext@sha256:8b1534b0ef30691d1e5436706677f5f7f3b76d1f0e6e2b22ca0ebcd171c5b44b"
+      },
+      "build-pmars": {
+        "image_id": "sha256:32008d23e8ea190637ab66e9152f3a18d2ffebf7da967db7b31f8be31cbb86fd",
+        "image_ref": "tb2-offline/build-pmars:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-build-pmars@sha256:7f074452233b04b863d2aef11adc8d4482d31e82c8a4d073ccf07ee7226b71f5"
+      },
+      "build-pov-ray": {
+        "image_id": "sha256:ad9c6d7b4596d5758a5e20ebe66d4db2d7663c9b23963a8a8c56d93fedc6c50f",
+        "image_ref": "tb2-offline/build-pov-ray:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-build-pov-ray@sha256:ee8c8f903f8b2a3f598be7f0245ba97514c4da72016ecc8fa70f866aa7c0fdf7"
+      },
+      "caffe-cifar-10": {
+        "image_id": "sha256:2ec6b1314422ea6e56a84d76c08cf1ddf4b09c1d9869e67ccd54dbb4cf6898b5",
+        "image_ref": "tb2-offline/caffe-cifar-10:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-caffe-cifar-10@sha256:092e8f6a77f61c81a9112d213b70c21838513e9e1fd6b69445ecae0ae27f5663"
+      },
+      "cancel-async-tasks": {
+        "image_id": "sha256:4ba426c980e1892770cf293a4b7ba38f531761e23e7bb587ff91341322a71ec3",
+        "image_ref": "tb2-offline/cancel-async-tasks:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-cancel-async-tasks@sha256:4d588a5a9aa8f613a17ea8d994b8e7836e93fa36ee9b77a6f8a0b5e8f12390ee"
+      },
+      "chess-best-move": {
+        "image_id": "sha256:0a87be7f4f16869fe09cfb6996d2bf3ce24a171dcf7f87688f5896240b9d471e",
+        "image_ref": "tb2-offline/chess-best-move:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-chess-best-move@sha256:0dd87e409d0bacbcc7ca8834bef675e05a608f2f8b31bb3f32d2453d4fe4b6f5"
+      },
+      "circuit-fibsqrt": {
+        "image_id": "sha256:8d06ec926f60d74e7048ff3cf6f09b54aaee560a42eeadb1ddd06ee56fdd7d27",
+        "image_ref": "tb2-offline/circuit-fibsqrt:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-circuit-fibsqrt@sha256:09f9c3001a7879f1c163f3269ffbd87cf953a09979091d9de48f5c18ddaf6c2b"
+      },
+      "cobol-modernization": {
+        "image_id": "sha256:3c30c03c9657845ad1135a3acc53429a440ef42042cbbb49da768b75c80cb519",
+        "image_ref": "tb2-offline/cobol-modernization:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-cobol-modernization@sha256:db66af4101135f4ad4ea08aebd13a0d2cb02d1d9a43dd181088c4ddaf2582f5a"
+      },
+      "code-from-image": {
+        "image_id": "sha256:c95c66a6b8bdb16db7ffd7300595836a5db7f53bfc9b3c4e96e14d958d18c27f",
+        "image_ref": "tb2-offline/code-from-image:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-code-from-image@sha256:56b64d0a97d37481d297dbe1e4139375d4db9e2f118e193a2062581558afc550"
+      },
+      "compile-compcert": {
+        "image_id": "sha256:7ac41cd7ac6bb1d734bf304c622550d88915cc6ec672a7cfd08aeb6c3be9d51f",
+        "image_ref": "tb2-offline/compile-compcert:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-compile-compcert@sha256:7378b1d7d26adaf3fecbcd4dbb8d49a07521bb30e3e3195a1a4aa35fdacc5f3b"
+      },
+      "configure-git-webserver": {
+        "image_id": "sha256:6f586341f3f7f7296eee49345c5f151fe3eebf86030c8296c5ca87f07931d85f",
+        "image_ref": "tb2-offline/configure-git-webserver:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-configure-git-webserver@sha256:f589dc200f167020f73b359b9c79325ffd9cbed385ec55c917592e66e0169b2d"
+      },
+      "constraints-scheduling": {
+        "image_id": "sha256:682f6d7004333e97e455118bb43052bcc0f74e415e9e7b1bd186df8e3bb7817e",
+        "image_ref": "tb2-offline/constraints-scheduling:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-constraints-scheduling@sha256:862ce24358ce463900366dd7022d098c784052c57334b5db63e6181c4983f2ba"
+      },
+      "count-dataset-tokens": {
+        "image_id": "sha256:6bf99246cd9d9aff4545823e6e2b99a06cbd4a96769bf39ca9d215b8b4c254ae",
+        "image_ref": "tb2-offline/count-dataset-tokens:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-count-dataset-tokens@sha256:c7312fab1e5f977c29d89c8bde679c7156e7c81172291f9aa2814b633a5127a5"
+      },
+      "crack-7z-hash": {
+        "image_id": "sha256:854dabe70b992cdd4cbb6d514b12cca0520b188d7e8812e05f23f929e302515d",
+        "image_ref": "tb2-offline/crack-7z-hash:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-crack-7z-hash@sha256:8fcf8568bdee86367baa23eed988348aa6c9243dc1a32cf28698812dfae48605"
+      },
+      "custom-memory-heap-crash": {
+        "image_id": "sha256:c0f67ebb3d3f4260fc5d4b63d2696e3f8c48d2c4ecf007cafbd5473ab5fe96dd",
+        "image_ref": "tb2-offline/custom-memory-heap-crash:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-custom-memory-heap-crash@sha256:667df23796249d1df0903fd36e51bf9a35d0d2a13da47ccc54436b3eb674447b"
+      },
+      "db-wal-recovery": {
+        "image_id": "sha256:4fc34db304b21711fd293fe39059b2b75fb8271e21f3bed13fd653d8620668af",
+        "image_ref": "tb2-offline/db-wal-recovery:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-db-wal-recovery@sha256:22aa96bfefaffeb6f928a07afa70dc812968aa16a60ba9e8ed2af31cc509f308"
+      },
+      "distribution-search": {
+        "image_id": "sha256:04271be351e03899eb13c925d885b8e0a7bd1cc13712ee77cc6569106e938ec1",
+        "image_ref": "tb2-offline/distribution-search:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-distribution-search@sha256:38328837c7a774ccbfbd89ad12d593281006886dcfba02df407cdb3916d21751"
+      },
+      "dna-assembly": {
+        "image_id": "sha256:2c647e85613d42ef92462344e2858b219a8ec768eda99df17299986b99244eca",
+        "image_ref": "tb2-offline/dna-assembly:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-dna-assembly@sha256:ac5f05c0ac6dea33c60a6c76ee2367f111bf9b12ff0e1652c7e8a0f6f1d8724a"
+      },
+      "dna-insert": {
+        "image_id": "sha256:bf2699a23af5103d25d4ee0ea0a6fdfd54880908cb5ed1645a03760d14106e0d",
+        "image_ref": "tb2-offline/dna-insert:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-dna-insert@sha256:6de8311381661d2394c5cc19c3cd8561b17e29f674edb9b695c86be90601c56a"
+      },
+      "extract-elf": {
+        "image_id": "sha256:f15edf621a02f957fe09ea7f7e062fa6aea89e7d23747f1d9bb2110c0bc40d73",
+        "image_ref": "tb2-offline/extract-elf:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-extract-elf@sha256:c803d406665d25e4ae0044b310e4f0721eb3a07ef61057a3b613c586c87e1833"
+      },
+      "extract-moves-from-video": {
+        "image_id": "sha256:8ed85ac734e3ab59497aac68f9cb2d9886bc26131025b8fdb5edf7eb9f4ab698",
+        "image_ref": "tb2-offline/extract-moves-from-video:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-extract-moves-from-video@sha256:4dd33765cfc3f5202994253cb01ced90d6134116c81dd7d908ede9bac405c8d1"
+      },
+      "feal-differential-cryptanalysis": {
+        "image_id": "sha256:5d5f271b7c846fea346f77458f0c3a0f4d81a722cde6bef56e2622019c533e4b",
+        "image_ref": "tb2-offline/feal-differential-cryptanalysis:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-feal-differential-cryptanalysis@sha256:26b9ae9e3f5f00a7cfdc2aa91c4642a93319a2beb1588f81a4e84d412209489f"
+      },
+      "feal-linear-cryptanalysis": {
+        "image_id": "sha256:da551997cc01447dde3ed86c38a63c17d2918ebe22bfc68c78a6439f79258f26",
+        "image_ref": "tb2-offline/feal-linear-cryptanalysis:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-feal-linear-cryptanalysis@sha256:003346615d5aef4284eba0d5680cd55a7b5a434c840186e6a6ebbb78a4609e0f"
+      },
+      "filter-js-from-html": {
+        "image_id": "sha256:b81942d62a9be2597b47f57dab3520c61b981232fdc15bf414eb7c556cf1bcff",
+        "image_ref": "tb2-offline/filter-js-from-html:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-filter-js-from-html@sha256:0a39267c4c2c575845883a469d0389190f14442847364e81ea85a281450c018b"
+      },
+      "financial-document-processor": {
+        "image_id": "sha256:9f8192439e6be48405f319bf56896285e30aa7e4134c6bf1a128d29f6793c89c",
+        "image_ref": "tb2-offline/financial-document-processor:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-financial-document-processor@sha256:c08284eaa5492d32d3d7c84a4d3e2ad09bef94f81b6f7b0ebb5417a0496ccef3"
+      },
+      "fix-code-vulnerability": {
+        "image_id": "sha256:23d9219e1591e048a5c62af9cc32e8182b287050f5a65d196deb568548fae930",
+        "image_ref": "tb2-offline/fix-code-vulnerability:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-fix-code-vulnerability@sha256:f1fc9520b01efc18f71ecdf2f84b4b87d7ec07c6411ed0877b9a80224cd5bd42"
+      },
+      "fix-git": {
+        "image_id": "sha256:22f722683781d25400c791391acd50c1ab49a0b233e7d09c90e4f5427f86ce66",
+        "image_ref": "tb2-offline/fix-git:20260425-closure-r1",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-fix-git@sha256:09cebc47364fc97ac478e8f750124b4cba5928fa527a2a11f3d42f54967af6ca"
+      },
+      "fix-ocaml-gc": {
+        "image_id": "sha256:4095924ca1acd59f89995f3b735cb1bc060a06074d0851c91254a96f9a932c54",
+        "image_ref": "tb2-offline/fix-ocaml-gc:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-fix-ocaml-gc@sha256:8e02abc564327c9de4f6b09abfd0f123f84989fa6252c5c75514df3974569f2e"
+      },
+      "gcode-to-text": {
+        "image_id": "sha256:7f511025a893e09a2b22a853d2775e5268f78a955e0f27aae14c732c4983f385",
+        "image_ref": "tb2-offline/gcode-to-text:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-gcode-to-text@sha256:0b98594b39d4c2a75e3f2aca7deb36fbcb9c36d3757118255ad15f541ab3d727"
+      },
+      "git-leak-recovery": {
+        "image_id": "sha256:e9a46451cc29d682200b2eee167bafb1d5291d187fb90b915d630012f29905d9",
+        "image_ref": "tb2-offline/git-leak-recovery:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-git-leak-recovery@sha256:e0dfbfea14992ce341f3b92143bc2be81bcfd7df18be14742f748c482c813ebb"
+      },
+      "git-multibranch": {
+        "image_id": "sha256:746904d6866c291481601a82ee2f5329fa6b861f04da3b727f6b6070f5ab3f34",
+        "image_ref": "tb2-offline/git-multibranch:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-git-multibranch@sha256:fd43041d621a92d37a71a88da40058d68913383aecda5ce141aa1494cfe6a483"
+      },
+      "gpt2-codegolf": {
+        "image_id": "sha256:a971af5627c03b7919b0736dcfdd57a191399a7e3d6603cf4862b4bb45050242",
+        "image_ref": "tb2-offline/gpt2-codegolf:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-gpt2-codegolf@sha256:3526a67ffa3e79780dcf0de491a7fcabaeeade32cf12d9f3f524dcf72fbd32e7"
+      },
+      "headless-terminal": {
+        "image_id": "sha256:c8910c4c6f954b536b23824ef7af0e658ea2f296aa66b25a494a85d8ebf95f31",
+        "image_ref": "tb2-offline/headless-terminal:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-headless-terminal@sha256:9e3bf00f3e5c77826d976f05da5194389ed79927a004188b12489265886bb040"
+      },
+      "hf-model-inference": {
+        "image_id": "sha256:96b811261efd8349eb4098223bb27658e2c47104f46e149c7aa8779e7b8e9dd0",
+        "image_ref": "tb2-offline/hf-model-inference:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-hf-model-inference@sha256:e17658fd7f07cf34c98c9e0a6d0523978e75953a36daaf2de7944d381cfbd8ca"
+      },
+      "install-windows-3.11": {
+        "image_id": "sha256:d821c36ec6bc0b8ff17f3d248b98818521a2c06ba7f5fa1b24da835b863dd8ea",
+        "image_ref": "tb2-offline/install-windows-3.11:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-install-windows-3.11@sha256:e990659b51ee63e7f4756333940ff1a0c39213ef9361f5313e2bb63c3d4391e2"
+      },
+      "kv-store-grpc": {
+        "image_id": "sha256:82e7e945013b3834d46e9b1963d1ade52f03fc578288eb5504292263312f23e3",
+        "image_ref": "tb2-offline/kv-store-grpc:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-kv-store-grpc@sha256:6d1133c5e553ecc9134885f659d61fc8d7c9d1ece62e6d6c291a42b1049d670e"
+      },
+      "large-scale-text-editing": {
+        "image_id": "sha256:5489e3213e2e781cf3962da19cb50fd347a7e3d4345803516cbd75a58cf8db2e",
+        "image_ref": "tb2-offline/large-scale-text-editing:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-large-scale-text-editing@sha256:3d148f70bb513dadbdfd003c33c8091de5e059f7f2a7d4e5f4998464d90339c1"
+      },
+      "largest-eigenval": {
+        "image_id": "sha256:a40e860ba5563b7c8a8fc6a21810c5f9899997f1699a102ad9279a88d4f7a2a2",
+        "image_ref": "tb2-offline/largest-eigenval:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-largest-eigenval@sha256:7b4cd49d44919c66ee2b72661e557aede39ee976d6d85b2852c95723679fa8a1"
+      },
+      "llm-inference-batching-scheduler": {
+        "image_id": "sha256:9a4562f2779deeb2191818ddf7db40016f1818a966fd33b699db8d9af4fe1e52",
+        "image_ref": "tb2-offline/llm-inference-batching-scheduler:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-llm-inference-batching-scheduler@sha256:47b43893a606c69e6cd9a67bb7ff5d76ba0951a9b9747d9ad4f09de16d692442"
+      },
+      "log-summary-date-ranges": {
+        "image_id": "sha256:e97b14d23c7215d6027a30c35554e09a9eb0d858b24b9194d82db58da20087fe",
+        "image_ref": "tb2-offline/log-summary-date-ranges:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-log-summary-date-ranges@sha256:ac922bd6179e797c2d314367fbec20c8470718a4973c219f7fbe8b89525bd60c"
+      },
+      "mailman": {
+        "image_id": "sha256:93ae57c8100d6a4e0dc13180409745a0d8d1847b655d26cf17e7aada887b6b79",
+        "image_ref": "tb2-offline/mailman:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mailman@sha256:d201d527dd3bff38c29b453a29570273c04edb0cbb70c85414b962bc8a1d4741"
+      },
+      "make-doom-for-mips": {
+        "image_id": "sha256:ccef4537a172f0151c0b182e8ecf8ab68a60ff82aafaa8184eb0a6c79653f4b5",
+        "image_ref": "tb2-offline/make-doom-for-mips:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-make-doom-for-mips@sha256:000eb2010a5d85bdefbaa64d0109e30c5101aa24fc53ae256ae25f801018f562"
+      },
+      "make-mips-interpreter": {
+        "image_id": "sha256:cf9fd35f513f98156352bc120f2bc4c5182ac900fe838b01fa24a4dfbca57509",
+        "image_ref": "tb2-offline/make-mips-interpreter:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-make-mips-interpreter@sha256:d563339c8abe4291c423dd53b1f467586c2d623103ef2959bb7f7bcc53c101ff"
+      },
+      "mcmc-sampling-stan": {
+        "image_id": "sha256:57d70dce77accc222272d7a1349bef46e6861fe8c58ef328c85a1ad6601ab12c",
+        "image_ref": "tb2-offline/mcmc-sampling-stan:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mcmc-sampling-stan@sha256:3b643cd1727700cd255ed5d522d0fd0dc3c6c47848ee2e8d2a1a09c0f07c2511"
+      },
+      "merge-diff-arc-agi-task": {
+        "image_id": "sha256:304bff3721d1294172859e50483b3f0f9078bc8add68787f47e0cfe3ab50e6cc",
+        "image_ref": "tb2-offline/merge-diff-arc-agi-task:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-merge-diff-arc-agi-task@sha256:15e4f3606bab1604e890507bb91d52ba1037ca13fd3c54ee5d225fe631dc50ec"
+      },
+      "model-extraction-relu-logits": {
+        "image_id": "sha256:c47699ee7a0a44f00c95a7e4e185979edd403577653cd0993af5a294335cc1dc",
+        "image_ref": "tb2-offline/model-extraction-relu-logits:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-model-extraction-relu-logits@sha256:b064603bd2b54a9ce9098917b4d8484a99ec36b89884cb43dfc4fa0fb9c3e52d"
+      },
+      "modernize-scientific-stack": {
+        "image_id": "sha256:79618264d700db827156002655d65d02d98d15e49329f4d355a822df8f7197bf",
+        "image_ref": "tb2-offline/modernize-scientific-stack:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-modernize-scientific-stack@sha256:2ab19d63a4a6882db039315d6337afa6710610bc6f0d7319dcd36729e9512565"
+      },
+      "mteb-leaderboard": {
+        "image_id": "sha256:20abd4856bbd92f3fd245a708b48676b0334a692294b86db214c1b1f0eddc624",
+        "image_ref": "tb2-offline/mteb-leaderboard:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mteb-leaderboard@sha256:9454532c876897efb759c6d49487b6c549f67697e489461fa78d026fd5538f32"
+      },
+      "mteb-retrieve": {
+        "image_id": "sha256:8678f190dfec00fbe63860e96357be1e0a783c0c60e5a36bad3dbaafd5fef5f4",
+        "image_ref": "tb2-offline/mteb-retrieve:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-mteb-retrieve@sha256:d3abb2917ff9c94b8e5d75f7b6fb69508f753098c8ee0d23cab9a893ea576b47"
+      },
+      "multi-source-data-merger": {
+        "image_id": "sha256:4f27deb7d5ce1661a01374dda84f708b7909d160f74edd34f9ac60ff51b88d75",
+        "image_ref": "tb2-offline/multi-source-data-merger:20260425-closure-r1",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-multi-source-data-merger@sha256:3e937bda65627ec0a17942cc271130b72a87dce36cff8301835faeec6cc4a263"
+      },
+      "nginx-request-logging": {
+        "image_id": "sha256:0e50f3cd760fca630cb773f94a7d91ce44aaeb3fa010ee7705bba5c0ba151c8f",
+        "image_ref": "tb2-offline/nginx-request-logging:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-nginx-request-logging@sha256:92a1c8d136dc53ebf90538df9577443a30395e44cf2475434134a437a7d8fd5a"
+      },
+      "openssl-selfsigned-cert": {
+        "image_id": "sha256:882b046442c3857afeffdc24eb4d5d401a7d1640bcf741f13e3b7dda7a30d3eb",
+        "image_ref": "tb2-offline/openssl-selfsigned-cert:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-openssl-selfsigned-cert@sha256:71cf1e45db69389543f4593bc3f243ab4f0acd978a73dcb23f0929cbd7a258f8"
+      },
+      "overfull-hbox": {
+        "image_id": "sha256:70a5235108c024eebf321106ba2220fdf0e963864445400bf5850451dd6c3791",
+        "image_ref": "tb2-offline/overfull-hbox:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-overfull-hbox@sha256:7c914ac0fac6b6d36f679d023509231357914b768b80faed42e3986c53ce7b44"
+      },
+      "password-recovery": {
+        "image_id": "sha256:31a3a48753537ccdff14e78cec801ea3506b3c408b8a1476c184ed6d701d2568",
+        "image_ref": "tb2-offline/password-recovery:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-password-recovery@sha256:52792c519e472f27b9fdeea950facd8cc470454717d6caf2447625c24d676276"
+      },
+      "path-tracing": {
+        "image_id": "sha256:87c69309e6e5b18bdcac8e520d2d2f98df590fe18f26281a9004c071913c0699",
+        "image_ref": "tb2-offline/path-tracing:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing@sha256:251fcc3ff34609263c9e3271f64cc2137daa6f7593c079c1a2bc19443c9348c9"
+      },
+      "path-tracing-reverse": {
+        "image_id": "sha256:d4d374913bb994112839e6f9b0ea4ce769cc90737b2bab2956a7a8142a6a031b",
+        "image_ref": "tb2-offline/path-tracing-reverse:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-path-tracing-reverse@sha256:c66e4ab4efb6b4069b864957dfb5ab704cacd51941249af877ca764af8b36079"
+      },
+      "polyglot-c-py": {
+        "image_id": "sha256:6785730efa416c413be687751113b93a5e89ffca03ce9f4a0239c8f92184557b",
+        "image_ref": "tb2-offline/polyglot-c-py:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-c-py@sha256:bab29a99a5ee679f97c6f02cb6f27ea8e0aa53774d3d81b9bb334297a8fae746"
+      },
+      "polyglot-rust-c": {
+        "image_id": "sha256:47022066d887f69bfe8a61f0ca001a8ca9063d320c2e29dc511beab9a6d927e1",
+        "image_ref": "tb2-offline/polyglot-rust-c:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-polyglot-rust-c@sha256:ab0fc57e6efc79c3b6a5d14ea970dac272c7d4fbd9fd71c97c0af95d5d713d1b"
+      },
+      "portfolio-optimization": {
+        "image_id": "sha256:c4f87d13d463393ac4cc81ab6c6dd37728e4df4e1b3bbddb5814929c54470671",
+        "image_ref": "tb2-offline/portfolio-optimization:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-portfolio-optimization@sha256:133032a9c0a15a2b59157be556a45e8a56e71574b9bd2edb55a2eafd2fcf07d1"
+      },
+      "protein-assembly": {
+        "image_id": "sha256:72803693c823d25692a4a6e96a968414b3b72315d2a3957aec9dca5e766513f9",
+        "image_ref": "tb2-offline/protein-assembly:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-protein-assembly@sha256:9d2fc605c1f85560776913b6765334d0f5ddb210cfff3921069e4cf0de122e9a"
+      },
+      "prove-plus-comm": {
+        "image_id": "sha256:912a7d817ee309fb9ca2c8b4cf6aaf2c2218ddeed24287f8e9c3c36164d681dc",
+        "image_ref": "tb2-offline/prove-plus-comm:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-prove-plus-comm@sha256:b98c2b468c6524c226208ff0f335b5ad6355a7dde642500b95344619ed5eb186"
+      },
+      "pypi-server": {
+        "image_id": "sha256:861bbaaf7742c5aae409cdd45a5bc0ae8845bd746ceed56eb8c2e32f5b7e0f71",
+        "image_ref": "tb2-offline/pypi-server:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pypi-server@sha256:4b59a734fc833f4749044d366754748c8c30a279d4c35797b7dc17a0069408e5"
+      },
+      "pytorch-model-cli": {
+        "image_id": "sha256:a74e8a4af482d0af1027a2c684b2137ef36aea25b440680327c7611313b35454",
+        "image_ref": "tb2-offline/pytorch-model-cli:20260425-closure-r2",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-cli@sha256:0ffe5e770c70462579c7d06a72d186197f96c112892ce6ada075d3081a4838e9"
+      },
+      "pytorch-model-recovery": {
+        "image_id": "sha256:97285d151216c7c79cd77a866ed60f63c76390508eca76704276806f72e2ff65",
+        "image_ref": "tb2-offline/pytorch-model-recovery:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-pytorch-model-recovery@sha256:09d42966f120ffc59174b2242ac979b23b5469233c4f7b8ec954a99fa5de81ad"
+      },
+      "qemu-alpine-ssh": {
+        "image_id": "sha256:f8e5feeccc2d2cb1f89f88c4979de1ca5a2686f9ab9f1e0c5699af3933cfb959",
+        "image_ref": "tb2-offline/qemu-alpine-ssh:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-alpine-ssh@sha256:b5293ab361d5f1ae70a7f18021d6c4e5a0ffaab07ecfd13670771b2ea5c1866d"
+      },
+      "qemu-startup": {
+        "image_id": "sha256:01b4c4ba94803e40a010dda44ed0e704a518f96ce36359b7fee2eb916968f304",
+        "image_ref": "tb2-offline/qemu-startup:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-qemu-startup@sha256:ff260a0634fa722a9539826344c65ace3de8e369cb9f1a937746f50fac312930"
+      },
+      "query-optimize": {
+        "image_id": "sha256:3ced4c0478faf4ce0ac79a918e1c7d9c29c341e1bf267b762d961840a2493ee9",
+        "image_ref": "tb2-offline/query-optimize:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-query-optimize@sha256:f04ebb469b25cbff71feb7acfe9efe34946c2f8cf102be184fa3fd9fee52912f"
+      },
+      "raman-fitting": {
+        "image_id": "sha256:8dcc5f8b60c27a8030d46731ef0a58f3df26b9f298dfecef7fba69c5eb0efe9c",
+        "image_ref": "tb2-offline/raman-fitting:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-raman-fitting@sha256:232f01db5af3b1916e0ffc1b71bf8b529c35da6a163e6814c329608b8f2e4408"
+      },
+      "regex-chess": {
+        "image_id": "sha256:a6e4c188b260e99b7493dc4a4240c33f1b450b504f9322ab1886db5b0d043ebb",
+        "image_ref": "tb2-offline/regex-chess:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-chess@sha256:32a137e2ef0207e7aa29158cdc66639e370372b6e3442a30860af8dee0d3a877"
+      },
+      "regex-log": {
+        "image_id": "sha256:40d3ae41927b5c43952a6c72376b262263e9718f3f58de19001050ea6e7644ce",
+        "image_ref": "tb2-offline/regex-log:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-regex-log@sha256:7e9b01db5bf81e8ddf506dde36735413b4ac8dbac0c53c8f9744abdb7a79b2d7"
+      },
+      "reshard-c4-data": {
+        "image_id": "sha256:2a65fac2cb49c5456151d8eea59b26113580b7603b441ea459d1a27cd23c1163",
+        "image_ref": "tb2-offline/reshard-c4-data:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-reshard-c4-data@sha256:2f63b4dbba6717ac45dcf3aaddf0e9b6813336f6e3c9df1d0cdfc5ff919dea3f"
+      },
+      "rstan-to-pystan": {
+        "image_id": "sha256:c996902e2621fc026b5c65c4e24268d0eda2d63ff08073e854c09a1eaa54f04f",
+        "image_ref": "tb2-offline/rstan-to-pystan:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-rstan-to-pystan@sha256:70c5d05e41a2d5216797e78d6c0f31fd097b7c13222de547db7d4463118cb57b"
+      },
+      "sam-cell-seg": {
+        "image_id": "sha256:16f789c539bafc8ab891a25c381b3be64934b6939098ace747d16fe8a4d7dc7e",
+        "image_ref": "tb2-offline/sam-cell-seg:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sam-cell-seg@sha256:86b1b65134f3736c2d288e802cd9428a7fa9c025c4b134f53be0fe371f3ce6bd"
+      },
+      "sanitize-git-repo": {
+        "image_id": "sha256:00208d6b5a5fe14b4ceb235276bcf22fe00897799059c7222e60ee831f61acb1",
+        "image_ref": "tb2-offline/sanitize-git-repo:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sanitize-git-repo@sha256:8d98c1c35e9306957eeca104a158f40db2dadd89016efb22522fe9083318b947"
+      },
+      "schemelike-metacircular-eval": {
+        "image_id": "sha256:76f6df50dd9efc0bc480b70c26cfc38dfdbb4c9b03e687289331b0c6610ca294",
+        "image_ref": "tb2-offline/schemelike-metacircular-eval:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-schemelike-metacircular-eval@sha256:7ec506ac45af8ac14fba23b90c1e95a11497997cb44e1e8ca23a0f79342ae5dd"
+      },
+      "sparql-university": {
+        "image_id": "sha256:9f5ce5087461009fd61ef781fee0e27f5b94a9ba9ffa7857019f9ba63da4b9d6",
+        "image_ref": "tb2-offline/sparql-university:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sparql-university@sha256:8438542c2be75aed5ea51e3f061a9726862523c5fd3230a5b96519a0793d809d"
+      },
+      "sqlite-db-truncate": {
+        "image_id": "sha256:74b2033c22d3ebc251b5c9b681bed5547f50ab641d20a763c4563d297643d6a2",
+        "image_ref": "tb2-offline/sqlite-db-truncate:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-db-truncate@sha256:b1606196c6fd2c0d358b666b96824e93a7241b07e5cb2fcda095e7d6aecd0000"
+      },
+      "sqlite-with-gcov": {
+        "image_id": "sha256:9ef10d8b7c765e1b3061204412d747b738a283c19a429f321df1c12d7419ca2f",
+        "image_ref": "tb2-offline/sqlite-with-gcov:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-sqlite-with-gcov@sha256:e6ccfae5a450070e47ed45fe6c6c712ced6e5a7455087770e43c5aea2a1352f0"
+      },
+      "torch-pipeline-parallelism": {
+        "image_id": "sha256:d6eca381912ef87bca6de2f1a9e2053e747bf18d0ded763068000e45478ab7bb",
+        "image_ref": "tb2-offline/torch-pipeline-parallelism:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-pipeline-parallelism@sha256:b4071712fa598cc6e28e39eb82daa3a5b962afdd21e04071663410057779e476"
+      },
+      "torch-tensor-parallelism": {
+        "image_id": "sha256:b22296c6284bc48289722c0e88abfdf7540add07ae7c8a786b8b6b382376c270",
+        "image_ref": "tb2-offline/torch-tensor-parallelism:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-torch-tensor-parallelism@sha256:6222561909c829b3a9fd1294a39850e2ada3804df27dbfa1e401f11565e56285"
+      },
+      "train-fasttext": {
+        "image_id": "sha256:edce573d9fdb042da0b41bbecae949ee8424bd8ef993e6659ed0b247a6ab21fe",
+        "image_ref": "tb2-offline/train-fasttext:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-train-fasttext@sha256:51f2824f911dd1a8832c8840ff30c257ba97ea5177ef94ced9296b5dacc40595"
+      },
+      "tune-mjcf": {
+        "image_id": "sha256:da0cfcf04f7ffcaaf9fc2559d6791405a4081d24479be29929d56ed44a5d7b5a",
+        "image_ref": "tb2-offline/tune-mjcf:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-tune-mjcf@sha256:a0c28d26cfa5aca3aa65f0845cafb5d3bbcd1dec94cdac98569a23756e564e7b"
+      },
+      "video-processing": {
+        "image_id": "sha256:c9c09837e7777e5056c123e2415ea95fa030116c5e52654f05900c088d9e7141",
+        "image_ref": "tb2-offline/video-processing:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-video-processing@sha256:d97c63209560e62874a9c683663663f7a6c1a6a25b1b44dc75deca7f6dcac02d"
+      },
+      "vulnerable-secret": {
+        "image_id": "sha256:3a3c3b55215e450281cf377f6971c7204c738bd165982af713b24df37c0274bc",
+        "image_ref": "tb2-offline/vulnerable-secret:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-vulnerable-secret@sha256:c6fb87552e68dfc79ce34b2898428a5a2221738614a9097453d322300bfcd8d4"
+      },
+      "winning-avg-corewars": {
+        "image_id": "sha256:f05df13258473e88c5322c728ae10806fa87beed79fa333ce4757c42ca1396e0",
+        "image_ref": "tb2-offline/winning-avg-corewars:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-winning-avg-corewars@sha256:10e7a054bf7243eedcdbd11716961da2e241263d81d18bd9792df67f8101a9f2"
+      },
+      "write-compressor": {
+        "image_id": "sha256:c3161dfc075b8c1bc92b1c113137e4aa6192f358248210c9ba9e526d72a58360",
+        "image_ref": "tb2-offline/write-compressor:20260425",
+        "repo_digest": "100.97.118.137:8555/swe-data-harness/terminal-bench-2-1-write-compressor@sha256:0b7b98b8e16ee1f8a228ddd552757c39b02d3994006d03786508e9fde2176cda"
+      }
+    },
+    "registry_note": "tb2-offline/* images are locally built for offline --pull=never; naming tb2-offline/<task_id>:<tag>. RepoDigest present only if pushed to project registry."
+  },
+  "watchdog_gaps": {
+    "dataset_assert_log": "0-byte (same watchdog silent-fail). Dataset identity proven by run.env.summary tb_dataset_path + task_ids.",
+    "net_isolation_runtime_jsonl": "0-byte (assert_net_isolation.sh empty-ancestor-filter silently returns empty; same known gap as the Coder bundle). Network isolation stands on the static compose gate (89/89 network_mode:none) + marker texture (external_network_marker are the model's FAILED offline attempts, 0 successful egress)."
+  }
+}

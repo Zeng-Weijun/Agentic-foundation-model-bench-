@@ -1,0 +1,4 @@
+if __name__ == "__main__":
+    test_correctness()
+    test_model_speed()
+(container alive 2026-07-12T20:28:26Z)

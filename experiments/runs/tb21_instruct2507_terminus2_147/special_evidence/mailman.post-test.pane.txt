@@ -1,0 +1,40 @@
+root@47621731a894:/app# bash /tests/run-tests.sh; tmux wait -S done
+===================================================================== test session starts ======================================================================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.3.5
+collected 3 items
+
+../tests/test_outputs.py
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

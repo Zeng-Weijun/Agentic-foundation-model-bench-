@@ -1,0 +1,68 @@
+# run_console_excerpt.log — meaningful lines from tb21_instruct_run.out (full console on shared disk, see TRACE.md)
+NEG_TEST_OK run_id=tb21_inst2507_t2_c32_0712170859 derived_tag=tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32 profile=instruct base=http://100.100.104.147:30000/v1 model=Qwen/Qwen3-30B-A3B-Instruct-2507
+[before] model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 endswith[Qwen3-30B-A3B-Instruct-2507]=True
+[before] tokenizer_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 max_total_num_tokens=1946895 max_prefill_tokens=16384
+[before] IDENTITY_OK
+[stage] tier=32 remote_cmd=cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55 && bash scripts/stage_tb21_official_qwen_launcher.sh --execute --mode medium --attempts all --concurrency 32 --model Qwen/Qwen3-30B-A3B-Instruct-2507 --relay-url http://100.100.104.147:30000/v1 --run-id tb21_inst2507_t2_c32_0712170859
+[stage] tier=32 command=tmux new-session -d -s tb21_qwen_medium_c32 "ssh -CAXY env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn bash -lc cd\ /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55\ \&\&\ bash\ scripts/stage_tb21_official_qwen_launcher.sh\ --execute\ --mode\ medium\ --attempts\ all\ --concurrency\ 32\ --model\ Qwen/Qwen3-30B-A3B-Instruct-2507\ --relay-url\ http://100.100.104.147:30000/v1\ --run-id\ tb21_inst2507_t2_c32_0712170859"
+[stage] tier=64 remote_cmd=cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55 && bash scripts/stage_tb21_official_qwen_launcher.sh --execute --mode medium --attempts all --concurrency 64 --model Qwen/Qwen3-30B-A3B-Instruct-2507 --relay-url http://100.100.104.147:30000/v1 --run-id tb21_inst2507_t2_c32_0712170859
+[stage] tier=64 command=tmux new-session -d -s tb21_qwen_medium_c64 "ssh -CAXY env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn bash -lc cd\ /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55\ \&\&\ bash\ scripts/stage_tb21_official_qwen_launcher.sh\ --execute\ --mode\ medium\ --attempts\ all\ --concurrency\ 64\ --model\ Qwen/Qwen3-30B-A3B-Instruct-2507\ --relay-url\ http://100.100.104.147:30000/v1\ --run-id\ tb21_inst2507_t2_c32_0712170859"
+[stage] tier=89 remote_cmd=cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55 && bash scripts/stage_tb21_official_qwen_launcher.sh --execute --mode medium --attempts all --concurrency 89 --model Qwen/Qwen3-30B-A3B-Instruct-2507 --relay-url http://100.100.104.147:30000/v1 --run-id tb21_inst2507_t2_c32_0712170859
+[stage] tier=89 command=tmux new-session -d -s tb21_qwen_medium_c89 "ssh -CAXY env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn bash -lc cd\ /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55\ \&\&\ bash\ scripts/stage_tb21_official_qwen_launcher.sh\ --execute\ --mode\ medium\ --attempts\ all\ --concurrency\ 89\ --model\ Qwen/Qwen3-30B-A3B-Instruct-2507\ --relay-url\ http://100.100.104.147:30000/v1\ --run-id\ tb21_inst2507_t2_c32_0712170859"
+[stage] tier=100 remote_cmd=cd /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55 && bash scripts/stage_tb21_official_qwen_launcher.sh --execute --mode medium --attempts all --concurrency 100 --model Qwen/Qwen3-30B-A3B-Instruct-2507 --relay-url http://100.100.104.147:30000/v1 --run-id tb21_inst2507_t2_c32_0712170859
+[stage] tier=100 command=tmux new-session -d -s tb21_qwen_medium_c100 "ssh -CAXY env-kvm-15238487-rlgbn.zengweijun+root.ailab-sciversealign.pod@h.pjlab.org.cn bash -lc cd\ /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55\ \&\&\ bash\ scripts/stage_tb21_official_qwen_launcher.sh\ --execute\ --mode\ medium\ --attempts\ all\ --concurrency\ 100\ --model\ Qwen/Qwen3-30B-A3B-Instruct-2507\ --relay-url\ http://100.100.104.147:30000/v1\ --run-id\ tb21_inst2507_t2_c32_0712170859"
+[stage] execute attempt=1 tag=tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32 run_root=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_qwen_poda/tb21_inst2507_t2_c32_0712170859/medium_c32/attempt_1/tb21_batched_terminus-2_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32 mode=medium concurrency=32 timeout_multiplier=1.0 timeout_sec=7200
+[tb21-batched-privileged] oracle_mount_guard=skipped agent=terminus-2
+[tb21-batched] api_preflight_ok base=100.100.104.147:30000 proxy_used=0 base=http://100.100.104.147:30000/v1
+run_dir=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_qwen_poda/tb21_inst2507_t2_c32_0712170859/medium_c32/attempt_1/tb21_batched_terminus-2_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32/batch_01_of_01
+model=Qwen/Qwen3-30B-A3B-Instruct-2507
+litellm_model=openai/Qwen/Qwen3-30B-A3B-Instruct-2507
+base_url=http://100.100.104.147:30000/v1
+tb_model=openai/Qwen/Qwen3-30B-A3B-Instruct-2507
+tb_job_name=tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32
+/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/.venv/bin/tb run --agent terminus-2 --model openai/Qwen/Qwen3-30B-A3B-Instruct-2507 --n-concurrent 32 --run-id tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32 --output-path /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs --dataset-path /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench-2.1-yaml-full89-r7-final-20260703 --task-id adaptive-rejection-sampler --task-id bn-fit-modify --task-id break-filter-js-from-html --task-id build-cython-ext --task-id build-pmars --task-id build-pov-ray --task-id caffe-cifar-10 --task-id cancel-async-tasks --task-id chess-best-move --task-id circuit-fibsqrt --task-id cobol-modernization --task-id code-from-image --task-id compile-compcert --task-id configure-git-webserver --task-id constraints-scheduling --task-id count-dataset-tokens --task-id crack-7z-hash --task-id custom-memory-heap-crash --task-id db-wal-recovery --task-id distribution-search --task-id dna-assembly --task-id dna-insert --task-id extract-elf --task-id extract-moves-from-video --task-id feal-differential-cryptanalysis --task-id feal-linear-cryptanalysis --task-id filter-js-from-html --task-id financial-document-processor --task-id fix-code-vulnerability --task-id fix-git --task-id fix-ocaml-gc --task-id gcode-to-text --task-id git-leak-recovery --task-id git-multibranch --task-id gpt2-codegolf --task-id headless-terminal --task-id hf-model-inference --task-id install-windows-3.11 --task-id kv-store-grpc --task-id large-scale-text-editing --task-id largest-eigenval --task-id llm-inference-batching-scheduler --task-id log-summary-date-ranges --task-id mailman --task-id make-doom-for-mips --task-id make-mips-interpreter --task-id mcmc-sampling-stan --task-id merge-diff-arc-agi-task --task-id model-extraction-relu-logits --task-id modernize-scientific-stack --task-id mteb-leaderboard --task-id mteb-retrieve --task-id multi-source-data-merger --task-id nginx-request-logging --task-id openssl-selfsigned-cert --task-id overfull-hbox --task-id password-recovery --task-id path-tracing --task-id path-tracing-reverse --task-id polyglot-c-py --task-id polyglot-rust-c --task-id portfolio-optimization --task-id protein-assembly --task-id prove-plus-comm --task-id pypi-server --task-id pytorch-model-cli --task-id pytorch-model-recovery --task-id qemu-alpine-ssh --task-id qemu-startup --task-id query-optimize --task-id raman-fitting --task-id regex-chess --task-id regex-log --task-id reshard-c4-data --task-id rstan-to-pystan --task-id sam-cell-seg --task-id sanitize-git-repo --task-id schemelike-metacircular-eval --task-id sparql-university --task-id sqlite-db-truncate --task-id sqlite-with-gcov --task-id torch-pipeline-parallelism --task-id torch-tensor-parallelism --task-id train-fasttext --task-id tune-mjcf --task-id video-processing --task-id vulnerable-secret --task-id winning-avg-corewars --task-id write-compressor --global-timeout-multiplier 1.0 --global-agent-timeout-sec 7200 --global-test-timeout-sec 7200 --agent-kwarg api_base=http://100.100.104.147:30000/v1 --agent-kwarg temperature=0.0 --no-rebuild 
+Run ID: tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32
+Output length exceeded: Model openai/Qwen/Qwen3-30B-A3B-Instruct-2507 hit max_tokens limit. Response was truncated. Consider increasing max_tokens if possible.
+Agent timed out after 7200.0s for task portfolio-optimization.
+Agent timed out after 7200.0s for task feal-linear-cryptanalysis.
+Agent timed out after 7200.0s for task regex-chess.
+Agent timed out after 7200.0s for task circuit-fibsqrt.
+Agent timed out after 7200.0s for task feal-differential-cryptanalysis.
+Agent timed out after 7200.0s for task compile-compcert.
+Agent timed out after 7200.0s for task make-mips-interpreter.
+Agent timed out after 7200.0s for task winning-avg-corewars.
+Agent timed out after 7200.0s for task caffe-cifar-10.
+Agent timed out after 7200.0s for task extract-moves-from-video.
+Agent timed out after 7200.0s for task dna-insert.
+Agent timed out after 7200.0s for task crack-7z-hash.
+Agent timed out after 7200.0s for task break-filter-js-from-html.
+Agent timed out after 7200.0s for task prove-plus-comm.
+Agent timed out after 7200.0s for task merge-diff-arc-agi-task.
+Agent timed out after 7200.0s for task vulnerable-secret.
+Agent timed out after 7200.0s for task make-doom-for-mips.
+Agent timed out after 7200.0s for task write-compressor.
+Agent timed out after 7200.0s for task cobol-modernization.
+Agent timed out after 7200.0s for task adaptive-rejection-sampler.
+Agent timed out after 7200.0s for task build-pmars.
+Agent timed out after 7200.0s for task openssl-selfsigned-cert.
+Agent timed out after 7200.0s for task pypi-server.
+Agent timed out after 7200.0s for task pytorch-model-recovery.
+Agent timed out after 7200.0s for task fix-code-vulnerability.
+Agent timed out after 7200.0s for task polyglot-rust-c.
+Agent timed out after 7200.0s for task qemu-alpine-ssh.
+Agent timed out after 7200.0s for task headless-terminal.
+Test command timed out after 7200.0s for task mailman.
+  File "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/.shared-python/cpython-3.13.12-linux-x86_64-gnu/lib/python3.13/contextlib.py", line 162, in __exit__
+| Unresolved Trials | 86      |
+l-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_
+tb_rc=0
+artifact=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32
+done: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/terminal-bench/runs/tb21_full89_batched_batch_01_of_01_terminus-2_c32_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32
+{"counts": {"clean_pass": 3, "cleanup_timeout_warning": 0, "external_network_marker": 13, "infra_fail": 2, "missing_artifact": 1, "parse_error": 0, "resolved": 3, "timeout": 1, "token_sum": {"input": 2783111, "output": 231639}, "total": 89, "unresolved": 84}, "ready": false, "score": {"accuracy": 0.033707865168539325, "resolved": 3, "total": 89}, "status": "blocked"}
+[tb21-batched] done run_root=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/runs/terminal_bench_2_1_official_qwen_poda/tb21_inst2507_t2_c32_0712170859/medium_c32/attempt_1/tb21_batched_terminus-2_tb21_inst2507_t2_c32_0712170859_attempt1_medium_c32
+{"attempt": 1, "counts": {"clean_pass": 3, "infra_fail": 2, "missing_artifact": 1, "parse_error": 0, "resolved": 3, "timeout": 1, "total": 89, "unresolved": 84}, "status": "complete"}
+{"completed_attempts": 1, "mean_pass_at_1": 0.033707865168539325, "status": "finalized"}
+[after] model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 endswith[Qwen3-30B-A3B-Instruct-2507]=True
+[after] tokenizer_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507 max_total_num_tokens=1946895 max_prefill_tokens=16384
+[after] IDENTITY_OK
+[full] end profile=instruct run_id=tb21_inst2507_t2_c32_0712170859 rc=0

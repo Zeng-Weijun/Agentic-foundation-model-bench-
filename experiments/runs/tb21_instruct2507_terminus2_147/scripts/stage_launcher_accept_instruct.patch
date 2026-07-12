@@ -1,0 +1,28 @@
+--- a/scripts/stage_tb21_official_qwen_launcher.sh
++++ b/scripts/stage_tb21_official_qwen_launcher_terminus2.sh
+@@ -90,7 +90,7 @@ done
+
+ case "$MODE" in medium|xhigh) ;; *) echo "mode must be medium or xhigh: $MODE" >&2; exit 2 ;; esac
+-case "$MODEL" in Qwen/Qwen3-Coder-30B-A3B-Instruct) ;; *) echo "Qwen probe model must be Qwen/Qwen3-Coder-30B-A3B-Instruct: $MODEL" >&2; exit 2 ;; esac
++case "$MODEL" in Qwen/Qwen3-Coder-30B-A3B-Instruct|Qwen/Qwen3-30B-A3B-Instruct-2507) ;; *) echo "TB2.1 terminus-2 model must be Qwen3-Coder-30B-A3B-Instruct or Qwen3-30B-A3B-Instruct-2507: $MODEL" >&2; exit 2 ;; esac
+ case "$CONCURRENCY" in ''|*[!0-9]*) echo "concurrency must be a positive integer" >&2; exit 2 ;; esac
+ case "$ATTEMPTS" in ''|*[!0-9]*) echo "attempt count must be an integer" >&2; exit 2 ;; esac
+
+# =============================================================================
+# HOW TO APPLY (creates the Instruct-capable launcher copy; leaves the original
+# untouched for rollback). Run on the pod / dev, in the s55 worktree:
+#
+#   REPO=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/.worktrees/tb21-gpt55-launcher-s55
+#   cp "$REPO/scripts/stage_tb21_official_qwen_launcher.sh" \
+#      "$REPO/scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+#   # robust one-liner (no fuzz):
+#   sed -i 's#Qwen/Qwen3-Coder-30B-A3B-Instruct) ;; \*) echo "Qwen probe model must be Qwen/Qwen3-Coder-30B-A3B-Instruct#Qwen/Qwen3-Coder-30B-A3B-Instruct|Qwen/Qwen3-30B-A3B-Instruct-2507) ;; *) echo "TB2.1 terminus-2 model must be Qwen3-Coder-30B-A3B-Instruct or Qwen3-30B-A3B-Instruct-2507#' \
+#      "$REPO/scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+#   chmod +x "$REPO/scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+#   # verify exactly one line changed:
+#   grep -n "must be Qwen3-Coder-30B-A3B-Instruct or Qwen3-30B-A3B-Instruct-2507" \
+#      "$REPO/scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+#
+# ROLLBACK: rm "$REPO/scripts/stage_tb21_official_qwen_launcher_terminus2.sh"
+# (Only the Coder profile uses the original launcher; it is never modified.)
+# =============================================================================
