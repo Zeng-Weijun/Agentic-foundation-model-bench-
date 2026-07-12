@@ -26,3 +26,8 @@ This is **inherent**: the tb-native readiness gate requires `clean_pass == total
 
 ## Serving identity
 - `100.100.104.147:30001`, `model_path .../Qwen3-Coder-30B-A3B-Instruct`, IDENTITY_OK **before and after** (see `serving/identity_summary.md`). Names are not trusted on this stack; the endpoint+weights are the evidence.
+
+## 双签审计更正 (2026-07-12, 2 auditor 各自独立判 REAL)
+- ★`net_isolation_runtime_*.jsonl` 实为 0 字节:`assert_net_isolation.sh` 的 `docker ps --filter "ancestor="`(空 filter)静默返回空 → watcher 全程空转。**"runtime per-container net-isolation proof" 措辞作废** —— 网络隔离由**静态 compose 门(89/89 `network_mode:none`,双签独立复核)+ marker 纹理(12 个 marker 全是文件内 URL 文本 + 离线失败,0 成功外联)**保证,不依赖 runtime watcher。
+- `dataset_assert_*.log` 同样 0 字节(同类 watchdog 静默失败);dataset 身份由 tb.lock/run_metadata 直接证明,不受影响。
+- 承重结论——分数 10/89=11.24%、agent 真伪(13k episode serving 指纹+live seed 484925000)、infra_fail=0 干净退出、anchor 披露——双签 A+B 各自独立**证不倒**,判 REAL。
