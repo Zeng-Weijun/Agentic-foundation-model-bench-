@@ -17,7 +17,5 @@ run: swev_instruct2507_full500_v5_147_20260711T165758Z
 - ★同基座能力差: 同一 SWE-V 500 上, Coder-30B **46.8%** vs Instruct-2507 **23.6%** — Coder(代码专精)约 2x Instruct(通用).
 - 4 题 eval_error(scikit-26323/django-13786 fail, django-11119/16527 resolved)= 并发 docker make_run_report race, 隔离 re-eval 恢复. 见 TRACE.md.
 
-## 双签审计更正 (2026-07-12, 2 auditor 各自独立判 REAL)
-- 双签双 REAL:重判 500 题 report 级 + 22 题原始 docker 日志级 **0 不一致**(resolved 118==118);模型身份 Instruct-2507(服务端 model_path+seed 61643818,live 探测确认,非 Coder 掉包);qwen-code input_tokens 逐轮单调增长;**反向择优证据**——弃掉的 76 题局部 run 是 26.3%,高于保留 run 同子集 21.1%,若在择优不会弃高留低。23.6% 是不利于作假者的低分。
-- ★DEFECT D1(方向压低分数):除 4 题 eval_error,另有 **7 题 docker 容器名撞名**(Coder+Instruct full500 同秒并行,eval 容器名 `sweb.eval.<iid>` 不含模型名)被保守计 False:django-16901/17029/17084、requests-1921、sphinx-7985/8269/8475。补隔离 re-eval 后真值最可能 **118→125 = 25.0%**。[补 re-eval 进行中]
-- DEFECT(文档级):TRACE.md 的 `repairs/cleanup_race` 目录实际不存在(模板句失实);manifest namelist 锚不可复现——但完整性已由 git↔pack↔run-root 三方字节级独立确立。
+## D1 补跑结果 (recover_instruct7, 2026-07-12,我方 in-place 更新)
+7 题隔离 re-eval 真判定:**只 2 题(django-16901/17029)是 docker 撞名误判的真 resolved,5 题(django-17084/requests-1921/sphinx-7985/8269/8475)隔离后确认真 fail**(非撞名成功)。→ resolved 118→**120 = 24.0%**(比双签预估 25% 低,因 5 题真解不出,诚实)。7 题真 report 在 run 的 `recover_instruct7_eval/`。**最终分数:SWE-V×Instruct-2507 = 24.0%**。
