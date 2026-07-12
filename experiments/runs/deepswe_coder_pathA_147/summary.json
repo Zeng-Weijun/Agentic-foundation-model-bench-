@@ -16,31 +16,27 @@
       "rule": "resolved/manifest_total"
     },
     "valid_only": {
-      "denominator": 102,
+      "denominator": 106,
       "score": 0.0,
       "pct": "0.00%",
-      "rule": "resolved/gold_valid (11 gold_broken excluded)"
+      "rule": "resolved/gold_valid (7 gold_broken excluded)"
     }
   },
   "audit": {
-    "gold_valid": 102,
-    "gold_broken": 11,
+    "gold_valid": 106,
+    "gold_broken": 7,
     "gold_evalerror": 0,
     "agent_resolved_on_valid": 0,
     "honest_resolve_rate": 0.0,
     "resolved_task_ids": [],
     "broken_task_ids": [
-      "happy-dom-abort-pending-body-reads",
-      "httpx-deterministic-cookie-store",
-      "httpx-streaming-json-iteration",
-      "httpx-multipart-response-parsing",
       "langchain-request-coalescing",
-      "eicrud-keyset-pagination-cursor",
       "mnamer-daemon-watch-lifecycle",
       "narwhals-rolling-window-suite",
+      "skrub-duration-encoding",
+      "eicrud-keyset-pagination-cursor",
       "prometheus-transactional-reload-status",
-      "quill-shared-toolbar-focus",
-      "skrub-duration-encoding"
+      "quill-shared-toolbar-focus"
     ]
   },
   "by_lang": {
@@ -50,13 +46,13 @@
       "resolved": 0
     },
     "python": {
-      "valid": 28,
-      "broken": 6,
+      "valid": 30,
+      "broken": 4,
       "resolved": 0
     },
     "typescript": {
-      "valid": 30,
-      "broken": 5,
+      "valid": 32,
+      "broken": 3,
       "resolved": 0
     },
     "rust": {
@@ -71,7 +67,7 @@
     }
   },
   "agent_reward_distribution_on_valid": {
-    "0": 87,
+    "0": 91,
     "None(no applicable patch)": 15
   },
   "serving_identity": {
@@ -89,11 +85,31 @@
   "zero_is_real_not_a_judging_bug": {
     "claim": "The 0 is genuine agent-capability failure, not a scoring/environment bug.",
     "proof": [
-      "gold_valid=102: on 102 tasks the gold solution patch passes the exact task verifier (reward=1) -> judging env is correct.",
-      "On those SAME 102 judging-correct tasks the agent's patch scores reward=0 for every one -> 0/102.",
-      "The 11 gold_broken tasks (gold itself fails) are excluded from the valid denominator so they cannot explain the 0.",
+      "gold_valid=106: on 106 tasks the gold solution patch passes the exact task verifier (reward=1) -> judging env is correct.",
+      "On those SAME 106 judging-correct tasks the agent's patch scores reward!=1 for every one -> 0/106.",
+      "The 7 gold_broken tasks (gold itself fails even in a clean env) are excluded from the valid denominator so they cannot explain the 0.",
       "Per-sample: agent really ran on :30001 Coder and produced substantial patches, but they fail the same verifier that gold passes (see verdict/samples).",
-      "This audit was created specifically after a venv/pytest verifier bug was FIXED; the honest re-score is still 0."
+      "Dual-signed REAL by two independent auditors (A clean-env re-run + B hand-repro); 4 NO_PROXY false-reds were corrected out of gold_broken but the numerator stayed 0. See AUDIT_NOTES.md."
     ]
+  },
+  "correction": {
+    "applied_utc": "2026-07-13",
+    "by": "correction agent, on auditor-A independent clean-env re-verify (deepswe_pathA/runs/audit2_independent/broken.log)",
+    "what": "moved 4 tasks gold_broken -> gold_valid (gold_valid 102->106, gold_broken 11->7)",
+    "moved_task_ids": [
+      "happy-dom-abort-pending-body-reads",
+      "httpx-deterministic-cookie-store",
+      "httpx-multipart-response-parsing",
+      "httpx-streaming-json-iteration"
+    ],
+    "reason": "NO_PROXY judging pollution: driver container_env() injected the sglang serving IP 100.100.104.147 + 100.100.0.0/16 into NO_PROXY; the httpx baseline test test_get_environment_proxies then read a proxy for all://100.100.104.147 and failed -> gold_reward=0 false-red. A clean env (no injection) gives gold=1.",
+    "raw_run_counts_were": {
+      "unsolved_valid": 102,
+      "task_broken_gold_fail": 11
+    },
+    "numerator_resolved_unchanged": 0,
+    "headline_unchanged": "0/113 = 0.00%",
+    "valid_only_now": "0/106 = 0.00%",
+    "note": "results.jsonl and verdict/per_task_verdict.tsv are the RAW polluted-run record and still show gold_reward=0 for these 4; this report.json holds the corrected conclusion. See AUDIT_NOTES.md."
   }
 }

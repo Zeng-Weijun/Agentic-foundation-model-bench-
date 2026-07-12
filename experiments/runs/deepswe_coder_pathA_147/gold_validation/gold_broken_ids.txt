@@ -1,13 +1,14 @@
-# 11 tasks with gold_reward!=1 -> judging environment itself is broken for these (gold cannot pass).
-# EXCLUDED from the valid-only denominator (102). Still counted in the headline denominator (113).
-python	httpx-multipart-response-parsing	gold_reward=0	gold_reward=0: gold patch fails verifier (baseline+new not both green)
-python	httpx-streaming-json-iteration	gold_reward=0	gold_reward=0: gold patch fails verifier (baseline+new not both green)
+# 7 tasks with gold_reward!=1 -> judging environment itself is broken for these (gold cannot pass).
+# EXCLUDED from the valid-only denominator (106). Still counted in the headline denominator (113).
+# NOTE: was 11; 4 tasks (httpx-multipart-response-parsing, httpx-streaming-json-iteration,
+#   httpx-deterministic-cookie-store, happy-dom-abort-pending-body-reads) were REMOVED from this list
+#   because auditor-A's clean-env re-verify shows gold_reward=1 for them (their gold=0 in the bundle run
+#   was NO_PROXY judging pollution, not a real broken task). See AUDIT_NOTES.md. These 7 are genuinely broken
+#   (gold fails even in a clean env: baseline regression not green / setup failed / module missing in gold).
 python	langchain-request-coalescing	gold_reward=0	gold_reward=0: gold patch fails verifier (baseline+new not both green)
 python	mnamer-daemon-watch-lifecycle	gold_reward=0	gold_reward=0: gold patch fails verifier (task/env broken)
 python	narwhals-rolling-window-suite	gold_reward=0	gold_reward=0: gold patch fails verifier (task/env broken)
 python	skrub-duration-encoding	gold_reward=0	gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
 typescript	eicrud-keyset-pagination-cursor	gold_reward=0	gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
-typescript	happy-dom-abort-pending-body-reads	gold_reward=0	gold_reward=0: gold solution patch does not make the task verifier reward=1 (task/env broken, not validly scorable)
-typescript	httpx-deterministic-cookie-store	gold_reward=0	gold_reward=0: gold patch fails verifier (baseline+new not both green)
 typescript	prometheus-transactional-reload-status	gold_reward=0	gold_reward=0: gold patch fails verifier (task/env broken)
 typescript	quill-shared-toolbar-focus	gold_reward=0	gold_reward=0: gold patch fails verifier (task/env broken)

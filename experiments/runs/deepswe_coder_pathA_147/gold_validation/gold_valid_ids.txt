@@ -1,5 +1,10 @@
-# 102 tasks with gold_reward==1 -> judging environment PROVEN correct (gold solution passes the verifier).
-# On these SAME 102 judging-correct tasks, agent_reward==0 for ALL -> the 0 is real, not a judging bug.
+# 106 tasks with gold_reward==1 -> judging environment PROVEN correct (gold solution passes the verifier).
+# On these SAME 106 judging-correct tasks, agent_reward!=1 for ALL -> the 0 is real, not a judging bug.
+# CORRECTION 2026-07-13: 4 tasks (httpx-multipart-response-parsing, httpx-streaming-json-iteration [python];
+#   httpx-deterministic-cookie-store, happy-dom-abort-pending-body-reads [typescript]) were reclassified
+#   gold_broken->gold_valid: auditor-A's independent clean-env re-verify gives gold_reward=1 (their gold=0 in
+#   the bundle run was NO_PROXY judging pollution, see AUDIT_NOTES.md). Their agent_reward is still 0 (genuine
+#   test failures in clean env), so the numerator is unchanged: 0/106.
 go	abs-module-cache-flags	gold_reward=1	agent_reward=0	unsolved_valid
 go	abs-stepped-slices	gold_reward=1	agent_reward=0	unsolved_valid
 go	actionlint-action-pinning-lint	gold_reward=1	agent_reward=0	unsolved_valid
@@ -49,6 +54,8 @@ python	dateutil-rfc5545-timezone-interop	gold_reward=1	agent_reward=0	unsolved_v
 python	fastapi-deprecation-response-headers	gold_reward=1	agent_reward=0	unsolved_valid
 python	fastapi-implicit-head-options	gold_reward=1	agent_reward=0	unsolved_valid
 python	gql-incremental-graphql-delivery	gold_reward=1	agent_reward=0	unsolved_valid
+python	httpx-multipart-response-parsing	gold_reward=1	agent_reward=0	unsolved_valid
+python	httpx-streaming-json-iteration	gold_reward=1	agent_reward=0	unsolved_valid
 python	igel-persist-feature-schema	gold_reward=1	agent_reward=0	unsolved_valid
 python	ipython-session-bundle-replay	gold_reward=1	agent_reward=0	unsolved_valid
 python	kombu-single-active-consumer-priority	gold_reward=1	agent_reward=0	unsolved_valid
@@ -81,7 +88,9 @@ typescript	drizzle-orm-window-function-builders	gold_reward=1	agent_reward=0	uns
 typescript	dynamodb-toolbox-conditional-attribute-requirements	gold_reward=1	agent_reward=None	unsolved_valid
 typescript	dynamodb-toolbox-lazy-recursive-schemas	gold_reward=1	agent_reward=None	unsolved_valid
 typescript	effect-sse-httpapi-streaming	gold_reward=1	agent_reward=0	unsolved_valid
+typescript	happy-dom-abort-pending-body-reads	gold_reward=1	agent_reward=0	unsolved_valid
 typescript	happy-dom-deterministic-intersectionobserver	gold_reward=1	agent_reward=0	unsolved_valid
+typescript	httpx-deterministic-cookie-store	gold_reward=1	agent_reward=0	unsolved_valid
 typescript	ink-grid-box-layout	gold_reward=1	agent_reward=0	unsolved_valid
 typescript	kea-atomic-signal-selectors	gold_reward=1	agent_reward=0	unsolved_valid
 typescript	koota-composite-trait-aspects	gold_reward=1	agent_reward=0	unsolved_valid

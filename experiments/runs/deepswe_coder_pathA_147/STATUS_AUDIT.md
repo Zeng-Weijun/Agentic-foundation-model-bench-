@@ -1,3 +1,11 @@
+> **Update 2026-07-13 (see `AUDIT_NOTES.md`).** This bundle was independently audited by two auditors
+> (A general + B codex-reviewer); both confirm **0/113 is REAL** (genuine agent-capability failure, not a
+> scoring bug). The audit also found a **second** judging bug beyond the venv/pytest one below: the driver's
+> `container_env()` polluted `NO_PROXY` with the serving IP, false-failing 4 httpx/happy-dom gold solutions.
+> Those 4 were reclassified `gold_broken -> gold_valid` (gold_valid 102->106, gold_broken 11->7); the score is
+> unchanged (numerator still 0). Full disclosure of all 5 judging bugs/caveats + the python venv-handicap floor
+> is in `AUDIT_NOTES.md`.
+
 # DeepSWE Path A -- AUDIT of full113 (fake-0 investigation)
 
 ## Why this run exists
