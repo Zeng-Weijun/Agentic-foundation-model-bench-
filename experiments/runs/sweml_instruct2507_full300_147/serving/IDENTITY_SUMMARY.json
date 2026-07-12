@@ -1,0 +1,13 @@
+{
+  "after": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "random_seed": 61643818,
+    "sglang_version": "0.5.13"
+  },
+  "before": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "random_seed": 61643818,
+    "sglang_version": "0.5.13"
+  },
+  "before_equals_after": true
+}

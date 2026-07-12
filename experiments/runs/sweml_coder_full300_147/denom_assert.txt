@@ -1,0 +1,9 @@
+DENOMINATOR ASSERTION (v6)
+run_id            : sweml_coder_qwencode_full300_147_20260712T064508Z
+results.jsonl rows: 300   (wc -l)
+unique instance_id: 300
+declared dataset_size (EXPECT_N): 300   [source: arg]
+subset_ids manifest count       : 300
+dataset parquet row_count       : 300 (superset; subset selected via subset_ids)
+
+ASSERT rows==declared AND unique==rows  =>  PASS
