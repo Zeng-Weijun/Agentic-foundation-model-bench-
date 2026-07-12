@@ -60,3 +60,6 @@ from this pack alone — no shared-disk trace needed.
 
 ## 6. denominator
 - results rows = 300, unique = 300, declared = 300  → see `denom_assert.txt` (PASS).
+
+## 双签审计 (2026-07-12, 2 auditor 各自独立判 REAL)
+两个盲审 auditor 各自:全 300 独立复判 **0 不一致**、live 探测两端口权重路径不同(seed 484925000 vs 61643818,config.json inode 物理独立→非标签互换)、全语言真 test_output(Go/Rust/TS/C/Ruby/PHP + Java 26 offline 真 build+eval)、恢复 3 行全 resolved=false(不抬分)、calibration 无串味(grep 无 SWE-V/princeton 泄漏)、SHA256SUMS 12/12。★结论 **REAL**。遗留 cosmetic(launch.sh 截断/模板残留 .140/report_path 指 run-level 汇总 JSON)不影响判定,launch.sh 本次补回。
