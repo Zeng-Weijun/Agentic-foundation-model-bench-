@@ -25,3 +25,8 @@ RE-JUDGE PROOF (serving-free, deterministic; scripts/rejudge_missing4.py -> reju
 
 Sensitivity (informational only, NOT the headline): even excluding the 2 rsa oracle-timeout
 cases from the denominator gives 98/398 = 24.6% -- immaterial. Reported denominator stays 400.
+
+OFFICIAL 5s CALIBER (disclosed; run used 10s, RepoZero official is 5s): all 400 already-generated
+.mjs re-judged at 5s (serving-free, same qwen node v20) = 95/400 = 23.75%.
+See rejudge_official5s.json + AUDIT_NOTES.md. 98/400 (10s) stays the REAL headline (A+B dual-sign);
+the 5s value is the stricter official-timeout caliber reported alongside it.

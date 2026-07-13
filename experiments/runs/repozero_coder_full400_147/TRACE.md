@@ -20,6 +20,13 @@ The judge needs NO model -- only the image (oracle executable + node) and the al
 `.mjs`. `scripts/rejudge_missing4.py` shows the exact pattern (import the driver, `start_container`,
 `eval_case`). It reproduced the 4 crash cases -> **0/4 recovered passes** (`rejudge_missing4.json`).
 
+## Official 5s re-judge of ALL 400 (serving-free) + node seam -- see AUDIT_NOTES.md
+The run used `eval_timeout=10s`; RepoZero official hardcodes 5s. `scripts/rejudge_official5s.py`
+re-judges every one of the 400 already-generated `.mjs` at the official **5s** (same qwen node
+v20, only the timeout changed) -> **`rejudge_official5s.json`** (per-case 10s->5s + headline
+95/400). The eval `node` is the mounted **qwen node v20.20.2**, not the image node
+v18.19.1 (0.25pp seam, A). Full A+B audit + all three calibers: **`AUDIT_NOTES.md`**.
+
 ## Sample set in this bundle
 - `base58-test1`  -- PASS (60/60)
 - `schedule-test7` -- PASS

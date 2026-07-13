@@ -130,7 +130,10 @@ def main() -> int:
     p.add_argument("--workers", type=int, default=4, help="parallel cases/containers (codex line: c=4 stable, c<=8 ok)")
     p.add_argument("--rollout-timeout", type=int, default=1500)
     p.add_argument("--max-session-turns", type=int, default=40)
-    p.add_argument("--eval-timeout", type=int, default=10)
+    p.add_argument("--eval-timeout", type=int, default=10,
+                   help="per-sample oracle/node timeout passed to the driver. THIS RUN USED 10s; "
+                        "RepoZero OFFICIAL is 5s. See rejudge_official5s.json + AUDIT_NOTES.md for the "
+                        "official-5s re-judge of all 400 already-generated .mjs.")
     p.add_argument("--case-hard-timeout", type=int, default=2400)
     p.add_argument("--resume", action="store_true")
     p.add_argument("--limit", type=int, default=0, help="debug: only first N cases")

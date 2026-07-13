@@ -27,5 +27,10 @@
     "sglang_version": "0.5.13",
     "probe": "post-run (after). launch.sh preflight required /v1/models to contain 'Qwen3-Coder' BEFORE launch (before-evidence in launch.console.log)."
   },
-  "eval_timeout_seconds": 10
+  "eval_timeout_seconds": 10,
+  "eval_timeout_note": "THE RUN USED 10s. RepoZero official hardcodes 5s (evaluate/eval_py2js_docker.py lines 52 & 59). 10s is 2x looser -> 98/400 is an UPPER bound vs official 5s. A+B dual-signed 24.5% REAL; the official 5s re-judge is disclosed below and in AUDIT_NOTES.md.",
+  "official_eval_timeout_seconds": 5,
+  "official_5s_all_pass": "95/400 = 23.75% (rejudge_official5s.json; serving-free re-judge of all 400 already-generated .mjs, same qwen node v20, only the timeout changed 10s->5s)",
+  "eval_node": "mounted qwen node v20.20.2 (OpenSSL 3.0.19) via container PATH, NOT the image native node v18.19.1 (OpenSSL 3.0.13). Node-image-18 floor = 97/400 = 24.25% (0.25pp, A). Driver docstring corrected.",
+  "audit": "A+B independent blind audits: 98/400=24.5% all_pass REAL (A re-judged 10 cases 7pass/3fail; B re-judged 3 + read official judge source byte-identical + verified commit on Mac). See AUDIT_NOTES.md."
 }

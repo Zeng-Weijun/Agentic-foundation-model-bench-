@@ -37,8 +37,19 @@ KEY DIFFERENCE vs codex runner: the codex line ran codex ON THE HOST with
 runs INSIDE the container and MUST reach SERVING, so the container uses the
 default bridge (NO --network none). Anti-cheat (no npm install of the real lib)
 is preserved by the offline pod environment + the prompt contract, not by
---network none. Eval always uses the IMAGE's native node (not the mounted qwen
-node) for scoring fidelity.
+--network none.
+
+AUDIT CORRECTION (A+B review, 2026-07-13): the eval judge does NOT use the
+image's native node. `start_container` sets the container PATH to the mounted
+qwen tree (see `container_env`: PATH="<QWEN_MOUNT>/node_modules/node/bin:..."),
+and `dexec_plain` runs `docker exec` WITHOUT overriding PATH, so the eval's
+`node <entry>.mjs` resolves to the mounted qwen node **v20.20.2 (OpenSSL 3.0.19)**,
+NOT the image's native node **v18.19.1 (OpenSSL 3.0.13)**. The full-400 run and
+its official 5s re-judge both scored on qwen node v20 (consistent within the run).
+The node seam is immaterial to the headline: re-scoring the 10 crypto/RSA cases
+under image node-18 leaves 9/10 unchanged; only rsa/test11 flips (a legacy SHA-1
+digest name node18 rejects but node20 accepts) -> worst case 97/400 = 24.25%
+(a 0.25pp node seam). See AUDIT_NOTES.md.
 
 Modes:
   load    : ensure repoarena-new image present (docker load offline from the
@@ -279,7 +290,10 @@ def start_container(name: str, image: str, dataset_dir: Path, output_root: Path,
 
 
 def dexec_plain(name: str, argv: list[str], env: dict, timeout: int, workdir: str | None = None) -> subprocess.CompletedProcess:
-    """Exec using the IMAGE's own environment (native node 18) — for oracle + eval + probes."""
+    """Exec with the container's default env (no per-exec -e overrides) — for oracle + eval + probes.
+    NOTE (audit correction): because start_container set the container PATH to the mounted qwen
+    tree, `node` here resolves to the mounted qwen node v20.20.2, NOT the image's native node
+    v18.19.1. See the module docstring + AUDIT_NOTES.md (node seam, immaterial to the headline)."""
     cmd = ["docker", "exec"]
     if workdir:
         cmd.extend(["-w", workdir])
@@ -301,6 +315,11 @@ def dexec_qwen(name: str, command: str, env: dict, base_url: str, model: str, ti
 
 def build_prompt(case: str, py_source: str, exe_name: str, whitebox: list[dict],
                  container_pkg_dir: str, entry_name: str, hint: str) -> str:
+    # AUDIT NOTE: the line below tells the agent "native Node.js 18 is on PATH".
+    # That label is inaccurate — start_container puts the mounted qwen node v20.20.2
+    # first on PATH, so the agent (and the eval) actually run node v20, not v18.
+    # Left verbatim to match the frozen run prompts; the node seam is immaterial
+    # (0.25pp). See the module docstring + AUDIT_NOTES.md.
     return f"""You are running one RepoZero Py2JS benchmark case natively with qwen-code.
 
 Case: {case}
@@ -545,7 +564,11 @@ def main(argv: list[str]) -> int:
     p.add_argument("--reference-mjs", default=None, help="known-good .mjs for grader-realness (grader/smoke)")
     p.add_argument("--max-session-turns", type=int, default=30)
     p.add_argument("--rollout-timeout", type=int, default=1500)
-    p.add_argument("--eval-timeout", type=int, default=10, help="per-sample oracle/node timeout (official is 5s)")
+    p.add_argument("--eval-timeout", type=int, default=10,
+                   help="per-sample oracle/node timeout. THIS RUN USED 10s; RepoZero OFFICIAL is 5s "
+                        "(evaluate/eval_py2js_docker.py lines 52 & 59). 10s is 2x looser and can only "
+                        "admit passes the official 5s would reject, so 98/400 is an UPPER bound. The "
+                        "official-5s re-judge of all 400 .mjs is in rejudge_official5s.json / AUDIT_NOTES.md.")
     p.add_argument("--no-verify-sha", action="store_true")
     p.add_argument("--keep-container", action="store_true")
     args = p.parse_args(argv)
