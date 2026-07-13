@@ -1,0 +1,46 @@
+[
+  {
+    "args": [
+      "--bits",
+      "2048",
+      "--message",
+      "Quick brown fox"
+    ],
+    "returncode": 0,
+    "stdout": "256\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "1024",
+      "--message",
+      "Multiline\nstring\nwith newlines"
+    ],
+    "returncode": 0,
+    "stdout": "128\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "2048",
+      "--message",
+      "A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message "
+    ],
+    "returncode": 0,
+    "stdout": "256\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "512",
+      "--message",
+      "1234567890"
+    ],
+    "returncode": 0,
+    "stdout": "64\n",
+    "stderr": ""
+  }
+]

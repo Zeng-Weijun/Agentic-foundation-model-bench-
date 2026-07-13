@@ -1,0 +1,32 @@
+[
+  {
+    "case": "rsa/test5.py",
+    "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/rsa-test5",
+    "all_pass": false,
+    "reward": 0,
+    "rejudge_error": "TimeoutExpired(['docker', 'exec', 'rejudge-rsa-test5', '/workspace/dataset/test5_executable', '--bits', '3178', '--message', 'CXNVSVMYKWVIEQ'], 10)"
+  },
+  {
+    "case": "rsa/test2.py",
+    "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/rsa-test2",
+    "all_pass": false,
+    "reward": 0,
+    "rejudge_error": "TimeoutExpired(['docker', 'exec', 'rejudge-rsa-test2', '/workspace/dataset/test2_executable', '--bits', '4728'], 10)"
+  },
+  {
+    "case": "rsa/test17.py",
+    "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/rsa-test17",
+    "all_pass": false,
+    "passed": 0,
+    "total": 16,
+    "reward": 0,
+    "fail_examples_n": 1
+  },
+  {
+    "case": "mpmath/test14.py",
+    "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/mpmath-test14",
+    "all_pass": false,
+    "reward": 0,
+    "rejudge_error": "TimeoutExpired(['docker', 'exec', '-w', '/workspace/output/packages/mpmath/test14_pkg', 'rejudge-mpmath-test14', 'node', 'test14.mjs', '--a', '0.3', '--b', '-9.04'], 10)"
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "args": [
+      "--a",
+      "19:21",
+      "--b",
+      "19:37",
+      "--c",
+      "21:27",
+      "--d",
+      "00:38",
+      "--e",
+      "11:45"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "14:28",
+      "--b",
+      "04:34",
+      "--c",
+      "21:50",
+      "--d",
+      "22:28",
+      "--e",
+      "02:16"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "11:20",
+      "--b",
+      "00:44",
+      "--c",
+      "18:10",
+      "--d",
+      "22:59",
+      "--e",
+      "09:00"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "19:14",
+      "--b",
+      "07:05",
+      "--c",
+      "11:58",
+      "--d",
+      "04:44",
+      "--e",
+      "02:12"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  }
+]

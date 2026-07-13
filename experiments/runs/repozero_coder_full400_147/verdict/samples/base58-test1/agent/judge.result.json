@@ -1,0 +1,10 @@
+{
+  "case": "base58/test1.py",
+  "entry": "/workspace/output/packages/base58/test1_pkg/test1.mjs",
+  "passed": 60,
+  "total": 60,
+  "all_pass": true,
+  "reward": 1,
+  "reward_source": "RepoZero eval_case (oracle vs node, normalized lines)",
+  "fail_examples": []
+}

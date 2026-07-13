@@ -1,0 +1,113 @@
+You are running one RepoZero Py2JS benchmark case natively with qwen-code.
+
+Case: base58/test1.py
+
+Python source (this is the reference behavior you must reproduce):
+```python
+import argparse
+import base58
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--a', type=str, required=True)
+args = parser.parse_args()
+
+result = base58.b58encode(args.a.encode())  # Base58编码字符串
+print(result)
+
+# ==================================================
+# Sample Test Cases (randomly selected)
+# ==================================================
+
+# ===== Test Case 1 =====
+# Input:
+#   --a = 'drn1vtp'
+# Output:
+#   b'4on33rFCiT'
+# Return Code: 0
+
+# ===== Test Case 2 =====
+# Input:
+#   --a = 'TPcTsjvTNHtabUBA'
+# Output:
+#   b'BQs8di9D2Gw9Cie1vGhP6x'
+# Return Code: 0
+
+# ===== Test Case 3 =====
+# Input:
+#   --a = 'U5Oa2ji3Q'
+# Output:
+#   b'25uZS4wxDDGdE'
+# Return Code: 0
+
+# ===== Test Case 4 =====
+# Input:
+#   --a = 'drn1vtp'
+# Output:
+#   b'4on33rFCiT'
+# Return Code: 0
+
+```
+
+Oracle executable (already inside this container):
+/workspace/dataset/test1_executable
+Run it to inspect reference behavior, e.g.:
+  /workspace/dataset/test1_executable --arg value
+
+White-box examples from the hidden test distribution (oracle outputs):
+```json
+[
+  {
+    "args": [
+      "--a",
+      "1234567890"
+    ],
+    "returncode": 0,
+    "stdout": "b'3mJr7AoUCHxNqd'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+    ],
+    "returncode": 0,
+    "stdout": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+    ],
+    "returncode": 0,
+    "stdout": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "Test123"
+    ],
+    "returncode": 0,
+    "stdout": "b'4CVtFLcCiv'\n",
+    "stderr": ""
+  }
+]
+```
+
+Task:
+- Reimplement the behavior in pure JavaScript for Node.js as ES Modules.
+- Write all generated files under exactly this directory (your current working dir):
+  /workspace/output/packages/base58/test1_pkg
+- The entry point MUST be exactly:
+  /workspace/output/packages/base58/test1_pkg/test1.mjs
+- Use `.mjs` files, `import` / `export`, and full `.mjs` extensions in local imports.
+- Parse CLI arguments from `process.argv` so `node test1.mjs --arg value` matches the oracle executable.
+- Match stdout semantics and formatting. Newline/space differences are normalized away, but token content and line count must match.
+- Use NO npm packages and do NOT use CommonJS (`require`/`module.exports`).
+- Do NOT call Python, the oracle executable, or any wrapper from the final JavaScript implementation.
+- Do NOT import or mention an external equivalent of this library. Forbidden shortcut hint: Uint8Array / Buffer only; implement Base58 manually.
+- You may run the oracle executable (/workspace/dataset/test1_executable) during development to inspect behavior.
+- You may run `node test1.mjs --arg value` to test your implementation (native Node.js 18 is on PATH).
+
+Finish only after test1.mjs exists in /workspace/output/packages/base58/test1_pkg and you have tested at least the white-box examples.

@@ -1,0 +1,27 @@
+RepoZero Py2JS OFFICIAL 400 x Qwen3-Coder-30B-A3B-Instruct x qwen-code (Path A) -- DENOMINATOR ASSERTIONS
+
+  unique_cases            = 400     (== 400, no dup, no missing)
+  results.jsonl rows      = 400     (== 400)
+  cases_all_pass          = 98
+  cases_fail              = 302
+  98 + 302              = 400   (== 400)
+  cases_judged (total>0)  = 396
+  cases_crash@judge       = 4     -> mpmath/test14.py, rsa/test17.py, rsa/test2.py, rsa/test5.py
+  396 judged + 4 crash    = 400   (== 400)
+
+HEADLINE  = cases_all_pass / 400 = 98 / 400 = 0.2450 = 24.5% all_pass
+
+DENOMINATOR = 400 (NOT shrunk). The 4 crash@judge cases are counted as all_pass=false
+(reward=0), i.e. conservative -- they can only UNDER-count passes, never over-count.
+
+RE-JUDGE PROOF (serving-free, deterministic; scripts/rejudge_missing4.py -> rejudge_missing4.json):
+  All 4 crash cases were re-judged against their already-generated .mjs (oracle-vs-node,
+  eval_timeout=10s, same image). RESULT: 0 / 4 recovered passes -- all 4 are GENUINE fails.
+    rsa/test5   : ORACLE executable (RSA keygen --bits 3178) exceeded 10s  -> not gradeable all_pass under harness
+    rsa/test2   : ORACLE executable (RSA keygen --bits 4728) exceeded 10s  -> not gradeable all_pass under harness
+    rsa/test17  : judge completed = 0/16 samples match                     -> genuine agent fail
+    mpmath/test14: agent .mjs (node test14.mjs --a 0.3 --b -9.04) hung >10s -> genuine agent-code fail
+  => 98/400 is airtight; re-judging the crash cases recovers ZERO additional passes.
+
+Sensitivity (informational only, NOT the headline): even excluding the 2 rsa oracle-timeout
+cases from the denominator gives 98/398 = 24.6% -- immaterial. Reported denominator stays 400.

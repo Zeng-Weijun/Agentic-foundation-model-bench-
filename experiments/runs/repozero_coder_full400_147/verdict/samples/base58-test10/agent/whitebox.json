@@ -1,0 +1,54 @@
+[
+  {
+    "args": [
+      "--a",
+      "5aN1QrVUtM5PMaBzNoYFqL5wGSWAw",
+      "--b",
+      "1234567890",
+      "--c",
+      "2MT6hJJrXZ4tn"
+    ],
+    "returncode": 0,
+    "stdout": "b'3RYyLdhz3WZhvaeMoqUS47HWrYtE9oxw4QwVQmNn'\nb'3mJr7AoUCHxNqd'\nb'jCBxyQqBg'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "U5Oa2ji3Q",
+      "--b",
+      "drn1vtp",
+      "--c",
+      "2g"
+    ],
+    "returncode": 0,
+    "stdout": "b'25uZS4wxDDGdE'\nb'4on33rFCiT'\nb'a'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "U5Oa2ji3Q",
+      "--b",
+      "U5Oa2ji3Q",
+      "--c",
+      "EUYUqQf"
+    ],
+    "returncode": 0,
+    "stdout": "b'25uZS4wxDDGdE'\nb'25uZS4wxDDGdE'\nb'world'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "c0C zQokldyRqDWOdqXxM2Eq4GyQ4sPmlsbgl",
+      "--b",
+      "@#$%^&*()",
+      "--c",
+      "27sNiTaAuDXTYdy4WiQLdaWGA1Vt"
+    ],
+    "returncode": 0,
+    "stdout": "b'4KoxFyjc3mBC9RF6W3gns6YyqBqD8zfSaQJHoD62nqGVf1e3Aqh'\nb'pMKEkRNThfBE'\nb'PGsAoDkKcBypmuEdoGVC'\n",
+    "stderr": ""
+  }
+]

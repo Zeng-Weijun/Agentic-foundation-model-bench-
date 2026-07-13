@@ -1,0 +1,86 @@
+{
+  "case": "base58/test10.py",
+  "entry": "/workspace/output/packages/base58/test10_pkg/test10.mjs",
+  "passed": 20,
+  "total": 33,
+  "all_pass": false,
+  "reward": 0,
+  "reward_source": "RepoZero eval_case (oracle vs node, normalized lines)",
+  "fail_examples": [
+    {
+      "args": [
+        "--a",
+        "cenarknka",
+        "--b",
+        "LVtZTXU6ng 8BpKEx6tA",
+        "--c",
+        "CGSTQD"
+      ],
+      "oracle_rc": 0,
+      "js_rc": 0,
+      "oracle_stdout": "b'2GP5ZHWyxp2Ak'\nb'24gf5d1cFyvKkzeg7qazU3An9qDS'\nb'\\x01\\xb8\\xc1:\\xa2'\n",
+      "js_stdout": "b'2GP5ZHWyxp2Ak'\nb'24gf5d1cFyvKkzeg7qazU3An9qDS'\nb'\u0001\ufffd\ufffd:\ufffd'\n",
+      "js_stderr": ""
+    },
+    {
+      "args": [
+        "--a",
+        "attrsevqvfzz",
+        "--b",
+        "dd0yMz1WMCCAMgOPbGKgaSK0 hFwDMlichKFOwKHjDLs8G",
+        "--c",
+        "xarjucyhg"
+      ],
+      "oracle_rc": 0,
+      "js_rc": 0,
+      "oracle_stdout": "b'2qfbGiYhyzZsPWcNd'\nb'Bxu4YZNyTgSpLcRTjsas3XgX9xUsB4jzDdMEfARD9F3i3cSprCWWpzULwpDHZmp'\nb'\\x19I\\xfdA\\xfc\\xf3\\xcf'\n",
+      "js_stdout": "b'2qfbGiYhyzZsPWcNd'\nb'Bxu4YZNyTgSpLcRTjsas3XgX9xUsB4jzDdMEfARD9F3i3cSprCWWpzULwpDHZmp'\nb'\u0019I\ufffdA\ufffd\ufffd\ufffd'\n",
+      "js_stderr": ""
+    },
+    {
+      "args": [
+        "--a",
+        "o3sHpWWV dfib91g5hiqle04mgXzEMnA3",
+        "--b",
+        "YlalJLb89EMHjT5lbbF",
+        "--c",
+        "7894415"
+      ],
+      "oracle_rc": 0,
+      "js_rc": 0,
+      "oracle_stdout": "b'a2wztZd1eWNEEqBBRQTFviGHi9GLfRcgnhihyafk7cseJ'\nb'HNWT8UR5DqtCWcyyekJJ4nHKyX'\nb'6E\\xb5\\xdbH'\n",
+      "js_stdout": "b'a2wztZd1eWNEEqBBRQTFviGHi9GLfRcgnhihyafk7cseJ'\nb'HNWT8UR5DqtCWcyyekJJ4nHKyX'\nb'6E\ufffd\ufffdH'\n",
+      "js_stderr": ""
+    },
+    {
+      "args": [
+        "--a",
+        "49567880125",
+        "--b",
+        "THFWYWT",
+        "--c",
+        "BHAQRATVJKVW"
+      ],
+      "oracle_rc": 0,
+      "js_rc": 0,
+      "oracle_stdout": "b'Dx7AqhRPFzzkyTA'\nb'4CFMa6gRud'\nb'\\r\\xec8s\\xc5\\xca\\x03\\xd4\\xe5'\n",
+      "js_stdout": "b'Dx7AqhRPFzzkyTA'\nb'4CFMa6gRud'\nb'\n\ufffd8s\ufffd\ufffd\u0003\ufffd\ufffd'\n",
+      "js_stderr": ""
+    },
+    {
+      "args": [
+        "--a",
+        "dEzTZcQL2qmI",
+        "--b",
+        "31704503",
+        "--c",
+        "jvufsnvucug"
+      ],
+      "oracle_rc": 0,
+      "js_rc": 0,
+      "oracle_stdout": "b'2tkPR9PzrTuEtHEH6'\nb'9ZdUjnFp2ti'\nb'\\x01\\x00\\xa8\\x8d\\xbe\\xc00\\x8e\\xeb'\n",
+      "js_stdout": "b'2tkPR9PzrTuEtHEH6'\nb'9ZdUjnFp2ti'\nb'\u0001\u0000\ufffd\ufffd\ufffd\ufffd0\ufffd\ufffd'\n",
+      "js_stderr": ""
+    }
+  ]
+}

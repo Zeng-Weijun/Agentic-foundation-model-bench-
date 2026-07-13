@@ -1,0 +1,127 @@
+You are running one RepoZero Py2JS benchmark case natively with qwen-code.
+
+Case: schedule/test7.py
+
+Python source (this is the reference behavior you must reproduce):
+```python
+import argparse
+import schedule
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--a', type=str, required=True)
+parser.add_argument('--b', type=str, required=True)
+parser.add_argument('--c', type=str, required=True)
+parser.add_argument('--d', type=str, required=True)
+parser.add_argument('--e', type=str, required=True)
+args = parser.parse_args()
+
+job1 = schedule.every().monday.at(args.a).do(lambda: None)  # 周一作业
+print(job1)
+job2 = schedule.every().tuesday.at(args.b).do(lambda: None)  # 周二作业
+print(job2)
+job3 = schedule.every().wednesday.at(args.c).do(lambda: None)  # 周三作业
+print(job3)
+job4 = schedule.every().thursday.at(args.d).do(lambda: None)  # 周四作业
+print(job4)
+job5 = schedule.every().friday.at(args.e).do(lambda: None)  # 周五作业
+print(job5)
+jobs = schedule.get_jobs()  # 获取所有作业
+print(len(jobs))
+
+```
+
+Oracle executable (already inside this container):
+/workspace/dataset/test7_executable
+Run it to inspect reference behavior, e.g.:
+  /workspace/dataset/test7_executable --arg value
+
+White-box examples from the hidden test distribution (oracle outputs):
+```json
+[
+  {
+    "args": [
+      "--a",
+      "19:21",
+      "--b",
+      "19:37",
+      "--c",
+      "21:27",
+      "--d",
+      "00:38",
+      "--e",
+      "11:45"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "14:28",
+      "--b",
+      "04:34",
+      "--c",
+      "21:50",
+      "--d",
+      "22:28",
+      "--e",
+      "02:16"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "11:20",
+      "--b",
+      "00:44",
+      "--c",
+      "18:10",
+      "--d",
+      "22:59",
+      "--e",
+      "09:00"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "19:14",
+      "--b",
+      "07:05",
+      "--c",
+      "11:58",
+      "--d",
+      "04:44",
+      "--e",
+      "02:12"
+    ],
+    "returncode": 0,
+    "stdout": "Job(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\nJob(interval=1, unit=weeks, do=<lambda>, args=(), kwargs={})\n5\n",
+    "stderr": ""
+  }
+]
+```
+
+Task:
+- Reimplement the behavior in pure JavaScript for Node.js as ES Modules.
+- Write all generated files under exactly this directory (your current working dir):
+  /workspace/output/packages/schedule/test7_pkg
+- The entry point MUST be exactly:
+  /workspace/output/packages/schedule/test7_pkg/test7.mjs
+- Use `.mjs` files, `import` / `export`, and full `.mjs` extensions in local imports.
+- Parse CLI arguments from `process.argv` so `node test7.mjs --arg value` matches the oracle executable.
+- Match stdout semantics and formatting. Newline/space differences are normalized away, but token content and line count must match.
+- Use NO npm packages and do NOT use CommonJS (`require`/`module.exports`).
+- Do NOT call Python, the oracle executable, or any wrapper from the final JavaScript implementation.
+- Do NOT import or mention an external equivalent of this library. Forbidden shortcut hint: Date / timers not required; implement schedule formatting manually.
+- You may run the oracle executable (/workspace/dataset/test7_executable) during development to inspect behavior.
+- You may run `node test7.mjs --arg value` to test your implementation (native Node.js 18 is on PATH).
+
+Finish only after test7.mjs exists in /workspace/output/packages/schedule/test7_pkg and you have tested at least the white-box examples.

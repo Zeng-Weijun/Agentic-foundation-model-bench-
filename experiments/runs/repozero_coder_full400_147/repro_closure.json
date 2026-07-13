@@ -1,0 +1,31 @@
+{
+  "bench": "RepoZero Py2JS OFFICIAL 400 (valid_ids)",
+  "scope": "single base image (task data lives inside the image); Python->JavaScript transpile-and-match",
+  "denominator": 400,
+  "headline_all_pass": "98/400 = 0.2450",
+  "image": {
+    "ref": "ghcr.io/jessezzzzz/repoarena-new:latest",
+    "id": "sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c",
+    "created": "2026-05-12T12:09:31Z",
+    "loaded_from_tar": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/images/repozero/repoarena-new_latest.tar",
+    "tar_sha256": "06195ec45e6ac02b3c7256f5fcfdacb280612abfc4a820cee5af6d66eb5ea342",
+    "tar_bytes": 1242024448,
+    "note": "loaded from shared tar; no registry RepoDigest (offline load). Identity = image Id (config digest) + tar sha256."
+  },
+  "rz_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero",
+  "scaffold": "qwen-code native CLI, in-container, stream-json, --max-session-turns 40, workers=4",
+  "judge": "RepoZero official eval_case: oracle-executable stdout vs generated node .mjs stdout, normalized-line equality across EVERY testcase sample (<=60); all_pass = ALL samples match (reward=1) else 0. NO model in the judge.",
+  "serving": {
+    "base_url": "http://100.100.104.147:30001/v1",
+    "served_model_name": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct",
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "is_generation": true,
+    "sglang_version": "0.5.13",
+    "probe": "post-run (after). launch.sh preflight required /v1/models to contain 'Qwen3-Coder' BEFORE launch (before-evidence in launch.console.log)."
+  },
+  "eval_timeout_seconds": 10
+}

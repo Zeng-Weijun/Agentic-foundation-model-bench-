@@ -1,0 +1,44 @@
+{
+  "mode": "agent",
+  "case": "schedule/test7.py",
+  "image": "ghcr.io/jessezzzzz/repoarena-new:latest",
+  "base_url": "http://100.100.104.147:30001/v1",
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/schedule-test7",
+  "ts": "20260713T001316Z",
+  "image_info": {
+    "image_ref": "ghcr.io/jessezzzzz/repoarena-new:latest",
+    "status": "already_present"
+  },
+  "agent": {
+    "agent_rc": 0,
+    "agent_seconds": 37.9,
+    "timed_out": false,
+    "entry_exists": true,
+    "entry_bytes": 2537,
+    "stream": {
+      "json_events": 46,
+      "assistant_turns": 29,
+      "tool_calls": 0,
+      "tool_results": 0,
+      "error_events": 0,
+      "first_event_types": [
+        "system",
+        "assistant",
+        "assistant",
+        "user",
+        "assistant",
+        "assistant"
+      ],
+      "has_real_interaction": true
+    },
+    "case": "schedule/test7.py",
+    "entry": "/workspace/output/packages/schedule/test7_pkg/test7.mjs",
+    "passed": 60,
+    "total": 60,
+    "all_pass": true,
+    "reward": 1,
+    "reward_source": "RepoZero eval_case (oracle vs node, normalized lines)",
+    "fail_examples": []
+  }
+}

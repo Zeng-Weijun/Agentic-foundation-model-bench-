@@ -1,0 +1,38 @@
+[
+  {
+    "args": [
+      "--a",
+      "1234567890"
+    ],
+    "returncode": 0,
+    "stdout": "b'3mJr7AoUCHxNqd'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+    ],
+    "returncode": 0,
+    "stdout": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+    ],
+    "returncode": 0,
+    "stdout": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "Test123"
+    ],
+    "returncode": 0,
+    "stdout": "b'4CVtFLcCiv'\n",
+    "stderr": ""
+  }
+]

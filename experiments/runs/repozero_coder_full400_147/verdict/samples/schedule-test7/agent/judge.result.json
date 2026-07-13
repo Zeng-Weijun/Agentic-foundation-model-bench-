@@ -1,0 +1,10 @@
+{
+  "case": "schedule/test7.py",
+  "entry": "/workspace/output/packages/schedule/test7_pkg/test7.mjs",
+  "passed": 60,
+  "total": 60,
+  "all_pass": true,
+  "reward": 1,
+  "reward_source": "RepoZero eval_case (oracle vs node, normalized lines)",
+  "fail_examples": []
+}

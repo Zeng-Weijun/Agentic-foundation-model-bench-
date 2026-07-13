@@ -1,0 +1,135 @@
+You are running one RepoZero Py2JS benchmark case natively with qwen-code.
+
+Case: rsa/test5.py
+
+Python source (this is the reference behavior you must reproduce):
+```python
+import argparse
+import rsa
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--bits', type=int, required=True)
+parser.add_argument('--message', type=str, required=True)
+args = parser.parse_args()
+
+bits = args.bits
+message = args.message.encode('utf-8')
+
+# 生成RSA密钥对
+(pub_key, priv_key) = rsa.newkeys(bits)
+
+# 使用私钥对消息进行签名（使用SHA-256哈希算法）
+signature = rsa.sign(message, priv_key, 'SHA-256')
+
+# 输出签名的长度（字节数）
+print(len(signature))
+
+# ==================================================
+# Sample Test Cases (randomly selected)
+# ==================================================
+
+# ===== Test Case 1 =====
+# Input:
+#   --bits = 1024
+#   --message = 'Quick brown fox'
+# Output:
+#   128
+# Return Code: 0
+
+# ===== Test Case 2 =====
+# Input:
+#   --bits = 1024
+#   --message = '日本語メッセージ'
+# Output:
+#   128
+# Return Code: 0
+
+# ===== Test Case 3 =====
+# Input:
+#   --bits = 2048
+#   --message = 'Quick brown fox'
+# Output:
+#   256
+# Return Code: 0
+
+# ===== Test Case 4 =====
+# Input:
+#   --bits = 512
+#   --message = 'CSV,TSV;special|delimiters'
+# Output:
+#   64
+# Return Code: 0
+
+```
+
+Oracle executable (already inside this container):
+/workspace/dataset/test5_executable
+Run it to inspect reference behavior, e.g.:
+  /workspace/dataset/test5_executable --arg value
+
+White-box examples from the hidden test distribution (oracle outputs):
+```json
+[
+  {
+    "args": [
+      "--bits",
+      "2048",
+      "--message",
+      "Quick brown fox"
+    ],
+    "returncode": 0,
+    "stdout": "256\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "1024",
+      "--message",
+      "Multiline\nstring\nwith newlines"
+    ],
+    "returncode": 0,
+    "stdout": "128\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "2048",
+      "--message",
+      "A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message A very long message "
+    ],
+    "returncode": 0,
+    "stdout": "256\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--bits",
+      "512",
+      "--message",
+      "1234567890"
+    ],
+    "returncode": 0,
+    "stdout": "64\n",
+    "stderr": ""
+  }
+]
+```
+
+Task:
+- Reimplement the behavior in pure JavaScript for Node.js as ES Modules.
+- Write all generated files under exactly this directory (your current working dir):
+  /workspace/output/packages/rsa/test5_pkg
+- The entry point MUST be exactly:
+  /workspace/output/packages/rsa/test5_pkg/test5.mjs
+- Use `.mjs` files, `import` / `export`, and full `.mjs` extensions in local imports.
+- Parse CLI arguments from `process.argv` so `node test5.mjs --arg value` matches the oracle executable.
+- Match stdout semantics and formatting. Newline/space differences are normalized away, but token content and line count must match.
+- Use NO npm packages and do NOT use CommonJS (`require`/`module.exports`).
+- Do NOT call Python, the oracle executable, or any wrapper from the final JavaScript implementation.
+- Do NOT import or mention an external equivalent of this library. Forbidden shortcut hint: node:crypto only; implement RSA behavior manually.
+- You may run the oracle executable (/workspace/dataset/test5_executable) during development to inspect behavior.
+- You may run `node test5.mjs --arg value` to test your implementation (native Node.js 18 is on PATH).
+
+Finish only after test5.mjs exists in /workspace/output/packages/rsa/test5_pkg and you have tested at least the white-box examples.

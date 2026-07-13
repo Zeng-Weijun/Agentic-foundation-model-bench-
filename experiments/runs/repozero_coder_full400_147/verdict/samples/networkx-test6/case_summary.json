@@ -1,0 +1,64 @@
+{
+  "mode": "agent",
+  "case": "networkx/test6.py",
+  "image": "ghcr.io/jessezzzzz/repoarena-new:latest",
+  "base_url": "http://100.100.104.147:30001/v1",
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repozero_pathA/runs/coder_full400_20260712T210354Z/cases/networkx-test6",
+  "ts": "20260712T221914Z",
+  "image_info": {
+    "image_ref": "ghcr.io/jessezzzzz/repoarena-new:latest",
+    "status": "already_present"
+  },
+  "agent": {
+    "agent_rc": 0,
+    "agent_seconds": 41.8,
+    "timed_out": false,
+    "entry_exists": true,
+    "entry_bytes": 2542,
+    "stream": {
+      "json_events": 37,
+      "assistant_turns": 23,
+      "tool_calls": 0,
+      "tool_results": 0,
+      "error_events": 0,
+      "first_event_types": [
+        "system",
+        "assistant",
+        "assistant",
+        "user",
+        "assistant",
+        "assistant"
+      ],
+      "has_real_interaction": true
+    },
+    "case": "networkx/test6.py",
+    "entry": "/workspace/output/packages/networkx/test6_pkg/test6.mjs",
+    "passed": 59,
+    "total": 60,
+    "all_pass": false,
+    "reward": 0,
+    "reward_source": "RepoZero eval_case (oracle vs node, normalized lines)",
+    "fail_examples": [
+      {
+        "args": [
+          "--a",
+          "10",
+          "--b",
+          "10",
+          "--c",
+          "1",
+          "--d",
+          "10",
+          "--e",
+          "2"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "oracle_stdout": "3\n3\n4\n[10, 1, 2]\n1\n",
+        "js_stdout": "3\n3\n5\n[10,1,2]\n1\n",
+        "js_stderr": ""
+      }
+    ]
+  }
+}

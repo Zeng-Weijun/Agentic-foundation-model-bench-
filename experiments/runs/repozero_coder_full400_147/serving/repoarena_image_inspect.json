@@ -1,0 +1,63 @@
+[
+    {
+        "Id": "sha256:e01d5505ea767f8583e3ac23cb53c8f2331a35a647d880f52e71f1c860c5f00c",
+        "RepoTags": [
+            "ghcr.io/jessezzzzz/repoarena-new:latest"
+        ],
+        "RepoDigests": [],
+        "Parent": "",
+        "Comment": "",
+        "Created": "2026-05-12T12:09:31.955510342Z",
+        "DockerVersion": "20.10.20",
+        "Author": "",
+        "Config": {
+            "Hostname": "594be6b3d8ed",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "tail",
+                "-f",
+                "/dev/null"
+            ],
+            "Image": "iregistry.baidu-int.com/hub-official/ubuntu:24.04",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 1202484223,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/docker-data-57740737/fuse-overlayfs/376c39f19f92b1a730980843c151b21b88fe9f581cb712bcf4c2db0531fa1195/diff",
+                "MergedDir": "/docker-data-57740737/fuse-overlayfs/b6ad677294e70310bdce72b194d37e3084abd072a6b1099b2cc33db2c0c3332c/merged",
+                "UpperDir": "/docker-data-57740737/fuse-overlayfs/b6ad677294e70310bdce72b194d37e3084abd072a6b1099b2cc33db2c0c3332c/diff",
+                "WorkDir": "/docker-data-57740737/fuse-overlayfs/b6ad677294e70310bdce72b194d37e3084abd072a6b1099b2cc33db2c0c3332c/work"
+            },
+            "Name": "fuse-overlayfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:538812a4b9bd45adaac2b5e5b967daa6999aa44eb110aa32ae7c69702b906475",
+                "sha256:af2a8d079196d8bdbff90a5444c327043972485752cd54b3ceec9e328245b3d7"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "0001-01-01T00:00:00Z"
+        }
+    }
+]

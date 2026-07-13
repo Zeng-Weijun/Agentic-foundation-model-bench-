@@ -1,0 +1,123 @@
+You are running one RepoZero Py2JS benchmark case natively with qwen-code.
+
+Case: networkx/test6.py
+
+Python source (this is the reference behavior you must reproduce):
+```python
+import argparse
+import networkx as nx
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--a', type=int, required=True)
+parser.add_argument('--b', type=int, required=True)
+parser.add_argument('--c', type=int, required=True)
+parser.add_argument('--d', type=int, required=True)
+parser.add_argument('--e', type=int, required=True)
+args = parser.parse_args()
+
+G = nx.Graph()
+G.add_nodes_from([args.a, args.b, args.c, args.d, args.e])
+G.add_edges_from([(args.a, args.b), (args.b, args.c), (args.c, args.d), (args.d, args.e)])
+print(G.number_of_nodes())  # 获取节点数量
+print(G.number_of_edges())  # 获取边数量
+print(G.degree(args.b))  # 获取节点b的度
+print(list(G.neighbors(args.b)))  # 获取节点b的邻居
+print(nx.shortest_path_length(G, args.a, args.e))  # 计算最短路径长度
+
+```
+
+Oracle executable (already inside this container):
+/workspace/dataset/test6_executable
+Run it to inspect reference behavior, e.g.:
+  /workspace/dataset/test6_executable --arg value
+
+White-box examples from the hidden test distribution (oracle outputs):
+```json
+[
+  {
+    "args": [
+      "--a",
+      "2",
+      "--b",
+      "2",
+      "--c",
+      "10",
+      "--d",
+      "5",
+      "--e",
+      "8"
+    ],
+    "returncode": 0,
+    "stdout": "4\n4\n3\n[2, 10]\n3\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "8",
+      "--b",
+      "8",
+      "--c",
+      "6",
+      "--d",
+      "3",
+      "--e",
+      "1"
+    ],
+    "returncode": 0,
+    "stdout": "4\n4\n3\n[8, 6]\n3\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "5",
+      "--b",
+      "8",
+      "--c",
+      "2",
+      "--d",
+      "2",
+      "--e",
+      "7"
+    ],
+    "returncode": 0,
+    "stdout": "4\n4\n2\n[5, 2]\n3\n",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "--a",
+      "8",
+      "--b",
+      "2",
+      "--c",
+      "10",
+      "--d",
+      "1",
+      "--e",
+      "3"
+    ],
+    "returncode": 0,
+    "stdout": "5\n4\n2\n[8, 10]\n4\n",
+    "stderr": ""
+  }
+]
+```
+
+Task:
+- Reimplement the behavior in pure JavaScript for Node.js as ES Modules.
+- Write all generated files under exactly this directory (your current working dir):
+  /workspace/output/packages/networkx/test6_pkg
+- The entry point MUST be exactly:
+  /workspace/output/packages/networkx/test6_pkg/test6.mjs
+- Use `.mjs` files, `import` / `export`, and full `.mjs` extensions in local imports.
+- Parse CLI arguments from `process.argv` so `node test6.mjs --arg value` matches the oracle executable.
+- Match stdout semantics and formatting. Newline/space differences are normalized away, but token content and line count must match.
+- Use NO npm packages and do NOT use CommonJS (`require`/`module.exports`).
+- Do NOT call Python, the oracle executable, or any wrapper from the final JavaScript implementation.
+- Do NOT import or mention an external equivalent of this library. Forbidden shortcut hint: Map / Set / Array only; implement graph algorithms manually.
+- You may run the oracle executable (/workspace/dataset/test6_executable) during development to inspect behavior.
+- You may run `node test6.mjs --arg value` to test your implementation (native Node.js 18 is on PATH).
+
+Finish only after test6.mjs exists in /workspace/output/packages/networkx/test6_pkg and you have tested at least the white-box examples.
