@@ -1,0 +1,15 @@
+base58/test3.py: node18 passed=0/57 all_pass@node18=False
+   helper.js head: '/**\n * Base58 encoding function for integers\n * @param {number} n - The integer to encode'
+   node18 first_err: "file:///workspace/output/packages/base58/test3_pkg/test3.mjs:1\nimport { b58encodeInt } from './base58.js';\n         ^^^^^^^^^^^^\nSyntaxError: Named export 'b58encodeInt' not found. The requested modul"
+base58/test6.py: node18 passed=0/60 all_pass@node18=False
+   helper.js head: "const BASE58_CHARS = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';\n\n/**"
+   node18 first_err: "file:///workspace/output/packages/base58/test6_pkg/test6.mjs:1\nimport { encodeBase58 } from './base58.js';\n         ^^^^^^^^^^^^\nSyntaxError: Named export 'encodeBase58' not found. The requested modul"
+bencoder/test3.py: node18 passed=0/20 all_pass@node18=False
+   helper.js head: "==> /workspace/output/packages/bencoder/test3_pkg/bencode.js <==\n/**\n * Decodes a bencoded integer string.\n * @param {string} input - The bencoded integer string (e.g., 'i9058e')\n\n==> /workspace/outpu"
+   node18 first_err: "file:///workspace/output/packages/bencoder/test3_pkg/test3.mjs:6\nimport { decode } from './bencode.js';\n         ^^^^^^\nSyntaxError: Named export 'decode' not found. The requested module './bencode.js"
+bidict/test3.py: node18 passed=0/20 all_pass@node18=False
+   helper.js head: "/**\n * A simple bidirectional dictionary implementation using JavaScript Maps\n * This mimics the behavior of Python's bidict library"
+   node18 first_err: "file:///workspace/output/packages/bidict/test3_pkg/bidict.mjs:1\nexport { Bidict } from './bidict.js';\n         ^^^^^^\nSyntaxError: Named export 'Bidict' not found. The requested module './bidict.js' i"
+bidict/test5.py: node18 passed=0/19 all_pass@node18=False
+   helper.js head: '/**\n * A bidirectional dictionary implementation that maintains both forward and reverse mappings.\n * Supports bidirectional lookup and consistent deletion of keys.'
+   node18 first_err: '(node:21) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.\n(Use `node --trace-warnings ...` to show where the warning was created)\n/workspace/output/p'

@@ -1,0 +1,22 @@
+RepoZero Py2JS OFFICIAL 400 x Qwen3-30B-A3B-Instruct-2507 x qwen-code (Path A) -- DENOMINATOR ASSERTIONS
+(independently recomputed by blind reviewer A from results.jsonl; NOT trusting summary.json)
+
+  results.jsonl rows       = 400      (assert == 400)
+  unique_cases             = 400      (assert == 400, no dup / no missing)
+  == official valid_ids    = True   (run 400 == run_all_docker.py valid_ids, set-equal)
+  official valid_ids count = 400 (unique 400)
+  excluded_ids (INCLUDED in the 400, ~0% each) = ['pyaes', 'yaml', 'idna', 'markdown']
+       -> including them makes the denominator HARDER (conservative): excluding -> 51/324 higher.
+
+  cases_all_pass (all_pass==true) = 51
+  cases_reward==1                 = 51    (assert == cases_all_pass; sets identical)
+  cases_fail                      = 349
+  51 + 349                 = 400   (assert == 400)
+  cases_judged (total>0)          = 392
+  cases_crash@judge (total==0)    = 8  -> base58/test13.py, mpmath/test18.py, rsa/test10.py, rsa/test11.py, rsa/test17.py, rsa/test18.py, rsa/test2.py, rsa/test5.py
+  392 judged + 8 crash        = 400   (assert == 400)
+
+  fail breakdown: entry_missing(no .mjs) = 23 ; agent timed_out = 35 ; judge-crash = 8
+
+  HEADLINE  = cases_all_pass / 400 = 51 / 400 = 0.1275 = 12.75% all_pass  (eval-timeout 10s)
+  judged-only = 51 / 392 = 0.1301 = 13.01%

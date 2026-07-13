@@ -1,0 +1,14 @@
+NODE20-DEP base58/test3.py: mjs=['test3.mjs'] js=['base58.js'] || test3.mjs->["from './base58.js'"]
+NODE20-DEP base58/test6.py: mjs=['test6.mjs'] js=['base58.js'] || test6.mjs->["from './base58.js'"]
+NODE20-DEP bencoder/test3.py: mjs=['test3.mjs'] js=['bencode.js', 'cli.js'] || test3.mjs->["from './cli.js'", "from './bencode.js'"]
+NODE20-DEP bidict/test3.py: mjs=['bidict.mjs', 'test3.mjs'] js=['bidict.js'] || bidict.mjs->["from './bidict.js'"]
+NODE20-DEP bidict/test5.py: mjs=['test5.mjs'] js=['bidict.js'] || test5.mjs->["from './bidict.js'"]
+
+=== SUMMARY ===
+total all_pass            : 51
+node20-dependent (.js import): 5 -> ['base58/test3.py', 'base58/test6.py', 'bencoder/test3.py', 'bidict/test3.py', 'bidict/test5.py']
+robust (mjs-only/single)  : 46
+pkg missing               : 0 []
+
+Strict-node18 upper-bound flip = up to 5 cases
+=> strict-node18 headline in [ 46/400=11.50% , 51/400=12.75% ]

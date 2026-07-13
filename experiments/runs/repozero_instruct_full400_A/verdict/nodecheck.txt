@@ -1,0 +1,13 @@
+container start rc 0 
+
+[default `node` in container (qwen PATH prepended, = what the run's judge used)]
+   ['node', '--version'] -> v20.20.2 
+   ['which', 'node'] -> /opt/qwen-native/.npm-root/node_modules/node/bin/node 
+   ['/usr/bin/node', '--version'] -> v18.19.1 
+
+[sample args] ['--a', 'b8aUFiXqDpAs', '--b', 'Test123']
+oracle rc 0 out "b'2rWBBCjo3YDQJPCGa'\nb'4CVtFLcCiv'\n"
+
+[bare `node` (qwen v20)] rc 0 out "b'2rWBBCjo3YDQJPCGa'\nb'4CVtFLcCiv'\n" err ''
+
+[/usr/bin/node (image v18)] rc 1 out '' err "file:///workspace/output/packages/base58/test6_pkg/test6.mjs:1\nimport { encodeBase58 } from './base58.js';\n         ^^^^^^^^^^^^\nSyntaxError: Named export 'encodeBase58' not found. The requested modul"

@@ -1,0 +1,391 @@
+[
+  {
+    "case": "base58/test6.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 0,
+    "my_passed@5": 0,
+    "total": 60,
+    "my_all_pass@10": false,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 0.94,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": [
+      {
+        "args": [
+          "--a",
+          "b8aUFiXqDpAs",
+          "--b",
+          "Test123"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "b'2rWBBCjo3YDQJPCGa'\nb'4CVtFLcCiv'\n",
+        "js_head": "",
+        "js_err": "file:///workspace/output/packages/base58/test6_pkg/test6.mjs:1\nimport { encodeBase58 } from './base58.js';\n         ^^^^"
+      },
+      {
+        "args": [
+          "--a",
+          "9xBRBUd",
+          "--b",
+          "b8aUFiXqDpAs"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "b'3BKGyBRJuR'\nb'2rWBBCjo3YDQJPCGa'\n",
+        "js_head": "",
+        "js_err": "file:///workspace/output/packages/base58/test6_pkg/test6.mjs:1\nimport { encodeBase58 } from './base58.js';\n         ^^^^"
+      },
+      {
+        "args": [
+          "--a",
+          "5kfxvzBm43bWNCpsa3B3dt5uXuced",
+          "--b",
+          "1234567890"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\nb'3mJr7AoUCHxNqd'\n",
+        "js_head": "",
+        "js_err": "file:///workspace/output/packages/base58/test6_pkg/test6.mjs:1\nimport { encodeBase58 } from './base58.js';\n         ^^^^"
+      }
+    ]
+  },
+  {
+    "case": "whoosh/test1.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 60,
+    "my_passed@5": 60,
+    "total": 60,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.78,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "schedule/test1.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 60,
+    "my_passed@5": 60,
+    "total": 60,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.93,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "fractions/test14.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 60,
+    "my_passed@5": 60,
+    "total": 60,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.83,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "boltons/test1.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 60,
+    "my_passed@5": 60,
+    "total": 60,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.63,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "networkx/test1.py",
+    "samples": 60,
+    "expected_all_pass": true,
+    "expected_passed": 60,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 60,
+    "my_passed@5": 59,
+    "total": 60,
+    "my_all_pass@10": true,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 5.07,
+    "samples_flip_at_5s": 1,
+    "mismatch_examples": []
+  },
+  {
+    "case": "rsa/test16.py",
+    "samples": 59,
+    "expected_all_pass": true,
+    "expected_passed": 59,
+    "expected_total": 59,
+    "entry_exists": true,
+    "my_passed@10": 59,
+    "my_passed@5": 59,
+    "total": 59,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.76,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "bidict/test2.py",
+    "samples": 20,
+    "expected_all_pass": true,
+    "expected_passed": 20,
+    "expected_total": 20,
+    "entry_exists": true,
+    "my_passed@10": 20,
+    "my_passed@5": 20,
+    "total": 20,
+    "my_all_pass@10": true,
+    "my_all_pass@5": true,
+    "max_sample_latency_s": 0.67,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": []
+  },
+  {
+    "case": "bech32/test1.py",
+    "samples": 20,
+    "expected_all_pass": false,
+    "expected_passed": 0,
+    "expected_total": 20,
+    "entry_exists": false,
+    "my_passed@10": 0,
+    "my_passed@5": 0,
+    "total": 20,
+    "my_all_pass@10": false,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 0.89,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": [
+      {
+        "args": [
+          "--a",
+          "xyz",
+          "--b",
+          "7,1,17,15,14,8,6,5,27,2,1,5,13,14,1"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "xyz18p30wgx9mzp9dwp3e0ahe\n",
+        "js_head": "",
+        "js_err": "node:internal/modules/cjs/loader:1137\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/output/packages/bech32/tes"
+      },
+      {
+        "args": [
+          "--a",
+          "bcrt",
+          "--b",
+          "6,5,24,6,22,22,16,2,29,7"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "bcrt1x9cxkksza830zx7g\n",
+        "js_head": "",
+        "js_err": "node:internal/modules/cjs/loader:1137\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/output/packages/bech32/tes"
+      },
+      {
+        "args": [
+          "--a",
+          "ltc",
+          "--b",
+          "17,4,10,15,10,29,24,17"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 1,
+        "match": false,
+        "oracle_head": "ltc13y202ac30k03ue\n",
+        "js_head": "",
+        "js_err": "node:internal/modules/cjs/loader:1137\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/output/packages/bech32/tes"
+      }
+    ]
+  },
+  {
+    "case": "base58/test1.py",
+    "samples": 60,
+    "expected_all_pass": false,
+    "expected_passed": 4,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 4,
+    "my_passed@5": 4,
+    "total": 60,
+    "my_all_pass@10": false,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 0.92,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": [
+      {
+        "args": [
+          "--a",
+          "1234567890"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'3mJr7AoUCHxNqd'\n",
+        "js_head": "b'3mJr7AoUCPu5dR'\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--a",
+          "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+        "js_head": "b'3Rezcj3P2u5oqMRfXhHqs3F11fBsXB9uD73THRdM'\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--a",
+          "5kfxvzBm43bWNCpsa3B3dt5uXuced"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'3Rezcj3P2tf9rgJ2DoUJ68hxZW3pqyQ7xY654yZm'\n",
+        "js_head": "b'3Rezcj3P2u5oqMRfXhHqs3F11fBsXB9uD73THRdM'\n",
+        "js_err": ""
+      }
+    ]
+  },
+  {
+    "case": "idna/test1.py",
+    "samples": 50,
+    "expected_all_pass": false,
+    "expected_passed": 0,
+    "expected_total": 50,
+    "entry_exists": true,
+    "my_passed@10": 0,
+    "my_passed@5": 0,
+    "total": 50,
+    "my_all_pass@10": false,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 0.73,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": [
+      {
+        "args": [
+          "--domain",
+          "example.com"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'example.com'\nexample.com\nexample\nb'example'\n",
+        "js_head": "b'example.com-'\nexample.com\nexample\nb'example-'\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--domain",
+          "m\u00fcnchen.de"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'xn--mnchen-3ya.de'\nm\u00fcnchen.de\nm\u00fcnchen\nb'xn--mnchen-3ya'\n",
+        "js_head": "b'mnchen.de-q9a'\nm\u00fcnchen.de\nm\u00fcnchen\nb'mnchen-3ya'\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--domain",
+          "\u4e2d\u56fd.\u4e2d\u56fd"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "b'xn--fiqs8s.xn--fiqs8s'\n\u4e2d\u56fd.\u4e2d\u56fd\n\u4e2d\u56fd\nb'xn--fiqs8s'\n",
+        "js_head": "b'.-kq6ab631gca'\n\u4e2d\u56fd.\u4e2d\u56fd\n\u4e2d\u56fd\nb'fiqs8s'\n",
+        "js_err": ""
+      }
+    ]
+  },
+  {
+    "case": "yaml/test1.py",
+    "samples": 60,
+    "expected_all_pass": false,
+    "expected_passed": 7,
+    "expected_total": 60,
+    "entry_exists": true,
+    "my_passed@10": 7,
+    "my_passed@5": 7,
+    "total": 60,
+    "my_all_pass@10": false,
+    "my_all_pass@5": false,
+    "max_sample_latency_s": 0.96,
+    "samples_flip_at_5s": 0,
+    "mismatch_examples": [
+      {
+        "args": [
+          "--a",
+          "octal: 0o755\nhex: 0xFF"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "{'octal': '0o755', 'hex': 255}\n",
+        "js_head": "{ octal: '0o755', hex: 255 }\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--a",
+          "\"double quoted\": \"value with \\\"quotes\\\"\""
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "{'double quoted': 'value with \"quotes\"'}\n",
+        "js_head": "double quoted\": \"value with \\\"quotes\\\"\n",
+        "js_err": ""
+      },
+      {
+        "args": [
+          "--a",
+          "empty_dict: {}\nempty_list: []\nnull_value: null"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "match": false,
+        "oracle_head": "{'empty_dict': {}, 'empty_list': [], 'null_value': None}\n",
+        "js_head": "{ empty_dict: '{}', empty_list: '[]', null_value: null }\n",
+        "js_err": ""
+      }
+    ]
+  }
+]
