@@ -1,0 +1,27 @@
+OFFICIAL valid_ids count: 400 unique: 400
+OFFICIAL excluded_ids: ['pyaes', 'yaml', 'idna', 'markdown']
+
+RUN results.jsonl: total_rows = 400 unique_cases = 400
+duplicate cases: NONE
+
+DENOM SET-EQUALITY CHECK:
+run_set == official valid_set : True
+in run but not in official    : []
+in official but missing in run: []
+excluded_ids present in run (should be 0, or included=conservative): []
+
+SCORE ASSERTIONS:
+all_pass==True count : 51
+reward==1     count  : 51
+all_pass_set == reward_set: True
+reward values outside {0,1}: NONE
+all_pass rate = 51/400 = 0.1275
+
+rows with error (judge crash) : 8 ['base58/test13.py', 'mpmath/test18.py', 'rsa/test10.py', 'rsa/test11.py', 'rsa/test17.py', 'rsa/test18.py', 'rsa/test2.py', 'rsa/test5.py']
+cases_judged (no error key)   : 392
+
+STRICT-OFFICIAL SENSITIVITY (from this review's own remote re-execution):
+  node18 flips (pass->fail, all 5/5 confirmed independently)      : ['base58/test3.py', 'base58/test6.py', 'bencoder/test3.py', 'bidict/test3.py', 'bidict/test5.py']
+  5s-timeout genuine flips (pass->fail, contention-controlled)     : ['deepdiff/test1.py', 'networkx/test1.py']
+  strict(node18 + 5s) implied headline = 51 - 5 - 2 = 44/400 = 0.1100 (estimate, non-overlapping sets, not exhaustively re-verified in combination)
+  crash-row recovered TRUE pass (currently counted as fail)        : ['rsa/test5.py'] -> partially offsets in the other direction

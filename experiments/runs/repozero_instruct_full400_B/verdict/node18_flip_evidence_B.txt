@@ -1,0 +1,43 @@
+Reviewer B independent Node18-vs-Node20 re-judge
+==================================================
+Method: for each case, start a fresh container via repozero_qwencode_driver.start_container()
+(same mounts as the real run: dataset ro, the run's EXISTING workspace_output rw, qwen_root ro),
+confirm `node --version` (bare, via the container's PATH which container_env() at
+repozero_qwencode_driver.py:249 prepends with the qwen-mounted node bin dir) resolves to the
+QWEN-MOUNTED node, then re-run every oracle-vs-.mjs sample comparison using the ABSOLUTE PATH
+/usr/bin/node (confirmed = the image's own native node, via `docker run --rm <image> node --version`
+with NO env override = v18.19.1, matching the RepoZero image's intended runtime and the driver's own
+docstring claim "Eval always uses the IMAGE's native node (not the mounted qwen node) for scoring
+fidelity" at repozero_qwencode_driver.py:41 -- a claim CONTRADICTED by the actual PATH plumbing).
+
+Ran independently, without reusing any script from Reviewer A or codex-pro (fresh script:
+reviewerB_node18_check.py / _check2.py / _check3.py, re-pointed at different case subsets each run).
+
+Result: ALL 5 of Reviewer A's flagged cases independently reproduced by Reviewer B, 5/5 exact match:
+
+case                  bare `node` -v   /usr/bin/node -v   node20(committed)   node18(strict, forced)
+base58/test3.py       v20.20.2         v18.19.1            57/57 PASS          0/57 FAIL
+base58/test6.py       v20.20.2         v18.19.1            60/60 PASS          0/60 FAIL
+bencoder/test3.py     v20.20.2         v18.19.1            20/20 PASS          0/20 FAIL
+bidict/test3.py       v20.20.2         v18.19.1            20/20 PASS          0/20 FAIL
+bidict/test5.py       v20.20.2         v18.19.1            19/19 PASS          0/19 FAIL
+
+Also spot-checked 2 DIFFERENT passing cases NOT flagged by anyone (negative control, to confirm the
+node18 effect is a real, localized ESM/CJS-detection difference and not something that breaks every
+case under node18):
+
+boltons/test4.py      v20.20.2         v18.19.1            60/60 PASS          60/60 PASS  (unchanged)
+bencoder/test8.py      v20.20.2         v18.19.1            60/60 PASS          60/60 PASS  (unchanged)
+
+Root cause (consistent with Reviewer A's independent finding): the model's generated `.mjs` entry
+files do `import { name } from './helper.js'` where `helper.js` is a PLAIN `.js` file (not `.mjs`,
+no `"type":"module"` in package.json). Node 20's newer ESM/CJS auto-detection accepts this; Node 18
+raises `SyntaxError: Named export 'x' not found. The requested module './helper.js' is a CommonJS
+module...`. This is a genuine, reproducible module-resolution behavior difference between the two
+node runtimes for this exact file-naming pattern the model tends to produce -- NOT a flaky/timing
+artifact (100% reproducible on every re-run, unlike the 5s-timeout contention flips).
+
+Conclusion: strict-node18 headline for the 51 committed passes = 51 - 5 = 46/400 = 11.50%,
+independently confirmed to match Reviewer A's number exactly (Reviewer A: 46/400=11.50%, 5 same
+case names). This MAJOR finding stands on 2 independent full reproductions (Reviewer A + Reviewer B)
+of all 5 cases, not a partial/sampled check.

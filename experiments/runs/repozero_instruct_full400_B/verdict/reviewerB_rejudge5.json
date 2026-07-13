@@ -1,0 +1,92 @@
+[
+  {
+    "case": "boltons/test1.py",
+    "baseline_all_pass": true,
+    "baseline_passed": 60,
+    "baseline_total": 60,
+    "rejudge_all_pass": true,
+    "rejudge_passed": 60,
+    "rejudge_total": 60,
+    "reward": 1,
+    "fail_examples_sample": [],
+    "MATCHES_BASELINE": true
+  },
+  {
+    "case": "base58/test3.py",
+    "baseline_all_pass": true,
+    "baseline_passed": 57,
+    "baseline_total": 57,
+    "rejudge_all_pass": true,
+    "rejudge_passed": 57,
+    "rejudge_total": 57,
+    "reward": 1,
+    "fail_examples_sample": [],
+    "MATCHES_BASELINE": true
+  },
+  {
+    "case": "bidict/test12.py",
+    "baseline_all_pass": true,
+    "baseline_passed": 60,
+    "baseline_total": 60,
+    "rejudge_all_pass": true,
+    "rejudge_passed": 60,
+    "rejudge_total": 60,
+    "reward": 1,
+    "fail_examples_sample": [],
+    "MATCHES_BASELINE": true
+  },
+  {
+    "case": "base58/test1.py",
+    "baseline_all_pass": false,
+    "baseline_passed": 4,
+    "baseline_total": 60,
+    "rejudge_all_pass": false,
+    "rejudge_passed": 4,
+    "rejudge_total": 60,
+    "reward": 0,
+    "fail_examples_sample": [
+      {
+        "args": [
+          "--a",
+          "1234567890"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "oracle_stdout": "b'3mJr7AoUCHxNqd'\n",
+        "js_stdout": "b'3mJr7AoUCPu5dR'\n",
+        "js_stderr": ""
+      }
+    ],
+    "MATCHES_BASELINE": true
+  },
+  {
+    "case": "bidict/test19.py",
+    "baseline_all_pass": false,
+    "baseline_passed": 57,
+    "baseline_total": 60,
+    "rejudge_all_pass": false,
+    "rejudge_passed": 57,
+    "rejudge_total": 60,
+    "reward": 0,
+    "fail_examples_sample": [
+      {
+        "args": [
+          "--k1",
+          "Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO",
+          "--v1",
+          "84636",
+          "--k2",
+          "37953977",
+          "--v2",
+          "97574"
+        ],
+        "oracle_rc": 0,
+        "js_rc": 0,
+        "oracle_stdout": "bidict({'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636, '37953977': 97574})\nbidict({'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636, '37953977': 97574, 'new': 999})\nbidict({'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636, '37953977': 97574})\nY8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO\n",
+        "js_stdout": "bidict({'37953977': 97574, 'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636})\nbidict({'37953977': 97574, 'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636, 'new': 999})\nbidict({'37953977': 97574, 'Y8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO': 84636})\nY8CxyHk12LRna39tbhofjG2Q4Mh2EDvWg5XrfRo74RO\n",
+        "js_stderr": ""
+      }
+    ],
+    "MATCHES_BASELINE": true
+  }
+]

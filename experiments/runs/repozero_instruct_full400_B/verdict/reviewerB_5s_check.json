@@ -1,0 +1,431 @@
+{
+  "pass_cases_10s": [
+    "base58/test3.py",
+    "base58/test4.py",
+    "base58/test6.py",
+    "bencoder/test3.py",
+    "bencoder/test8.py",
+    "bidict/test12.py",
+    "bidict/test2.py",
+    "bidict/test20.py",
+    "bidict/test3.py",
+    "bidict/test5.py",
+    "boltons/test1.py",
+    "boltons/test2.py",
+    "boltons/test3.py",
+    "boltons/test4.py",
+    "canonicaljson/test2.py",
+    "construct/test10.py",
+    "construct/test2.py",
+    "deepdiff/test1.py",
+    "fractions/test1.py",
+    "fractions/test11.py",
+    "fractions/test13.py",
+    "fractions/test14.py",
+    "fractions/test15.py",
+    "fractions/test4.py",
+    "jose/test2.py",
+    "jsonschema/test10.py",
+    "moneyed/test11.py",
+    "moneyed/test2.py",
+    "moneyed/test6.py",
+    "moneyed/test7.py",
+    "networkx/test1.py",
+    "networkx/test2.py",
+    "networkx/test3.py",
+    "rsa/test16.py",
+    "schedule/test1.py",
+    "schedule/test12.py",
+    "schedule/test13.py",
+    "schedule/test3.py",
+    "schedule/test4.py",
+    "schedule/test5.py",
+    "schedule/test6.py",
+    "schedule/test9.py",
+    "whoosh/test1.py",
+    "whoosh/test11.py",
+    "whoosh/test19.py",
+    "whoosh/test2.py",
+    "whoosh/test20.py",
+    "whoosh/test3.py",
+    "whoosh/test5.py",
+    "whoosh/test6.py",
+    "whoosh/test9.py"
+  ],
+  "phase1_5s": {
+    "base58/test3.py": {
+      "all_pass": true,
+      "passed": 57,
+      "total": 57,
+      "timeout": false
+    },
+    "base58/test4.py": {
+      "all_pass": true,
+      "passed": 34,
+      "total": 34,
+      "timeout": false
+    },
+    "base58/test6.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "bencoder/test3.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "bencoder/test8.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "bidict/test12.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "bidict/test2.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "bidict/test20.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "bidict/test3.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "bidict/test5.py": {
+      "all_pass": true,
+      "passed": 19,
+      "total": 19,
+      "timeout": false
+    },
+    "boltons/test1.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "boltons/test2.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "boltons/test3.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "boltons/test4.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "canonicaljson/test2.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "construct/test10.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "construct/test2.py": {
+      "all_pass": true,
+      "passed": 25,
+      "total": 25,
+      "timeout": false
+    },
+    "deepdiff/test1.py": {
+      "all_pass": false,
+      "timeout": true,
+      "error": "Command '['docker', 'exec', 'rjB5-deepdiff-test1', '/workspace/dataset/test1_executable', '--a', 'id', '--b', 'compare']' timed out after 5 seconds"
+    },
+    "fractions/test1.py": {
+      "all_pass": true,
+      "passed": 29,
+      "total": 29,
+      "timeout": false
+    },
+    "fractions/test11.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "fractions/test13.py": {
+      "all_pass": true,
+      "passed": 59,
+      "total": 59,
+      "timeout": false
+    },
+    "fractions/test14.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "fractions/test15.py": {
+      "all_pass": true,
+      "passed": 15,
+      "total": 15,
+      "timeout": false
+    },
+    "fractions/test4.py": {
+      "all_pass": true,
+      "passed": 25,
+      "total": 25,
+      "timeout": false
+    },
+    "jose/test2.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "jsonschema/test10.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "moneyed/test11.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "moneyed/test2.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "moneyed/test6.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "moneyed/test7.py": {
+      "all_pass": true,
+      "passed": 20,
+      "total": 20,
+      "timeout": false
+    },
+    "networkx/test1.py": {
+      "all_pass": false,
+      "timeout": true,
+      "error": "Command '['docker', 'exec', 'rjB5-networkx-test1', '/workspace/dataset/test1_executable', '--a', '35', '--b', '35']' timed out after 5 seconds"
+    },
+    "networkx/test2.py": {
+      "all_pass": false,
+      "timeout": true,
+      "error": "Command '['docker', 'exec', 'rjB5-networkx-test2', '/workspace/dataset/test2_executable', '--a', '3', '--b', '9', '--c', '8']' timed out after 5 seconds"
+    },
+    "networkx/test3.py": {
+      "all_pass": false,
+      "timeout": true,
+      "error": "Command '['docker', 'exec', 'rjB5-networkx-test3', '/workspace/dataset/test3_executable', '--a', '-28', '--b', '54', '--c', '-47', '--d', '83']' timed out after 5 seconds"
+    },
+    "rsa/test16.py": {
+      "all_pass": true,
+      "passed": 59,
+      "total": 59,
+      "timeout": false
+    },
+    "schedule/test1.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test12.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test13.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test3.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test4.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test5.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test6.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "schedule/test9.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test1.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test11.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test19.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test2.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test20.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test3.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test5.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test6.py": {
+      "all_pass": true,
+      "passed": 60,
+      "total": 60,
+      "timeout": false
+    },
+    "whoosh/test9.py": {
+      "all_pass": true,
+      "passed": 59,
+      "total": 59,
+      "timeout": false
+    }
+  },
+  "flips": [
+    "deepdiff/test1.py",
+    "networkx/test1.py",
+    "networkx/test2.py",
+    "networkx/test3.py"
+  ],
+  "serial": {
+    "deepdiff/test1.py": {
+      "serial_5s": {
+        "all_pass": false,
+        "timeout": true,
+        "error": "Command '['docker', 'exec', 'rjB5s-deepdiff-test1', '/workspace/dataset/test1_executable', '--a', 'id', '--b', 'compare']' timed out after 5 seconds"
+      },
+      "serial_10s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      }
+    },
+    "networkx/test1.py": {
+      "serial_5s": {
+        "all_pass": false,
+        "timeout": true,
+        "error": "Command '['docker', 'exec', 'rjB5s-networkx-test1', '/workspace/dataset/test1_executable', '--a', '62', '--b', '-7']' timed out after 5 seconds"
+      },
+      "serial_10s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      }
+    },
+    "networkx/test2.py": {
+      "serial_5s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      },
+      "serial_10s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      }
+    },
+    "networkx/test3.py": {
+      "serial_5s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      },
+      "serial_10s": {
+        "all_pass": true,
+        "passed": 60,
+        "total": 60,
+        "timeout": false
+      }
+    }
+  },
+  "genuine_5s_flips": [
+    "deepdiff/test1.py",
+    "networkx/test1.py"
+  ],
+  "contention_artifacts": [
+    "networkx/test2.py",
+    "networkx/test3.py"
+  ],
+  "implied_5s_headline": "49/400",
+  "elapsed_s": 2158.1
+}
