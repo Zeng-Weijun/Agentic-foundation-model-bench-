@@ -60,8 +60,11 @@
   v20, only the timeout changed 10s->5s; parallel then serial contention-free re-verify of any
   boundary flip; conservative -- a >5s sample counts the case as fail). Delta = **-3 cases**,
   all compute-heavy `networkx`/`deepdiff` samples that legitimately exceed 5s single-threaded
-  (serial-verified: pass@10s, timeout@5s). 3 further Phase-1 flips were parallel-contention
-  artifacts and correctly kept as passes; **0 anomalies** (5s passes are a clean subset of 10s passes).
+  (serial-verified: pass@10s, timeout@5s) -- and in all 3 the >5s side is the **ORACLE
+  (reference executable)**, not the agent's node, i.e. the same slow-reference class as the
+  `rsa` oracle-timeout caveat below, NOT an agent-JS failure. 3 further Phase-1 flips were
+  parallel-contention artifacts and correctly kept as passes; **0 anomalies** (5s passes are a
+  clean subset of 10s passes).
 - For 2 `rsa` cases the **oracle itself** exceeds even 10s (large-key RSA keygen), so they are
   unscoreable-as-all_pass under either timeout regardless of the agent, and counted as fail.
   Excluding just those 2 gives 98/398 = 24.6% -- immaterial. Reported denominator stays **400**.

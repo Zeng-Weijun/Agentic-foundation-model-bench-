@@ -74,9 +74,17 @@ headline are in **`rejudge_official5s.json`**.
 - 6 cases flipped pass@10s→fail@5s in the parallel phase; serial contention-free
   re-verify resolved each one cleanly:
 - **Genuine 5s-timeout (3, stay fail): `networkx/test5`, `deepdiff/test3`,
-  `networkx/test15`.** Each has ≥1 testcase sample whose oracle/node legitimately
-  runs >5s even single-threaded — serial: **passes at 10s, times out at 5s**. These
-  are the real official-5s penalty.
+  `networkx/test15`.** Each has ≥1 testcase sample that legitimately runs >5s even
+  single-threaded — serial: **passes at 10s, times out at 5s** (`rejudge_official5s.json`
+  records the per-case verdicts). Note: for all three the >5s side is the **oracle
+  (the compiled reference executable)**, not the agent's `node` — i.e. the reference
+  itself is slow on these heavy graph/diff inputs, so the case is unscoreable-as-all_pass
+  under a 5s reference timeout *regardless of the agent's JS*. This is the **same class**
+  as the disclosed `rsa` oracle-timeout cases (§4 / calibration.md): the −3 official-5s
+  penalty is slow-reference-oracle, **not** an agent-JS failure. (RepoZero's official
+  `eval_py2js_docker.py` times the raw `python <src>` at 5s where this driver times the
+  compiled oracle executable; both are the reference side, and a >5s reference cannot
+  produce a matched sample under a 5s wall.)
 - **Parallel-contention artifacts (3, kept as PASS): `networkx/test3`,
   `networkx/test2`, `networkx/test1`.** Same compute-heavy family but per-sample
   cost sits just under 5s; the 8-way Phase-1 pushed them past the wall, but the
