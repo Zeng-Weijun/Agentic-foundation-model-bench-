@@ -1,0 +1,8 @@
+# 7 tasks gold_reward!=1 -> judging env itself broken (gold cannot pass). EXCLUDED from valid denom.
+python	langchain-request-coalescing	gold_reward=0: gold patch fails verifier (baseline+new not both green)
+python	mnamer-daemon-watch-lifecycle	gold_reward=0: gold patch fails verifier (task/env broken)
+python	narwhals-rolling-window-suite	gold_reward=0: gold patch fails verifier (task/env broken)
+python	skrub-duration-encoding	gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+typescript	eicrud-keyset-pagination-cursor	gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+typescript	prometheus-transactional-reload-status	gold_reward=0: gold patch fails verifier (task/env broken)
+typescript	quill-shared-toolbar-focus	gold_reward=0: gold patch fails verifier (task/env broken)

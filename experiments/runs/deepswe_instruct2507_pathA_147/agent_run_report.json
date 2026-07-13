@@ -1,0 +1,73 @@
+{
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/full113_instruct_20260713T103633Z",
+  "ts": "2026-07-13T14:34:16Z",
+  "mode": "agent",
+  "manifest_total": 113,
+  "scored": 113,
+  "elapsed_seconds": 14262.5,
+  "status_counts": {
+    "unsolved_no_patch": 57,
+    "unsolved": 56
+  },
+  "resolved": 0,
+  "resolve_rate": 0.0,
+  "by_lang": {
+    "python": {
+      "unsolved_no_patch": 18,
+      "unsolved": 16
+    },
+    "go": {
+      "unsolved_no_patch": 22,
+      "unsolved": 12
+    },
+    "typescript": {
+      "unsolved_no_patch": 14,
+      "unsolved": 21
+    },
+    "rust": {
+      "unsolved_no_patch": 2,
+      "unsolved": 3
+    },
+    "javascript": {
+      "unsolved": 4,
+      "unsolved_no_patch": 1
+    }
+  },
+  "resolved_by_lang": {
+    "python": "0/34",
+    "go": "0/34",
+    "typescript": "0/35",
+    "rust": "0/5",
+    "javascript": "0/5"
+  },
+  "serving_before": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30000/get_model_info",
+    "_ok": true
+  },
+  "serving_after": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30000/get_model_info",
+    "_ok": true
+  }
+}

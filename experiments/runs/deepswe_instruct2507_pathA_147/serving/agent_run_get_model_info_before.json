@@ -1,0 +1,15 @@
+{
+  "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+  "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+  "is_generation": true,
+  "preferred_sampling_params": null,
+  "weight_version": "default",
+  "has_image_understanding": false,
+  "has_audio_understanding": false,
+  "model_type": "qwen3_moe",
+  "architectures": [
+    "Qwen3MoeForCausalLM"
+  ],
+  "_url": "http://100.100.104.147:30000/get_model_info",
+  "_ok": true
+}

@@ -1,0 +1,122 @@
+[full113 2026-07-13T14:46:17Z] SERVING_BEFORE ok=True model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507
+[full113 2026-07-13T14:46:17Z] MANIFEST total=113 done=0 pending=113 unique_tars=102 concurrency=8 turns=100
+[full113 2026-07-13T14:46:17Z] RUN_ROOT /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/audit_full113_instruct_20260713T144617Z
+[full113 2026-07-13T14:46:17Z] DISK free_gb=891 min_free=120 load_parallel=2
+[full113 2026-07-13T14:46:52Z] DONE[1] anko-default-function-arguments go status=unsolved_valid reward=None vrc=None patch=None wall=34.7s free_gb=878 | unsolved_valid=1
+[full113 2026-07-13T14:46:53Z] DONE[2] aiomonitor-task-snapshots-diff python status=unsolved_valid reward=None vrc=None patch=None wall=35.7s free_gb=876 | unsolved_valid=2
+[full113 2026-07-13T14:46:55Z] DONE[3] abs-module-cache-flags go status=unsolved_valid reward=None vrc=None patch=None wall=38.5s free_gb=874 | unsolved_valid=3
+[full113 2026-07-13T14:46:56Z] DONE[4] actionlint-action-pinning-lint go status=unsolved_valid reward=None vrc=None patch=None wall=38.7s free_gb=874 | unsolved_valid=4
+[full113 2026-07-13T14:46:58Z] DONE[5] anko-typed-variable-bindings go status=unsolved_valid reward=None vrc=None patch=None wall=41.0s free_gb=873 | unsolved_valid=5
+[full113 2026-07-13T14:47:01Z] DONE[6] abs-stepped-slices go status=unsolved_valid reward=0 vrc=None patch=None wall=44.0s free_gb=872 | unsolved_valid=6
+[full113 2026-07-13T14:47:07Z] DONE[7] adaptix-name-mapping-aliases python status=unsolved_valid reward=None vrc=None patch=None wall=50.1s free_gb=871 | unsolved_valid=7
+[full113 2026-07-13T14:47:38Z] DONE[8] bandit-structured-nosec-directives python status=unsolved_valid reward=None vrc=None patch=None wall=39.9s free_gb=877 | unsolved_valid=8
+[full113 2026-07-13T14:47:39Z] DONE[9] cattrs-partial-structuring-recovery python status=unsolved_valid reward=0 vrc=None patch=None wall=31.9s free_gb=876 | unsolved_valid=9
+[full113 2026-07-13T14:47:53Z] DONE[10] awilix-async-container-initialization typescript status=unsolved_valid reward=None vrc=None patch=None wall=60.0s free_gb=877 | unsolved_valid=10
+[full113 2026-07-13T14:48:04Z] DONE[11] claude-code-by-agents-recursive-delegation typescript status=unsolved_valid reward=None vrc=None patch=None wall=23.8s free_gb=878 | unsolved_valid=11
+[full113 2026-07-13T14:48:11Z] DONE[12] cliffy-config-file-parsing typescript status=unsolved_valid reward=0 vrc=None patch=None wall=17.4s free_gb=879 | unsolved_valid=12
+[full113 2026-07-13T14:48:12Z] DONE[13] csstree-shorthand-expansion-compression javascript status=unsolved_valid reward=None vrc=None patch=None wall=7.8s free_gb=878 | unsolved_valid=13
+[full113 2026-07-13T14:48:15Z] DONE[14] bandit-incremental-cache-control python status=unsolved_valid reward=None vrc=None patch=None wall=79.1s free_gb=878 | unsolved_valid=14
+[full113 2026-07-13T14:48:34Z] DONE[15] arktype-json-schema-refs-dependencies typescript status=unsolved_valid reward=None vrc=None patch=None wall=99.9s free_gb=872 | unsolved_valid=15
+[full113 2026-07-13T14:48:34Z] DONE[16] dasel-html-document-format go status=unsolved_valid reward=None vrc=None patch=None wall=23.5s free_gb=872 | unsolved_valid=16
+[full113 2026-07-13T14:48:48Z] DONE[17] bandit-interprocedural-taint-checks python status=unsolved_valid reward=None vrc=None patch=None wall=112.0s free_gb=875 | unsolved_valid=17
+[full113 2026-07-13T14:49:07Z] DONE[18] boa-hierarchical-evaluation-cancellation rust status=unsolved_valid reward=None vrc=None patch=None wall=125.4s free_gb=873 | unsolved_valid=18
+[full113 2026-07-13T14:49:19Z] DONE[19] drizzle-orm-window-function-builders typescript status=unsolved_valid reward=0 vrc=None patch=None wall=61.9s free_gb=869 | unsolved_valid=19
+[full113 2026-07-13T14:49:19Z] DONE[20] dynamodb-toolbox-conditional-attribute-requirements typescript status=unsolved_valid reward=None vrc=None patch=None wall=44.9s free_gb=869 | unsolved_valid=20
+[full113 2026-07-13T14:49:20Z] DONE[21] dynamodb-toolbox-lazy-recursive-schemas typescript status=unsolved_valid reward=None vrc=None patch=None wall=44.8s free_gb=873 | unsolved_valid=21
+[full113 2026-07-13T14:49:36Z] DONE[22] clack-async-autocomplete-options typescript status=unsolved_valid reward=0 vrc=None patch=None wall=117.3s free_gb=878 | unsolved_valid=22
+[full113 2026-07-13T14:49:36Z] DONE[23] etree-xml-diff-patch go status=unsolved_valid reward=0 vrc=None patch=None wall=17.4s free_gb=877 | unsolved_valid=23
+[full113 2026-07-13T14:49:45Z] DONE[24] effect-sse-httpapi-streaming typescript status=unsolved_valid reward=None vrc=None patch=None wall=54.3s free_gb=880 | unsolved_valid=24
+[full113 2026-07-13T14:49:45Z] DONE[25] dateutil-rfc5545-timezone-interop python status=unsolved_valid reward=0 vrc=None patch=None wall=92.9s free_gb=880 | unsolved_valid=25
+[full113 2026-07-13T14:49:48Z] DONE[26] arcane-drift-detection-baselines go status=unsolved_valid reward=0 vrc=None patch=None wall=207.7s free_gb=879 | unsolved_valid=26
+[full113 2026-07-13T14:49:48Z] DONE[27] expr-try-catch-errors go status=unsolved_valid reward=0 vrc=None patch=None wall=29.2s free_gb=879 | unsolved_valid=27
+[full113 2026-07-13T14:50:01Z] DONE[28] go-critic-doc-link-checker go status=unsolved_valid reward=None vrc=None patch=None wall=15.9s free_gb=883 | unsolved_valid=28
+[full113 2026-07-13T14:50:09Z] DONE[29] go-git-worktree-merge-conflicts go status=unsolved_valid reward=None vrc=None patch=None wall=20.3s free_gb=875 | unsolved_valid=29
+[full113 2026-07-13T14:50:11Z] DONE[30] geo-shapeindex-serialization go status=unsolved_valid reward=0 vrc=None patch=None wall=26.3s free_gb=872 | unsolved_valid=30
+[full113 2026-07-13T14:50:34Z] DONE[31] fastapi-deprecation-response-headers python status=unsolved_valid reward=0 vrc=None patch=None wall=74.2s free_gb=868 | unsolved_valid=31
+[full113 2026-07-13T14:50:39Z] DONE[32] fd-deterministic-multi-key-sorting rust status=unsolved_valid reward=0 vrc=None patch=None wall=62.7s free_gb=867 | unsolved_valid=32
+[full113 2026-07-13T14:50:42Z] DONE[33] fastapi-implicit-head-options python status=unsolved_valid reward=None vrc=None patch=None wall=65.9s free_gb=872 | unsolved_valid=33
+[full113 2026-07-13T14:50:47Z] DONE[34] happy-dom-abort-pending-body-reads typescript status=unsolved_valid reward=0 vrc=None patch=None wall=35.8s free_gb=871 | unsolved_valid=34
+[full113 2026-07-13T14:50:47Z] DONE[35] gql-incremental-graphql-delivery python status=unsolved_valid reward=None vrc=None patch=None wall=38.0s free_gb=871 | unsolved_valid=35
+[full113 2026-07-13T14:51:12Z] DONE[36] happy-dom-deterministic-intersectionobserver typescript status=unsolved_valid reward=0 vrc=None patch=None wall=37.3s free_gb=876 | unsolved_valid=36
+[full113 2026-07-13T14:51:19Z] DONE[37] goreleaser-retry-publish-auditing go status=unsolved_valid reward=None vrc=None patch=None wall=72.8s free_gb=880 | unsolved_valid=37
+[full113 2026-07-13T14:51:19Z] DONE[38] httpx-deterministic-cookie-store typescript status=task_broken_gold_fail reward=0 vrc=None patch=None wall=32.0s free_gb=880 | task_broken_gold_fail=1 unsolved_valid=37
+[full113 2026-07-13T14:51:25Z] DONE[39] helm-unified-manifest-stream go status=unsolved_valid reward=None vrc=None patch=None wall=42.9s free_gb=875 | task_broken_gold_fail=1 unsolved_valid=38
+[full113 2026-07-13T14:51:30Z] DONE[40] httpx-multipart-response-parsing python status=task_broken_gold_fail reward=0 vrc=None patch=None wall=43.6s free_gb=881 | task_broken_gold_fail=2 unsolved_valid=38
+[full113 2026-07-13T14:51:31Z] DONE[41] httpx-streaming-json-iteration python status=task_broken_gold_fail reward=0 vrc=None patch=None wall=18.2s free_gb=881 | task_broken_gold_fail=3 unsolved_valid=38
+[full113 2026-07-13T14:51:33Z] DONE[42] helm-array-merge-strategies go status=unsolved_valid reward=None vrc=None patch=None wall=52.7s free_gb=877 | task_broken_gold_fail=3 unsolved_valid=39
+[full113 2026-07-13T14:51:34Z] DONE[43] igel-persist-feature-schema python status=unsolved_valid reward=None vrc=None patch=None wall=14.6s free_gb=878 | task_broken_gold_fail=3 unsolved_valid=40
+[full113 2026-07-13T14:51:34Z] DONE[44] ipython-session-bundle-replay python status=unsolved_valid reward=None vrc=None patch=None wall=9.7s free_gb=880 | task_broken_gold_fail=3 unsolved_valid=41
+[full113 2026-07-13T14:51:39Z] DONE[45] go-genai-streamed-function-args go status=unsolved_valid reward=None vrc=None patch=None wall=110.6s free_gb=877 | task_broken_gold_fail=3 unsolved_valid=42
+[full113 2026-07-13T14:51:47Z] DONE[46] kcp-go-multiplexed-kcp-streams go status=unsolved_valid reward=None vrc=None patch=None wall=16.2s free_gb=875 | task_broken_gold_fail=3 unsolved_valid=43
+[full113 2026-07-13T14:51:52Z] DONE[47] katex-multicolumn-array-spans javascript status=unsolved_valid reward=None vrc=None patch=None wall=20.7s free_gb=873 | task_broken_gold_fail=3 unsolved_valid=44
+[full113 2026-07-13T14:51:57Z] DONE[48] ink-grid-box-layout typescript status=unsolved_valid reward=None vrc=None patch=None wall=38.2s free_gb=873 | task_broken_gold_fail=3 unsolved_valid=45
+[full113 2026-07-13T14:51:58Z] DONE[49] kea-atomic-signal-selectors typescript status=unsolved_valid reward=None vrc=None patch=None wall=24.5s free_gb=877 | task_broken_gold_fail=3 unsolved_valid=46
+[full113 2026-07-13T14:52:11Z] DONE[50] koota-pair-relation-tracking typescript status=unsolved_valid reward=None vrc=None patch=None wall=13.2s free_gb=876 | task_broken_gold_fail=3 unsolved_valid=47
+[full113 2026-07-13T14:52:19Z] DONE[51] koota-deferred-mutation-buffer typescript status=unsolved_valid reward=0 vrc=None patch=None wall=26.6s free_gb=878 | task_broken_gold_fail=3 unsolved_valid=49
+[full113 2026-07-13T14:52:19Z] DONE[52] koota-composite-trait-aspects typescript status=unsolved_valid reward=0 vrc=None patch=None wall=31.8s free_gb=878 | task_broken_gold_fail=3 unsolved_valid=49
+[full113 2026-07-13T14:52:20Z] DONE[53] koota-entity-snapshot-rollback python status=unsolved_valid reward=None vrc=None patch=None wall=21.9s free_gb=878 | task_broken_gold_fail=3 unsolved_valid=50
+[full113 2026-07-13T14:52:34Z] DONE[54] kombu-single-active-consumer-priority python status=unsolved_valid reward=None vrc=None patch=None wall=59.7s free_gb=872 | task_broken_gold_fail=3 unsolved_valid=51
+[full113 2026-07-13T14:52:37Z] DONE[55] kombu-virtual-queue-dead-lettering python status=unsolved_valid reward=None vrc=None patch=None wall=57.9s free_gb=868 | task_broken_gold_fail=3 unsolved_valid=52
+[full113 2026-07-13T14:52:43Z] DONE[56] koota-query-predicates typescript status=unsolved_valid reward=0 vrc=None patch=None wall=31.4s free_gb=869 | task_broken_gold_fail=3 unsolved_valid=53
+[full113 2026-07-13T14:52:53Z] DONE[57] langchain-request-coalescing python status=task_broken_gold_fail reward=0 vrc=None patch=None wall=33.9s free_gb=874 | task_broken_gold_fail=4 unsolved_valid=53
+[full113 2026-07-13T14:52:54Z] DONE[58] mobly-grouped-test-barriers python status=unsolved_valid reward=None vrc=None patch=None wall=10.8s free_gb=873 | task_broken_gold_fail=4 unsolved_valid=54
+[full113 2026-07-13T14:53:05Z] DONE[59] meriyah-explicit-resource-declarations typescript status=unsolved_valid reward=None vrc=None patch=None wall=29.0s free_gb=876 | task_broken_gold_fail=4 unsolved_valid=55
+[full113 2026-07-13T14:53:20Z] DONE[60] kgateway-consistent-hash-policy go status=unsolved_valid reward=None vrc=None patch=None wall=103.3s free_gb=883 | task_broken_gold_fail=4 unsolved_valid=56
+[full113 2026-07-13T14:53:25Z] DONE[61] kysely-window-grouping-helpers typescript status=unsolved_valid reward=None vrc=None patch=None wall=62.5s free_gb=883 | task_broken_gold_fail=4 unsolved_valid=57
+[full113 2026-07-13T14:53:40Z] DONE[62] obsidian-linter-auto-table-of-contents typescript status=unsolved_valid reward=None vrc=None patch=None wall=35.1s free_gb=884 | task_broken_gold_fail=4 unsolved_valid=58
+[full113 2026-07-13T14:53:44Z] DONE[63] obsidian-linter-link-format-conversion typescript status=unsolved_valid reward=None vrc=None patch=None wall=24.0s free_gb=881 | task_broken_gold_fail=4 unsolved_valid=59
+[full113 2026-07-13T14:53:57Z] DONE[64] obsidian-linter-scoped-ignore-markers typescript status=unsolved_valid reward=None vrc=None patch=None wall=31.2s free_gb=883 | task_broken_gold_fail=4 unsolved_valid=60
+[full113 2026-07-13T14:54:09Z] DONE[65] ofetch-per-origin-circuit-breaker typescript status=unsolved_valid reward=0 vrc=None patch=None wall=29.3s free_gb=882 | task_broken_gold_fail=4 unsolved_valid=61
+[full113 2026-07-13T14:54:12Z] DONE[66] onedump-dump-encryption-pipeline go status=unsolved_valid reward=None vrc=None patch=None wall=27.2s free_gb=879 | task_broken_gold_fail=4 unsolved_valid=62
+[full113 2026-07-13T14:54:22Z] DONE[67] opa-rego-rule-profiling go status=unsolved_valid reward=None vrc=None patch=None wall=23.9s free_gb=882 | task_broken_gold_fail=4 unsolved_valid=63
+[full113 2026-07-13T14:54:30Z] DONE[68] optique-conditional-option-dependencies typescript status=unsolved_valid reward=0 vrc=None patch=None wall=17.6s free_gb=881 | task_broken_gold_fail=4 unsolved_valid=64
+[full113 2026-07-13T14:54:39Z] DONE[69] mnamer-daemon-watch-lifecycle python status=task_broken_gold_fail reward=None vrc=None patch=None wall=122.2s free_gb=880 | task_broken_gold_fail=5 unsolved_valid=64
+[full113 2026-07-13T14:54:45Z] DONE[70] opa-template-string-reconstruction go status=unsolved_valid reward=None vrc=None patch=None wall=35.4s free_gb=883 | task_broken_gold_fail=5 unsolved_valid=65
+[full113 2026-07-13T14:54:45Z] DONE[71] participle-grammar-conflict-analysis go status=unsolved_valid reward=None vrc=None patch=None wall=15.5s free_gb=883 | task_broken_gold_fail=5 unsolved_valid=66
+[full113 2026-07-13T14:55:05Z] DONE[72] narwhals-rolling-window-suite python status=task_broken_gold_fail reward=None vrc=None patch=None wall=131.9s free_gb=874 | task_broken_gold_fail=6 unsolved_valid=66
+[full113 2026-07-13T14:55:35Z] DONE[73] pest-character-class-coalescing rust status=unsolved_valid reward=0 vrc=None patch=None wall=48.7s free_gb=876 | task_broken_gold_fail=6 unsolved_valid=67
+[full113 2026-07-13T14:56:03Z] DONE[74] prometheus-typed-label-sorting go status=unsolved_valid reward=0 vrc=None patch=None wall=55.8s free_gb=881 | task_broken_gold_fail=6 unsolved_valid=68
+[full113 2026-07-13T14:56:05Z] DONE[75] psd-tools-blend-range-api python status=unsolved_valid reward=0 vrc=None patch=None wall=30.0s free_gb=879 | task_broken_gold_fail=6 unsolved_valid=69
+[full113 2026-07-13T14:56:09Z] DONE[76] pebble-durability-wait-apis go status=unsolved_valid reward=None vrc=None patch=None wall=89.5s free_gb=882 | task_broken_gold_fail=6 unsolved_valid=70
+[full113 2026-07-13T14:56:15Z] DONE[77] mashumaro-flattened-dataclass-fields python status=unsolved_valid reward=0 vrc=None patch=None wall=235.2s free_gb=875 | task_broken_gold_fail=6 unsolved_valid=71
+[full113 2026-07-13T14:56:21Z] DONE[78] pwntools-tube-multiplexing python status=unsolved_valid reward=0 vrc=None patch=None wall=17.8s free_gb=869 | task_broken_gold_fail=6 unsolved_valid=72
+[full113 2026-07-13T14:56:23Z] DONE[79] eicrud-keyset-pagination-cursor typescript status=task_broken_gold_fail reward=None vrc=None patch=None wall=434.4s free_gb=869 | task_broken_gold_fail=7 unsolved_valid=72
+[full113 2026-07-13T14:56:41Z] DONE[80] returns-validated-error-accumulation python status=unsolved_valid reward=None vrc=None patch=None wall=19.9s free_gb=871 | task_broken_gold_fail=7 unsolved_valid=73
+[full113 2026-07-13T14:56:44Z] DONE[81] python-statemachine-state-data-scoping python status=unsolved_valid reward=0 vrc=None patch=None wall=39.3s free_gb=871 | task_broken_gold_fail=7 unsolved_valid=74
+[full113 2026-07-13T14:56:57Z] DONE[82] scc-bounded-memory-spilling go status=unsolved_valid reward=0 vrc=None patch=None wall=33.7s free_gb=875 | task_broken_gold_fail=7 unsolved_valid=75
+[full113 2026-07-13T14:57:08Z] DONE[83] scriggo-method-declarations go status=unsolved_valid reward=None vrc=None patch=None wall=26.2s free_gb=875 | task_broken_gold_fail=7 unsolved_valid=76
+[full113 2026-07-13T14:57:16Z] DONE[84] sql-formatter-bigquery-pipe-formatting typescript status=unsolved_valid reward=None vrc=None patch=None wall=19.3s free_gb=877 | task_broken_gold_fail=7 unsolved_valid=77
+[full113 2026-07-13T14:57:20Z] DONE[85] prometheus-transactional-reload-status typescript status=task_broken_gold_fail reward=0 vrc=None patch=None wall=152.9s free_gb=876 | task_broken_gold_fail=8 unsolved_valid=77
+[full113 2026-07-13T14:57:38Z] DONE[86] sqlite-utils-safe-import-checkpoints python status=unsolved_valid reward=None vrc=None patch=None wall=21.2s free_gb=879 | task_broken_gold_fail=8 unsolved_valid=78
+[full113 2026-07-13T14:57:51Z] DONE[87] query-persist-restored-query-state typescript status=unsolved_valid reward=0 vrc=None patch=None wall=97.1s free_gb=876 | task_broken_gold_fail=8 unsolved_valid=79
+[full113 2026-07-13T14:58:04Z] DONE[88] numba-stencil-boundary-modes python status=unsolved_valid reward=None vrc=None patch=None wall=310.1s free_gb=880 | task_broken_gold_fail=8 unsolved_valid=80
+[full113 2026-07-13T14:58:10Z] DONE[89] tengo-callable-instance-isolation go status=unsolved_valid reward=0 vrc=None patch=None wall=19.0s free_gb=880 | task_broken_gold_fail=8 unsolved_valid=81
+[full113 2026-07-13T14:58:12Z] DONE[90] sqlfmt-create-table-ddl-formatting python status=unsolved_valid reward=None vrc=None patch=None wall=64.7s free_gb=881 | task_broken_gold_fail=8 unsolved_valid=82
+[full113 2026-07-13T14:58:14Z] DONE[91] tengo-destructuring-bindings go status=unsolved_valid reward=None vrc=None patch=None wall=9.4s free_gb=879 | task_broken_gold_fail=8 unsolved_valid=83
+[full113 2026-07-13T14:58:18Z] DONE[92] task-task-graph-export go status=unsolved_valid reward=None vrc=None patch=None wall=39.4s free_gb=876 | task_broken_gold_fail=8 unsolved_valid=84
+[full113 2026-07-13T14:58:19Z] DONE[93] superjson-error-stack-serialization typescript status=unsolved_valid reward=0 vrc=None patch=None wall=57.7s free_gb=876 | task_broken_gold_fail=8 unsolved_valid=85
+[full113 2026-07-13T14:58:20Z] DONE[94] termenv-preserve-ansi-resets go status=unsolved_valid reward=None vrc=None patch=None wall=10.0s free_gb=881 | task_broken_gold_fail=8 unsolved_valid=86
+[full113 2026-07-13T14:58:31Z] DONE[95] testem-bail-on-test-failure javascript status=unsolved_valid reward=None vrc=None patch=None wall=18.0s free_gb=880 | task_broken_gold_fail=8 unsolved_valid=87
+[full113 2026-07-13T14:58:37Z] DONE[96] textual-kitty-key-phases python status=unsolved_valid reward=0 vrc=None patch=None wall=18.7s free_gb=878 | task_broken_gold_fail=8 unsolved_valid=88
+[full113 2026-07-13T14:58:38Z] DONE[97] tomlkit-toml-table-converters python status=unsolved_valid reward=0 vrc=None patch=None wall=17.8s free_gb=877 | task_broken_gold_fail=8 unsolved_valid=89
+[full113 2026-07-13T14:58:38Z] DONE[98] textual-richlog-follow-state python status=unsolved_valid reward=0 vrc=None patch=None wall=19.3s free_gb=878 | task_broken_gold_fail=8 unsolved_valid=90
+[full113 2026-07-13T14:58:41Z] DONE[99] testem-per-launcher-reports javascript status=task_broken_gold_fail reward=0 vrc=None patch=None wall=27.1s free_gb=876 | task_broken_gold_fail=9 unsolved_valid=90
+[full113 2026-07-13T14:58:52Z] DONE[100] ts-pattern-match-each typescript status=unsolved_valid reward=None vrc=None patch=None wall=14.4s free_gb=873 | task_broken_gold_fail=9 unsolved_valid=91
+[full113 2026-07-13T14:59:00Z] DONE[101] true-myth-iterable-collection-combinators typescript status=unsolved_valid reward=0 vrc=None patch=None wall=28.2s free_gb=875 | task_broken_gold_fail=9 unsolved_valid=92
+[full113 2026-07-13T14:59:10Z] DONE[102] updo-policy-alerting go status=unsolved_valid reward=0 vrc=None patch=None wall=31.5s free_gb=880 | task_broken_gold_fail=9 unsolved_valid=93
+[full113 2026-07-13T14:59:17Z] DONE[103] vulture-persistent-analysis-cache python status=unsolved_valid reward=0 vrc=None patch=None wall=24.9s free_gb=880 | task_broken_gold_fail=9 unsolved_valid=94
+[full113 2026-07-13T14:59:25Z] DONE[104] wazero-multi-module-snapshots go status=unsolved_valid reward=None vrc=None patch=None wall=14.7s free_gb=879 | task_broken_gold_fail=9 unsolved_valid=95
+[full113 2026-07-13T14:59:32Z] DONE[105] valibot-recursive-schema-composition typescript status=unsolved_valid reward=None vrc=None patch=None wall=52.1s free_gb=880 | task_broken_gold_fail=9 unsolved_valid=96
+[full113 2026-07-13T14:59:33Z] DONE[106] wasmi-trap-coredumps rust status=unsolved_valid reward=None vrc=None patch=None wall=32.8s free_gb=881 | task_broken_gold_fail=9 unsolved_valid=97
+[full113 2026-07-13T14:59:33Z] DONE[107] yaegi-go-embed-directives go status=unsolved_valid reward=None vrc=None patch=None wall=16.1s free_gb=881 | task_broken_gold_fail=9 unsolved_valid=98
+[full113 2026-07-13T14:59:44Z] DONE[108] yjs-map-conflict-detection javascript status=unsolved_valid reward=0 vrc=None patch=None wall=18.9s free_gb=882 | task_broken_gold_fail=9 unsolved_valid=99
+[full113 2026-07-13T14:59:51Z] DONE[109] ytt-jsonpath-query-api go status=unsolved_valid reward=0 vrc=None patch=None wall=19.0s free_gb=882 | task_broken_gold_fail=9 unsolved_valid=100
+[full113 2026-07-13T15:00:47Z] DONE[110] quill-shared-toolbar-focus typescript status=task_broken_gold_fail reward=0 vrc=None patch=None wall=271.1s free_gb=885 | task_broken_gold_fail=10 unsolved_valid=100
+[full113 2026-07-13T15:01:23Z] DONE[111] vitest-duration-sharding typescript status=unsolved_valid reward=None vrc=None patch=None wall=159.1s free_gb=886 | task_broken_gold_fail=10 unsolved_valid=101
+[full113 2026-07-13T15:02:59Z] DONE[112] oxvg-structural-selector-preservation rust status=unsolved_valid reward=0 vrc=None patch=None wall=517.2s free_gb=887 | task_broken_gold_fail=10 unsolved_valid=102
+[full113 2026-07-13T15:04:11Z] DONE[113] skrub-duration-encoding python status=task_broken_gold_fail reward=0 vrc=None patch=None wall=443.9s free_gb=891 | task_broken_gold_fail=11 unsolved_valid=102
+[full113 2026-07-13T15:04:11Z] SERVING_AFTER ok=True model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507
+[full113 2026-07-13T15:04:11Z] AUDIT gold_valid=102 gold_broken=11 gold_evalerr=0 agent_resolved=0 honest_rate=0.0000
+[full113 2026-07-13T15:04:11Z] AUDIT by_lang {"go": {"valid": 34, "broken": 0, "resolved": 0}, "python": {"valid": 28, "broken": 6, "resolved": 0}, "typescript": {"valid": 31, "broken": 4, "resolved": 0}, "javascript": {"valid": 4, "broken": 1, "resolved": 0}, "rust": {"valid": 5, "broken": 0, "resolved": 0}}
+[full113 2026-07-13T15:04:11Z] REPORT {"unsolved_valid": 102, "task_broken_gold_fail": 11}
+[full113 2026-07-13T15:04:11Z] ALL_DONE mode=audit elapsed=18min

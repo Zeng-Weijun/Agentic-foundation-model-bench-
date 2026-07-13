@@ -1,0 +1,32 @@
+DENOMINATOR ASSERTION -- DeepSWE full113 x Qwen3-30B-A3B-Instruct-2507 x qwen-code (Path A)
+==========================================================================================
+
+resolved (gold_reward==1 AND agent patch passes the SAME verifier) = 0
+
+CALIBER 1 -- HEADLINE (denominator = full manifest 113):
+    score = 0 / 113 = 0.0000 = 0.00%
+
+CALIBER 2 -- VALID-ONLY / HONEST (denominator = gold-validated 106):
+    score = 0 / 106 = 0.0000 = 0.00%
+    (7 gold_broken excluded: gold_reward!=1 => judging env broken => not validly scorable)
+
+gold_valid=106  gold_broken=7  agent_resolved_on_valid=0   (113 = 106 valid + 7 broken)
+
+NO_PROXY correction (model-independent, dual-signed in the Coder bundle AUDIT_NOTES): the raw audit
+gives gold_valid=102/broken=11; 4 httpx/happy-dom gold tasks false-fail because the
+driver container_env() injects the sglang IP 100.100.104.147 + 100.100.0.0/16 into NO_PROXY, tripping
+httpx's test_get_environment_proxies. A clean env gives gold=1, so they are reclassified broken->valid
+httpx-{deterministic-cookie-store,multipart-response-parsing,streaming-json-iteration}; in THIS instruct
+audit only these 3 httpx were raw-broken (happy-dom was already gold-valid). Gold validity does not
+depend on the model; the agent still scores 0 on them, so the numerator is unchanged.
+Plus 1 gold FLAKE reclassified broken->valid: testem-per-launcher-reports was gold_broken in this audit
+run but gold_reward=1 on a clean re-verify (reverify_testem_20260713T150553Z: applied, reward=1, vrc=0);
+it is gold_valid in the Coder audit too. => gold_valid=106 / gold_broken=7, matching the Coder denom.
+The 7 gold_broken (excluded):
+  - [python] langchain-request-coalescing : gold_reward=0: gold patch fails verifier (baseline+new not both green)
+  - [python] mnamer-daemon-watch-lifecycle : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [python] narwhals-rolling-window-suite : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [python] skrub-duration-encoding : gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+  - [typescript] eicrud-keyset-pagination-cursor : gold_reward=0: new tests pass but baseline regression suite fails -> reward needs BOTH green
+  - [typescript] prometheus-transactional-reload-status : gold_reward=0: gold patch fails verifier (task/env broken)
+  - [typescript] quill-shared-toolbar-focus : gold_reward=0: gold patch fails verifier (task/env broken)

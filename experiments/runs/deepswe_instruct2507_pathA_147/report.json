@@ -1,0 +1,119 @@
+{
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/deepswe_pathA/runs/audit_full113_instruct_20260713T144617Z",
+  "ts": "2026-07-13T15:04:11Z",
+  "mode": "audit",
+  "manifest_total": 113,
+  "scored": 113,
+  "elapsed_seconds": 1073.9,
+  "status_counts": {
+    "unsolved_valid": 102,
+    "task_broken_gold_fail": 11
+  },
+  "resolved": 0,
+  "resolve_rate": 0.0,
+  "by_lang": {
+    "go": {
+      "unsolved_valid": 34
+    },
+    "python": {
+      "unsolved_valid": 28,
+      "task_broken_gold_fail": 6
+    },
+    "typescript": {
+      "unsolved_valid": 31,
+      "task_broken_gold_fail": 4
+    },
+    "javascript": {
+      "unsolved_valid": 4,
+      "task_broken_gold_fail": 1
+    },
+    "rust": {
+      "unsolved_valid": 5
+    }
+  },
+  "resolved_by_lang": {
+    "go": "0/34",
+    "python": "0/34",
+    "typescript": "0/35",
+    "javascript": "0/5",
+    "rust": "0/5"
+  },
+  "serving_before": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30000/get_model_info",
+    "_ok": true
+  },
+  "serving_after": {
+    "model_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "tokenizer_path": "/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-30B-A3B-Instruct-2507",
+    "is_generation": true,
+    "preferred_sampling_params": null,
+    "weight_version": "default",
+    "has_image_understanding": false,
+    "has_audio_understanding": false,
+    "model_type": "qwen3_moe",
+    "architectures": [
+      "Qwen3MoeForCausalLM"
+    ],
+    "_url": "http://100.100.104.147:30000/get_model_info",
+    "_ok": true
+  },
+  "audit": {
+    "gold_valid": 102,
+    "gold_broken": 11,
+    "gold_evalerror": 0,
+    "agent_resolved_on_valid": 0,
+    "honest_resolve_rate": 0.0,
+    "resolved_task_ids": [],
+    "broken_task_ids": [
+      "httpx-deterministic-cookie-store",
+      "httpx-multipart-response-parsing",
+      "httpx-streaming-json-iteration",
+      "langchain-request-coalescing",
+      "mnamer-daemon-watch-lifecycle",
+      "narwhals-rolling-window-suite",
+      "eicrud-keyset-pagination-cursor",
+      "prometheus-transactional-reload-status",
+      "testem-per-launcher-reports",
+      "quill-shared-toolbar-focus",
+      "skrub-duration-encoding"
+    ],
+    "by_lang": {
+      "go": {
+        "valid": 34,
+        "broken": 0,
+        "resolved": 0
+      },
+      "python": {
+        "valid": 28,
+        "broken": 6,
+        "resolved": 0
+      },
+      "typescript": {
+        "valid": 31,
+        "broken": 4,
+        "resolved": 0
+      },
+      "javascript": {
+        "valid": 4,
+        "broken": 1,
+        "resolved": 0
+      },
+      "rust": {
+        "valid": 5,
+        "broken": 0,
+        "resolved": 0
+      }
+    }
+  }
+}

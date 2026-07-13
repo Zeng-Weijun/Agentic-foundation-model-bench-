@@ -1,0 +1,9 @@
+DeepSWE full113 x Instruct-2507 x qwen-code Path A = 0/113 (0/106 valid) REAL [dual-sign pending]
+
+Headline 0/113=0.00%, valid-only 0/106=0.00% (7 gold_broken excluded via the model-independent
+NO_PROXY correction reused from the Coder audit). Gold passes the same verifier on the valid tasks =>
+the 0/113 is genuine agent-capability failure, not a judging bug. Serving :30000
+Qwen3-30B-A3B-Instruct-2507 (get_model_info before+after). Instruct produced captured patches on
+~half of tasks (rest are explore-loop / 262k-ctx-overflow-400 / no-edit); scaffold identical to Coder.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
