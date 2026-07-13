@@ -1,0 +1,23 @@
+$ pip install -e .
+[rc=0]
+Looking in links: /wheelhouse
+Obtaining file:///workspace
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Getting requirements to build editable: started
+  Getting requirements to build editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: Cerberus
+  Building editable for Cerberus (pyproject.toml): started
+  Building editable for Cerberus (pyproject.toml): finished with status 'done'
+  Created wheel for Cerberus: filename=cerberus-1.3.8-0.editable-py3-none-any.whl size=3094 sha256=1da6d5416666adbcc87c61b9db83e2a7b09221ae498b754e678eb923bd2fa068
+  Stored in directory: /tmp/pip-ephem-wheel-cache-cuxy0h48/wheels/b0/41/ab/4e04a8678980f3355548f1261923479fbf2a713a7393a7dea8
+Successfully built Cerberus
+Installing collected packages: Cerberus
+Successfully installed Cerberus-1.3.8
+
+[stderr]
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv

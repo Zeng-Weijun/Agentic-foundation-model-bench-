@@ -1,0 +1,7 @@
+v20.20.2
+---
+/opt/qwen-native/.npm-root/node_modules/.bin/qwen
+0.15.6
+---
+{"object":"list","data":[{"id":"Qwen/Qwen3-Coder-30B-A3B-Instruct","object":"model","created":1783910689,"owned_by":"sglang","root":"Qwen/Qwen3-Coder-30B-A3B-Instruct","parent":null,"max_model_len":262144}]}
+[stderr]

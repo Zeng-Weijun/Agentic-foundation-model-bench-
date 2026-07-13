@@ -1,0 +1,1198 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.11, pytest-9.0.1, pluggy-1.6.0
+rootdir: /workspace
+configfile: pyproject.toml
+plugins: cov-7.0.0, nbval-0.11.0, asyncio-1.3.0
+asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 79 items
+
+tests/test_config.py EE                                                  [  2%]
+tests/test_doctest.py EE                                                 [  5%]
+tests/test_force_reload.py F..F                                          [ 10%]
+tests/test_ipytest.py .........FFF.F......FF.FFFFF...F.F.............    [ 69%]
+tests/test_ipytest_cov.py FFFFFFFF                                       [ 79%]
+tests/test_issue_71.py EEEEEEEEFF                                        [ 92%]
+tests/test_raise_on_error.py EEEEEE                                      [100%]
+
+==================================== ERRORS ====================================
+______________________ ERROR at setup of test_autoconfig _______________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_autoconfig>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+________________ ERROR at setup of test_config_rewrite_asserts _________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_config_rewrite_asserts>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_____________________ ERROR at setup of test_example[func] _____________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_example[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+____________________ ERROR at setup of test_example[magic] _____________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_example[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+___________________ ERROR at setup of test_run_defopts[func] ___________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+__________________ ERROR at setup of test_run_defopts[magic] ___________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_____ ERROR at setup of test_run_defopts__auto_magic[func-{MODULE}::test1] _____
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic[func-{MODULE}::test1]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_________ ERROR at setup of test_run_defopts__auto_magic[func-{test1}] _________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic[func-{test1}]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+____ ERROR at setup of test_run_defopts__auto_magic[magic-{MODULE}::test1] _____
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic[magic-{MODULE}::test1]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+________ ERROR at setup of test_run_defopts__auto_magic[magic-{test1}] _________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic[magic-{test1}]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_________ ERROR at setup of test_run_defopts__auto_magic__filter[func] _________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic__filter[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+________ ERROR at setup of test_run_defopts__auto_magic__filter[magic] _________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_run_defopts__auto_magic__filter[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_____________ ERROR at setup of test_default_does_not_raise[func] ______________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_default_does_not_raise[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_____________ ERROR at setup of test_default_does_not_raise[magic] _____________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_default_does_not_raise[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+________________ ERROR at setup of test_raises_with_args[func] _________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_raises_with_args[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+________________ ERROR at setup of test_raises_with_args[magic] ________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_raises_with_args[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_______________ ERROR at setup of test_raises_with_config[func] ________________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_raises_with_config[func]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+_______________ ERROR at setup of test_raises_with_config[magic] _______________
+
+fixturedef = <FixtureDef argname='scoped_config' scope='function' baseid='tests'>
+request = <SubRequest 'scoped_config' for <Function test_raises_with_config[magic]>>
+
+    @pytest.hookimpl(wrapper=True)
+    def pytest_fixture_setup(fixturedef: FixtureDef, request) -> object | None:
+        asyncio_mode = _get_asyncio_mode(request.config)
+        if not _is_asyncio_fixture_function(fixturedef.func):
+            if asyncio_mode == Mode.STRICT:
+                # Ignore async fixtures without explicit asyncio mark in strict mode
+                # This applies to pytest_trio fixtures, for example
+>               return (yield)
+
+/usr/local/lib/python3.10/site-packages/pytest_asyncio/plugin.py:728: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @pytest.fixture
+    def scoped_config():
+        """A fixture to reset the config at the end of the test"""
+>       original_config = ipytest._config.current_config.copy()
+E       AttributeError: module 'ipytest._config' has no attribute 'current_config'
+
+tests/conftest.py:66: AttributeError
+=================================== FAILURES ===================================
+___________________ test_force_reload_example[foo-expected0] ___________________
+
+include = 'foo', expected = ()
+
+    @pytest.mark.parametrize(
+        ("include", "expected"),
+        [
+            ("foo", ()),
+            ("foo.bar", ("foo", "foo.baz")),
+            ("f", ("foo", "foo.bar", "foo.baz")),
+        ],
+    )
+    def test_force_reload_example(include, expected):
+        modules = {
+            "foo": None,
+            "foo.bar": None,
+            "foo.baz": None,
+        }
+    
+        ipytest.force_reload(include, modules=modules)
+>       assert set(modules) == set(expected)
+E       AssertionError: assert {'foo.bar', 'foo.baz'} == set()
+E         
+E         Extra items in the left set:
+E         'foo.bar'
+E         'foo.baz'
+E         Use -v to get more diff
+
+tests/test_force_reload.py:22: AssertionError
+_______________________________ test_forc_reload _______________________________
+
+    def test_forc_reload():
+        import empty_module
+    
+        empty_module.reload_value = 42
+        assert hasattr(empty_module, "reload_value") is True
+    
+        ipytest.force_reload("empty_module")
+    
+        import empty_module
+    
+>       assert hasattr(empty_module, "reload_value") is False
+E       AssertionError: assert True is False
+E        +  where True = hasattr(<module 'empty_module' from '/workspace/tests/empty_module.py'>, 'reload_value')
+
+tests/test_force_reload.py:35: AssertionError
+__________________________________ test_reprs __________________________________
+
+    def test_reprs():
+>       assert repr(ipytest._config.keep) == "<keep>"
+E       AttributeError: module 'ipytest._config' has no attribute 'keep'
+
+tests/test_ipytest.py:45: AttributeError
+________________________________ test_fixtures _________________________________
+
+    def test_fixtures():
+        @pytest.fixture
+        def my_fixture():
+            return 42
+    
+        def test_example(my_fixture):
+            assert my_fixture == 42
+    
+        ipytest.run(
+            module=fake_module(
+                __name__="empty_module",
+                __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
+                my_fixture=my_fixture,
+                test_example=test_example,
+            ),
+        )
+>       assert ipytest.exit_code == 0
+E       AttributeError: module 'ipytest' has no attribute 'exit_code'
+
+tests/test_ipytest.py:74: AttributeError
+----------------------------- Captured stdout call -----------------------------
+
+[33m[33mno tests ran[0m[33m in 0.00s[0m[0m
+----------------------------- Captured stderr call -----------------------------
+ERROR: file or directory not found: empty_module::
+
+_______________________________ test_parametrize _______________________________
+
+    def test_parametrize():
+        @pytest.mark.parametrize("val", [0, 2, 4, 8, 10])
+        def test_example(val):
+            assert val % 2 == 0
+    
+        ipytest.run(
+            module=fake_module(
+                __name__="empty_module",
+                __file__=os.path.join(os.path.dirname(__file__), "empty_module.py"),
+                test_example=test_example,
+            ),
+        )
+>       assert ipytest.exit_code == 0
+E       AttributeError: module 'ipytest' has no attribute 'exit_code'
+
+tests/test_ipytest.py:89: AttributeError
+----------------------------- Captured stdout call -----------------------------
+
+[33m[33mno tests ran[0m[33m in 0.00s[0m[0m
+----------------------------- Captured stderr call -----------------------------
+ERROR: file or directory not found: empty_module::
+
+______________________________ test_program_name _______________________________
+
+    def test_program_name():
+        with io.StringIO() as fobj, contextlib.redirect_stderr(fobj):
+            ipytest.run("--foo")
+            res = fobj.getvalue()
+    
+        assert "error" in res
+>       assert "%%ipytest" in res
+E       AssertionError: assert '%%ipytest' in 'ERROR: usage: pytest [options] [file_or_dir] [file_or_dir] [...]\npytest: error: unrecognized arguments: --foo\n  inifile: /workspace/pyproject.toml\n  rootdir: /workspace\n\n'
+
+tests/test_ipytest.py:106: AssertionError
+______________________ test_eval_run_kwargs__module[True] ______________________
+
+value = True
+
+    @pytest.mark.parametrize("value", [True, False])
+    def test_eval_run_kwargs__module(value):
+        dummy_module = ModuleType("dummy_module")
+        dummy_module.defopts = value
+    
+>       assert eval_run_kwargs("# ipytest: defopts =  defopts", module=dummy_module) == {
+            "defopts": value,
+            "module": dummy_module,
+        }
+E       AssertionError: assert {'defopts': 'defopts'} == {'defopts': T...ummy_module'>}
+E         
+E         Differing items:
+E         {'defopts': 'defopts'} != {'defopts': True}
+E         Right contains 1 more item:
+E         {'module': <module 'dummy_module'>}
+E         Use -v to get more diff
+
+tests/test_ipytest.py:139: AssertionError
+_____________________ test_eval_run_kwargs__module[False] ______________________
+
+value = False
+
+    @pytest.mark.parametrize("value", [True, False])
+    def test_eval_run_kwargs__module(value):
+        dummy_module = ModuleType("dummy_module")
+        dummy_module.defopts = value
+    
+>       assert eval_run_kwargs("# ipytest: defopts =  defopts", module=dummy_module) == {
+            "defopts": value,
+            "module": dummy_module,
+        }
+E       AssertionError: assert {'defopts': 'defopts'} == {'defopts': F...ummy_module'>}
+E         
+E         Differing items:
+E         {'defopts': 'defopts'} != {'defopts': False}
+E         Right contains 1 more item:
+E         {'module': <module 'dummy_module'>}
+E         Use -v to get more diff
+
+tests/test_ipytest.py:139: AssertionError
+_______________________ test_eval_run_kwargs__module_2[] _______________________
+
+cell = ''
+
+    @pytest.mark.parametrize("cell", ["", "\n", "\ndef test():\n    assert True"])
+    def test_eval_run_kwargs__module_2(cell):
+        dummy_module = ModuleType("dummy_module")
+>       assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}
+E       AssertionError: assert {} == {'module': <m...ummy_module'>}
+E         
+E         Right contains 1 more item:
+E         {'module': <module 'dummy_module'>}
+E         Use -v to get more diff
+
+tests/test_ipytest.py:155: AssertionError
+______________________ test_eval_run_kwargs__module_2[\n] ______________________
+
+cell = '\n'
+
+    @pytest.mark.parametrize("cell", ["", "\n", "\ndef test():\n    assert True"])
+    def test_eval_run_kwargs__module_2(cell):
+        dummy_module = ModuleType("dummy_module")
+>       assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}
+E       AssertionError: assert {} == {'module': <m...ummy_module'>}
+E         
+E         Right contains 1 more item:
+E         {'module': <module 'dummy_module'>}
+E         Use -v to get more diff
+
+tests/test_ipytest.py:155: AssertionError
+________ test_eval_run_kwargs__module_2[\ndef test():\n    assert True] ________
+
+cell = '\ndef test():\n    assert True'
+
+    @pytest.mark.parametrize("cell", ["", "\n", "\ndef test():\n    assert True"])
+    def test_eval_run_kwargs__module_2(cell):
+        dummy_module = ModuleType("dummy_module")
+>       assert eval_run_kwargs(cell, module=dummy_module) == {"module": dummy_module}
+E       AssertionError: assert {} == {'module': <m...ummy_module'>}
+E         
+E         Right contains 1 more item:
+E         {'module': <module 'dummy_module'>}
+E         Use -v to get more diff
+
+tests/test_ipytest.py:155: AssertionError
+__________________ test_eval_defopts_auto__true[args0-False] ___________________
+
+args = ['tmp_foo.py'], defopts = False
+
+    @pytest.mark.parametrize(
+        ("args", "defopts"),
+        [
+            pytest.param(["tmp_foo.py"], False),
+            pytest.param(["tmp_foo.py::test1"], False),
+            pytest.param(["-k", "test1"], True),
+            pytest.param(["-ktest1"], True),
+            pytest.param(["./tests"], True),
+        ],
+    )
+    def test_eval_defopts_auto__true(args, defopts):
+>       assert eval_defopts_auto(args, {"MODULE": "tmp_foo.py"}) is defopts
+E       AssertionError: assert True is False
+E        +  where True = eval_defopts_auto(['tmp_foo.py'], {'MODULE': 'tmp_foo.py'})
+
+tests/test_ipytest.py:169: AssertionError
+__________________ test_eval_defopts_auto__true[args1-False] ___________________
+
+args = ['tmp_foo.py::test1'], defopts = False
+
+    @pytest.mark.parametrize(
+        ("args", "defopts"),
+        [
+            pytest.param(["tmp_foo.py"], False),
+            pytest.param(["tmp_foo.py::test1"], False),
+            pytest.param(["-k", "test1"], True),
+            pytest.param(["-ktest1"], True),
+            pytest.param(["./tests"], True),
+        ],
+    )
+    def test_eval_defopts_auto__true(args, defopts):
+>       assert eval_defopts_auto(args, {"MODULE": "tmp_foo.py"}) is defopts
+E       AssertionError: assert True is False
+E        +  where True = eval_defopts_auto(['tmp_foo.py::test1'], {'MODULE': 'tmp_foo.py'})
+
+tests/test_ipytest.py:169: AssertionError
+_____________________ test_arg_mapping[MODULE-tmp_foo.py] ______________________
+
+key = 'MODULE', expected = 'tmp_foo.py'
+
+    @pytest.mark.parametrize(
+        ("key", "expected"),
+        [
+            pytest.param("MODULE", "tmp_foo.py"),
+            pytest.param("test1", "tmp_foo.py::test1"),
+            pytest.param("TEST_CASE", "tmp_foo.py::TEST_CASE"),
+        ],
+    )
+    def test_arg_mapping(key, expected):
+        arg_mapping = ArgMapping(MODULE="tmp_foo.py")
+>       assert arg_mapping[key] == expected
+
+tests/test_ipytest.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = {}, key = 'MODULE'
+
+    def __missing__(self, key: str) -> str:
+        """Handle missing keys."""
+        # If key is all uppercase letters, treat it as a special format key
+        if key.isupper() and len(key) > 1:
+>           raise KeyError(
+                f"Special format key '{key}' not supported. "
+                f"Did you mean to use '{key.lower()}' instead?"
+            )
+E           KeyError: "Special format key 'MODULE' not supported. Did you mean to use 'module' instead?"
+
+ipytest/_impl.py:63: KeyError
+______________ test_arg_mapping[TEST_CASE-tmp_foo.py::TEST_CASE] _______________
+
+key = 'TEST_CASE', expected = 'tmp_foo.py::TEST_CASE'
+
+    @pytest.mark.parametrize(
+        ("key", "expected"),
+        [
+            pytest.param("MODULE", "tmp_foo.py"),
+            pytest.param("test1", "tmp_foo.py::test1"),
+            pytest.param("TEST_CASE", "tmp_foo.py::TEST_CASE"),
+        ],
+    )
+    def test_arg_mapping(key, expected):
+        arg_mapping = ArgMapping(MODULE="tmp_foo.py")
+>       assert arg_mapping[key] == expected
+
+tests/test_ipytest.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = {}, key = 'TEST_CASE'
+
+    def __missing__(self, key: str) -> str:
+        """Handle missing keys."""
+        # If key is all uppercase letters, treat it as a special format key
+        if key.isupper() and len(key) > 1:
+>           raise KeyError(
+                f"Special format key '{key}' not supported. "
+                f"Did you mean to use '{key.lower()}' instead?"
+            )
+E           KeyError: "Special format key 'TEST_CASE' not supported. Did you mean to use 'test_case' instead?"
+
+ipytest/_impl.py:63: KeyError
+_________________ test_find_coverage_configs[files0-expected0] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil0')
+files = {'.coveragerc': ''}, expected = ['.coveragerc']
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7ce4940>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files1-expected1] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil1')
+files = {'setup.cfg': ''}, expected = []
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7da75e0>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files2-expected2] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil2')
+files = {'setup.cfg': '[coverage:'}, expected = ['setup.cfg']
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7df0820>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files3-expected3] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil3')
+files = {'tox.ini': ''}, expected = []
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7ce75b0>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files4-expected4] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil4')
+files = {'tox.ini': '[coverage:'}, expected = ['tox.ini']
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7df2680>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files5-expected5] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil5')
+files = {'pyproject.toml': ''}, expected = []
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7df2f20>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files6-expected6] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil6')
+files = {'pyproject.toml': '[tool.coverage'}, expected = ['pyproject.toml']
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7ce5810>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+_________________ test_find_coverage_configs[files7-expected7] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1/test_find_coverage_configs_fil7')
+files = {'.coveragerc': '', 'pyproject.toml': '[tool.coverage', 'setup.cfg': '[coverage:', 'tox.ini': '[coverage:'}
+expected = ['.coveragerc', 'setup.cfg', 'tox.ini', 'pyproject.toml']
+
+    @pytest.mark.parametrize(
+        "files, expected",
+        [
+            pytest.param({".coveragerc": ""}, [".coveragerc"]),
+            pytest.param({"setup.cfg": ""}, []),
+            pytest.param({"setup.cfg": "[coverage:"}, ["setup.cfg"]),
+            pytest.param({"tox.ini": ""}, []),
+            pytest.param({"tox.ini": "[coverage:"}, ["tox.ini"]),
+            pytest.param({"pyproject.toml": ""}, []),
+            pytest.param({"pyproject.toml": "[tool.coverage"}, ["pyproject.toml"]),
+            pytest.param(
+                {
+                    ".coveragerc": "",
+                    "setup.cfg": "[coverage:",
+                    "pyproject.toml": "[tool.coverage",
+                    "tox.ini": "[coverage:",
+                },
+                [".coveragerc", "setup.cfg", "tox.ini", "pyproject.toml"],
+            ),
+        ],
+    )
+    def test_find_coverage_configs(tmp_path, files, expected):
+        for name, content in files.items():
+            tmp_path.joinpath(name).write_text(content)
+    
+>       assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+
+tests/test_ipytest_cov.py:31: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = <list_iterator object at 0x7fa0a7dc6fb0>
+
+>   assert [p.name for p in find_coverage_configs(tmp_path)] == expected
+E   AttributeError: 'str' object has no attribute 'name'
+
+tests/test_ipytest_cov.py:31: AttributeError
+___________ test_run_defopts__auto_magic__deselect[{MODULE}::test2] ____________
+
+run_cell_magic = <function run_cell_magic.<locals>.run_cell_magic at 0x7fa0a7d7b5b0>
+node_id = '{MODULE}::test2'
+
+    @pytest.mark.parametrize(
+        "node_id",
+        ["{MODULE}::test2", "{test2}"],
+    )
+    def test_run_defopts__auto_magic__deselect(run_cell_magic, node_id):
+        """Test defopts="auto" with --deselect ..."""
+>       exit_code = run_cell_magic(
+            f"--deselect {node_id}",
+            module_source,
+            module=types.ModuleType("dummy_module"),
+        )
+
+tests/test_issue_71.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+line = '--deselect {MODULE}::test2'
+cell = 'def test1():\n    assert True\n\ndef test2():\n    assert False'
+
+    def run_cell_magic(line, cell, *, module=None):
+        mock_ipython.module = module
+    
+        cell = inspect.cleandoc(cell)
+>       ipytest._impl.ipytest_magic(line, cell, module=module)
+E       AttributeError: module 'ipytest._impl' has no attribute 'ipytest_magic'
+
+tests/conftest.py:55: AttributeError
+_______________ test_run_defopts__auto_magic__deselect[{test2}] ________________
+
+run_cell_magic = <function run_cell_magic.<locals>.run_cell_magic at 0x7fa0a7d7b2e0>
+node_id = '{test2}'
+
+    @pytest.mark.parametrize(
+        "node_id",
+        ["{MODULE}::test2", "{test2}"],
+    )
+    def test_run_defopts__auto_magic__deselect(run_cell_magic, node_id):
+        """Test defopts="auto" with --deselect ..."""
+>       exit_code = run_cell_magic(
+            f"--deselect {node_id}",
+            module_source,
+            module=types.ModuleType("dummy_module"),
+        )
+
+tests/test_issue_71.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+line = '--deselect {test2}'
+cell = 'def test1():\n    assert True\n\ndef test2():\n    assert False'
+
+    def run_cell_magic(line, cell, *, module=None):
+        mock_ipython.module = module
+    
+        cell = inspect.cleandoc(cell)
+>       ipytest._impl.ipytest_magic(line, cell, module=module)
+E       AttributeError: module 'ipytest._impl' has no attribute 'ipytest_magic'
+
+tests/conftest.py:55: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_force_reload.py::test_force_reload_example[foo-expected0]
+FAILED tests/test_force_reload.py::test_forc_reload - AssertionError: assert ...
+FAILED tests/test_ipytest.py::test_reprs - AttributeError: module 'ipytest._c...
+FAILED tests/test_ipytest.py::test_fixtures - AttributeError: module 'ipytest...
+FAILED tests/test_ipytest.py::test_parametrize - AttributeError: module 'ipyt...
+FAILED tests/test_ipytest.py::test_program_name - AssertionError: assert '%%i...
+FAILED tests/test_ipytest.py::test_eval_run_kwargs__module[True] - AssertionE...
+FAILED tests/test_ipytest.py::test_eval_run_kwargs__module[False] - Assertion...
+FAILED tests/test_ipytest.py::test_eval_run_kwargs__module_2[] - AssertionErr...
+FAILED tests/test_ipytest.py::test_eval_run_kwargs__module_2[\n] - AssertionE...
+FAILED tests/test_ipytest.py::test_eval_run_kwargs__module_2[\ndef test():\n    assert True]
+FAILED tests/test_ipytest.py::test_eval_defopts_auto__true[args0-False] - Ass...
+FAILED tests/test_ipytest.py::test_eval_defopts_auto__true[args1-False] - Ass...
+FAILED tests/test_ipytest.py::test_arg_mapping[MODULE-tmp_foo.py] - KeyError:...
+FAILED tests/test_ipytest.py::test_arg_mapping[TEST_CASE-tmp_foo.py::TEST_CASE]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files0-expected0]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files1-expected1]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files2-expected2]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files3-expected3]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files4-expected4]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files5-expected5]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files6-expected6]
+FAILED tests/test_ipytest_cov.py::test_find_coverage_configs[files7-expected7]
+FAILED tests/test_issue_71.py::test_run_defopts__auto_magic__deselect[{MODULE}::test2]
+FAILED tests/test_issue_71.py::test_run_defopts__auto_magic__deselect[{test2}]
+ERROR tests/test_config.py::test_autoconfig - AttributeError: module 'ipytest...
+ERROR tests/test_config.py::test_config_rewrite_asserts - AttributeError: mod...
+ERROR tests/test_doctest.py::test_example[func] - AttributeError: module 'ipy...
+ERROR tests/test_doctest.py::test_example[magic] - AttributeError: module 'ip...
+ERROR tests/test_issue_71.py::test_run_defopts[func] - AttributeError: module...
+ERROR tests/test_issue_71.py::test_run_defopts[magic] - AttributeError: modul...
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic[func-{MODULE}::test1]
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic[func-{test1}] - At...
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic[magic-{MODULE}::test1]
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic[magic-{test1}] - A...
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic__filter[func] - At...
+ERROR tests/test_issue_71.py::test_run_defopts__auto_magic__filter[magic] - A...
+ERROR tests/test_raise_on_error.py::test_default_does_not_raise[func] - Attri...
+ERROR tests/test_raise_on_error.py::test_default_does_not_raise[magic] - Attr...
+ERROR tests/test_raise_on_error.py::test_raises_with_args[func] - AttributeEr...
+ERROR tests/test_raise_on_error.py::test_raises_with_args[magic] - AttributeE...
+ERROR tests/test_raise_on_error.py::test_raises_with_config[func] - Attribute...
+ERROR tests/test_raise_on_error.py::test_raises_with_config[magic] - Attribut...
+=================== 25 failed, 36 passed, 18 errors in 0.65s ===================

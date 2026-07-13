@@ -1,0 +1,116 @@
+{
+  "mode": "gold --score-network none (no serving)",
+  "gold_run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/gold_selfcheck_20260713T002821Z",
+  "results": [
+    {
+      "task": "aiofiles",
+      "passed": 210,
+      "total": 211,
+      "success_rate": 0.995261,
+      "cmd_exit": [
+        0,
+        1
+      ]
+    },
+    {
+      "task": "boltons",
+      "passed": 423,
+      "total": 423,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "deepdiff",
+      "passed": 179,
+      "total": 970,
+      "success_rate": 0.184536,
+      "cmd_exit": [
+        0,
+        1
+      ]
+    },
+    {
+      "task": "emoji",
+      "passed": 102,
+      "total": 102,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "funcy",
+      "passed": 203,
+      "total": 203,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        1,
+        0
+      ]
+    },
+    {
+      "task": "humanize",
+      "passed": 591,
+      "total": 607,
+      "success_rate": 0.973641,
+      "cmd_exit": [
+        0,
+        1
+      ]
+    },
+    {
+      "task": "python-slugify",
+      "passed": 82,
+      "total": 82,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "sortedcontainers",
+      "passed": 296,
+      "total": 296,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        1,
+        0
+      ]
+    },
+    {
+      "task": "sqlparse",
+      "passed": 461,
+      "total": 461,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "tinydb",
+      "passed": 204,
+      "total": 204,
+      "success_rate": 1.0,
+      "cmd_exit": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "unidecode",
+      "passed": 64,
+      "total": 65,
+      "success_rate": 0.984615,
+      "cmd_exit": [
+        0,
+        1
+      ]
+    }
+  ]
+}

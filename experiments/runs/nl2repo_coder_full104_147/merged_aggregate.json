@@ -1,0 +1,1660 @@
+{
+  "primary_run": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z",
+  "override_run": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z",
+  "denom": 104,
+  "tasks_scored": 101,
+  "tasks_total": 101,
+  "from_rerun": [
+    "boltons",
+    "boto",
+    "databases",
+    "deepdiff",
+    "deslib",
+    "dictdatabase",
+    "ipytest",
+    "jinja",
+    "mootdx",
+    "pdfplumber-stable",
+    "python-pytest-cases",
+    "rich-click",
+    "sortedcontainers",
+    "stable-baselines3",
+    "structlog",
+    "tqdm",
+    "tsfresh",
+    "wsgidav",
+    "ydata-profiling"
+  ],
+  "macro_mean_success_rate": 0.146219,
+  "micro_pass_rate": 0.07082,
+  "total_passed": 1745,
+  "total_cases": 24640,
+  "fully_solved_sr1": 1,
+  "nonzero_tasks": 61,
+  "rows": [
+    {
+      "task": "aiofiles",
+      "source": "orig",
+      "passed": 5,
+      "total": 211,
+      "success_rate": 0.023697,
+      "assistant_turns": 81,
+      "agent_seconds": 358.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 19,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/aiofiles_agent_20260713T004127Z"
+    },
+    {
+      "task": "arguably",
+      "source": "orig",
+      "passed": 0,
+      "total": 70,
+      "success_rate": 0.0,
+      "assistant_turns": 55,
+      "agent_seconds": 455.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 29,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/arguably_agent_20260713T004127Z"
+    },
+    {
+      "task": "arxiv-mcp-server",
+      "source": "orig",
+      "passed": 11,
+      "total": 23,
+      "success_rate": 0.478261,
+      "assistant_turns": 42,
+      "agent_seconds": 347.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 18,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/arxiv-mcp-server_agent_20260713T004127Z"
+    },
+    {
+      "task": "asteval",
+      "source": "orig",
+      "passed": 42,
+      "total": 227,
+      "success_rate": 0.185022,
+      "assistant_turns": 70,
+      "agent_seconds": 429.3,
+      "command_exit_codes": [
+        0,
+        0,
+        1
+      ],
+      "workspace_files": 23,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/asteval_agent_20260713T004127Z"
+    },
+    {
+      "task": "autojump",
+      "source": "orig",
+      "passed": 1,
+      "total": 23,
+      "success_rate": 0.043478,
+      "assistant_turns": 51,
+      "agent_seconds": 186.1,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 26,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/autojump_agent_20260713T004127Z"
+    },
+    {
+      "task": "autopep8",
+      "source": "orig",
+      "passed": 25,
+      "total": 564,
+      "success_rate": 0.044326,
+      "assistant_turns": 66,
+      "agent_seconds": 301.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 19,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/autopep8_agent_20260713T004127Z"
+    },
+    {
+      "task": "autorccar",
+      "source": "orig",
+      "passed": 6,
+      "total": 13,
+      "success_rate": 0.461538,
+      "assistant_turns": 53,
+      "agent_seconds": 271.0,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 37,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/autorccar_agent_20260713T004127Z"
+    },
+    {
+      "task": "binaryalert",
+      "source": "orig",
+      "passed": 5,
+      "total": 77,
+      "success_rate": 0.064935,
+      "assistant_turns": 58,
+      "agent_seconds": 211.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 49,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/binaryalert_agent_20260713T004127Z"
+    },
+    {
+      "task": "bleach",
+      "source": "orig",
+      "passed": 86,
+      "total": 448,
+      "success_rate": 0.191964,
+      "assistant_turns": 66,
+      "agent_seconds": 139.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 30,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/bleach_agent_20260713T004440Z"
+    },
+    {
+      "task": "boltons",
+      "source": "rerun",
+      "passed": 0,
+      "total": 423,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 941.9,
+      "command_exit_codes": [
+        0,
+        137
+      ],
+      "workspace_files": 42,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/boltons_agent_20260713T023519Z"
+    },
+    {
+      "task": "boto",
+      "source": "rerun",
+      "passed": 0,
+      "total": 1014,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 550.7,
+      "command_exit_codes": [
+        0,
+        1,
+        127
+      ],
+      "workspace_files": 52,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/boto_agent_20260713T023519Z"
+    },
+    {
+      "task": "box",
+      "source": "orig",
+      "passed": 15,
+      "total": 147,
+      "success_rate": 0.102041,
+      "assistant_turns": 77,
+      "agent_seconds": 213.8,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/box_agent_20260713T004533Z"
+    },
+    {
+      "task": "cachier",
+      "source": "orig",
+      "passed": 2,
+      "total": 180,
+      "success_rate": 0.011111,
+      "assistant_turns": 42,
+      "agent_seconds": 212.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 13,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/cachier_agent_20260713T004613Z"
+    },
+    {
+      "task": "cerberus",
+      "source": "orig",
+      "passed": 0,
+      "total": 249,
+      "success_rate": 0.0,
+      "assistant_turns": 65,
+      "agent_seconds": 240.1,
+      "command_exit_codes": [
+        0,
+        4
+      ],
+      "workspace_files": 22,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/cerberus_agent_20260713T004712Z"
+    },
+    {
+      "task": "cherry",
+      "source": "orig",
+      "passed": 5,
+      "total": 34,
+      "success_rate": 0.147059,
+      "assistant_turns": 77,
+      "agent_seconds": 339.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 44,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/cherry_agent_20260713T004716Z"
+    },
+    {
+      "task": "cookiecutter",
+      "source": "orig",
+      "passed": 53,
+      "total": 381,
+      "success_rate": 0.139108,
+      "assistant_turns": 53,
+      "agent_seconds": 377.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 48,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/cookiecutter_agent_20260713T004730Z"
+    },
+    {
+      "task": "coverage_shield",
+      "source": "orig",
+      "passed": 9,
+      "total": 11,
+      "success_rate": 0.818182,
+      "assistant_turns": 58,
+      "agent_seconds": 292.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 29,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/coverage_shield_agent_20260713T004738Z"
+    },
+    {
+      "task": "databases",
+      "source": "rerun",
+      "passed": 4,
+      "total": 154,
+      "success_rate": 0.025974,
+      "assistant_turns": 77,
+      "agent_seconds": 365.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 37,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/databases_agent_20260713T023519Z"
+    },
+    {
+      "task": "decouple",
+      "source": "orig",
+      "passed": 60,
+      "total": 67,
+      "success_rate": 0.895522,
+      "assistant_turns": 47,
+      "agent_seconds": 144.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/decouple_agent_20260713T004924Z"
+    },
+    {
+      "task": "deepdiff",
+      "source": "rerun",
+      "passed": 0,
+      "total": 970,
+      "success_rate": 0.0,
+      "assistant_turns": 78,
+      "agent_seconds": 660.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 30,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/deepdiff_agent_20260713T023519Z"
+    },
+    {
+      "task": "deslib",
+      "source": "rerun",
+      "passed": 37,
+      "total": 532,
+      "success_rate": 0.069549,
+      "assistant_turns": 41,
+      "agent_seconds": 863.6,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 40,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/deslib_agent_20260713T023519Z"
+    },
+    {
+      "task": "dictdatabase",
+      "source": "rerun",
+      "passed": 98,
+      "total": 594,
+      "success_rate": 0.164983,
+      "assistant_turns": 63,
+      "agent_seconds": 383.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/dictdatabase_agent_20260713T024150Z"
+    },
+    {
+      "task": "docopt-ng",
+      "source": "orig",
+      "passed": 11,
+      "total": 614,
+      "success_rate": 0.017915,
+      "assistant_turns": 61,
+      "agent_seconds": 323.9,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/docopt-ng_agent_20260713T005006Z"
+    },
+    {
+      "task": "emoji",
+      "source": "orig",
+      "passed": 0,
+      "total": 102,
+      "success_rate": 0.0,
+      "assistant_turns": 77,
+      "agent_seconds": 636.2,
+      "command_exit_codes": [
+        0,
+        3
+      ],
+      "workspace_files": 43,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/emoji_agent_20260713T005007Z"
+    },
+    {
+      "task": "fastapi-users",
+      "source": "orig",
+      "passed": 0,
+      "total": 556,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 196.7,
+      "command_exit_codes": [
+        1,
+        4
+      ],
+      "workspace_files": 43,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/fastapi-users_agent_20260713T005122Z"
+    },
+    {
+      "task": "flask-restful",
+      "source": "orig",
+      "passed": 2,
+      "total": 362,
+      "success_rate": 0.005525,
+      "assistant_turns": 59,
+      "agent_seconds": 368.5,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 34,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/flask-restful_agent_20260713T005204Z"
+    },
+    {
+      "task": "flasky",
+      "source": "orig",
+      "passed": 0,
+      "total": 34,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 164.0,
+      "command_exit_codes": [
+        1
+      ],
+      "workspace_files": 17,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/flasky_agent_20260713T005241Z"
+    },
+    {
+      "task": "freezegun",
+      "source": "orig",
+      "passed": 2,
+      "total": 133,
+      "success_rate": 0.015038,
+      "assistant_turns": 21,
+      "agent_seconds": 91.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 19,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/freezegun_agent_20260713T005315Z"
+    },
+    {
+      "task": "frontmatter",
+      "source": "orig",
+      "passed": 0,
+      "total": 55,
+      "success_rate": 0.0,
+      "assistant_turns": 49,
+      "agent_seconds": 392.3,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/frontmatter_agent_20260713T005404Z"
+    },
+    {
+      "task": "ftfy",
+      "source": "orig",
+      "passed": 0,
+      "total": 336,
+      "success_rate": 0.0,
+      "assistant_turns": 43,
+      "agent_seconds": 496.9,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 43,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/ftfy_agent_20260713T005447Z"
+    },
+    {
+      "task": "funcy",
+      "source": "orig",
+      "passed": 23,
+      "total": 203,
+      "success_rate": 0.1133,
+      "assistant_turns": 82,
+      "agent_seconds": 682.9,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 44,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/funcy_agent_20260713T005503Z"
+    },
+    {
+      "task": "fuzzywuzzy",
+      "source": "orig",
+      "passed": 39,
+      "total": 71,
+      "success_rate": 0.549296,
+      "assistant_turns": 56,
+      "agent_seconds": 593.9,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 36,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/fuzzywuzzy_agent_20260713T005530Z"
+    },
+    {
+      "task": "gitingest",
+      "source": "orig",
+      "passed": 0,
+      "total": 133,
+      "success_rate": 0.0,
+      "assistant_turns": 44,
+      "agent_seconds": 271.4,
+      "command_exit_codes": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/gitingest_agent_20260713T005553Z"
+    },
+    {
+      "task": "google-images-download",
+      "source": "orig",
+      "passed": 16,
+      "total": 30,
+      "success_rate": 0.533333,
+      "assistant_turns": 54,
+      "agent_seconds": 307.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 40,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/google-images-download_agent_20260713T005820Z"
+    },
+    {
+      "task": "graphneuralnetwork",
+      "source": "orig",
+      "passed": 0,
+      "total": 4,
+      "success_rate": 0.0,
+      "assistant_turns": 51,
+      "agent_seconds": 215.3,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 29,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/graphneuralnetwork_agent_20260713T010045Z"
+    },
+    {
+      "task": "humanize",
+      "source": "orig",
+      "passed": 169,
+      "total": 607,
+      "success_rate": 0.278418,
+      "assistant_turns": 58,
+      "agent_seconds": 666.6,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 23,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/humanize_agent_20260713T010052Z"
+    },
+    {
+      "task": "icecream",
+      "source": "orig",
+      "passed": 3,
+      "total": 40,
+      "success_rate": 0.075,
+      "assistant_turns": 75,
+      "agent_seconds": 313.0,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 22,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/icecream_agent_20260713T010103Z"
+    },
+    {
+      "task": "ipytest",
+      "source": "rerun",
+      "passed": 36,
+      "total": 74,
+      "success_rate": 0.486486,
+      "assistant_turns": 63,
+      "agent_seconds": 317.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 30,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/ipytest_agent_20260713T024444Z"
+    },
+    {
+      "task": "jinja",
+      "source": "rerun",
+      "passed": 0,
+      "total": 911,
+      "success_rate": 0.0,
+      "assistant_turns": 63,
+      "agent_seconds": 582.2,
+      "command_exit_codes": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/jinja_agent_20260713T024639Z"
+    },
+    {
+      "task": "jsonlines",
+      "source": "orig",
+      "passed": 8,
+      "total": 27,
+      "success_rate": 0.296296,
+      "assistant_turns": 55,
+      "agent_seconds": 615.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 29,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/jsonlines_agent_20260713T010347Z"
+    },
+    {
+      "task": "justext",
+      "source": "orig",
+      "passed": 32,
+      "total": 61,
+      "success_rate": 0.52459,
+      "assistant_turns": 58,
+      "agent_seconds": 552.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 36,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/justext_agent_20260713T010449Z"
+    },
+    {
+      "task": "markdownify",
+      "source": "orig",
+      "passed": 0,
+      "total": 83,
+      "success_rate": 0.0,
+      "assistant_turns": 53,
+      "agent_seconds": 675.0,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/markdownify_agent_20260713T010531Z"
+    },
+    {
+      "task": "markupsafe",
+      "source": "orig",
+      "passed": 0,
+      "total": 39,
+      "success_rate": 0.0,
+      "assistant_turns": 72,
+      "agent_seconds": 222.5,
+      "command_exit_codes": [
+        0,
+        4
+      ],
+      "workspace_files": 27,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/markupsafe_agent_20260713T010622Z"
+    },
+    {
+      "task": "math-verify",
+      "source": "orig",
+      "passed": 89,
+      "total": 192,
+      "success_rate": 0.463542,
+      "assistant_turns": 50,
+      "agent_seconds": 604.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 48,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/math-verify_agent_20260713T010642Z"
+    },
+    {
+      "task": "mechanicalsoup",
+      "source": "orig",
+      "passed": 23,
+      "total": 121,
+      "success_rate": 0.190083,
+      "assistant_turns": 77,
+      "agent_seconds": 462.6,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 28,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/mechanicalsoup_agent_20260713T011012Z"
+    },
+    {
+      "task": "mootdx",
+      "source": "rerun",
+      "passed": 0,
+      "total": 92,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 111.2,
+      "command_exit_codes": [
+        0,
+        1,
+        4
+      ],
+      "workspace_files": 53,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/mootdx_agent_20260713T025003Z"
+    },
+    {
+      "task": "paillier",
+      "source": "orig",
+      "passed": 0,
+      "total": 234,
+      "success_rate": 0.0,
+      "assistant_turns": 9,
+      "agent_seconds": 239.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 9,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/paillier_agent_20260713T011234Z"
+    },
+    {
+      "task": "pandarallel",
+      "source": "orig",
+      "passed": 77,
+      "total": 217,
+      "success_rate": 0.354839,
+      "assistant_turns": 70,
+      "agent_seconds": 158.9,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 30,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pandarallel_agent_20260713T011418Z"
+    },
+    {
+      "task": "parse",
+      "source": "orig",
+      "passed": 14,
+      "total": 96,
+      "success_rate": 0.145833,
+      "assistant_turns": 39,
+      "agent_seconds": 335.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 11,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/parse_agent_20260713T011422Z"
+    },
+    {
+      "task": "pathlib2",
+      "source": "orig",
+      "passed": 96,
+      "total": 344,
+      "success_rate": 0.27907,
+      "assistant_turns": 75,
+      "agent_seconds": 201.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 34,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pathlib2_agent_20260713T011642Z"
+    },
+    {
+      "task": "pdfplumber-stable",
+      "source": "rerun",
+      "passed": 0,
+      "total": 171,
+      "success_rate": 0.0,
+      "assistant_turns": 41,
+      "agent_seconds": 273.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 46,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/pdfplumber-stable_agent_20260713T025012Z"
+    },
+    {
+      "task": "plac",
+      "source": "orig",
+      "passed": 1,
+      "total": 28,
+      "success_rate": 0.035714,
+      "assistant_turns": 79,
+      "agent_seconds": 275.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 20,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/plac_agent_20260713T011706Z"
+    },
+    {
+      "task": "pss",
+      "source": "orig",
+      "passed": 0,
+      "total": 46,
+      "success_rate": 0.0,
+      "assistant_turns": 56,
+      "agent_seconds": 168.3,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 37,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pss_agent_20260713T011710Z"
+    },
+    {
+      "task": "pyautogui",
+      "source": "orig",
+      "passed": 0,
+      "total": 28,
+      "success_rate": 0.0,
+      "assistant_turns": 50,
+      "agent_seconds": 443.6,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pyautogui_agent_20260713T011724Z"
+    },
+    {
+      "task": "pyjwt",
+      "source": "orig",
+      "passed": 71,
+      "total": 299,
+      "success_rate": 0.237458,
+      "assistant_turns": 61,
+      "agent_seconds": 254.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pyjwt_agent_20260713T011812Z"
+    },
+    {
+      "task": "pylama",
+      "source": "orig",
+      "passed": 3,
+      "total": 34,
+      "success_rate": 0.088235,
+      "assistant_turns": 49,
+      "agent_seconds": 245.3,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 44,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pylama_agent_20260713T012005Z"
+    },
+    {
+      "task": "pyperclip",
+      "source": "orig",
+      "passed": 0,
+      "total": 2,
+      "success_rate": 0.0,
+      "assistant_turns": 79,
+      "agent_seconds": 280.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 38,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pyperclip_agent_20260713T012005Z"
+    },
+    {
+      "task": "pypinyin",
+      "source": "orig",
+      "passed": 6,
+      "total": 966,
+      "success_rate": 0.006211,
+      "assistant_turns": 44,
+      "agent_seconds": 192.2,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 42,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pypinyin_agent_20260713T012012Z"
+    },
+    {
+      "task": "pyquery",
+      "source": "orig",
+      "passed": 15,
+      "total": 74,
+      "success_rate": 0.202703,
+      "assistant_turns": 78,
+      "agent_seconds": 339.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 24,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pyquery_agent_20260713T012149Z"
+    },
+    {
+      "task": "pysondb-v2",
+      "source": "orig",
+      "passed": 1,
+      "total": 96,
+      "success_rate": 0.010417,
+      "assistant_turns": 61,
+      "agent_seconds": 627.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pysondb-v2_agent_20260713T012156Z"
+    },
+    {
+      "task": "pytest-cov",
+      "source": "orig",
+      "passed": 0,
+      "total": 184,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 463.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 45,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pytest-cov_agent_20260713T012241Z"
+    },
+    {
+      "task": "pytestify",
+      "source": "orig",
+      "passed": 52,
+      "total": 122,
+      "success_rate": 0.42623,
+      "assistant_turns": 72,
+      "agent_seconds": 286.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 29,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pytestify_agent_20260713T012335Z"
+    },
+    {
+      "task": "python-dotenv",
+      "source": "orig",
+      "passed": 24,
+      "total": 209,
+      "success_rate": 0.114833,
+      "assistant_turns": 77,
+      "agent_seconds": 265.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 34,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-dotenv_agent_20260713T012426Z"
+    },
+    {
+      "task": "python-fsutil",
+      "source": "orig",
+      "passed": 45,
+      "total": 153,
+      "success_rate": 0.294118,
+      "assistant_turns": 56,
+      "agent_seconds": 415.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 26,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-fsutil_agent_20260713T012452Z"
+    },
+    {
+      "task": "python-jose",
+      "source": "orig",
+      "passed": 36,
+      "total": 458,
+      "success_rate": 0.078603,
+      "assistant_turns": 62,
+      "agent_seconds": 202.3,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-jose_agent_20260713T012457Z"
+    },
+    {
+      "task": "python-pathspec",
+      "source": "orig",
+      "passed": 0,
+      "total": 119,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 142.6,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 20,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-pathspec_agent_20260713T012739Z"
+    },
+    {
+      "task": "python-patterns",
+      "source": "orig",
+      "passed": 3,
+      "total": 68,
+      "success_rate": 0.044118,
+      "assistant_turns": 52,
+      "agent_seconds": 115.8,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 46,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-patterns_agent_20260713T012830Z"
+    },
+    {
+      "task": "python-pytest-cases",
+      "source": "rerun",
+      "passed": 21,
+      "total": 1372,
+      "success_rate": 0.015306,
+      "assistant_turns": 47,
+      "agent_seconds": 631.2,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 28,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/python-pytest-cases_agent_20260713T025208Z"
+    },
+    {
+      "task": "python-slugify",
+      "source": "orig",
+      "passed": 0,
+      "total": 82,
+      "success_rate": 0.0,
+      "assistant_turns": 60,
+      "agent_seconds": 335.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 22,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/python-slugify_agent_20260713T012847Z"
+    },
+    {
+      "task": "pythonprojecttemplate",
+      "source": "orig",
+      "passed": 36,
+      "total": 36,
+      "success_rate": 1.0,
+      "assistant_turns": 58,
+      "agent_seconds": 260.4,
+      "command_exit_codes": [
+        0,
+        0
+      ],
+      "workspace_files": 25,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pythonprojecttemplate_agent_20260713T012904Z"
+    },
+    {
+      "task": "pytz",
+      "source": "orig",
+      "passed": 16,
+      "total": 235,
+      "success_rate": 0.068085,
+      "assistant_turns": 46,
+      "agent_seconds": 85.6,
+      "command_exit_codes": [
+        1
+      ],
+      "workspace_files": 24,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/pytz_agent_20260713T013010Z"
+    },
+    {
+      "task": "records",
+      "source": "orig",
+      "passed": 4,
+      "total": 31,
+      "success_rate": 0.129032,
+      "assistant_turns": 77,
+      "agent_seconds": 181.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 25,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/records_agent_20260713T013034Z"
+    },
+    {
+      "task": "requests-html",
+      "source": "orig",
+      "passed": 0,
+      "total": 41,
+      "success_rate": 0.0,
+      "assistant_turns": 59,
+      "agent_seconds": 75.8,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 25,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/requests-html_agent_20260713T013035Z"
+    },
+    {
+      "task": "retrying",
+      "source": "orig",
+      "passed": 17,
+      "total": 23,
+      "success_rate": 0.73913,
+      "assistant_turns": 78,
+      "agent_seconds": 439.9,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/retrying_agent_20260713T013142Z"
+    },
+    {
+      "task": "rich-click",
+      "source": "rerun",
+      "passed": 0,
+      "total": 145,
+      "success_rate": 0.0,
+      "assistant_turns": 52,
+      "agent_seconds": 438.2,
+      "command_exit_codes": [
+        0,
+        0,
+        0,
+        4
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/rich-click_agent_20260713T025502Z"
+    },
+    {
+      "task": "schedule-master",
+      "source": "orig",
+      "passed": 9,
+      "total": 81,
+      "success_rate": 0.111111,
+      "assistant_turns": 55,
+      "agent_seconds": 289.4,
+      "command_exit_codes": [
+        1
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/schedule-master_agent_20260713T013205Z"
+    },
+    {
+      "task": "schema",
+      "source": "orig",
+      "passed": 0,
+      "total": 118,
+      "success_rate": 0.0,
+      "assistant_turns": 70,
+      "agent_seconds": 316.3,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 19,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/schema_agent_20260713T013218Z"
+    },
+    {
+      "task": "six",
+      "source": "orig",
+      "passed": 0,
+      "total": 200,
+      "success_rate": 0.0,
+      "assistant_turns": 75,
+      "agent_seconds": 233.3,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 23,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/six_agent_20260713T013231Z"
+    },
+    {
+      "task": "sklearn",
+      "source": "orig",
+      "passed": 37,
+      "total": 70,
+      "success_rate": 0.528571,
+      "assistant_turns": 75,
+      "agent_seconds": 306.8,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/sklearn_agent_20260713T013341Z"
+    },
+    {
+      "task": "sortedcontainers",
+      "source": "rerun",
+      "passed": 104,
+      "total": 296,
+      "success_rate": 0.351351,
+      "assistant_turns": 80,
+      "agent_seconds": 806.8,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 21,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/sortedcontainers_agent_20260713T025628Z"
+    },
+    {
+      "task": "sqlparse",
+      "source": "orig",
+      "passed": 0,
+      "total": 461,
+      "success_rate": 0.0,
+      "assistant_turns": 44,
+      "agent_seconds": 231.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 50,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/sqlparse_agent_20260713T013355Z"
+    },
+    {
+      "task": "stable-baselines3",
+      "source": "rerun",
+      "passed": 0,
+      "total": 798,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 674.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/stable-baselines3_agent_20260713T025634Z"
+    },
+    {
+      "task": "stamina",
+      "source": "orig",
+      "passed": 0,
+      "total": 129,
+      "success_rate": 0.0,
+      "assistant_turns": 64,
+      "agent_seconds": 242.5,
+      "command_exit_codes": [
+        0,
+        4
+      ],
+      "workspace_files": 19,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/stamina_agent_20260713T013456Z"
+    },
+    {
+      "task": "structlog",
+      "source": "rerun",
+      "passed": 0,
+      "total": 828,
+      "success_rate": 0.0,
+      "assistant_turns": 80,
+      "agent_seconds": 447.5,
+      "command_exit_codes": [
+        0,
+        1,
+        4
+      ],
+      "workspace_files": 27,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/structlog_agent_20260713T030241Z"
+    },
+    {
+      "task": "synthetic",
+      "source": "orig",
+      "passed": 0,
+      "total": 93,
+      "success_rate": 0.0,
+      "assistant_turns": 75,
+      "agent_seconds": 311.8,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 40,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/synthetic_agent_20260713T013642Z"
+    },
+    {
+      "task": "tablib",
+      "source": "orig",
+      "passed": 0,
+      "total": 172,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 281.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 22,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/tablib_agent_20260713T013708Z"
+    },
+    {
+      "task": "tenacity",
+      "source": "orig",
+      "passed": 0,
+      "total": 124,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 205.1,
+      "command_exit_codes": [
+        1,
+        1
+      ],
+      "workspace_files": 48,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/tenacity_agent_20260713T013743Z"
+    },
+    {
+      "task": "tinydb",
+      "source": "orig",
+      "passed": 21,
+      "total": 204,
+      "success_rate": 0.102941,
+      "assistant_turns": 67,
+      "agent_seconds": 254.7,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 36,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/tinydb_agent_20260713T013755Z"
+    },
+    {
+      "task": "tqdm",
+      "source": "rerun",
+      "passed": 6,
+      "total": 139,
+      "success_rate": 0.043165,
+      "assistant_turns": 70,
+      "agent_seconds": 345.8,
+      "command_exit_codes": [
+        0,
+        0,
+        1
+      ],
+      "workspace_files": 45,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/tqdm_agent_20260713T030252Z"
+    },
+    {
+      "task": "trimming",
+      "source": "orig",
+      "passed": 3,
+      "total": 10,
+      "success_rate": 0.3,
+      "assistant_turns": 41,
+      "agent_seconds": 225.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 23,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/trimming_agent_20260713T013909Z"
+    },
+    {
+      "task": "tsfresh",
+      "source": "rerun",
+      "passed": 27,
+      "total": 317,
+      "success_rate": 0.085174,
+      "assistant_turns": 46,
+      "agent_seconds": 396.1,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 48,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/tsfresh_agent_20260713T030329Z"
+    },
+    {
+      "task": "typing_extensions",
+      "source": "orig",
+      "passed": 0,
+      "total": 535,
+      "success_rate": 0.0,
+      "assistant_turns": 62,
+      "agent_seconds": 187.3,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 31,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/typing_extensions_agent_20260713T013936Z"
+    },
+    {
+      "task": "uiautomator",
+      "source": "orig",
+      "passed": 22,
+      "total": 101,
+      "success_rate": 0.217822,
+      "assistant_turns": 75,
+      "agent_seconds": 233.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 45,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/uiautomator_agent_20260713T013954Z"
+    },
+    {
+      "task": "unidecode",
+      "source": "orig",
+      "passed": 20,
+      "total": 65,
+      "success_rate": 0.307692,
+      "assistant_turns": 55,
+      "agent_seconds": 373.8,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 43,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/unidecode_agent_20260713T014117Z"
+    },
+    {
+      "task": "unittest-parametrize",
+      "source": "orig",
+      "passed": 17,
+      "total": 26,
+      "success_rate": 0.653846,
+      "assistant_turns": 57,
+      "agent_seconds": 439.4,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 32,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/unittest-parametrize_agent_20260713T014205Z"
+    },
+    {
+      "task": "verifiers",
+      "source": "orig",
+      "passed": 0,
+      "total": 171,
+      "success_rate": 0.0,
+      "assistant_turns": 44,
+      "agent_seconds": 150.5,
+      "command_exit_codes": [
+        0,
+        4
+      ],
+      "workspace_files": 39,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/verifiers_agent_20260713T014209Z"
+    },
+    {
+      "task": "voluptuous",
+      "source": "orig",
+      "passed": 0,
+      "total": 152,
+      "success_rate": 0.0,
+      "assistant_turns": 81,
+      "agent_seconds": 521.6,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 26,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/voluptuous_agent_20260713T014219Z"
+    },
+    {
+      "task": "wifiphisher",
+      "source": "orig",
+      "passed": 0,
+      "total": 43,
+      "success_rate": 0.0,
+      "assistant_turns": 77,
+      "agent_seconds": 176.0,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 46,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/wifiphisher_agent_20260713T014252Z"
+    },
+    {
+      "task": "wsgidav",
+      "source": "rerun",
+      "passed": 6,
+      "total": 36,
+      "success_rate": 0.166667,
+      "assistant_turns": 73,
+      "agent_seconds": 443.2,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 59,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/wsgidav_agent_20260713T030824Z"
+    },
+    {
+      "task": "xlrd",
+      "source": "orig",
+      "passed": 18,
+      "total": 84,
+      "success_rate": 0.214286,
+      "assistant_turns": 76,
+      "agent_seconds": 185.5,
+      "command_exit_codes": [
+        0,
+        1
+      ],
+      "workspace_files": 35,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/xlrd_agent_20260713T014327Z"
+    },
+    {
+      "task": "ydata-profiling",
+      "source": "rerun",
+      "passed": 0,
+      "total": 2182,
+      "success_rate": 0.0,
+      "assistant_turns": 42,
+      "agent_seconds": 194.0,
+      "command_exit_codes": [
+        1,
+        4
+      ],
+      "workspace_files": 16,
+      "timed_out": false,
+      "summary_dir": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/rerun_fixed_20260713T023519Z/ydata-profiling_agent_20260713T030855Z"
+    }
+  ]
+}

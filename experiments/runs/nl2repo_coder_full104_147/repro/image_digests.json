@@ -1,0 +1,734 @@
+{
+  "n": 104,
+  "note": "NL2RepoBench base images; harbor_digest is the sha256 repro anchor; tar_sha256 = offline transport tar",
+  "images": [
+    {
+      "task": "aiofiles",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/aiofiles:1.0",
+      "harbor_digest": "sha256:c2c5990b82801b434d40d0be1fb21ae8b914a2336ff2486ebc7ea622924e4e7a",
+      "tar_sha256": "2a6c657650406c8602b2251178767f5d21e3e556767bd65d7eec308dc8310594",
+      "tar_bytes": 278672896
+    },
+    {
+      "task": "arguably",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/arguably:1.0",
+      "harbor_digest": "sha256:93563ba710a490978afdb11275583ac8357492bd41821a28d8b5fb9eccb84751",
+      "tar_sha256": "af7764753f7259e565b8b50a5a8cc60106beae3e59dd337f22b301ee92500579",
+      "tar_bytes": 985368064
+    },
+    {
+      "task": "arxiv-mcp-server",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/arxiv-mcp-server:1.0",
+      "harbor_digest": "sha256:1e8074506767811ba7445749212b1f4eece516b003766112ce76b07c4fc2f3c8",
+      "tar_sha256": "f89b565dfd0bda346add45bf9ce542dff0936f66f53197a96effaa6beafd1a80",
+      "tar_bytes": 1263928832
+    },
+    {
+      "task": "asteval",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/asteval:1.0",
+      "harbor_digest": "sha256:7c9fd70a06c18ab0d5d3f806bbef2edd8484e7f6c01375033caecdb03d29468d",
+      "tar_sha256": "e709e590f78efd8e6ac8ebd499abe71edc788d14f20aab87317f5bf19b1f0c85",
+      "tar_bytes": 1164261888
+    },
+    {
+      "task": "autojump",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/autojump:1.0",
+      "harbor_digest": "sha256:85f4553300641c5771c1853dcf827857a7cde366f391383ba682d809f826a4e5",
+      "tar_sha256": "9cdad96c29d58883997ccfb40e5c2e71a887742716485628c0ff810a0c77ef23",
+      "tar_bytes": 169768448
+    },
+    {
+      "task": "autopep8",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/autopep8:1.0",
+      "harbor_digest": "sha256:dbecf8fbccb83e9071ba33e16d127c2b0797c6f31372b9cbf40104b8ac9a66fe",
+      "tar_sha256": "76b877d75a595f329996a988edfd817fb3e09dcd31de0a0094a5bf961f96460e",
+      "tar_bytes": 961547264
+    },
+    {
+      "task": "autorccar",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/autorccar:1.0",
+      "harbor_digest": "sha256:fe7beae3a27817f6140f0129202cbb127cf687a1dd288a72318647edec12a72e",
+      "tar_sha256": "8d93b062164e2d9a1fa9060a75716896171b52f78a2758bb479c37585c11311a",
+      "tar_bytes": 1381296128
+    },
+    {
+      "task": "binaryalert",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/binaryalert:1.0",
+      "harbor_digest": "sha256:63d558916bbd258b98507ad99bcab5022dfc38f92e1b39eb66e3cb265f4dd392",
+      "tar_sha256": "e4117d251b91687dbe04c2eac6e8fdfb9b5d2e4c87cbbbdc79aab07e8e5f9baa",
+      "tar_bytes": 1161976320
+    },
+    {
+      "task": "bleach",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/bleach:1.0",
+      "harbor_digest": "sha256:87cabcf36717c72b75f2b2bedef2fee3f70db75864e09bb6c3a950a4fcc34941",
+      "tar_sha256": "a94e844ed9858b900f841f742127c9acc920161a51af0399b26e6b4717bba222",
+      "tar_bytes": 1173783552
+    },
+    {
+      "task": "boltons",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/boltons:1.0",
+      "harbor_digest": "sha256:770deb94e716b3a1592900ab389ac628f7b2a41d360e55bdb633bbff4c948e52",
+      "tar_sha256": "0c0c80a377a6d3a6546b867b7152ce7ac255f564c75f28c4ea0c95b2416b8cda",
+      "tar_bytes": 1088869888
+    },
+    {
+      "task": "boto",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/boto:1.0",
+      "harbor_digest": "sha256:6a70abf3ae8807746d708ce0ab1de72e46f7b14e3f91d68c542a112523468c24",
+      "tar_sha256": "52183d08563fd01231386b1e3d2b591165d5e5916f659095b688073b8b3fc4a4",
+      "tar_bytes": 1032008192
+    },
+    {
+      "task": "box",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/box:1.0",
+      "harbor_digest": "sha256:216814b130e1822af7721203bc14c3aa0bcc100a643659db6d29ec07f9b3bd3f",
+      "tar_sha256": "64c8b69aa6b7ff1152bf63f072e36c1743b0bf830525429fab075182eed3015a",
+      "tar_bytes": 1215818240
+    },
+    {
+      "task": "cachier",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cachier:1.0",
+      "harbor_digest": "sha256:310c22efd29951e65bc94945448158fc8c79db716ae8954cbf0e5f1c3359d9cd",
+      "tar_sha256": "9d158915109a33babda7ebcee480357fbe632458f5f3d96f8f5d8aecec048f2b",
+      "tar_bytes": 1910702080
+    },
+    {
+      "task": "cerberus",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cerberus:1.0",
+      "harbor_digest": "sha256:b097a72dfc814cc9cd26a418a4a413e2ea6bafafbef6e567413976ed70fba946",
+      "tar_sha256": "36fb01ba383b6cac25ba01960f2f46fee933b8ebcb0aa8cd1d835e7fc3b5bb4c",
+      "tar_bytes": 1209336832
+    },
+    {
+      "task": "cherry",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cherry:1.0",
+      "harbor_digest": "sha256:a99b8029e934fc887491ef41cbdc950e8aa08ea182fa3f4ed4fa2a344421421d",
+      "tar_sha256": "3e350d8a379d81a11f5c11579e359a8624cf9007b7e2f815f991acdd57ae8a9c",
+      "tar_bytes": 1667535872
+    },
+    {
+      "task": "cookiecutter",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cookiecutter:1.0",
+      "harbor_digest": "sha256:fb42f82d4a45d9ac9856dfd81b61daaa620ed081508968ad75315b7f29060cb8",
+      "tar_sha256": "d5aea1cf730820c86f19ba3cd9f234071c977c83a19f70c511743467b1784418",
+      "tar_bytes": 409961472
+    },
+    {
+      "task": "coverage_shield",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/coverage_shield:1.0",
+      "harbor_digest": "sha256:78b52f4c9cbf18b368a958cb3b933727c0a30b064b1fa33492e887129565f4c9",
+      "tar_sha256": "394230c3423563bdd143a62de37d30e6468b4c4d1e22995e6c3761cfd70d541c",
+      "tar_bytes": 1394598400
+    },
+    {
+      "task": "databases",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/databases:1.0",
+      "harbor_digest": "sha256:dd74f0c7837985a4d6a122a9ddc7101f58cfdbc0114dd626a8a38ca841a12891",
+      "tar_sha256": "42c31e86ca1481fcb34d52e246cf7d63d3a7e89b08b9fe71b8a36cd01ee98e71",
+      "tar_bytes": 1322079232
+    },
+    {
+      "task": "dbutils",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/dbutils:1.0",
+      "harbor_digest": "sha256:8794762c4581cb6862818baacd9f684a687ad275822b99d0257657b3b199e5f9",
+      "tar_sha256": "b94718d63b3810c10b749e049d477bb510636454bc5b4fd3151af10272abd1ba",
+      "tar_bytes": 1135048704
+    },
+    {
+      "task": "decouple",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/decouple:1.0",
+      "harbor_digest": "sha256:cb97d0b98c23641262708449c4de30d6294c90b139f7b01379c7e5b38ee553a6",
+      "tar_sha256": "ae660852363360a72862e92706239ef09e9ab307bc54921df4264981a0d745ef",
+      "tar_bytes": 1198213120
+    },
+    {
+      "task": "deepdiff",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/deepdiff:1.0",
+      "harbor_digest": "sha256:e643e3d13892f4bd3494eec93faa93799b259e38bdae44f4d3f39794d3c65173",
+      "tar_sha256": "8dac4c98aae0ea58f92cba77f8c70a7f61a9d0531171d6685fe8ee698b0d5e2a",
+      "tar_bytes": 1337107456
+    },
+    {
+      "task": "deslib",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/deslib:1.0",
+      "harbor_digest": "sha256:a770394bb31e568ee05a607a6daf8b5d0b96d89e5ab45eac9fb4f6d48c0716f8",
+      "tar_sha256": "41f23efc043dc5d06c40f8eed164093dd84b901c25df8c35650cc99b645aef06",
+      "tar_bytes": 1641165312
+    },
+    {
+      "task": "dictdatabase",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/dictdatabase:1.0",
+      "harbor_digest": "sha256:823bcedc503f2cef1b47abe39c3a582d977376bd4b0343f011637de40dd80c7e",
+      "tar_sha256": "b2dca2edc296ef8e5a1c52c8e3a15f9772f33c13096eea5eb746a6ab423f96b8",
+      "tar_bytes": 1136610304
+    },
+    {
+      "task": "docopt-ng",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/docopt-ng:1.0",
+      "harbor_digest": "sha256:d759e56c0c96c73e975f92d24a6464c3a99eb0832f94e4e5a4d092af37671c49",
+      "tar_sha256": "bc6663ff602ece8919775e68b895bd0d88bdb8a8a6bda1832c5fb3f7bc110102",
+      "tar_bytes": 1073684480
+    },
+    {
+      "task": "emoji",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/emoji:1.0",
+      "harbor_digest": "sha256:4b7b1ef33001317d8ebc54a7467e2ad1688d7a6d3ac0672911de770098037d0b",
+      "tar_sha256": "ddf08d67033c3f14ae0ca574eb9ec0e2c6c4dca1abdee0bc813b39647a03e7d9",
+      "tar_bytes": 2133287424
+    },
+    {
+      "task": "fastapi-users",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/fastapi-users:1.0",
+      "harbor_digest": "sha256:7d138cafb8b38642b53ab505c86e143ea257d808474314b41d7725bb9d259420",
+      "tar_sha256": "cb334cc5b5d5b7495e0660bc172cf6457e3dafd9abf7a8c94282e248eba7401b",
+      "tar_bytes": 1133716480
+    },
+    {
+      "task": "flask-restful",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/flask-restful:1.0",
+      "harbor_digest": "sha256:79d845aef38ea77517f3d4e6f7b38440d06c717d1cce2c1869bedaabe3856237",
+      "tar_sha256": "6ac05914d0d541e140fdf15e6c23368ac83afc34edc88af283c786862e53c78f",
+      "tar_bytes": 934712320
+    },
+    {
+      "task": "flasky",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/flasky:1.0",
+      "harbor_digest": "sha256:dd7c1ab35038eb22f5637d7fb8d210d2a6bf080d65ca72c89b4ac31af3e0c342",
+      "tar_sha256": "3d0d5c37ed1c171cdeced2770167003c1b0b1d9cfd16afa83aef3dcffc7c57a9",
+      "tar_bytes": 181919232
+    },
+    {
+      "task": "freezegun",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/freezegun:1.0",
+      "harbor_digest": "sha256:c3525ea5c356aea4bd8e2ebef5f44db9fe9e1fbe40173ae270057d8c7641e3d5",
+      "tar_sha256": "32981c5ead0c2aba44dd1aece9e128b7b3a2d5002d4c721b1bcfde68f420c4e1",
+      "tar_bytes": 1062266880
+    },
+    {
+      "task": "frontmatter",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/frontmatter:1.0",
+      "harbor_digest": "sha256:5e9697f2e453edaf6ba058444547515d11c17e2d7079e4e1d9c42851b8fed0b5",
+      "tar_sha256": "a73a43b31a0765eb59557ce8581d3dd1eafc822d119f8de89948774550e7f947",
+      "tar_bytes": 1182905856
+    },
+    {
+      "task": "ftfy",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/ftfy:1.0",
+      "harbor_digest": "sha256:7b81cb54efc741a160aac403bdb672d6a724f0726cd9376d321d26efd4367afb",
+      "tar_sha256": "60b23f2cd24c932d78c3c593d43a94f395bed16cd305bd290c0e65b1bb43fd23",
+      "tar_bytes": 207604224
+    },
+    {
+      "task": "funcy",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/funcy:1.0",
+      "harbor_digest": "sha256:76ebd62df511fa695050585d0d4a8222d742ba1a451349e683857815d0aa5189",
+      "tar_sha256": "091aa7e98e88ef697f7fbb48b17cd2a20463143600aa5ec786b4912fd20b0ed9",
+      "tar_bytes": 1056060928
+    },
+    {
+      "task": "fuzzywuzzy",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/fuzzywuzzy:1.0",
+      "harbor_digest": "sha256:108be49ca52d07b24d49566a517556f906c6de4e3674f30fb992452efdd7c563",
+      "tar_sha256": "7c5a60694fc4ab6f700f4db3669dd4739a183663a19a92a70d706b94afd80905",
+      "tar_bytes": 987028992
+    },
+    {
+      "task": "gitingest",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/gitingest:1.0",
+      "harbor_digest": "sha256:bbd145dbf70464c96b4f085af13911b53e599ab79ca46e5c9c9a25a159a093a2",
+      "tar_sha256": "78774839670833f94eaef8f2b8649775f0bcdf31683e5f0464ace3d1bbbeac35",
+      "tar_bytes": 1282531840
+    },
+    {
+      "task": "google-images-download",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/google-images-download:1.0",
+      "harbor_digest": "sha256:c09075194b5c1d42d719f5f25f00543507c96d6be1a5711314d0db77659d052c",
+      "tar_sha256": "1c4c659b8ecbc171a0fc8de60f5e86f0ed1f5d39d295836220d79b769b37690d",
+      "tar_bytes": 1346491904
+    },
+    {
+      "task": "graphneuralnetwork",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/graphneuralnetwork:1.0",
+      "harbor_digest": "sha256:6388582535fd9c56af5a69eef057a136c3ec4ae54ae26156b6db843286d62152",
+      "tar_sha256": "5263cf1483dd1b5631669feea54a1ad7987154fc6ca93ab69a0bd6b15e7aa059",
+      "tar_bytes": 4171623424
+    },
+    {
+      "task": "humanize",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/humanize:1.0",
+      "harbor_digest": "sha256:18407d80e95c1a277a5e6fb66c1174b7f2b3699ec10125adc7d6e180f2f6a626",
+      "tar_sha256": "25ccd155280e9a36733febc890faebab57dda0c79220f044cd007e84854c4f4c",
+      "tar_bytes": 1198730240
+    },
+    {
+      "task": "icecream",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/icecream:1.0",
+      "harbor_digest": "sha256:dde2856313cf8fb3bf009ae690aa06d23fd25a14fd52e12c7f5f801903942243",
+      "tar_sha256": "389fedf164aa903e7469ecc352d05bbcc426f729534feccdc8a2f049e5c6a22e",
+      "tar_bytes": 157856256
+    },
+    {
+      "task": "ipytest",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/ipytest:1.0",
+      "harbor_digest": "sha256:2cf01b4aff01af5c56515be0a24d3abfe07e4d1cbfebef19b8d7b18e0d3acd09",
+      "tar_sha256": "bbb3c94f3c4bbe283b749a25f31a6a36931dab5a353b09f0c00d05a894641e9b",
+      "tar_bytes": 1097571840
+    },
+    {
+      "task": "jinja",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/jinja:1.0",
+      "harbor_digest": "sha256:4143726f46dd7cd8a24f9894d665b4f4fbc7233787713fb5696810a60a8efe8c",
+      "tar_sha256": "17317742ee162e45506c3b60bd0cc640deed52b905859eef70b7fd2de132d5b5",
+      "tar_bytes": 552194560
+    },
+    {
+      "task": "jsonlines",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/jsonlines:1.0",
+      "harbor_digest": "sha256:53d4f953222214651e979d00d81b8b10af86adec9a24982be0ce95e5ece2c246",
+      "tar_sha256": "d96e80fd7fd1f8cab2d65a08f97ccda56397b8c8a69bad42f8205d1306156de0",
+      "tar_bytes": 1300202496
+    },
+    {
+      "task": "justext",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/justext:1.0",
+      "harbor_digest": "sha256:8f5f01415624b39a05c64ea288f714f8be74ea4d58c2e0149dc02b148da67082",
+      "tar_sha256": "db129cb5866fd42805c7fb542745935398912c8881be565c8336c9014890ca06",
+      "tar_bytes": 2196844032
+    },
+    {
+      "task": "markdownify",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/markdownify:1.0",
+      "harbor_digest": "sha256:65c016ba9b1503f1c33cb01a732dc877fb43ed1a65e700f5cbab721bb06c499b",
+      "tar_sha256": "c9bf72825b3f2886abb5574d7dade1a6fb385edbdbf5d1e9cd2e55b664df7c06",
+      "tar_bytes": 154321920
+    },
+    {
+      "task": "markupsafe",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/markupsafe:1.0",
+      "harbor_digest": "sha256:9a385b240fa9430e853999c19e0bfe3a648287dd19f5c41e3d16ff18d3407d76",
+      "tar_sha256": "97d74d1a0d1f646daa9fdb270bed8b52df3e42ce19f891fdbd646e2cf511a276",
+      "tar_bytes": 957429248
+    },
+    {
+      "task": "math-verify",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/math-verify:1.0",
+      "harbor_digest": "sha256:09eeca141f24aa13c6b33dae1c255f086b4916f41cbd8cb99ca0541d7c63ce02",
+      "tar_sha256": "1dc54ffe48a953d4ac7a2cc62db458926f65bb119d6b3d3ac21e028eced30b62",
+      "tar_bytes": 1377231872
+    },
+    {
+      "task": "mechanicalsoup",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/mechanicalsoup:1.0",
+      "harbor_digest": "sha256:54a9ee32015e3b67b09459f08ae752b7bd9f7920a78a2ffc5b2ba772ca8d60d6",
+      "tar_sha256": "eb7c3cde5da729528670ea1e4000d0c9a372bdfbf9905941a537c49a3f8a2e68",
+      "tar_bytes": 1140217344
+    },
+    {
+      "task": "mootdx",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/mootdx:1.0",
+      "harbor_digest": "sha256:3250e7d6ef515f288f6307957d93b05a4d66889dbb2b3de3844f612f9457ddaf",
+      "tar_sha256": "8a33537e038d0a25f741dad40718a0faa9ed7026e9e52e26e5037e4bb9cb3fe6",
+      "tar_bytes": 1096456704
+    },
+    {
+      "task": "more-Itertools",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/more-Itertools:1.0",
+      "harbor_digest": null,
+      "tar_sha256": null,
+      "tar_bytes": null
+    },
+    {
+      "task": "paillier",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/paillier:1.0",
+      "harbor_digest": "sha256:914780b2b3429aa9bb1c441d3c223c380e389c529bcca436121674e37e0beb7a",
+      "tar_sha256": "53add091e96e279b5796dd57ceef010ef2ceae7343deb32675802c928bed54a3",
+      "tar_bytes": 614232576
+    },
+    {
+      "task": "pandarallel",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pandarallel:1.0",
+      "harbor_digest": "sha256:f25336a4bdcab50fb33ef2cb008c10634915e98e7dcbe167750a5190fc46ed38",
+      "tar_sha256": "855b96fb0a9c71e958d6d6152595b6cfc5f55150441bd647a437dd8d5d0fd3ed",
+      "tar_bytes": 1500854272
+    },
+    {
+      "task": "parse",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/parse:1.0",
+      "harbor_digest": "sha256:b62739aff75c836823bf0140ae6db4d329beb74cf79cdb170ed5adb85966ee18",
+      "tar_sha256": "c5cbe0548c00781c0100b22995121e11d71a72807119273274da576b40746d4c",
+      "tar_bytes": 152383488
+    },
+    {
+      "task": "pathlib2",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pathlib2:1.0",
+      "harbor_digest": "sha256:82a6649dd844244a64005c198148649222cac6f8792358a506c1f86f7a0948ba",
+      "tar_sha256": "6f2fe6c512531956e02442d9d18af7c71d0915f320d23da24f140b971b226b28",
+      "tar_bytes": 1161105920
+    },
+    {
+      "task": "pdfplumber-stable",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pdfplumber-stable:1.0",
+      "harbor_digest": "sha256:5f1afa11a502918e9624cdc26b849d7c9351ec5ec0cd171c6118a8465e382f30",
+      "tar_sha256": "4cf55077b1073776fcb5d2482ce763bfd3c4d646a2aa1b949fdc6c9d439330cc",
+      "tar_bytes": 1801569792
+    },
+    {
+      "task": "plac",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/plac:1.0",
+      "harbor_digest": "sha256:300c6477c35e43d05021f07652dbad70adc3641472eafd02434df1e5df0449e1",
+      "tar_sha256": "46949838a9dc1b6cf81fee9875e8d57b9f415e6c978eb525328170e9f9fe72e6",
+      "tar_bytes": 960470528
+    },
+    {
+      "task": "pss",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pss:1.0",
+      "harbor_digest": "sha256:38e0fcf6fb1a74781d6d57c524c750be9e56f0173193733c4a23cf6e8c8d1459",
+      "tar_sha256": "5b725fd2c5a934d486df91d5c9f7b6165f4fc80d1f61ae2beb498ef92cdf2bc3",
+      "tar_bytes": 958675968
+    },
+    {
+      "task": "pyautogui",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pyautogui:1.0",
+      "harbor_digest": "sha256:806aaeb2ed7a61abbdff6d1a9b6ba2dedd146bb6b345842b8c8d61ae75732259",
+      "tar_sha256": "17075f91193276f1cf7fc08b5b6f9b5c530a4ab9597ab997f5bf8a171eab2533",
+      "tar_bytes": 1443055616
+    },
+    {
+      "task": "pyjwt",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pyjwt:1.0",
+      "harbor_digest": "sha256:b9a14097413982736072aef5831c10df3370b0127477bc13d4f55a46161760de",
+      "tar_sha256": "ce6ae4cc9bc51023d13c89757b71928b2097bb6394206b462ca906664e0efb27",
+      "tar_bytes": 1223954944
+    },
+    {
+      "task": "pylama",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pylama:1.0",
+      "harbor_digest": "sha256:e7929131b1d143025731ebdbc1d413317a69cd43773d58e2abe2ce0df8510e77",
+      "tar_sha256": "690984e504855c4d5ee7b1a0380c31899b3da3cd6f51cd2edee1d9f284d8bc24",
+      "tar_bytes": 1270774784
+    },
+    {
+      "task": "pyperclip",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pyperclip:1.0",
+      "harbor_digest": "sha256:a3cac678d154fc68b673495484f834c92daa4aa3db42e0008264a49c3f7d2769",
+      "tar_sha256": "9f68bc648ac827eb61313b29b540099599cd7cff3d58e2bde4ff9df2501431f6",
+      "tar_bytes": 1022700544
+    },
+    {
+      "task": "pypinyin",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pypinyin:1.0",
+      "harbor_digest": "sha256:e6d86e2b150ea5ebe79ed78dff2a13f60f1a73cfe99e827ba100ce4da37d8f3e",
+      "tar_sha256": "8aa454e4a6a60ca4b16e4c39eaebbc5d5bdd4d455b1e4829608f9653689dc576",
+      "tar_bytes": 1244029440
+    },
+    {
+      "task": "pyquery",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pyquery:1.0",
+      "harbor_digest": "sha256:55b0be41dfafa65c0251ebbb524f2ed6ec2064524113c41e83037782b0705343",
+      "tar_sha256": "4eb3bea1e53791f55247ff1d94336d30cf8df0298c22b91a090b6f4a8b0f4a6d",
+      "tar_bytes": 205557248
+    },
+    {
+      "task": "pysondb-v2",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pysondb-v2:1.0",
+      "harbor_digest": "sha256:d54c22d710aaf1dbb3aee8894536e2fc3ca26b685c10a427f9b175b4d81e3c96",
+      "tar_sha256": "50e10648603ed6a69cccd4c32895aa5d54d03e524688e64ed65bd249eb4ab784",
+      "tar_bytes": 1046159872
+    },
+    {
+      "task": "pytest-cov",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pytest-cov:1.0",
+      "harbor_digest": "sha256:23e86c9c10233b812adfd98ec44c5847499c5e12e04e38f50dc90a3115513c18",
+      "tar_sha256": "4019f4bfc3e94521ce62e6b96af21b79732a91525d36c6d429244bfeb5188f17",
+      "tar_bytes": 1114699776
+    },
+    {
+      "task": "pytestify",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pytestify:1.0",
+      "harbor_digest": "sha256:2eba74e9ae27fa58dddeec96e287ec5405151e926379683fdee73272ce51423b",
+      "tar_sha256": "9a4c409c065aed7cddbe5830457cedd012b412157aa9f5ed4dfbd4803b285a94",
+      "tar_bytes": 1044722176
+    },
+    {
+      "task": "python-dotenv",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-dotenv:1.0",
+      "harbor_digest": "sha256:f604ad8f1f95679d3d78463ca6c23be1a4ca92f6a55769c2f5d60f4031dae0a0",
+      "tar_sha256": "9eb44b99730d3f7365b91df110a618ad8d41b5cbfb25101cbcab238a571ea236",
+      "tar_bytes": 1287700480
+    },
+    {
+      "task": "python-fsutil",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-fsutil:1.0",
+      "harbor_digest": "sha256:3094bacae5c910e6bdc2d72d76346bbef8d5fbbbc3e1b45594a0a708227e85b6",
+      "tar_sha256": "241612745a812b52a2ef330106453fc1dfdd04ac589827938213f1d32d1c5361",
+      "tar_bytes": 1163650048
+    },
+    {
+      "task": "python-jose",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-jose:1.0",
+      "harbor_digest": "sha256:f058417e9d37765bee5686e548fe6fb39aa486374fcaf79f8df88f71c168a776",
+      "tar_sha256": "b67d76e0e5968ae8a05b3b2bdca69fa06725ad6f38f75f22f379cf70fa5ed0cb",
+      "tar_bytes": 1001703936
+    },
+    {
+      "task": "python-pathspec",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-pathspec:1.0",
+      "harbor_digest": "sha256:8e05b4044ed04d3c6a39dd4a468be773baaed5fb06ce8fe6dd861d30198dcb43",
+      "tar_sha256": "a4ad6428ea97ac99c759c998d385e4865ec13c68bf51bf5b194cd7c8c0663fea",
+      "tar_bytes": 1032266752
+    },
+    {
+      "task": "python-patterns",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-patterns:1.0",
+      "harbor_digest": "sha256:edff5bb715056497181080dab11470d077748e40667093dfb432471df180e9ad",
+      "tar_sha256": "6c092de08f40ba28ca24aca29fbc9a74660bda3aa314c4cd132ec608d2d7107a",
+      "tar_bytes": 1061486592
+    },
+    {
+      "task": "python-pytest-cases",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-pytest-cases:1.0",
+      "harbor_digest": "sha256:327e70a15c0c033f5186e9b3e8575ddd16c7ae999e6d3b692d29e7384d90b68b",
+      "tar_sha256": "98a08363f6b07806c2e5533c54c76bd4432e74502a0b86d2302f99fd9185ec8f",
+      "tar_bytes": 1213167104
+    },
+    {
+      "task": "python-slugify",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-slugify:1.0",
+      "harbor_digest": "sha256:a5124fec018d540e2201a687ee16d5748be5ac9c38981cb7a9e746b0dc76a83c",
+      "tar_sha256": "5948e780d1c34a043852f10ea546f7e3acfeddcfb0136c47539b9782aa53ffdb",
+      "tar_bytes": 999801856
+    },
+    {
+      "task": "pythonprojecttemplate",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pythonprojecttemplate:1.0",
+      "harbor_digest": "sha256:a5623b41263e82ee18f602b1cb5b2d511720dfcfd8c8db26d07ebbef97eb8f71",
+      "tar_sha256": "52a60950f288b9a6d113bc45bb1d8f10ce2610762c29cb5a546d573bcf675bf8",
+      "tar_bytes": 1227797504
+    },
+    {
+      "task": "pytorch-grad-cam",
+      "ghcr": null,
+      "harbor_digest": null,
+      "tar_sha256": null,
+      "tar_bytes": null
+    },
+    {
+      "task": "pytz",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pytz:1.0",
+      "harbor_digest": "sha256:c331cc311b7112b55f66e0eaa505f6a6e63fc97a40e963c5a4b21900341477fc",
+      "tar_sha256": "1865caf4bab9c26121cdaea4c313fd82d2bc516b33667e372822550e5eae5f1f",
+      "tar_bytes": 1178570752
+    },
+    {
+      "task": "records",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/records:1.0",
+      "harbor_digest": "sha256:03378b1619c4ddcfebb0f3941e8fd448fe2754cf9489f13594cb0b40551f5a2d",
+      "tar_sha256": "ad5b93ca7e975d2ec66644cca9300f9138fd971ed62ac65072e9895022fab395",
+      "tar_bytes": 1120414720
+    },
+    {
+      "task": "requests-html",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/requests-html:1.0",
+      "harbor_digest": "sha256:1bf7a654410b6ca33899bf2a37fabed66113f97d5f36c8e4d3374dd3cb09b45d",
+      "tar_sha256": "654f35bf0de3b819d1ccb5a62c8fa273fbf2f1b52e903285e473ed16816fa9ff",
+      "tar_bytes": 1895795200
+    },
+    {
+      "task": "retrying",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/retrying:1.0",
+      "harbor_digest": "sha256:1302235420db9d34955c42273ebaf23df8bbee31ceeaf3c336347f54b64146fe",
+      "tar_sha256": "e8ccb96314a7fee102f66674bcc0127341b94357086412f702925372ec1bc3b5",
+      "tar_bytes": 957527040
+    },
+    {
+      "task": "rich-click",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/rich-click:1.0",
+      "harbor_digest": "sha256:8f091fb134fce469a442c928a3a8494510e3ff68c7e88b2c1378aff8c813d241",
+      "tar_sha256": "24e7c7bc5665203e51036b4955308da4f721643b3b3df345d487a701ef828ec0",
+      "tar_bytes": 1277030400
+    },
+    {
+      "task": "schedule-master",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/schedule-master:1.0",
+      "harbor_digest": "sha256:903e864b08437cacb1dbf4305f6ecc1443d09c6af7a714e2d81c4c5fee2d6677",
+      "tar_sha256": "6bd710b28aa4ed411374669942daf381897aa074ad342461481f2b46992986bc",
+      "tar_bytes": 689699328
+    },
+    {
+      "task": "schema",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/schema:1.0",
+      "harbor_digest": "sha256:39cc925630f3643f539c608e89942a01a8d9c208f2d358fa9d36aee9b49017a3",
+      "tar_sha256": "b3b8aebe81295a7b5639b72e657289d1381f8ffe3930fac2f3062a6da3a5ca45",
+      "tar_bytes": 1034498048
+    },
+    {
+      "task": "six",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/six:1.0",
+      "harbor_digest": "sha256:403962b64fa09689196c6d29a82bf7a9525a95dbb4459f12cca4a920a056dc91",
+      "tar_sha256": "25e0699d4765aa35b1d76695e02b6987bc557f83fe230eabc8385150859e4e1b",
+      "tar_bytes": 1258800640
+    },
+    {
+      "task": "sklearn",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/sklearn:1.0",
+      "harbor_digest": "sha256:9fd839ad0484eec3b795f10acc725c22d8da85b4827c3aa436b23dfd52c7662a",
+      "tar_sha256": "cb583a26ebeaf4e25f2d37a83c086978de9427b11bc069b1d27d6b01a3ef21af",
+      "tar_bytes": 595423744
+    },
+    {
+      "task": "sortedcontainers",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/sortedcontainers:1.0",
+      "harbor_digest": "sha256:6958cd0d6a2c6cf84e84f3638633a3fc70c9f9392fddfa9f6385a6d6de91517a",
+      "tar_sha256": "dfece3a3718ba811253af1fb629cb41bf596c82a3f135a0fc7d3bba4930e21a4",
+      "tar_bytes": 1635385344
+    },
+    {
+      "task": "sqlparse",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/sqlparse:1.0",
+      "harbor_digest": "sha256:fdc248879569aa72db0c14a15cafb5a57436879a530726d313de83b3c6061138",
+      "tar_sha256": "bf9dd5034ded9410747b2cf377cf09766f36bb0186581bf4db5f4ad9608505ae",
+      "tar_bytes": 962418688
+    },
+    {
+      "task": "stable-baselines3",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/stable-baselines3:1.0",
+      "harbor_digest": "sha256:f099a531a115b93c5207db35ab49ff792f1c4e4d222a0991a41e19d0dc6b3295",
+      "tar_sha256": "22608e3c6b5c2c4e123cde4543db36d2df3b2de0f764e960553d9de7dfab7496",
+      "tar_bytes": 3250541568
+    },
+    {
+      "task": "stamina",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/stamina:1.0",
+      "harbor_digest": "sha256:21cbd1883da2af9c19dbf9ba0d4fe2a3780cc64279fa4e9bc8ae67d19e4122bf",
+      "tar_sha256": "4fb3e576df9caae14f3f798e082d8dcf149c4a4ec1762998695aa8eb5a88a402",
+      "tar_bytes": 1063866880
+    },
+    {
+      "task": "structlog",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/structlog:1.0",
+      "harbor_digest": "sha256:ad5c6ff2b6ddd2a7f463b9e31dcd8c201e6f17092eb9c28cd77a4c62421d9d1b",
+      "tar_sha256": "275a96726599212a0607345ff9717f5ceaeb6bbd648467d81e7d45c047063d05",
+      "tar_bytes": 156246528
+    },
+    {
+      "task": "synthetic",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/synthetic:1.0",
+      "harbor_digest": "sha256:14e77546f0cfa817f1a01914bc4027ad6c82d7f09e45542a93b014012e1bdaaf",
+      "tar_sha256": "02f1ed0e097749b3ecdc339dcb6bbc07fc513ef7b94315c14a806b0631031852",
+      "tar_bytes": 778226176
+    },
+    {
+      "task": "tablib",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/tablib:1.0",
+      "harbor_digest": "sha256:03b7d18dbf1c726305b417964ad657cfd6d6a0817593cb0cb98c968f66e89f48",
+      "tar_sha256": "22afa5b36c697ffb429db09f5f313b3d6a877c2c8ecc7d0da63ed38a323809af",
+      "tar_bytes": 1083216896
+    },
+    {
+      "task": "tenacity",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/tenacity:1.0",
+      "harbor_digest": "sha256:d8de6dbe1756b785974c57baf2a033767a6fd0324ff2fd70c861940e6372cd2e",
+      "tar_sha256": "ee6624cce5f4dbf0210bf7713abd9b6e8ecbc980e110774bf26e4df6bf0c8c2e",
+      "tar_bytes": 968270336
+    },
+    {
+      "task": "tinydb",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/tinydb:1.0",
+      "harbor_digest": "sha256:3db19fe6b19b93ed836def4c78e351fc95454018a3978057ffdf99e3bb2ff1cc",
+      "tar_sha256": "587991922ad72c07971ffaf861a2764215d6716fceda8d00d4646e13db74fb0d",
+      "tar_bytes": 239897600
+    },
+    {
+      "task": "tqdm",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/tqdm:1.0",
+      "harbor_digest": "sha256:75c3dba71f588b7022445fcefc59ba03163a8161ca5e4ba9dcc556a8f5403fa9",
+      "tar_sha256": "3f5d1c5fafa276db0d9d561e569bc3ebb1df8429141ba47bf26b75d65c92aa38",
+      "tar_bytes": 2465373184
+    },
+    {
+      "task": "trimming",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/trimming:1.0",
+      "harbor_digest": "sha256:c92870271733eac4093fba9d6738056dc458ee443f073127234e09e69f053db4",
+      "tar_sha256": "9dbb6f9a07c0413e9675565f0c3643718ef9c52e756d3b2a3b7db30287955f45",
+      "tar_bytes": 1567550464
+    },
+    {
+      "task": "tsfresh",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/tsfresh:1.0",
+      "harbor_digest": "sha256:8f94130037f814033e7632fc4e3271b171e3c69b1d7fd795e7b3010ec477b950",
+      "tar_sha256": "beb73dbc6c3d637b0b7347639524dc4f5ad4c50c6987dcfa7e1f9b89629a4f7f",
+      "tar_bytes": 2093383680
+    },
+    {
+      "task": "typing_extensions",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/typing_extensions:1.0",
+      "harbor_digest": "sha256:43d768b2998bf39f873319f2ac1ba13f42490e3c16013f497175fea5a736814c",
+      "tar_sha256": "3bf7465b1dbc89fb7b933654ddc34759640b41805ff531dade08cf5ba7bde150",
+      "tar_bytes": 1212235264
+    },
+    {
+      "task": "uiautomator",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/uiautomator:1.0",
+      "harbor_digest": "sha256:ba270145e580c003d5a32c0c8c9db9e5a9285f8359ce1c5cc46dea908420c9fb",
+      "tar_sha256": "39c7e2fb4286a4b2914d9e52adc677e4dc78d4ceaa3f3518789f1c442f44d4f3",
+      "tar_bytes": 1104206336
+    },
+    {
+      "task": "unidecode",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/unidecode:1.0",
+      "harbor_digest": "sha256:941e1824c14fd13d4d67c457badbd2eaf2ed39459ee75582e9f9bf31f340a795",
+      "tar_sha256": "febf547f5d62aa2b1413ab6d94663c7856b894c5e2ace0883091e42b86eeb7af",
+      "tar_bytes": 1062217216
+    },
+    {
+      "task": "unittest-parametrize",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/unittest-parametrize:1.0",
+      "harbor_digest": "sha256:fcc862e8f8ae0e6c279dc8075d4136f3713bdc72e5686626e284024e5259dacb",
+      "tar_sha256": "6d5ecec55324d81fa65b64d8911219e60e11ece2d39555f0bd84b20beedbedce",
+      "tar_bytes": 147110912
+    },
+    {
+      "task": "verifiers",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/verifiers:1.0",
+      "harbor_digest": "sha256:5ddcda0b6a45293828ebb24688a848d90abbb1f54e76b40fd3c1f53065f00e17",
+      "tar_sha256": "1c374699457124b2429d404480e274ec3bd660cff593483fd561fe606f889feb",
+      "tar_bytes": 1679233536
+    },
+    {
+      "task": "voluptuous",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/voluptuous:1.0",
+      "harbor_digest": "sha256:9d1deaa58ac3e73dc8de4b8d3fdc5c574830637753d71e93ce5b5cdbad0c05fd",
+      "tar_sha256": "9102b1cd51d2f097788e0cfa7428cc09dea6024a70b10324fedd74b779cbdc75",
+      "tar_bytes": 1036738048
+    },
+    {
+      "task": "wifiphisher",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/wifiphisher:1.0",
+      "harbor_digest": "sha256:d71879503213ed94bf6fed3c001dc5e9d75668a5cdc9853816195fa44fbab613",
+      "tar_sha256": "328a1162b691e0fe2f175258762e11b005e424bf5ef4f7f89c4c607fda8e18bf",
+      "tar_bytes": 1248655872
+    },
+    {
+      "task": "wsgidav",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/wsgidav:1.0",
+      "harbor_digest": "sha256:3ef3a0a7dcd179b1d500493b560e9dfb98f4b3fad4c1f37c889f51160496cf29",
+      "tar_sha256": "4908bd9872e1c692710037b3b2b87b0d302de39f623112a8a7c387a606d971e5",
+      "tar_bytes": 1091481088
+    },
+    {
+      "task": "xlrd",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/xlrd:1.0",
+      "harbor_digest": "sha256:caa59581e78ccd3f66d20d1edd160ccd6b41e60f85647c112e912fb49cda5b41",
+      "tar_sha256": "37594df5122d2bc41bcf36ee38aae0dd7c2c4f176aaed7ec765d6a5a454a744b",
+      "tar_bytes": 913808896
+    },
+    {
+      "task": "ydata-profiling",
+      "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/ydata-profiling:1.0",
+      "harbor_digest": "sha256:baa1353a886ceaea1c411d3b88abe66adcd1407619922c874498260a7a708c15",
+      "tar_sha256": "e0ed133e86540811dea3e582d39c1264e989a2e508e83c4c6694652deb0f5792",
+      "tar_bytes": 1593394688
+    }
+  ]
+}

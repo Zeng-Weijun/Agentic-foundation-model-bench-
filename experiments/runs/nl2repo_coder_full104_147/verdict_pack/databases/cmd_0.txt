@@ -1,0 +1,20 @@
+$ pip install -e .
+[rc=0]
+Looking in links: /wheelhouse
+Obtaining file:///workspace
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: sqlalchemy>=2.0.7 in /usr/local/lib/python3.11/site-packages (from databases==0.0.1) (2.0.43)
+Requirement already satisfied: greenlet>=1 in /usr/local/lib/python3.11/site-packages (from sqlalchemy>=2.0.7->databases==0.0.1) (3.2.4)
+Requirement already satisfied: typing-extensions>=4.6.0 in /usr/local/lib/python3.11/site-packages (from sqlalchemy>=2.0.7->databases==0.0.1) (4.14.1)
+Installing collected packages: databases
+  Attempting uninstall: databases
+    Found existing installation: databases 0.9.0
+    Uninstalling databases-0.9.0:
+      Successfully uninstalled databases-0.9.0
+  Running setup.py develop for databases
+Successfully installed databases
+
+[stderr]
+  DEPRECATION: Legacy editable install of databases==0.0.1 from file:///workspace (setup.py develop) is deprecated. pip 25.3 will enforce this behaviour change. A possible replacement is to add a pyproject.toml or enable --use-pep517, and use setuptools >= 64. If the resulting installation is not behaving as expected, try using --config-settings editable_mode=compat. Please consult the setuptools documentation for more information. Discussion can be found at https://github.com/pypa/pip/issues/11457
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.

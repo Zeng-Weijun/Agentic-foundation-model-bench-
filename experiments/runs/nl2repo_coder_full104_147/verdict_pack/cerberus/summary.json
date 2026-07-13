@@ -1,0 +1,78 @@
+{
+  "task": "cerberus",
+  "mode": "agent",
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cerberus:1.0",
+  "base_url": "http://100.100.104.147:30001/v1",
+  "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+  "test_case_count": 249,
+  "test_shell": [
+    "pip install -e .",
+    "pytest --continue-on-collection-errors cerberus/tests cerberus/benchmarks/test_overall_performance_1.py cerberus/benchmarks/test_overall_performance_2.py"
+  ],
+  "py_test_file_list": [
+    "cerberus/tests",
+    "cerberus/benchmarks/test_overall_performance_1.py",
+    "cerberus/benchmarks/test_overall_performance_2.py"
+  ],
+  "start_md_bytes": 70710,
+  "score_network": "none",
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_20260713T004127Z/cerberus_agent_20260713T004712Z",
+  "ts": "20260713T004712Z",
+  "image": {
+    "target_ref": "ghcr.io/multimodal-art-projection/nl2repobench/cerberus:1.0",
+    "recomputed_sha256": "36fb01ba383b6cac25ba01960f2f46fee933b8ebcb0aa8cd1d835e7fc3b5bb4c",
+    "sha256_seconds": 0.9,
+    "sha256_verified": true,
+    "load_stdout": "Loaded image: ghcr.io/multimodal-art-projection/nl2repobench/cerberus:1.0",
+    "status": "loaded"
+  },
+  "agent": {
+    "agent_rc": 53,
+    "agent_seconds": 240.1,
+    "timed_out": false,
+    "workspace_files": 22,
+    "stream": {
+      "json_events": 106,
+      "assistant_turns": 65,
+      "tool_calls": 0,
+      "tool_results": 0,
+      "error_events": 0,
+      "first_event_types": [
+        "system",
+        "assistant",
+        "assistant",
+        "user",
+        "assistant",
+        "assistant"
+      ],
+      "has_real_interaction": true
+    },
+    "removed_package_files": [
+      "pyproject.toml"
+    ],
+    "removed_test_files": [],
+    "removed_metadata_dirs": [],
+    "network": "none",
+    "test_shell": [
+      "pip install -e .",
+      "pytest --continue-on-collection-errors cerberus/tests cerberus/benchmarks/test_overall_performance_1.py cerberus/benchmarks/test_overall_performance_2.py"
+    ],
+    "command_exit_codes": [
+      0,
+      4
+    ],
+    "command_seconds": [
+      2.7,
+      0.6
+    ],
+    "pytest_results": {
+      "passed": 0,
+      "failed": 0,
+      "errors": 0,
+      "total": 249,
+      "success_rate": 0.0
+    },
+    "score": 0,
+    "success_rate": 0.0
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "denom": 104,
+  "nonzero": 61,
+  "model_true_0": 34,
+  "install_infra_fake0": [
+    "boto",
+    "fastapi-users",
+    "markdownify",
+    "pyautogui",
+    "synthetic",
+    "ydata-profiling"
+  ],
+  "isolated_infra_judging": [
+    "dbutils",
+    "more-Itertools",
+    "pytorch-grad-cam"
+  ],
+  "macro_all104_iso0": 0.142001,
+  "macro_101_valid": 0.146219,
+  "macro_95_modelvalid": 0.155454,
+  "micro_101_valid": 0.07082,
+  "micro_95_modelvalid": 0.084365,
+  "n_valid": 101,
+  "n_model_valid": 95
+}

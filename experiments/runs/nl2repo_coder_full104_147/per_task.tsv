@@ -1,0 +1,102 @@
+task	source	passed	total	success_rate	turns	agent_seconds	cmd_exit	timed_out
+pythonprojecttemplate	orig	36	36	1.0	58	260.4	[0, 0]	False
+decouple	orig	60	67	0.895522	47	144.1	[0, 1]	False
+coverage_shield	orig	9	11	0.818182	58	292.4	[0, 1]	False
+retrying	orig	17	23	0.73913	78	439.9	[0, 1]	False
+unittest-parametrize	orig	17	26	0.653846	57	439.4	[0, 1]	False
+fuzzywuzzy	orig	39	71	0.549296	56	593.9	[0, 1]	False
+google-images-download	orig	16	30	0.533333	54	307.5	[0, 1]	False
+sklearn	orig	37	70	0.528571	75	306.8	[0, 1]	False
+justext	orig	32	61	0.52459	58	552.2	[0, 1]	False
+ipytest	rerun	36	74	0.486486	63	317.1	[0, 1]	False
+arxiv-mcp-server	orig	11	23	0.478261	42	347.1	[0, 1]	False
+math-verify	orig	89	192	0.463542	50	604.7	[0, 1]	False
+autorccar	orig	6	13	0.461538	53	271.0	[1, 1]	False
+pytestify	orig	52	122	0.42623	72	286.2	[0, 1]	False
+pandarallel	orig	77	217	0.354839	70	158.9	[0, 1]	False
+sortedcontainers	rerun	104	296	0.351351	80	806.8	[0, 1]	False
+unidecode	orig	20	65	0.307692	55	373.8	[0, 1]	False
+trimming	orig	3	10	0.3	41	225.5	[0, 1]	False
+jsonlines	orig	8	27	0.296296	55	615.2	[0, 1]	False
+python-fsutil	orig	45	153	0.294118	56	415.1	[0, 1]	False
+pathlib2	orig	96	344	0.27907	75	201.0	[0, 1]	False
+humanize	orig	169	607	0.278418	58	666.6	[0, 1]	False
+pyjwt	orig	71	299	0.237458	61	254.5	[0, 1]	False
+uiautomator	orig	22	101	0.217822	75	233.5	[0, 1]	False
+xlrd	orig	18	84	0.214286	76	185.5	[0, 1]	False
+pyquery	orig	15	74	0.202703	78	339.1	[0, 1]	False
+bleach	orig	86	448	0.191964	66	139.7	[0, 1]	False
+mechanicalsoup	orig	23	121	0.190083	77	462.6	[1, 1]	False
+asteval	orig	42	227	0.185022	70	429.3	[0, 0, 1]	False
+wsgidav	rerun	6	36	0.166667	73	443.2	[0, 1]	False
+dictdatabase	rerun	98	594	0.164983	63	383.7	[0, 1]	False
+cherry	orig	5	34	0.147059	77	339.0	[0, 1]	False
+parse	orig	14	96	0.145833	39	335.4	[0, 1]	False
+cookiecutter	orig	53	381	0.139108	53	377.1	[0, 1]	False
+records	orig	4	31	0.129032	77	181.5	[0, 1]	False
+python-dotenv	orig	24	209	0.114833	77	265.5	[0, 1]	False
+funcy	orig	23	203	0.1133	82	682.9	[0, 1]	False
+schedule-master	orig	9	81	0.111111	55	289.4	[1]	False
+tinydb	orig	21	204	0.102941	67	254.7	[0, 1]	False
+box	orig	15	147	0.102041	77	213.8	[1, 1]	False
+pylama	orig	3	34	0.088235	49	245.3	[1, 1]	False
+tsfresh	rerun	27	317	0.085174	46	396.1	[0, 1]	False
+python-jose	orig	36	458	0.078603	62	202.3	[0, 1]	False
+icecream	orig	3	40	0.075	75	313.0	[1, 1]	False
+deslib	rerun	37	532	0.069549	41	863.6	[0, 1]	False
+pytz	orig	16	235	0.068085	46	85.6	[1]	False
+binaryalert	orig	5	77	0.064935	58	211.0	[0, 1]	False
+autopep8	orig	25	564	0.044326	66	301.2	[0, 1]	False
+python-patterns	orig	3	68	0.044118	52	115.8	[0, 1]	False
+autojump	orig	1	23	0.043478	51	186.1	[1, 1]	False
+tqdm	rerun	6	139	0.043165	70	345.8	[0, 0, 1]	False
+plac	orig	1	28	0.035714	79	275.4	[0, 1]	False
+databases	rerun	4	154	0.025974	77	365.5	[0, 1]	False
+aiofiles	orig	5	211	0.023697	81	358.7	[0, 1]	False
+docopt-ng	orig	11	614	0.017915	61	323.9	[0, 1]	False
+python-pytest-cases	rerun	21	1372	0.015306	47	631.2	[1, 1]	False
+freezegun	orig	2	133	0.015038	21	91.0	[0, 1]	False
+cachier	orig	2	180	0.011111	42	212.7	[0, 1]	False
+pysondb-v2	orig	1	96	0.010417	61	627.4	[0, 1]	False
+pypinyin	orig	6	966	0.006211	44	192.2	[1, 1]	False
+flask-restful	orig	2	362	0.005525	59	368.5	[1, 1]	False
+arguably	orig	0	70	0.0	55	455.7	[0, 1]	False
+boltons	rerun	0	423	0.0	80	941.9	[0, 137]	False
+boto	rerun	0	1014	0.0	80	550.7	[0, 1, 127]	False
+cerberus	orig	0	249	0.0	65	240.1	[0, 4]	False
+deepdiff	rerun	0	970	0.0	78	660.1	[0, 1]	False
+emoji	orig	0	102	0.0	77	636.2	[0, 3]	False
+fastapi-users	orig	0	556	0.0	80	196.7	[1, 4]	False
+flasky	orig	0	34	0.0	80	164.0	[1]	False
+frontmatter	orig	0	55	0.0	49	392.3	[0, 1]	False
+ftfy	orig	0	336	0.0	43	496.9	[1, 1]	False
+gitingest	orig	0	133	0.0	44	271.4	[0, 0, 0, 4]	False
+graphneuralnetwork	orig	0	4	0.0	51	215.3	[0, 1]	False
+jinja	rerun	0	911	0.0	63	582.2	[0, 0, 0, 4]	False
+markdownify	orig	0	83	0.0	53	675.0	[1, 1]	False
+markupsafe	orig	0	39	0.0	72	222.5	[0, 4]	False
+mootdx	rerun	0	92	0.0	42	111.2	[0, 1, 4]	False
+paillier	orig	0	234	0.0	9	239.2	[0, 1]	False
+pdfplumber-stable	rerun	0	171	0.0	41	273.5	[0, 1]	False
+pss	orig	0	46	0.0	56	168.3	[1, 1]	False
+pyautogui	orig	0	28	0.0	50	443.6	[1, 1]	False
+pyperclip	orig	0	2	0.0	79	280.7	[0, 1]	False
+pytest-cov	orig	0	184	0.0	42	463.2	[0, 1]	False
+python-pathspec	orig	0	119	0.0	80	142.6	[0, 1]	False
+python-slugify	orig	0	82	0.0	60	335.0	[0, 1]	False
+requests-html	orig	0	41	0.0	59	75.8	[0, 1]	False
+rich-click	rerun	0	145	0.0	52	438.2	[0, 0, 0, 4]	False
+schema	orig	0	118	0.0	70	316.3	[0, 1]	False
+six	orig	0	200	0.0	75	233.3	[1, 1]	False
+sqlparse	orig	0	461	0.0	44	231.5	[0, 1]	False
+stable-baselines3	rerun	0	798	0.0	42	674.4	[0, 1]	False
+stamina	orig	0	129	0.0	64	242.5	[0, 4]	False
+structlog	rerun	0	828	0.0	80	447.5	[0, 1, 4]	False
+synthetic	orig	0	93	0.0	75	311.8	[1, 1]	False
+tablib	orig	0	172	0.0	42	281.7	[0, 1]	False
+tenacity	orig	0	124	0.0	42	205.1	[1, 1]	False
+typing_extensions	orig	0	535	0.0	62	187.3	[0, 1]	False
+verifiers	orig	0	171	0.0	44	150.5	[0, 4]	False
+voluptuous	orig	0	152	0.0	81	521.6	[0, 1]	False
+wifiphisher	orig	0	43	0.0	77	176.0	[0, 1]	False
+ydata-profiling	rerun	0	2182	0.0	42	194.0	[1, 4]	False

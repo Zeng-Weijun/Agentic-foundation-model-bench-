@@ -1,0 +1,8 @@
+$ pytest --continue-on-collection-errors cerberus/tests cerberus/benchmarks/test_overall_performance_1.py cerberus/benchmarks/test_overall_performance_2.py
+[rc=4]
+
+[stderr]
+ImportError while loading conftest '/workspace/cerberus/tests/conftest.py'.
+cerberus/__init__.py:1: in <module>
+    from .validator import (
+E   ImportError: cannot import name 'schema_registry' from 'cerberus.validator' (/workspace/cerberus/validator.py)

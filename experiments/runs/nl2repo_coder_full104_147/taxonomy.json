@@ -1,0 +1,1086 @@
+{
+  "rows": [
+    {
+      "task": "aiofiles",
+      "sr": 0.023697,
+      "turns": 81,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 5,
+      "total": 211
+    },
+    {
+      "task": "arguably",
+      "sr": 0.0,
+      "turns": 55,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 70
+    },
+    {
+      "task": "arxiv-mcp-server",
+      "sr": 0.478261,
+      "turns": 42,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 11,
+      "total": 23
+    },
+    {
+      "task": "asteval",
+      "sr": 0.185022,
+      "turns": 70,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 42,
+      "total": 227
+    },
+    {
+      "task": "autojump",
+      "sr": 0.043478,
+      "turns": 51,
+      "inst_rc": null,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 1,
+      "total": 23
+    },
+    {
+      "task": "autopep8",
+      "sr": 0.044326,
+      "turns": 66,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 25,
+      "total": 564
+    },
+    {
+      "task": "autorccar",
+      "sr": 0.461538,
+      "turns": 53,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 6,
+      "total": 13
+    },
+    {
+      "task": "binaryalert",
+      "sr": 0.064935,
+      "turns": 58,
+      "inst_rc": null,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 5,
+      "total": 77
+    },
+    {
+      "task": "bleach",
+      "sr": 0.191964,
+      "turns": 66,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 86,
+      "total": 448
+    },
+    {
+      "task": "boltons",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 423
+    },
+    {
+      "task": "boto",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 1014
+    },
+    {
+      "task": "box",
+      "sr": 0.102041,
+      "turns": 77,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 15,
+      "total": 147
+    },
+    {
+      "task": "cachier",
+      "sr": 0.011111,
+      "turns": 42,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 2,
+      "total": 180
+    },
+    {
+      "task": "cerberus",
+      "sr": 0.0,
+      "turns": 65,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 249
+    },
+    {
+      "task": "cherry",
+      "sr": 0.147059,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 5,
+      "total": 34
+    },
+    {
+      "task": "cookiecutter",
+      "sr": 0.139108,
+      "turns": 53,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 53,
+      "total": 381
+    },
+    {
+      "task": "coverage_shield",
+      "sr": 0.818182,
+      "turns": 58,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 9,
+      "total": 11
+    },
+    {
+      "task": "databases",
+      "sr": 0.025974,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 4,
+      "total": 154
+    },
+    {
+      "task": "dbutils",
+      "sr": null,
+      "cls": "ISOLATED_infra_or_judging",
+      "src": "none"
+    },
+    {
+      "task": "decouple",
+      "sr": 0.895522,
+      "turns": 47,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 60,
+      "total": 67
+    },
+    {
+      "task": "deepdiff",
+      "sr": 0.0,
+      "turns": 78,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 970
+    },
+    {
+      "task": "deslib",
+      "sr": 0.069549,
+      "turns": 41,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 37,
+      "total": 532
+    },
+    {
+      "task": "dictdatabase",
+      "sr": 0.164983,
+      "turns": 63,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 98,
+      "total": 594
+    },
+    {
+      "task": "docopt-ng",
+      "sr": 0.017915,
+      "turns": 61,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 11,
+      "total": 614
+    },
+    {
+      "task": "emoji",
+      "sr": 0.0,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 102
+    },
+    {
+      "task": "fastapi-users",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 556
+    },
+    {
+      "task": "flask-restful",
+      "sr": 0.005525,
+      "turns": 59,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 2,
+      "total": 362
+    },
+    {
+      "task": "flasky",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": null,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 34
+    },
+    {
+      "task": "freezegun",
+      "sr": 0.015038,
+      "turns": 21,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 2,
+      "total": 133
+    },
+    {
+      "task": "frontmatter",
+      "sr": 0.0,
+      "turns": 49,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 55
+    },
+    {
+      "task": "ftfy",
+      "sr": 0.0,
+      "turns": 43,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 336
+    },
+    {
+      "task": "funcy",
+      "sr": 0.1133,
+      "turns": 82,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 23,
+      "total": 203
+    },
+    {
+      "task": "fuzzywuzzy",
+      "sr": 0.549296,
+      "turns": 56,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 39,
+      "total": 71
+    },
+    {
+      "task": "gitingest",
+      "sr": 0.0,
+      "turns": 44,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 133
+    },
+    {
+      "task": "google-images-download",
+      "sr": 0.533333,
+      "turns": 54,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 16,
+      "total": 30
+    },
+    {
+      "task": "graphneuralnetwork",
+      "sr": 0.0,
+      "turns": 51,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 4
+    },
+    {
+      "task": "humanize",
+      "sr": 0.278418,
+      "turns": 58,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 169,
+      "total": 607
+    },
+    {
+      "task": "icecream",
+      "sr": 0.075,
+      "turns": 75,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 3,
+      "total": 40
+    },
+    {
+      "task": "ipytest",
+      "sr": 0.486486,
+      "turns": 63,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 36,
+      "total": 74
+    },
+    {
+      "task": "jinja",
+      "sr": 0.0,
+      "turns": 63,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 911
+    },
+    {
+      "task": "jsonlines",
+      "sr": 0.296296,
+      "turns": 55,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 8,
+      "total": 27
+    },
+    {
+      "task": "justext",
+      "sr": 0.52459,
+      "turns": 58,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 32,
+      "total": 61
+    },
+    {
+      "task": "markdownify",
+      "sr": 0.0,
+      "turns": 53,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 83
+    },
+    {
+      "task": "markupsafe",
+      "sr": 0.0,
+      "turns": 72,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 39
+    },
+    {
+      "task": "math-verify",
+      "sr": 0.463542,
+      "turns": 50,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 89,
+      "total": 192
+    },
+    {
+      "task": "mechanicalsoup",
+      "sr": 0.190083,
+      "turns": 77,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 23,
+      "total": 121
+    },
+    {
+      "task": "mootdx",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 92
+    },
+    {
+      "task": "more-Itertools",
+      "sr": null,
+      "cls": "ISOLATED_infra_or_judging",
+      "src": "none"
+    },
+    {
+      "task": "paillier",
+      "sr": 0.0,
+      "turns": 9,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 234
+    },
+    {
+      "task": "pandarallel",
+      "sr": 0.354839,
+      "turns": 70,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 77,
+      "total": 217
+    },
+    {
+      "task": "parse",
+      "sr": 0.145833,
+      "turns": 39,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 14,
+      "total": 96
+    },
+    {
+      "task": "pathlib2",
+      "sr": 0.27907,
+      "turns": 75,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 96,
+      "total": 344
+    },
+    {
+      "task": "pdfplumber-stable",
+      "sr": 0.0,
+      "turns": 41,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 171
+    },
+    {
+      "task": "plac",
+      "sr": 0.035714,
+      "turns": 79,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 1,
+      "total": 28
+    },
+    {
+      "task": "pss",
+      "sr": 0.0,
+      "turns": 56,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 46
+    },
+    {
+      "task": "pyautogui",
+      "sr": 0.0,
+      "turns": 50,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 28
+    },
+    {
+      "task": "pyjwt",
+      "sr": 0.237458,
+      "turns": 61,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 71,
+      "total": 299
+    },
+    {
+      "task": "pylama",
+      "sr": 0.088235,
+      "turns": 49,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 3,
+      "total": 34
+    },
+    {
+      "task": "pyperclip",
+      "sr": 0.0,
+      "turns": 79,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 2
+    },
+    {
+      "task": "pypinyin",
+      "sr": 0.006211,
+      "turns": 44,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 6,
+      "total": 966
+    },
+    {
+      "task": "pyquery",
+      "sr": 0.202703,
+      "turns": 78,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 15,
+      "total": 74
+    },
+    {
+      "task": "pysondb-v2",
+      "sr": 0.010417,
+      "turns": 61,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 1,
+      "total": 96
+    },
+    {
+      "task": "pytest-cov",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 184
+    },
+    {
+      "task": "pytestify",
+      "sr": 0.42623,
+      "turns": 72,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 52,
+      "total": 122
+    },
+    {
+      "task": "python-dotenv",
+      "sr": 0.114833,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 24,
+      "total": 209
+    },
+    {
+      "task": "python-fsutil",
+      "sr": 0.294118,
+      "turns": 56,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 45,
+      "total": 153
+    },
+    {
+      "task": "python-jose",
+      "sr": 0.078603,
+      "turns": 62,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 36,
+      "total": 458
+    },
+    {
+      "task": "python-pathspec",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 119
+    },
+    {
+      "task": "python-patterns",
+      "sr": 0.044118,
+      "turns": 52,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 3,
+      "total": 68
+    },
+    {
+      "task": "python-pytest-cases",
+      "sr": 0.015306,
+      "turns": 47,
+      "inst_rc": 1,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 21,
+      "total": 1372
+    },
+    {
+      "task": "python-slugify",
+      "sr": 0.0,
+      "turns": 60,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 82
+    },
+    {
+      "task": "pythonprojecttemplate",
+      "sr": 1.0,
+      "turns": 58,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 36,
+      "total": 36
+    },
+    {
+      "task": "pytorch-grad-cam",
+      "sr": null,
+      "cls": "ISOLATED_infra_or_judging",
+      "src": "none"
+    },
+    {
+      "task": "pytz",
+      "sr": 0.068085,
+      "turns": 46,
+      "inst_rc": null,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 16,
+      "total": 235
+    },
+    {
+      "task": "records",
+      "sr": 0.129032,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 4,
+      "total": 31
+    },
+    {
+      "task": "requests-html",
+      "sr": 0.0,
+      "turns": 59,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 41
+    },
+    {
+      "task": "retrying",
+      "sr": 0.73913,
+      "turns": 78,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 17,
+      "total": 23
+    },
+    {
+      "task": "rich-click",
+      "sr": 0.0,
+      "turns": 52,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 145
+    },
+    {
+      "task": "schedule-master",
+      "sr": 0.111111,
+      "turns": 55,
+      "inst_rc": null,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 9,
+      "total": 81
+    },
+    {
+      "task": "schema",
+      "sr": 0.0,
+      "turns": 70,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 118
+    },
+    {
+      "task": "six",
+      "sr": 0.0,
+      "turns": 75,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 200
+    },
+    {
+      "task": "sklearn",
+      "sr": 0.528571,
+      "turns": 75,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 37,
+      "total": 70
+    },
+    {
+      "task": "sortedcontainers",
+      "sr": 0.351351,
+      "turns": 80,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 104,
+      "total": 296
+    },
+    {
+      "task": "sqlparse",
+      "sr": 0.0,
+      "turns": 44,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 461
+    },
+    {
+      "task": "stable-baselines3",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 798
+    },
+    {
+      "task": "stamina",
+      "sr": 0.0,
+      "turns": 64,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 129
+    },
+    {
+      "task": "structlog",
+      "sr": 0.0,
+      "turns": 80,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 828
+    },
+    {
+      "task": "synthetic",
+      "sr": 0.0,
+      "turns": 75,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 93
+    },
+    {
+      "task": "tablib",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 172
+    },
+    {
+      "task": "tenacity",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 1,
+      "cls": "MODEL_BUILD_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 124
+    },
+    {
+      "task": "tinydb",
+      "sr": 0.102941,
+      "turns": 67,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 21,
+      "total": 204
+    },
+    {
+      "task": "tqdm",
+      "sr": 0.043165,
+      "turns": 70,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 6,
+      "total": 139
+    },
+    {
+      "task": "trimming",
+      "sr": 0.3,
+      "turns": 41,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 3,
+      "total": 10
+    },
+    {
+      "task": "tsfresh",
+      "sr": 0.085174,
+      "turns": 46,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 27,
+      "total": 317
+    },
+    {
+      "task": "typing_extensions",
+      "sr": 0.0,
+      "turns": 62,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 535
+    },
+    {
+      "task": "uiautomator",
+      "sr": 0.217822,
+      "turns": 75,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 22,
+      "total": 101
+    },
+    {
+      "task": "unidecode",
+      "sr": 0.307692,
+      "turns": 55,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 20,
+      "total": 65
+    },
+    {
+      "task": "unittest-parametrize",
+      "sr": 0.653846,
+      "turns": 57,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 17,
+      "total": 26
+    },
+    {
+      "task": "verifiers",
+      "sr": 0.0,
+      "turns": 44,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 171
+    },
+    {
+      "task": "voluptuous",
+      "sr": 0.0,
+      "turns": 81,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 152
+    },
+    {
+      "task": "wifiphisher",
+      "sr": 0.0,
+      "turns": 77,
+      "inst_rc": 0,
+      "cls": "MODEL_TEST_FAIL(real-0)",
+      "src": "orig",
+      "passed": 0,
+      "total": 43
+    },
+    {
+      "task": "wsgidav",
+      "sr": 0.166667,
+      "turns": 73,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "rerun",
+      "passed": 6,
+      "total": 36
+    },
+    {
+      "task": "xlrd",
+      "sr": 0.214286,
+      "turns": 76,
+      "inst_rc": 0,
+      "cls": "OK_nonzero",
+      "src": "orig",
+      "passed": 18,
+      "total": 84
+    },
+    {
+      "task": "ydata-profiling",
+      "sr": 0.0,
+      "turns": 42,
+      "inst_rc": 1,
+      "cls": "WHEELHOUSE_GAP(install-infra fake-0)",
+      "src": "rerun",
+      "passed": 0,
+      "total": 2182
+    }
+  ],
+  "macro_valid": 0.14621913861386138,
+  "macro_104_iso0": 0.14200127884615382,
+  "micro_valid": 0.0708198051948052,
+  "valid": 101,
+  "isolated": 3,
+  "isolated_tasks": [
+    "dbutils",
+    "more-Itertools",
+    "pytorch-grad-cam"
+  ],
+  "model_true0": [
+    "arguably",
+    "boltons",
+    "cerberus",
+    "deepdiff",
+    "emoji",
+    "flasky",
+    "frontmatter",
+    "ftfy",
+    "gitingest",
+    "graphneuralnetwork",
+    "jinja",
+    "markupsafe",
+    "mootdx",
+    "paillier",
+    "pdfplumber-stable",
+    "pss",
+    "pyperclip",
+    "pytest-cov",
+    "python-pathspec",
+    "python-slugify",
+    "requests-html",
+    "rich-click",
+    "schema",
+    "six",
+    "sqlparse",
+    "stable-baselines3",
+    "stamina",
+    "structlog",
+    "tablib",
+    "tenacity",
+    "typing_extensions",
+    "verifiers",
+    "voluptuous",
+    "wifiphisher"
+  ],
+  "wheelhouse_gap": [
+    "boto",
+    "fastapi-users",
+    "markdownify",
+    "pyautogui",
+    "synthetic",
+    "ydata-profiling"
+  ]
+}

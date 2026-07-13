@@ -1,0 +1,262 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.18, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace
+collected 67 items
+
+tests/test_autoconfig.py ....F......                                     [ 16%]
+tests/test_env.py ...FF......F..                                         [ 37%]
+tests/test_helper_choices.py ......                                      [ 46%]
+tests/test_helper_csv.py ...                                             [ 50%]
+tests/test_ini.py ...FF.........F.                                       [ 74%]
+tests/test_secrets.py ....                                               [ 80%]
+tests/test_strtobool.py .............                                    [100%]
+
+=================================== FAILURES ===================================
+__________________________ test_autoconfig_exception ___________________________
+
+    def test_autoconfig_exception():
+        os.environ['KeyFallback'] = 'On'
+        config = AutoConfig()
+        with patch('os.path.isfile', side_effect=Exception('PermissionDenied')):
+>           assert True is config('KeyFallback', cast=bool)
+
+/workspace/tests/test_autoconfig.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:306: in __call__
+    return self._load()(option, default, cast)
+/workspace/decouple.py:289: in _load
+    source, repo_class = self._find_file(self.search_path)
+/workspace/decouple.py:274: in _find_file
+    if os.path.isfile(full_path):
+/usr/local/lib/python3.10/site-packages/mock/mock.py:1190: in __call__
+    return _mock_self._mock_call(*args, **kwargs)
+/usr/local/lib/python3.10/site-packages/mock/mock.py:1194: in _mock_call
+    return _mock_self._execute_mock_call(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_mock_self = <MagicMock name='isfile' id='140710990818240'>
+args = ('/workspace/decouple.py/settings.ini',), kwargs = {}
+self = <MagicMock name='isfile' id='140710990818240'>
+effect = Exception('PermissionDenied')
+
+    def _execute_mock_call(_mock_self, *args, **kwargs):
+        self = _mock_self
+        # separate from _increment_mock_call so that awaited functions are
+        # executed separately from their call, also AsyncMock overrides this method
+    
+        effect = self.side_effect
+        if effect is not None:
+            if _is_exception(effect):
+>               raise effect
+E               Exception: PermissionDenied
+
+/usr/local/lib/python3.10/site-packages/mock/mock.py:1251: Exception
+______________________________ test_env_bool_true ______________________________
+
+config = <decouple.Config object at 0x7ff9d4abf940>
+
+    def test_env_bool_true(config):
+        assert True is config('KeyTrue', cast=bool)
+        assert True is config('KeyOne', cast=bool)
+        assert True is config('KeyYes', cast=bool)
+        assert True is config('KeyOn', cast=bool)
+        assert True is config('KeyY', cast=bool)
+>       assert True is config('Key1int', default=1, cast=bool)
+
+/workspace/tests/test_env.py:79: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4abf940>, value = 1
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+>       value = value.lower()
+E       AttributeError: 'int' object has no attribute 'lower'
+
+/workspace/decouple.py:152: AttributeError
+_____________________________ test_env_bool_false ______________________________
+
+config = <decouple.Config object at 0x7ff9d4abf940>
+
+    def test_env_bool_false(config):
+        assert False is config('KeyFalse', cast=bool)
+        assert False is config('KeyZero', cast=bool)
+        assert False is config('KeyNo', cast=bool)
+        assert False is config('KeyOff', cast=bool)
+        assert False is config('KeyN', cast=bool)
+>       assert False is config('KeyEmpty', cast=bool)
+
+/workspace/tests/test_env.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4abf940>, value = ''
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+        value = value.lower()
+    
+        if value in TRUE_VALUES:
+            return True
+        elif value in FALSE_VALUES:
+            return False
+    
+>       raise ValueError("Invalid truth value: " + value)
+E       ValueError: Invalid truth value:
+
+/workspace/decouple.py:159: ValueError
+______________________ test_env_empty_string_means_false _______________________
+
+config = <decouple.Config object at 0x7ff9d4abf940>
+
+    def test_env_empty_string_means_false(config):
+>       assert False is config('KeyEmpty', cast=bool)
+
+/workspace/tests/test_env.py:124: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4abf940>, value = ''
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+        value = value.lower()
+    
+        if value in TRUE_VALUES:
+            return True
+        elif value in FALSE_VALUES:
+            return False
+    
+>       raise ValueError("Invalid truth value: " + value)
+E       ValueError: Invalid truth value:
+
+/workspace/decouple.py:159: ValueError
+______________________________ test_ini_bool_true ______________________________
+
+config = <decouple.Config object at 0x7ff9d4af8eb0>
+
+    def test_ini_bool_true(config):
+        assert True is config('KeyTrue', cast=bool)
+        assert True is config('KeyOne', cast=bool)
+        assert True is config('KeyYes', cast=bool)
+        assert True is config('KeyY', cast=bool)
+        assert True is config('KeyOn', cast=bool)
+>       assert True is config('Key1int', default=1, cast=bool)
+
+/workspace/tests/test_ini.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4af8eb0>, value = 1
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+>       value = value.lower()
+E       AttributeError: 'int' object has no attribute 'lower'
+
+/workspace/decouple.py:152: AttributeError
+_____________________________ test_ini_bool_false ______________________________
+
+config = <decouple.Config object at 0x7ff9d4af8eb0>
+
+    def test_ini_bool_false(config):
+        assert False is config('KeyFalse', cast=bool)
+        assert False is config('KeyZero', cast=bool)
+        assert False is config('KeyNo', cast=bool)
+        assert False is config('KeyOff', cast=bool)
+        assert False is config('KeyN', cast=bool)
+>       assert False is config('KeyEmpty', cast=bool)
+
+/workspace/tests/test_ini.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4af8eb0>, value = ''
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+        value = value.lower()
+    
+        if value in TRUE_VALUES:
+            return True
+        elif value in FALSE_VALUES:
+            return False
+    
+>       raise ValueError("Invalid truth value: " + value)
+E       ValueError: Invalid truth value:
+
+/workspace/decouple.py:159: ValueError
+______________________ test_ini_empty_string_means_false _______________________
+
+config = <decouple.Config object at 0x7ff9d4af8eb0>
+
+    def test_ini_empty_string_means_false(config):
+>       assert False is config('KeyEmpty', cast=bool)
+
+/workspace/tests/test_ini.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/workspace/decouple.py:168: in __call__
+    return self.get(option, default, cast)
+/workspace/decouple.py:146: in get
+    return cast(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <decouple.Config object at 0x7ff9d4af8eb0>, value = ''
+
+    def _cast_boolean(self, value):
+        """Convert string to boolean"""
+        if isinstance(value, bool):
+            return value
+        value = value.lower()
+    
+        if value in TRUE_VALUES:
+            return True
+        elif value in FALSE_VALUES:
+            return False
+    
+>       raise ValueError("Invalid truth value: " + value)
+E       ValueError: Invalid truth value:
+
+/workspace/decouple.py:159: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_autoconfig.py::test_autoconfig_exception - Exception: Permi...
+FAILED tests/test_env.py::test_env_bool_true - AttributeError: 'int' object h...
+FAILED tests/test_env.py::test_env_bool_false - ValueError: Invalid truth value:
+FAILED tests/test_env.py::test_env_empty_string_means_false - ValueError: Inv...
+FAILED tests/test_ini.py::test_ini_bool_true - AttributeError: 'int' object h...
+FAILED tests/test_ini.py::test_ini_bool_false - ValueError: Invalid truth value:
+FAILED tests/test_ini.py::test_ini_empty_string_means_false - ValueError: Inv...
+========================= 7 failed, 60 passed in 0.33s =========================
