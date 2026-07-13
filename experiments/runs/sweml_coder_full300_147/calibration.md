@@ -4,7 +4,7 @@ run_id: `sweml_coder_qwencode_full300_147_20260712T064508Z`
 bench: **SWE-bench Multilingual**  model: **Qwen/Qwen3-Coder-30B-A3B-Instruct**  scaffold: **qwen-code (qwen-code 0.16.2)**
 
 ## Headline
-- **score = 0.243333** (resolved **73** / denominator **300**)
+- **score = 0.233333** (resolved **70** / denominator **300**)
 - serving identity before==after: **True** (model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct, sglang=0.5.13, seed=484925000)
 
 ## 1. resolved 的定义 (adjudication rule)
@@ -36,9 +36,9 @@ from this pack alone — no shared-disk trace needed.
 | language | resolved | total | score |
 |---|---|---|---|
 | C | 7 | 30 | 0.233 |
-| C++ | 6 | 12 | 0.500 |
+| C++ | 5 | 12 | 0.417 |
 | Go | 12 | 42 | 0.286 |
-| Java | 8 | 43 | 0.186 |
+| Java | 6 | 43 | 0.14 |
 | JavaScript | 9 | 33 | 0.273 |
 | PHP | 6 | 43 | 0.140 |
 | Ruby | 10 | 44 | 0.227 |
@@ -46,6 +46,7 @@ from this pack alone — no shared-disk trace needed.
 | TypeScript | 2 | 10 | 0.200 |
 
 ## 5. 口径差 / 已知 caveat (disclosed, not hidden)
+- **[2026-07-13T11:56:14Z] set -e stale-artifact false positives (CORRECTED)**: 3 resolved rows were false positives from the harness `set -uxo pipefail` (missing `-e`): a build or gold-test-patch apply failure did not abort, so a stale pre-baked binary / base test file 'passed'. Reclassified to unresolved; headline corrected 0.243333->0.233333 (73->70). Instances: fmtlib__fmt-3863, google__gson-1014, javaparser__javaparser-4561. Full mechanism + per-instance binary-hash evidence in **AUDIT_NOTES_SET_E_BUG.md**.
 - serving endpoint: `http://100.100.104.147:30001/v1` (sglang; model_path=/mnt/shared-storage-user/mineru2-shared/zengweijun/models/Qwen3-Coder-30B-A3B-Instruct); before==after=True.
 - **Java offline**: 26 Java tasks run from pre-built **offline p0 images** with `--network=none`;
   this applies identically to Coder and Instruct-2507, so cross-model comparison is unaffected.

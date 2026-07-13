@@ -7,3 +7,5 @@ subset_ids manifest count       : 300
 dataset parquet row_count       : 300 (superset; subset selected via subset_ids)
 
 ASSERT rows==declared AND unique==rows  =>  PASS
+
+[set -e AUDIT 2026-07-13T11:56:14Z] denominator INVARIANT (300 rows unchanged); resolved corrected 32->28 (4 stale-artifact false positives removed). See AUDIT_NOTES_SET_E_BUG.md.
