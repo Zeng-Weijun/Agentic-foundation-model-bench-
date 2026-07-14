@@ -1,0 +1,6 @@
+/workspace
+/workspace/setup.cfg
+/workspace/setup.py
+/workspace/test_docs.py
+/workspace/test_lazy.py
+/workspace/test_tzinfo.py

@@ -1,0 +1,14 @@
+{
+  "task": "databases",
+  "leak_floor_passed": 142,
+  "leak_floor_failed": 0,
+  "leak_floor_errors": 0,
+  "total": 154,
+  "leak_floor_success_rate": 0.922078,
+  "command_exit_codes": [
+    0,
+    0
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/databases:1.0",
+  "image_status": "loaded"
+}

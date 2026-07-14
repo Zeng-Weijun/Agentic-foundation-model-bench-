@@ -1,0 +1,14 @@
+{
+  "task": "justext",
+  "leak_floor_passed": 58,
+  "leak_floor_failed": 3,
+  "leak_floor_errors": 0,
+  "total": 61,
+  "leak_floor_success_rate": 0.95082,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/justext:1.0",
+  "image_status": "loaded"
+}

@@ -1,0 +1,14 @@
+{
+  "task": "pysondb-v2",
+  "leak_floor_passed": 1,
+  "leak_floor_failed": 0,
+  "leak_floor_errors": 42,
+  "total": 96,
+  "leak_floor_success_rate": 0.010417,
+  "command_exit_codes": [
+    0,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pysondb-v2:1.0",
+  "image_status": "loaded"
+}

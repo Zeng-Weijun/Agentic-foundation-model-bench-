@@ -1,0 +1,14 @@
+{
+  "task": "funcy",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 1,
+  "leak_floor_errors": 26,
+  "total": 203,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/funcy:1.0",
+  "image_status": "loaded"
+}

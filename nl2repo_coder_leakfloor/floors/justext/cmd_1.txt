@@ -1,0 +1,220 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.11.7, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace
+plugins: cov-6.2.1
+collected 61 items
+
+tests/test_classify_paragraphs.py ....                                   [  6%]
+tests/test_core.py F                                                     [  8%]
+tests/test_dom_utils.py .......                                          [ 19%]
+tests/test_html_encoding.py ....................                         [ 52%]
+tests/test_paths.py .......                                              [ 63%]
+tests/test_sax.py ......                                                 [ 73%]
+tests/test_utils.py .............FF.                                     [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_words_should_be_split_by_br_tag _____________________
+
+language = 'English'
+
+    def get_stoplist(language):
+        """Returns an built-in stop-list for the language as a set of words."""
+        file_path = os.path.join("stoplists", "%s.txt" % language)
+        try:
+>           stopwords = pkgutil.get_data("justext", file_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/usr/local/lib/python3.11/site-packages/justext/utils.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+package = 'justext', resource = 'stoplists/English.txt'
+
+    def get_data(package, resource):
+        """Get a resource from a package.
+    
+        This is a wrapper round the PEP 302 loader get_data API. The package
+        argument should be the name of a package, in standard module format
+        (foo.bar). The resource argument should be in the form of a relative
+        filename, using '/' as the path separator. The parent directory name '..'
+        is not allowed, and nor is a rooted name (starting with a '/').
+    
+        The function returns a binary string, which is the contents of the
+        specified resource.
+    
+        For packages located in the filesystem, which have already been imported,
+        this is the rough equivalent of
+    
+            d = os.path.dirname(sys.modules[package].__file__)
+            data = open(os.path.join(d, resource), 'rb').read()
+    
+        If the package cannot be located or loaded, or it uses a PEP 302 loader
+        which does not support get_data(), then None is returned.
+        """
+    
+        spec = importlib.util.find_spec(package)
+        if spec is None:
+            return None
+        loader = spec.loader
+        if loader is None or not hasattr(loader, 'get_data'):
+            return None
+        # XXX needs test
+        mod = (sys.modules.get(package) or
+               importlib._bootstrap._load(spec))
+        if mod is None or not hasattr(mod, '__file__'):
+            return None
+    
+        # Modify the resource name to be compatible with the loader.get_data
+        # signature - an os.path format "filename" starting with the dirname of
+        # the package's __file__
+        parts = resource.split('/')
+        parts.insert(0, os.path.dirname(mod.__file__))
+        resource_name = os.path.join(*parts)
+>       return loader.get_data(resource_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/usr/local/lib/python3.11/site-packages/justext/stoplists/English.txt'
+
+/usr/local/lib/python3.11/pkgutil.py:640: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_words_should_be_split_by_br_tag():
+>       paragraphs = justext.justext('abc<br/>def becoming abcdef', justext.get_stoplist("English"))
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_core.py:5: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+language = 'English'
+
+    def get_stoplist(language):
+        """Returns an built-in stop-list for the language as a set of words."""
+        file_path = os.path.join("stoplists", "%s.txt" % language)
+        try:
+            stopwords = pkgutil.get_data("justext", file_path)
+        except IOError:
+>           raise ValueError(
+                "Stoplist for language '%s' is missing. "
+                "Please use function 'get_stoplists' for complete list of stoplists "
+                "and feel free to contribute by your own stoplist." % language
+            )
+E           ValueError: Stoplist for language 'English' is missing. Please use function 'get_stoplists' for complete list of stoplists and feel free to contribute by your own stoplist.
+
+/usr/local/lib/python3.11/site-packages/justext/utils.py:57: ValueError
+__________________ TestStoplistsUtils.test_get_stopwords_list __________________
+
+self = <tests.test_utils.TestStoplistsUtils object at 0x7f1de570f710>
+
+    def test_get_stopwords_list(self):
+>       stopwords = get_stoplists()
+                    ^^^^^^^^^^^^^^^
+
+tests/test_utils.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def get_stoplists():
+        """Returns a collection of built-in stop-lists."""
+        path_to_stoplists = os.path.dirname(sys.modules["justext"].__file__)
+        path_to_stoplists = os.path.join(path_to_stoplists, "stoplists")
+    
+        stoplist_names = []
+>       for filename in os.listdir(path_to_stoplists):
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/usr/local/lib/python3.11/site-packages/justext/stoplists'
+
+/usr/local/lib/python3.11/site-packages/justext/utils.py:43: FileNotFoundError
+__________________ TestStoplistsUtils.test_get_real_stoplist ___________________
+
+language = 'Slovak'
+
+    def get_stoplist(language):
+        """Returns an built-in stop-list for the language as a set of words."""
+        file_path = os.path.join("stoplists", "%s.txt" % language)
+        try:
+>           stopwords = pkgutil.get_data("justext", file_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/usr/local/lib/python3.11/site-packages/justext/utils.py:55: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+package = 'justext', resource = 'stoplists/Slovak.txt'
+
+    def get_data(package, resource):
+        """Get a resource from a package.
+    
+        This is a wrapper round the PEP 302 loader get_data API. The package
+        argument should be the name of a package, in standard module format
+        (foo.bar). The resource argument should be in the form of a relative
+        filename, using '/' as the path separator. The parent directory name '..'
+        is not allowed, and nor is a rooted name (starting with a '/').
+    
+        The function returns a binary string, which is the contents of the
+        specified resource.
+    
+        For packages located in the filesystem, which have already been imported,
+        this is the rough equivalent of
+    
+            d = os.path.dirname(sys.modules[package].__file__)
+            data = open(os.path.join(d, resource), 'rb').read()
+    
+        If the package cannot be located or loaded, or it uses a PEP 302 loader
+        which does not support get_data(), then None is returned.
+        """
+    
+        spec = importlib.util.find_spec(package)
+        if spec is None:
+            return None
+        loader = spec.loader
+        if loader is None or not hasattr(loader, 'get_data'):
+            return None
+        # XXX needs test
+        mod = (sys.modules.get(package) or
+               importlib._bootstrap._load(spec))
+        if mod is None or not hasattr(mod, '__file__'):
+            return None
+    
+        # Modify the resource name to be compatible with the loader.get_data
+        # signature - an os.path format "filename" starting with the dirname of
+        # the package's __file__
+        parts = resource.split('/')
+        parts.insert(0, os.path.dirname(mod.__file__))
+        resource_name = os.path.join(*parts)
+>       return loader.get_data(resource_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/usr/local/lib/python3.11/site-packages/justext/stoplists/Slovak.txt'
+
+/usr/local/lib/python3.11/pkgutil.py:640: FileNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+self = <tests.test_utils.TestStoplistsUtils object at 0x7f1de571efd0>
+
+    def test_get_real_stoplist(self):
+>       stopwords = get_stoplist("Slovak")
+                    ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_utils.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+language = 'Slovak'
+
+    def get_stoplist(language):
+        """Returns an built-in stop-list for the language as a set of words."""
+        file_path = os.path.join("stoplists", "%s.txt" % language)
+        try:
+            stopwords = pkgutil.get_data("justext", file_path)
+        except IOError:
+>           raise ValueError(
+                "Stoplist for language '%s' is missing. "
+                "Please use function 'get_stoplists' for complete list of stoplists "
+                "and feel free to contribute by your own stoplist." % language
+            )
+E           ValueError: Stoplist for language 'Slovak' is missing. Please use function 'get_stoplists' for complete list of stoplists and feel free to contribute by your own stoplist.
+
+/usr/local/lib/python3.11/site-packages/justext/utils.py:57: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_core.py::test_words_should_be_split_by_br_tag - ValueError:...
+FAILED tests/test_utils.py::TestStoplistsUtils::test_get_stopwords_list - Fil...
+FAILED tests/test_utils.py::TestStoplistsUtils::test_get_real_stoplist - Valu...
+========================= 3 failed, 58 passed in 0.14s =========================

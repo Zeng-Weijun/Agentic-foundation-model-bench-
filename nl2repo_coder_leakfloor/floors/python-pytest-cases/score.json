@@ -1,0 +1,24 @@
+{
+  "network": "none",
+  "test_shell": [
+    "pip install -e .",
+    "pytest --continue-on-collection-errors"
+  ],
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "command_seconds": [
+    2.9,
+    3.0
+  ],
+  "pytest_results": {
+    "passed": 21,
+    "failed": 1,
+    "errors": 548,
+    "total": 1372,
+    "success_rate": 0.015306
+  },
+  "score": 21,
+  "success_rate": 0.015306
+}

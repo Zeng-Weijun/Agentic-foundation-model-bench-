@@ -1,0 +1,294 @@
+$ pytest --continue-on-collection-errors -v
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.18, pytest-8.4.2, pluggy-1.6.0 -- /usr/local/bin/python3.10
+cachedir: .pytest_cache
+rootdir: /workspace
+plugins: xdist-3.8.0
+collecting ... collected 234 items
+
+test_docs.py::DocumentationTestCase::test_readme_encoding FAILED         [  0%]
+test_docs.py::test_suite FAILED                                          [  0%]
+test_lazy.py::LazyListTestCase::test_append PASSED                       [  1%]
+test_lazy.py::LazyListTestCase::test_binary_ops PASSED                   [  1%]
+test_lazy.py::LazyListTestCase::test_bool PASSED                         [  2%]
+test_lazy.py::LazyListTestCase::test_callable PASSED                     [  2%]
+test_lazy.py::LazyListTestCase::test_count PASSED                        [  2%]
+test_lazy.py::LazyListTestCase::test_delitem PASSED                      [  3%]
+test_lazy.py::LazyListTestCase::test_delslice PASSED                     [  3%]
+test_lazy.py::LazyListTestCase::test_extend PASSED                       [  4%]
+test_lazy.py::LazyListTestCase::test_getitem PASSED                      [  4%]
+test_lazy.py::LazyListTestCase::test_getslice PASSED                     [  5%]
+test_lazy.py::LazyListTestCase::test_hash PASSED                         [  5%]
+test_lazy.py::LazyListTestCase::test_iadd PASSED                         [  5%]
+test_lazy.py::LazyListTestCase::test_index PASSED                        [  6%]
+test_lazy.py::LazyListTestCase::test_insert PASSED                       [  6%]
+test_lazy.py::LazyListTestCase::test_isinstance PASSED                   [  7%]
+test_lazy.py::LazyListTestCase::test_iter PASSED                         [  7%]
+test_lazy.py::LazyListTestCase::test_pop PASSED                          [  8%]
+test_lazy.py::LazyListTestCase::test_remove PASSED                       [  8%]
+test_lazy.py::LazyListTestCase::test_reverse PASSED                      [  8%]
+test_lazy.py::LazyListTestCase::test_reversed PASSED                     [  9%]
+test_lazy.py::LazyListTestCase::test_setitem PASSED                      [  9%]
+test_lazy.py::LazyListTestCase::test_setslice PASSED                     [ 10%]
+test_lazy.py::LazyListTestCase::test_sort PASSED                         [ 10%]
+test_lazy.py::LazyListTestCase::test_sorted PASSED                       [ 11%]
+test_lazy.py::LazyListTestCase::test_unary_ops PASSED                    [ 11%]
+test_lazy.py::LazySetTestCase::test_add PASSED                           [ 11%]
+test_lazy.py::LazySetTestCase::test_binary_ops PASSED                    [ 12%]
+test_lazy.py::LazySetTestCase::test_bool PASSED                          [ 12%]
+test_lazy.py::LazySetTestCase::test_callable PASSED                      [ 13%]
+test_lazy.py::LazySetTestCase::test_clear PASSED                         [ 13%]
+test_lazy.py::LazySetTestCase::test_copy PASSED                          [ 14%]
+test_lazy.py::LazySetTestCase::test_discard PASSED                       [ 14%]
+test_lazy.py::LazySetTestCase::test_hash PASSED                          [ 14%]
+test_lazy.py::LazySetTestCase::test_iops PASSED                          [ 15%]
+test_lazy.py::LazySetTestCase::test_isinstance PASSED                    [ 15%]
+test_lazy.py::LazySetTestCase::test_method_ops PASSED                    [ 16%]
+test_lazy.py::LazySetTestCase::test_pop PASSED                           [ 16%]
+test_lazy.py::LazySetTestCase::test_remove PASSED                        [ 17%]
+test_lazy.py::LazySetTestCase::test_unary_ops PASSED                     [ 17%]
+test_tzinfo.py::BasicTest::testGMT PASSED                                [ 17%]
+test_tzinfo.py::BasicTest::testReferenceUTC PASSED                       [ 18%]
+test_tzinfo.py::BasicTest::testStaticTzInfo PASSED                       [ 18%]
+test_tzinfo.py::BasicTest::testUnicodeTimezone PASSED                    [ 19%]
+test_tzinfo.py::BasicTest::testUnknownOffsets PASSED                     [ 19%]
+test_tzinfo.py::BasicTest::testVersion PASSED                            [ 20%]
+test_tzinfo.py::PicklingTest::testDatabaseFixes PASSED                   [ 20%]
+test_tzinfo.py::PicklingTest::testDst PASSED                             [ 20%]
+test_tzinfo.py::PicklingTest::testOldPickles PASSED                      [ 21%]
+test_tzinfo.py::PicklingTest::testRoundtrip PASSED                       [ 21%]
+test_tzinfo.py::USEasternDSTStartTestCase::testDayAfter PASSED           [ 22%]
+test_tzinfo.py::USEasternDSTStartTestCase::testDayBefore PASSED          [ 22%]
+test_tzinfo.py::USEasternDSTStartTestCase::testHourAfter PASSED          [ 23%]
+test_tzinfo.py::USEasternDSTStartTestCase::testHourBefore PASSED         [ 23%]
+test_tzinfo.py::USEasternDSTStartTestCase::testInstantAfter PASSED       [ 23%]
+test_tzinfo.py::USEasternDSTStartTestCase::testInstantBefore PASSED      [ 24%]
+test_tzinfo.py::USEasternDSTStartTestCase::testTransition PASSED         [ 24%]
+test_tzinfo.py::USEasternDSTStartTestCase::testTwoHoursAfter PASSED      [ 25%]
+test_tzinfo.py::USEasternDSTStartTestCase::testTwoHoursBefore PASSED     [ 25%]
+test_tzinfo.py::USEasternDSTStartTestCase::test_arithmetic PASSED        [ 26%]
+test_tzinfo.py::USEasternDSTEndTestCase::testDayAfter PASSED             [ 26%]
+test_tzinfo.py::USEasternDSTEndTestCase::testDayBefore PASSED            [ 26%]
+test_tzinfo.py::USEasternDSTEndTestCase::testHourAfter PASSED            [ 27%]
+test_tzinfo.py::USEasternDSTEndTestCase::testHourBefore PASSED           [ 27%]
+test_tzinfo.py::USEasternDSTEndTestCase::testInstantAfter PASSED         [ 28%]
+test_tzinfo.py::USEasternDSTEndTestCase::testInstantBefore PASSED        [ 28%]
+test_tzinfo.py::USEasternDSTEndTestCase::testTransition PASSED           [ 29%]
+test_tzinfo.py::USEasternDSTEndTestCase::testTwoHoursAfter PASSED        [ 29%]
+test_tzinfo.py::USEasternDSTEndTestCase::testTwoHoursBefore PASSED       [ 29%]
+test_tzinfo.py::USEasternDSTEndTestCase::test_arithmetic PASSED          [ 30%]
+test_tzinfo.py::USEasternEPTStartTestCase::testDayAfter PASSED           [ 30%]
+test_tzinfo.py::USEasternEPTStartTestCase::testDayBefore PASSED          [ 31%]
+test_tzinfo.py::USEasternEPTStartTestCase::testHourAfter PASSED          [ 31%]
+test_tzinfo.py::USEasternEPTStartTestCase::testHourBefore PASSED         [ 32%]
+test_tzinfo.py::USEasternEPTStartTestCase::testInstantAfter PASSED       [ 32%]
+test_tzinfo.py::USEasternEPTStartTestCase::testInstantBefore PASSED      [ 32%]
+test_tzinfo.py::USEasternEPTStartTestCase::testTransition PASSED         [ 33%]
+test_tzinfo.py::USEasternEPTStartTestCase::testTwoHoursAfter PASSED      [ 33%]
+test_tzinfo.py::USEasternEPTStartTestCase::testTwoHoursBefore PASSED     [ 34%]
+test_tzinfo.py::USEasternEPTStartTestCase::test_arithmetic PASSED        [ 34%]
+test_tzinfo.py::USEasternEPTEndTestCase::testDayAfter PASSED             [ 35%]
+test_tzinfo.py::USEasternEPTEndTestCase::testDayBefore PASSED            [ 35%]
+test_tzinfo.py::USEasternEPTEndTestCase::testHourAfter PASSED            [ 35%]
+test_tzinfo.py::USEasternEPTEndTestCase::testHourBefore PASSED           [ 36%]
+test_tzinfo.py::USEasternEPTEndTestCase::testInstantAfter PASSED         [ 36%]
+test_tzinfo.py::USEasternEPTEndTestCase::testInstantBefore PASSED        [ 37%]
+test_tzinfo.py::USEasternEPTEndTestCase::testTransition PASSED           [ 37%]
+test_tzinfo.py::USEasternEPTEndTestCase::testTwoHoursAfter PASSED        [ 38%]
+test_tzinfo.py::USEasternEPTEndTestCase::testTwoHoursBefore PASSED       [ 38%]
+test_tzinfo.py::USEasternEPTEndTestCase::test_arithmetic PASSED          [ 38%]
+test_tzinfo.py::WarsawWMTEndTestCase::testDayAfter PASSED                [ 39%]
+test_tzinfo.py::WarsawWMTEndTestCase::testDayBefore PASSED               [ 39%]
+test_tzinfo.py::WarsawWMTEndTestCase::testHourAfter PASSED               [ 40%]
+test_tzinfo.py::WarsawWMTEndTestCase::testHourBefore PASSED              [ 40%]
+test_tzinfo.py::WarsawWMTEndTestCase::testInstantAfter PASSED            [ 41%]
+test_tzinfo.py::WarsawWMTEndTestCase::testInstantBefore PASSED           [ 41%]
+test_tzinfo.py::WarsawWMTEndTestCase::testTransition PASSED              [ 41%]
+test_tzinfo.py::WarsawWMTEndTestCase::testTwoHoursAfter PASSED           [ 42%]
+test_tzinfo.py::WarsawWMTEndTestCase::testTwoHoursBefore PASSED          [ 42%]
+test_tzinfo.py::WarsawWMTEndTestCase::test_arithmetic PASSED             [ 43%]
+test_tzinfo.py::VilniusWMTEndTestCase::testDayAfter PASSED               [ 43%]
+test_tzinfo.py::VilniusWMTEndTestCase::testDayBefore PASSED              [ 44%]
+test_tzinfo.py::VilniusWMTEndTestCase::testHourAfter PASSED              [ 44%]
+test_tzinfo.py::VilniusWMTEndTestCase::testHourBefore PASSED             [ 44%]
+test_tzinfo.py::VilniusWMTEndTestCase::testInstantAfter PASSED           [ 45%]
+test_tzinfo.py::VilniusWMTEndTestCase::testInstantBefore PASSED          [ 45%]
+test_tzinfo.py::VilniusWMTEndTestCase::testTransition PASSED             [ 46%]
+test_tzinfo.py::VilniusWMTEndTestCase::testTwoHoursAfter PASSED          [ 46%]
+test_tzinfo.py::VilniusWMTEndTestCase::testTwoHoursBefore PASSED         [ 47%]
+test_tzinfo.py::VilniusWMTEndTestCase::test_arithmetic PASSED            [ 47%]
+test_tzinfo.py::VilniusCESTStartTestCase::testDayAfter PASSED            [ 47%]
+test_tzinfo.py::VilniusCESTStartTestCase::testDayBefore PASSED           [ 48%]
+test_tzinfo.py::VilniusCESTStartTestCase::testHourAfter PASSED           [ 48%]
+test_tzinfo.py::VilniusCESTStartTestCase::testHourBefore PASSED          [ 49%]
+test_tzinfo.py::VilniusCESTStartTestCase::testInstantAfter PASSED        [ 49%]
+test_tzinfo.py::VilniusCESTStartTestCase::testInstantBefore PASSED       [ 50%]
+test_tzinfo.py::VilniusCESTStartTestCase::testTransition PASSED          [ 50%]
+test_tzinfo.py::VilniusCESTStartTestCase::testTwoHoursAfter PASSED       [ 50%]
+test_tzinfo.py::VilniusCESTStartTestCase::testTwoHoursBefore PASSED      [ 51%]
+test_tzinfo.py::VilniusCESTStartTestCase::test_arithmetic PASSED         [ 51%]
+test_tzinfo.py::LondonHistoryStartTestCase::testDayAfter PASSED          [ 52%]
+test_tzinfo.py::LondonHistoryStartTestCase::testDayBefore PASSED         [ 52%]
+test_tzinfo.py::LondonHistoryStartTestCase::testHourAfter PASSED         [ 52%]
+test_tzinfo.py::LondonHistoryStartTestCase::testHourBefore PASSED        [ 53%]
+test_tzinfo.py::LondonHistoryStartTestCase::testInstantAfter PASSED      [ 53%]
+test_tzinfo.py::LondonHistoryStartTestCase::testInstantBefore PASSED     [ 54%]
+test_tzinfo.py::LondonHistoryStartTestCase::testTransition PASSED        [ 54%]
+test_tzinfo.py::LondonHistoryStartTestCase::testTwoHoursAfter PASSED     [ 55%]
+test_tzinfo.py::LondonHistoryStartTestCase::testTwoHoursBefore PASSED    [ 55%]
+test_tzinfo.py::LondonHistoryStartTestCase::test_arithmetic PASSED       [ 55%]
+test_tzinfo.py::LondonHistoryEndTestCase::testDayAfter PASSED            [ 56%]
+test_tzinfo.py::LondonHistoryEndTestCase::testDayBefore PASSED           [ 56%]
+test_tzinfo.py::LondonHistoryEndTestCase::testHourAfter PASSED           [ 57%]
+test_tzinfo.py::LondonHistoryEndTestCase::testHourBefore PASSED          [ 57%]
+test_tzinfo.py::LondonHistoryEndTestCase::testInstantAfter PASSED        [ 58%]
+test_tzinfo.py::LondonHistoryEndTestCase::testInstantBefore PASSED       [ 58%]
+test_tzinfo.py::LondonHistoryEndTestCase::testTransition PASSED          [ 58%]
+test_tzinfo.py::LondonHistoryEndTestCase::testTwoHoursAfter PASSED       [ 59%]
+test_tzinfo.py::LondonHistoryEndTestCase::testTwoHoursBefore PASSED      [ 59%]
+test_tzinfo.py::LondonHistoryEndTestCase::test_arithmetic PASSED         [ 60%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testDayAfter PASSED          [ 60%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testDayBefore PASSED         [ 61%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testHourAfter PASSED         [ 61%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testHourBefore PASSED        [ 61%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testInstantAfter PASSED      [ 62%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testInstantBefore PASSED     [ 62%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testTransition PASSED        [ 63%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testTwoHoursAfter PASSED     [ 63%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::testTwoHoursBefore PASSED    [ 64%]
+test_tzinfo.py::NoumeaHistoryStartTestCase::test_arithmetic PASSED       [ 64%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testDayAfter PASSED                [ 64%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testDayBefore PASSED               [ 65%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testHourAfter PASSED               [ 65%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testHourBefore PASSED              [ 66%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testInstantAfter PASSED            [ 66%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testInstantBefore PASSED           [ 67%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testTransition PASSED              [ 67%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testTwoHoursAfter PASSED           [ 67%]
+test_tzinfo.py::NoumeaDSTEndTestCase::testTwoHoursBefore PASSED          [ 68%]
+test_tzinfo.py::NoumeaDSTEndTestCase::test_arithmetic PASSED             [ 68%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testDayAfter PASSED             [ 69%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testDayBefore PASSED            [ 69%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testHourAfter PASSED            [ 70%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testHourBefore PASSED           [ 70%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testInstantAfter PASSED         [ 70%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testInstantBefore PASSED        [ 71%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testTransition PASSED           [ 71%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testTwoHoursAfter PASSED        [ 72%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::testTwoHoursBefore PASSED       [ 72%]
+test_tzinfo.py::NoumeaNoMoreDSTTestCase::test_arithmetic PASSED          [ 73%]
+test_tzinfo.py::TahitiTestCase::testDayAfter PASSED                      [ 73%]
+test_tzinfo.py::TahitiTestCase::testDayBefore PASSED                     [ 73%]
+test_tzinfo.py::TahitiTestCase::testHourAfter PASSED                     [ 74%]
+test_tzinfo.py::TahitiTestCase::testHourBefore PASSED                    [ 74%]
+test_tzinfo.py::TahitiTestCase::testInstantAfter PASSED                  [ 75%]
+test_tzinfo.py::TahitiTestCase::testInstantBefore PASSED                 [ 75%]
+test_tzinfo.py::TahitiTestCase::testTransition PASSED                    [ 76%]
+test_tzinfo.py::TahitiTestCase::testTwoHoursAfter PASSED                 [ 76%]
+test_tzinfo.py::TahitiTestCase::testTwoHoursBefore PASSED                [ 76%]
+test_tzinfo.py::TahitiTestCase::test_arithmetic PASSED                   [ 77%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testDayAfter PASSED    [ 77%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testDayBefore PASSED   [ 78%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testHourAfter PASSED   [ 78%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testHourBefore PASSED  [ 79%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testInstantAfter PASSED [ 79%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testInstantBefore PASSED [ 79%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testTransition PASSED  [ 80%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testTwoHoursAfter PASSED [ 80%]
+test_tzinfo.py::SamoaInternationalDateLineChange::testTwoHoursBefore PASSED [ 81%]
+test_tzinfo.py::SamoaInternationalDateLineChange::test_arithmetic PASSED [ 81%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testDayAfter PASSED  [ 82%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testDayBefore PASSED [ 82%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testHourAfter PASSED [ 82%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testHourBefore PASSED [ 83%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testInstantAfter PASSED [ 83%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testInstantBefore PASSED [ 84%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testTransition PASSED [ 84%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testTwoHoursAfter PASSED [ 85%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::testTwoHoursBefore PASSED [ 85%]
+test_tzinfo.py::ReferenceUSEasternDSTStartTestCase::test_arithmetic PASSED [ 85%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testDayAfter PASSED    [ 86%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testDayBefore PASSED   [ 86%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testHourAfter PASSED   [ 87%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testHourBefore PASSED  [ 87%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testInstantAfter PASSED [ 88%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testInstantBefore PASSED [ 88%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testTransition PASSED  [ 88%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testTwoHoursAfter PASSED [ 89%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::testTwoHoursBefore PASSED [ 89%]
+test_tzinfo.py::ReferenceUSEasternDSTEndTestCase::test_arithmetic PASSED [ 90%]
+test_tzinfo.py::LocalTestCase::testLocalize PASSED                       [ 90%]
+test_tzinfo.py::LocalTestCase::testNormalize PASSED                      [ 91%]
+test_tzinfo.py::CommonTimezonesTestCase::test_belfast PASSED             [ 91%]
+test_tzinfo.py::CommonTimezonesTestCase::test_bratislava PASSED          [ 91%]
+test_tzinfo.py::CommonTimezonesTestCase::test_us_eastern PASSED          [ 92%]
+test_tzinfo.py::ZoneCaseInsensitivityTestCase::test_lower_case_timezone_constructor_arg PASSED [ 92%]
+test_tzinfo.py::OptimizedUTCTestCase::test_astimezone PASSED             [ 93%]
+test_tzinfo.py::OptimizedUTCTestCase::test_expectedclass PASSED          [ 93%]
+test_tzinfo.py::OptimizedUTCTestCase::test_fromutc PASSED                [ 94%]
+test_tzinfo.py::OptimizedUTCTestCase::test_normalize PASSED              [ 94%]
+test_tzinfo.py::LegacyUTCTestCase::test_astimezone PASSED                [ 94%]
+test_tzinfo.py::LegacyUTCTestCase::test_expectedclass PASSED             [ 95%]
+test_tzinfo.py::LegacyUTCTestCase::test_fromutc PASSED                   [ 95%]
+test_tzinfo.py::LegacyUTCTestCase::test_normalize PASSED                 [ 96%]
+test_tzinfo.py::StaticTzInfoTestCase::test_astimezone PASSED             [ 96%]
+test_tzinfo.py::StaticTzInfoTestCase::test_expectedclass PASSED          [ 97%]
+test_tzinfo.py::StaticTzInfoTestCase::test_fromutc PASSED                [ 97%]
+test_tzinfo.py::StaticTzInfoTestCase::test_normalize PASSED              [ 97%]
+test_tzinfo.py::DstTzInfoTestCase::test_astimezone PASSED                [ 98%]
+test_tzinfo.py::DstTzInfoTestCase::test_expectedclass PASSED             [ 98%]
+test_tzinfo.py::DstTzInfoTestCase::test_fromutc PASSED                   [ 99%]
+test_tzinfo.py::DstTzInfoTestCase::test_normalize PASSED                 [ 99%]
+test_tzinfo.py::test_suite PASSED                                        [100%]
+
+=================================== FAILURES ===================================
+__________________ DocumentationTestCase.test_readme_encoding __________________
+
+self = <test_docs.DocumentationTestCase testMethod=test_readme_encoding>
+
+    def test_readme_encoding(self):
+        '''Confirm the README.rst is ASCII.'''
+>       f = open(README, 'rb')
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/../../README.rst'
+
+test_docs.py:16: FileNotFoundError
+__________________________________ test_suite __________________________________
+
+    def test_suite():
+        "For the Z3 test runner"
+        return unittest.TestSuite((
+            DocumentationTestCase('test_readme_encoding'),
+>           DocFileSuite(os.path.join(os.pardir, os.pardir, 'README.rst'))))
+
+test_docs.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.10/doctest.py:2524: in DocFileSuite
+    suite.addTest(DocFileTest(path, **kw))
+/usr/local/lib/python3.10/doctest.py:2446: in DocFileTest
+    doc, path = _load_testfile(path, package, module_relative,
+/usr/local/lib/python3.10/doctest.py:228: in _load_testfile
+    file_contents = loader.get_data(filename)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_pytest.assertion.rewrite.AssertionRewritingHook object at 0x7f5bc3f1b190>
+pathname = '/workspace/../../README.rst'
+
+    def get_data(self, pathname: str | bytes) -> bytes:
+        """Optional PEP302 get_data API."""
+>       with open(pathname, "rb") as f:
+E       FileNotFoundError: [Errno 2] No such file or directory: '/workspace/../../README.rst'
+
+/usr/local/lib/python3.10/site-packages/_pytest/assertion/rewrite.py:291: FileNotFoundError
+=============================== warnings summary ===============================
+test_tzinfo.py::test_suite
+  /usr/local/lib/python3.10/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but test_tzinfo.py::test_suite returned <class 'unittest.suite.TestSuite'>.
+  Did you mean to use `assert` instead of `return`?
+  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED test_docs.py::DocumentationTestCase::test_readme_encoding - FileNotFou...
+FAILED test_docs.py::test_suite - FileNotFoundError: [Errno 2] No such file o...
+=================== 2 failed, 232 passed, 1 warning in 0.79s ===================

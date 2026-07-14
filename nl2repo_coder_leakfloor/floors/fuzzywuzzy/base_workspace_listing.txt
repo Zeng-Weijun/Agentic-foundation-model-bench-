@@ -1,0 +1,7 @@
+/workspace
+/workspace/setup.cfg
+/workspace/setup.py
+/workspace/tests
+/workspace/tests/test_fuzzywuzzy.py
+/workspace/tests/test_fuzzywuzzy_hypothesis.py
+/workspace/tests/test_fuzzywuzzy_pytest.py

@@ -1,0 +1,14 @@
+{
+  "task": "bleach",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 27,
+  "leak_floor_errors": 12,
+  "total": 448,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/bleach:1.0",
+  "image_status": "loaded"
+}

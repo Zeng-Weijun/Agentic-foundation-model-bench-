@@ -1,0 +1,12 @@
+$ pip install -e .
+[rc=0]
+Looking in links: /wheelhouse
+Obtaining file:///workspace
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Installing collected packages: pysondb-v2
+  Running setup.py develop for pysondb-v2
+Successfully installed pysondb-v2-2.2.0
+
+[stderr]
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv

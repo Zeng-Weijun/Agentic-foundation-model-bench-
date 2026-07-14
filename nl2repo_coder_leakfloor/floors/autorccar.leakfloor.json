@@ -1,0 +1,14 @@
+{
+  "task": "autorccar",
+  "leak_floor_passed": 6,
+  "leak_floor_failed": 0,
+  "leak_floor_errors": 4,
+  "total": 13,
+  "leak_floor_success_rate": 0.461538,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/autorccar:1.0",
+  "image_status": "loaded"
+}

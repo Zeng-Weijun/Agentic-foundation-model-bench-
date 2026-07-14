@@ -1,0 +1,21 @@
+{
+  "network": "none",
+  "test_shell": [
+    "pytest --continue-on-collection-errors -v"
+  ],
+  "command_exit_codes": [
+    1
+  ],
+  "command_seconds": [
+    1.2
+  ],
+  "pytest_results": {
+    "passed": 232,
+    "failed": 2,
+    "errors": 0,
+    "total": 235,
+    "success_rate": 0.987234
+  },
+  "score": 232,
+  "success_rate": 0.987234
+}

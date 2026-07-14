@@ -1,0 +1,14 @@
+{
+  "task": "cookiecutter",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 0,
+  "leak_floor_errors": 0,
+  "total": 381,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    1,
+    4
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/cookiecutter:1.0",
+  "image_status": "loaded"
+}

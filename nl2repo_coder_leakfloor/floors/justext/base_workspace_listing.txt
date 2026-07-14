@@ -1,0 +1,17 @@
+/workspace
+/workspace/.pytest_cache
+/workspace/.pytest_cache/.gitignore
+/workspace/.pytest_cache/CACHEDIR.TAG
+/workspace/.pytest_cache/README.md
+/workspace/.pytest_cache/v
+/workspace/setup.py
+/workspace/tests
+/workspace/tests/__init__.py
+/workspace/tests/__pycache__
+/workspace/tests/test_classify_paragraphs.py
+/workspace/tests/test_core.py
+/workspace/tests/test_dom_utils.py
+/workspace/tests/test_html_encoding.py
+/workspace/tests/test_paths.py
+/workspace/tests/test_sax.py
+/workspace/tests/test_utils.py

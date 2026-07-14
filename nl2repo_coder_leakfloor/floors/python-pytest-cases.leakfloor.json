@@ -1,0 +1,14 @@
+{
+  "task": "python-pytest-cases",
+  "leak_floor_passed": 21,
+  "leak_floor_failed": 1,
+  "leak_floor_errors": 548,
+  "total": 1372,
+  "leak_floor_success_rate": 0.015306,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-pytest-cases:1.0",
+  "image_status": "loaded"
+}

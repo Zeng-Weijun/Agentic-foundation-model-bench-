@@ -1,0 +1,14 @@
+{
+  "task": "python-dotenv",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 6,
+  "leak_floor_errors": 10,
+  "total": 209,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    1,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/python-dotenv:1.0",
+  "image_status": "loaded"
+}

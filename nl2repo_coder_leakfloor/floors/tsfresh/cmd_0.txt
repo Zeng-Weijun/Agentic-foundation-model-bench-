@@ -1,0 +1,37 @@
+$ pip install -e .
+[rc=0]
+Looking in links: /wheelhouse
+Obtaining file:///workspace
+  Preparing metadata (setup.py): started
+  Preparing metadata (setup.py): finished with status 'done'
+Requirement already satisfied: requests>=2.9.1 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (2.32.5)
+Requirement already satisfied: numpy>=1.15.1 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (2.2.6)
+Requirement already satisfied: pandas>=0.25.0 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (2.3.2)
+Requirement already satisfied: statsmodels>=0.13 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (0.14.5)
+Requirement already satisfied: patsy>=0.4.1 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (1.0.1)
+Requirement already satisfied: pywavelets in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (1.8.0)
+Requirement already satisfied: scikit-learn>=0.22.0 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (1.7.1)
+Requirement already satisfied: tqdm>=4.10.0 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (4.67.1)
+Requirement already satisfied: stumpy>=1.7.2 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (1.13.0)
+Requirement already satisfied: cloudpickle in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (3.1.1)
+Requirement already satisfied: scipy>=1.14.0 in /usr/local/lib/python3.10/site-packages (from tsfresh==1.0.0) (1.15.3)
+Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.10/site-packages (from pandas>=0.25.0->tsfresh==1.0.0) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/site-packages (from pandas>=0.25.0->tsfresh==1.0.0) (2025.2)
+Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.10/site-packages (from pandas>=0.25.0->tsfresh==1.0.0) (2025.2)
+Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.10/site-packages (from python-dateutil>=2.8.2->pandas>=0.25.0->tsfresh==1.0.0) (1.17.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in /usr/local/lib/python3.10/site-packages (from requests>=2.9.1->tsfresh==1.0.0) (3.4.3)
+Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/site-packages (from requests>=2.9.1->tsfresh==1.0.0) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /usr/local/lib/python3.10/site-packages (from requests>=2.9.1->tsfresh==1.0.0) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/site-packages (from requests>=2.9.1->tsfresh==1.0.0) (2025.8.3)
+Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn>=0.22.0->tsfresh==1.0.0) (1.5.1)
+Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.10/site-packages (from scikit-learn>=0.22.0->tsfresh==1.0.0) (3.6.0)
+Requirement already satisfied: packaging>=21.3 in /usr/local/lib/python3.10/site-packages (from statsmodels>=0.13->tsfresh==1.0.0) (25.0)
+Requirement already satisfied: numba>=0.57.1 in /usr/local/lib/python3.10/site-packages (from stumpy>=1.7.2->tsfresh==1.0.0) (0.61.2)
+Requirement already satisfied: llvmlite<0.45,>=0.44.0dev0 in /usr/local/lib/python3.10/site-packages (from numba>=0.57.1->stumpy>=1.7.2->tsfresh==1.0.0) (0.44.0)
+Installing collected packages: tsfresh
+  Running setup.py develop for tsfresh
+Successfully installed tsfresh
+
+[stderr]
+  DEPRECATION: Legacy editable install of tsfresh==1.0.0 from file:///workspace (setup.py develop) is deprecated. pip 25.3 will enforce this behaviour change. A possible replacement is to add a pyproject.toml or enable --use-pep517, and use setuptools >= 64. If the resulting installation is not behaving as expected, try using --config-settings editable_mode=compat. Please consult the setuptools documentation for more information. Discussion can be found at https://github.com/pypa/pip/issues/11457
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.

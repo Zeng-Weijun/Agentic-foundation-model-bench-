@@ -1,0 +1,99 @@
+{
+  "recorded_macro_95": 0.155454,
+  "recorded_micro_95": 0.084365,
+  "honest_macro_95_strict": 0.142932,
+  "honest_micro_95_strict": 0.079868,
+  "honest_macro_95_generous": 0.149444,
+  "delta_strict": -0.012522,
+  "pure_leak_exact": [
+    "autorccar",
+    "pysondb-v2",
+    "python-pytest-cases"
+  ],
+  "shadow_zeroed": [
+    "databases",
+    "justext",
+    "pytz"
+  ],
+  "partial_leak": [
+    "aiofiles",
+    "fuzzywuzzy",
+    "google-images-download",
+    "tsfresh"
+  ],
+  "n_genuine_no_leak": 51,
+  "n_nonzero": 61,
+  "n_floors": 61,
+  "leak_floors": {
+    "fuzzywuzzy": {
+      "recorded_passed": 39,
+      "total": 71,
+      "leak_floor_passed": 1,
+      "recorded_sr": 0.549296,
+      "honest_sr": 0.535211
+    },
+    "google-images-download": {
+      "recorded_passed": 16,
+      "total": 30,
+      "leak_floor_passed": 1,
+      "recorded_sr": 0.533333,
+      "honest_sr": 0.5
+    },
+    "justext": {
+      "recorded_passed": 32,
+      "total": 61,
+      "leak_floor_passed": 58,
+      "recorded_sr": 0.52459,
+      "honest_sr": 0.0
+    },
+    "autorccar": {
+      "recorded_passed": 6,
+      "total": 13,
+      "leak_floor_passed": 6,
+      "recorded_sr": 0.461538,
+      "honest_sr": 0.0
+    },
+    "tsfresh": {
+      "recorded_passed": 27,
+      "total": 317,
+      "leak_floor_passed": 10,
+      "recorded_sr": 0.085174,
+      "honest_sr": 0.053628
+    },
+    "pytz": {
+      "recorded_passed": 16,
+      "total": 235,
+      "leak_floor_passed": 232,
+      "recorded_sr": 0.068085,
+      "honest_sr": 0.0
+    },
+    "databases": {
+      "recorded_passed": 4,
+      "total": 154,
+      "leak_floor_passed": 142,
+      "recorded_sr": 0.025974,
+      "honest_sr": 0.0
+    },
+    "aiofiles": {
+      "recorded_passed": 5,
+      "total": 211,
+      "leak_floor_passed": 1,
+      "recorded_sr": 0.023697,
+      "honest_sr": 0.018957
+    },
+    "python-pytest-cases": {
+      "recorded_passed": 21,
+      "total": 1372,
+      "leak_floor_passed": 21,
+      "recorded_sr": 0.015306,
+      "honest_sr": 0.0
+    },
+    "pysondb-v2": {
+      "recorded_passed": 1,
+      "total": 96,
+      "leak_floor_passed": 1,
+      "recorded_sr": 0.010417,
+      "honest_sr": 0.0
+    }
+  }
+}

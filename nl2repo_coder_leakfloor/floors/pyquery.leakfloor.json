@@ -1,0 +1,14 @@
+{
+  "task": "pyquery",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 5,
+  "leak_floor_errors": 2,
+  "total": 74,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    0,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pyquery:1.0",
+  "image_status": "already_present"
+}

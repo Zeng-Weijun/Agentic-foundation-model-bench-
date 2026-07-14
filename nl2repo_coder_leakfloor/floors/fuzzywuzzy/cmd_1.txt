@@ -1,0 +1,518 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.11, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace
+plugins: hypothesis-6.138.6
+collected 50 items / 1 error
+
+tests/test_fuzzywuzzy.py FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 94%]
+F.                                                                       [ 98%]
+tests/test_fuzzywuzzy_pytest.py F                                        [100%]
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting tests/test_fuzzywuzzy_hypothesis.py _____________
+ImportError while importing test module '/workspace/tests/test_fuzzywuzzy_hypothesis.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_fuzzywuzzy_hypothesis.py:63: in <module>
+    scorers_processors())
+tests/test_fuzzywuzzy_hypothesis.py:14: in scorers_processors
+    from fuzzywuzzy import fuzz, utils
+E   ModuleNotFoundError: No module named 'fuzzywuzzy'
+=================================== FAILURES ===================================
+______________ StringProcessingTest.test_dont_condense_whitespace ______________
+
+self = <test_fuzzywuzzy.StringProcessingTest testMethod=test_dont_condense_whitespace>
+
+    def test_dont_condense_whitespace(self):
+>       from fuzzywuzzy.string_processing import StringProcessor
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:24: ModuleNotFoundError
+__ StringProcessingTest.test_replace_non_letters_non_numbers_with_whitespace ___
+
+self = <test_fuzzywuzzy.StringProcessingTest testMethod=test_replace_non_letters_non_numbers_with_whitespace>
+
+    def test_replace_non_letters_non_numbers_with_whitespace(self):
+>       from fuzzywuzzy.string_processing import StringProcessor
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:14: ModuleNotFoundError
+__________________________ UtilsTest.test_asciidammit __________________________
+
+self = <test_fuzzywuzzy.UtilsTest testMethod=test_asciidammit>
+
+    def test_asciidammit(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:55: ModuleNotFoundError
+___________________________ UtilsTest.test_asciionly ___________________________
+
+self = <test_fuzzywuzzy.UtilsTest testMethod=test_asciionly>
+
+    def test_asciionly(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:60: ModuleNotFoundError
+__________________________ UtilsTest.test_fullProcess __________________________
+
+self = <test_fuzzywuzzy.UtilsTest testMethod=test_fullProcess>
+
+    def test_fullProcess(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:67: ModuleNotFoundError
+_____________________ UtilsTest.test_fullProcessForceAscii _____________________
+
+self = <test_fuzzywuzzy.UtilsTest testMethod=test_fullProcessForceAscii>
+
+    def test_fullProcessForceAscii(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:72: ModuleNotFoundError
+________________________ RatioTest.testCaseInsensitive _________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testCaseInsensitive>
+
+    def testCaseInsensitive(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:123: ModuleNotFoundError
+______________________ RatioTest.testEmptyStringsScore100 ______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testEmptyStringsScore100>
+
+    def testEmptyStringsScore100(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:210: ModuleNotFoundError
+_____________________________ RatioTest.testEqual ______________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testEqual>
+
+    def testEqual(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:116: ModuleNotFoundError
+___________________________ RatioTest.testIssueSeven ___________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testIssueSeven>
+
+    def testIssueSeven(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:216: ModuleNotFoundError
+__________________________ RatioTest.testPartialRatio __________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testPartialRatio>
+
+    def testPartialRatio(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:129: ModuleNotFoundError
+___________________ RatioTest.testPartialRatioUnicodeString ____________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testPartialRatioUnicodeString>
+
+    def testPartialRatioUnicodeString(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:236: ModuleNotFoundError
+______________________ RatioTest.testPartialTokenSetRatio ______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testPartialTokenSetRatio>
+
+    def testPartialTokenSetRatio(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:158: ModuleNotFoundError
+_____________________ RatioTest.testPartialTokenSortRatio ______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testPartialTokenSortRatio>
+
+    def testPartialTokenSortRatio(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:139: ModuleNotFoundError
+________________________ RatioTest.testQRatioForceAscii ________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQRatioForceAscii>
+
+    def testQRatioForceAscii(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:296: ModuleNotFoundError
+_________________________ RatioTest.testQRatioUnicode __________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQRatioUnicode>
+
+    def testQRatioUnicode(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:205: ModuleNotFoundError
+______________________ RatioTest.testQRatioUnicodeString _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQRatioUnicodeString>
+
+    def testQRatioUnicodeString(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:264: ModuleNotFoundError
+________________________ RatioTest.testQratioForceAscii ________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQratioForceAscii>
+
+    def testQratioForceAscii(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:284: ModuleNotFoundError
+___________________ RatioTest.testQuickRatioCaseInsensitive ____________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQuickRatioCaseInsensitive>
+
+    def testQuickRatioCaseInsensitive(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:168: ModuleNotFoundError
+________________________ RatioTest.testQuickRatioEqual _________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQuickRatioEqual>
+
+    def testQuickRatioEqual(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:163: ModuleNotFoundError
+_______________________ RatioTest.testQuickRatioNotEqual _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testQuickRatioNotEqual>
+
+    def testQuickRatioNotEqual(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:173: ModuleNotFoundError
+_______________________ RatioTest.testRatioUnicodeString _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testRatioUnicodeString>
+
+    def testRatioUnicodeString(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:228: ModuleNotFoundError
+_______________________ RatioTest.testTokenSetForceAscii _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testTokenSetForceAscii>
+
+    def testTokenSetForceAscii(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:308: ModuleNotFoundError
+_________________________ RatioTest.testTokenSetRatio __________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testTokenSetRatio>
+
+    def testTokenSetRatio(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:149: ModuleNotFoundError
+______________________ RatioTest.testTokenSortForceAscii _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testTokenSortForceAscii>
+
+    def testTokenSortForceAscii(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:320: ModuleNotFoundError
+_________________________ RatioTest.testTokenSortRatio _________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testTokenSortRatio>
+
+    def testTokenSortRatio(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:134: ModuleNotFoundError
+_____________________ RatioTest.testWRatioCaseInsensitive ______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioCaseInsensitive>
+
+    def testWRatioCaseInsensitive(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:183: ModuleNotFoundError
+__________________________ RatioTest.testWRatioEqual ___________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioEqual>
+
+    def testWRatioEqual(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:178: ModuleNotFoundError
+_____________________ RatioTest.testWRatioMisorderedMatch ______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioMisorderedMatch>
+
+    def testWRatioMisorderedMatch(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:194: ModuleNotFoundError
+_______________________ RatioTest.testWRatioPartialMatch _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioPartialMatch>
+
+    def testWRatioPartialMatch(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:188: ModuleNotFoundError
+_________________________ RatioTest.testWRatioUnicode __________________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioUnicode>
+
+    def testWRatioUnicode(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:200: ModuleNotFoundError
+______________________ RatioTest.testWRatioUnicodeString _______________________
+
+self = <test_fuzzywuzzy.RatioTest testMethod=testWRatioUnicodeString>
+
+    def testWRatioUnicodeString(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:244: ModuleNotFoundError
+______________________ ValidatorTest.testCheckEmptyString ______________________
+
+self = <test_fuzzywuzzy.ValidatorTest testMethod=testCheckEmptyString>
+
+    def testCheckEmptyString(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:352: ModuleNotFoundError
+________________________ ValidatorTest.testCheckForNone ________________________
+
+self = <test_fuzzywuzzy.ValidatorTest testMethod=testCheckForNone>
+
+    def testCheckForNone(self):
+>       from fuzzywuzzy import utils
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:337: ModuleNotFoundError
+_________________________ ProcessTest.testEmptyStrings _________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testEmptyStrings>
+
+    def testEmptyStrings(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:505: ModuleNotFoundError
+________________________ ProcessTest.testGetBestChoice1 ________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testGetBestChoice1>
+
+    def testGetBestChoice1(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:395: ModuleNotFoundError
+________________________ ProcessTest.testGetBestChoice2 ________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testGetBestChoice2>
+
+    def testGetBestChoice2(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:401: ModuleNotFoundError
+________________________ ProcessTest.testGetBestChoice3 ________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testGetBestChoice3>
+
+    def testGetBestChoice3(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:407: ModuleNotFoundError
+________________________ ProcessTest.testGetBestChoice4 ________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testGetBestChoice4>
+
+    def testGetBestChoice4(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:413: ModuleNotFoundError
+_________________________ ProcessTest.testNullStrings __________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testNullStrings>
+
+    def testNullStrings(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:520: ModuleNotFoundError
+__________________________ ProcessTest.testWithCutoff __________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testWithCutoff>
+
+    def testWithCutoff(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:466: ModuleNotFoundError
+_________________________ ProcessTest.testWithCutoff2 __________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testWithCutoff2>
+
+    def testWithCutoff2(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:489: ModuleNotFoundError
+________________________ ProcessTest.testWithProcessor _________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testWithProcessor>
+
+    def testWithProcessor(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:419: ModuleNotFoundError
+__________________________ ProcessTest.testWithScorer __________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=testWithScorer>
+
+    def testWithScorer(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:431: ModuleNotFoundError
+___________________________ ProcessTest.test_dedupe ____________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=test_dedupe>
+
+    def test_dedupe(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:563: ModuleNotFoundError
+______________________ ProcessTest.test_dict_like_extract ______________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=test_dict_like_extract>
+
+    def test_dict_like_extract(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:547: ModuleNotFoundError
+______________________ ProcessTest.test_list_like_extract ______________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=test_list_like_extract>
+
+    def test_list_like_extract(self):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:535: ModuleNotFoundError
+_________________________ ProcessTest.test_simplematch _________________________
+
+self = <test_fuzzywuzzy.ProcessTest testMethod=test_simplematch>
+
+    def test_simplematch(self):
+>       from fuzzywuzzy import fuzz
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy.py:582: ModuleNotFoundError
+_____________________________ test_process_warning _____________________________
+
+caplog = <_pytest.logging.LogCaptureFixture object at 0x7f0db9cdfe80>
+
+    def test_process_warning(caplog):
+>       from fuzzywuzzy import process
+E       ModuleNotFoundError: No module named 'fuzzywuzzy'
+
+tests/test_fuzzywuzzy_pytest.py:5: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/test_fuzzywuzzy.py::StringProcessingTest::test_dont_condense_whitespace
+FAILED tests/test_fuzzywuzzy.py::StringProcessingTest::test_replace_non_letters_non_numbers_with_whitespace
+FAILED tests/test_fuzzywuzzy.py::UtilsTest::test_asciidammit - ModuleNotFound...
+FAILED tests/test_fuzzywuzzy.py::UtilsTest::test_asciionly - ModuleNotFoundEr...
+FAILED tests/test_fuzzywuzzy.py::UtilsTest::test_fullProcess - ModuleNotFound...
+FAILED tests/test_fuzzywuzzy.py::UtilsTest::test_fullProcessForceAscii - Modu...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testCaseInsensitive - ModuleNotFo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testEmptyStringsScore100 - Module...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testEqual - ModuleNotFoundError: ...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testIssueSeven - ModuleNotFoundEr...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testPartialRatio - ModuleNotFound...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testPartialRatioUnicodeString - M...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testPartialTokenSetRatio - Module...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testPartialTokenSortRatio - Modul...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQRatioForceAscii - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQRatioUnicode - ModuleNotFoun...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQRatioUnicodeString - ModuleN...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQratioForceAscii - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQuickRatioCaseInsensitive - M...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQuickRatioEqual - ModuleNotFo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testQuickRatioNotEqual - ModuleNo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testRatioUnicodeString - ModuleNo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testTokenSetForceAscii - ModuleNo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testTokenSetRatio - ModuleNotFoun...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testTokenSortForceAscii - ModuleN...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testTokenSortRatio - ModuleNotFou...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioCaseInsensitive - Modul...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioEqual - ModuleNotFoundE...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioMisorderedMatch - Modul...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioPartialMatch - ModuleNo...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioUnicode - ModuleNotFoun...
+FAILED tests/test_fuzzywuzzy.py::RatioTest::testWRatioUnicodeString - ModuleN...
+FAILED tests/test_fuzzywuzzy.py::ValidatorTest::testCheckEmptyString - Module...
+FAILED tests/test_fuzzywuzzy.py::ValidatorTest::testCheckForNone - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testEmptyStrings - ModuleNotFou...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testGetBestChoice1 - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testGetBestChoice2 - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testGetBestChoice3 - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testGetBestChoice4 - ModuleNotF...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testNullStrings - ModuleNotFoun...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testWithCutoff - ModuleNotFound...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testWithCutoff2 - ModuleNotFoun...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testWithProcessor - ModuleNotFo...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::testWithScorer - ModuleNotFound...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::test_dedupe - ModuleNotFoundErr...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::test_dict_like_extract - Module...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::test_list_like_extract - Module...
+FAILED tests/test_fuzzywuzzy.py::ProcessTest::test_simplematch - ModuleNotFou...
+FAILED tests/test_fuzzywuzzy_pytest.py::test_process_warning - ModuleNotFound...
+ERROR tests/test_fuzzywuzzy_hypothesis.py
+==================== 49 failed, 1 passed, 1 error in 0.67s =====================

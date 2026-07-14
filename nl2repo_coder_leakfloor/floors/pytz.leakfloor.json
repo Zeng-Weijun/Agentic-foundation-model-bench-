@@ -1,0 +1,13 @@
+{
+  "task": "pytz",
+  "leak_floor_passed": 232,
+  "leak_floor_failed": 2,
+  "leak_floor_errors": 0,
+  "total": 235,
+  "leak_floor_success_rate": 0.987234,
+  "command_exit_codes": [
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pytz:1.0",
+  "image_status": "loaded"
+}

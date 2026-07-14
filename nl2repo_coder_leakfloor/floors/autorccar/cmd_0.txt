@@ -1,0 +1,7 @@
+$ pip install -e .
+[rc=1]
+Looking in links: /wheelhouse
+Obtaining file:///workspace
+
+[stderr]
+ERROR: file:///workspace does not appear to be a Python project: neither 'setup.py' nor 'pyproject.toml' found.

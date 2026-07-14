@@ -1,0 +1,14 @@
+{
+  "task": "google-images-download",
+  "leak_floor_passed": 1,
+  "leak_floor_failed": 0,
+  "leak_floor_errors": 4,
+  "total": 30,
+  "leak_floor_success_rate": 0.033333,
+  "command_exit_codes": [
+    0,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/google-images-download:1.0",
+  "image_status": "loaded"
+}

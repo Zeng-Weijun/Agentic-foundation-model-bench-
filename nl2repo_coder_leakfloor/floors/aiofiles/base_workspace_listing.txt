@@ -1,0 +1,9 @@
+/workspace
+/workspace/pyproject.toml
+/workspace/tests
+/workspace/tests/resources
+/workspace/tests/test_os.py
+/workspace/tests/test_simple.py
+/workspace/tests/test_stdio.py
+/workspace/tests/test_tempfile.py
+/workspace/tests/threadpool

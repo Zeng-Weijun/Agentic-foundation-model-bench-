@@ -1,0 +1,223 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.11, pytest-8.4.2, pluggy-1.6.0
+rootdir: /workspace
+plugins: mock-3.15.1
+collected 1 item / 21 errors
+
+tests/test_something.py .                                                [100%]
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_cli.py ______________________
+ImportError while importing test module '/workspace/tests/test_cli.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_cli.py:1: in <module>
+    from pysondb.cli import main
+E   ModuleNotFoundError: No module named 'pysondb'
+___________________ ERROR collecting tests/test_cli_merge.py ___________________
+ImportError while importing test module '/workspace/tests/test_cli_merge.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_cli_merge.py:3: in <module>
+    from pysondb.cli import main
+E   ModuleNotFoundError: No module named 'pysondb'
+___________________ ERROR collecting tests/test_cli_purge.py ___________________
+ImportError while importing test module '/workspace/tests/test_cli_purge.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_cli_purge.py:3: in <module>
+    from pysondb.cli import main
+E   ModuleNotFoundError: No module named 'pysondb'
+___________________ ERROR collecting tests/test_cli_show.py ____________________
+ImportError while importing test module '/workspace/tests/test_cli_show.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_cli_show.py:3: in <module>
+    from pysondb.cli import main
+E   ModuleNotFoundError: No module named 'pysondb'
+___________________ ERROR collecting tests/test_cli_tocsv.py ___________________
+ImportError while importing test module '/workspace/tests/test_cli_tocsv.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_cli_tocsv.py:3: in <module>
+    from pysondb.cli import main
+E   ModuleNotFoundError: No module named 'pysondb'
+____________________ ERROR collecting tests/test_db_add.py _____________________
+ImportError while importing test module '/workspace/tests/test_db_add.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_add.py:6: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+__________________ ERROR collecting tests/test_db_add_many.py __________________
+ImportError while importing test module '/workspace/tests/test_db_add_many.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_add_many.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+________________ ERROR collecting tests/test_db_add_new_key.py _________________
+ImportError while importing test module '/workspace/tests/test_db_add_new_key.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_add_new_key.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_________________ ERROR collecting tests/test_db_autoupdate.py _________________
+ImportError while importing test module '/workspace/tests/test_db_autoupdate.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_autoupdate.py:4: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+______________ ERROR collecting tests/test_db_delete_by_query.py _______________
+ImportError while importing test module '/workspace/tests/test_db_delete_by_query.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_delete_by_query.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+__________________ ERROR collecting tests/test_db_get_all.py ___________________
+ImportError while importing test module '/workspace/tests/test_db_get_all.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_get_all.py:3: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+____________ ERROR collecting tests/test_db_get_all_select_keys.py _____________
+ImportError while importing test module '/workspace/tests/test_db_get_all_select_keys.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_get_all_select_keys.py:3: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_________________ ERROR collecting tests/test_db_get_by_id.py __________________
+ImportError while importing test module '/workspace/tests/test_db_get_by_id.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_get_by_id.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+________________ ERROR collecting tests/test_db_get_by_query.py ________________
+ImportError while importing test module '/workspace/tests/test_db_get_by_query.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_get_by_query.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+___________________ ERROR collecting tests/test_db_purge.py ____________________
+ImportError while importing test module '/workspace/tests/test_db_purge.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_purge.py:3: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+________________ ERROR collecting tests/test_db_update_by_id.py ________________
+ImportError while importing test module '/workspace/tests/test_db_update_by_id.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_update_by_id.py:5: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+______________ ERROR collecting tests/test_db_update_by_query.py _______________
+ImportError while importing test module '/workspace/tests/test_db_update_by_query.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_update_by_query.py:8: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_______________ ERROR collecting tests/test_db_utils_methods.py ________________
+ImportError while importing test module '/workspace/tests/test_db_utils_methods.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_db_utils_methods.py:4: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_________________ ERROR collecting tests/test_delete_by_id.py __________________
+ImportError while importing test module '/workspace/tests/test_delete_by_id.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_delete_by_id.py:8: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_________________ ERROR collecting tests/test_id_generator.py __________________
+ImportError while importing test module '/workspace/tests/test_id_generator.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_id_generator.py:3: in <module>
+    from pysondb.db import PysonDB
+E   ModuleNotFoundError: No module named 'pysondb'
+_________________ ERROR collecting tests/test_utils_migrate.py _________________
+ImportError while importing test module '/workspace/tests/test_utils_migrate.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_utils_migrate.py:3: in <module>
+    from pysondb.utils import migrate
+E   ModuleNotFoundError: No module named 'pysondb'
+=========================== short test summary info ============================
+ERROR tests/test_cli.py
+ERROR tests/test_cli_merge.py
+ERROR tests/test_cli_purge.py
+ERROR tests/test_cli_show.py
+ERROR tests/test_cli_tocsv.py
+ERROR tests/test_db_add.py
+ERROR tests/test_db_add_many.py
+ERROR tests/test_db_add_new_key.py
+ERROR tests/test_db_autoupdate.py
+ERROR tests/test_db_delete_by_query.py
+ERROR tests/test_db_get_all.py
+ERROR tests/test_db_get_all_select_keys.py
+ERROR tests/test_db_get_by_id.py
+ERROR tests/test_db_get_by_query.py
+ERROR tests/test_db_purge.py
+ERROR tests/test_db_update_by_id.py
+ERROR tests/test_db_update_by_query.py
+ERROR tests/test_db_utils_methods.py
+ERROR tests/test_delete_by_id.py
+ERROR tests/test_id_generator.py
+ERROR tests/test_utils_migrate.py
+========================= 1 passed, 21 errors in 0.17s =========================

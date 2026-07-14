@@ -1,0 +1,36 @@
+$ pytest --continue-on-collection-errors test
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.11.7, pytest-8.4.1, pluggy-1.6.0
+rootdir: /workspace
+plugins: anyio-4.10.0
+collected 6 items / 2 errors
+
+test/stream_server_test.py ...                                           [ 50%]
+test/ultrasonic_server_test.py ...                                       [100%]
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting test/rc_control_test.py ___________________
+ImportError while importing test module '/workspace/test/rc_control_test.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\IdeaProjects\Wmirro\xm39\AutoRCCar-master\test\rc_control_test.py:6: in <module>
+    ???
+E   ModuleNotFoundError: No module named 'computer'
+___________________ ERROR collecting test/test_rc_driver.py ____________________
+ImportError while importing test module '/workspace/test/test_rc_driver.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+D:\IdeaProjects\Wmirro\xm39\AutoRCCar-master\test\test_rc_driver.py:8: in <module>
+    ???
+E   ModuleNotFoundError: No module named 'computer'
+=========================== short test summary info ============================
+ERROR test/rc_control_test.py
+ERROR test/test_rc_driver.py
+========================= 6 passed, 2 errors in 0.73s ==========================

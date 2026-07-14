@@ -1,0 +1,14 @@
+{
+  "task": "binaryalert",
+  "leak_floor_passed": 0,
+  "leak_floor_failed": 5,
+  "leak_floor_errors": 20,
+  "total": 77,
+  "leak_floor_success_rate": 0.0,
+  "command_exit_codes": [
+    0,
+    1
+  ],
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/binaryalert:1.0",
+  "image_status": "loaded"
+}

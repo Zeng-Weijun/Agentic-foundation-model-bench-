@@ -1,0 +1,33 @@
+$ pytest --continue-on-collection-errors tests
+[rc=1]
+============================= test session starts ==============================
+platform linux -- Python 3.10.11, pytest-8.4.0, pluggy-1.6.0
+rootdir: /workspace
+plugins: cov-4.1.0
+collected 1 item / 2 errors
+
+tests/test_sample.py .                                                   [100%]
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting tests/test_advanced_features.py _______________
+ImportError while importing test module '/workspace/tests/test_advanced_features.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_advanced_features.py:7: in <module>
+    from google_images_download import google_images_download
+E   ModuleNotFoundError: No module named 'google_images_download'
+____________ ERROR collecting tests/test_google_images_download.py _____________
+ImportError while importing test module '/workspace/tests/test_google_images_download.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/local/lib/python3.10/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_google_images_download.py:1: in <module>
+    from google_images_download import *
+E   ModuleNotFoundError: No module named 'google_images_download'
+=========================== short test summary info ============================
+ERROR tests/test_advanced_features.py
+ERROR tests/test_google_images_download.py
+========================= 1 passed, 2 errors in 0.10s ==========================
