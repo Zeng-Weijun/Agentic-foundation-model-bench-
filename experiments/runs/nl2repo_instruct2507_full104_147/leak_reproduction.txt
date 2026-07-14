@@ -1,0 +1,63 @@
+NL2RepoBench x Instruct-2507 -- LEAK reproduction record (auditor A, Claude, honest)
+====================================================================================
+Harness: nl2repo_qwencode_driver_instruct.py -- a faithful port of the official
+openhands/post_processor.py.
+  * success_rate = min(passed/total, 1)         [driver L477 == official L478, byte-identical]
+  * package_files strip list                     [driver L89-94 == official L197-213, 15 files identical]
+  * scoring = overlay model source onto a FRESH official base image <pkg>:1.0 /workspace,
+    set PYTHONPATH=/workspace, run test_shell = ["pip install -e .", "pytest --continue-on-collection-errors <dir>"]
+  * total taken from static test_case_count.txt (ground truth), not from live collection.
+
+ROOT CAUSE OF INFLATION
+-----------------------
+Every official ghcr.io/multimodal-art-projection/nl2repobench/<pkg>:1.0 image ships the
+REAL pypi package pre-installed in /usr/local/lib/python3.11/site-packages. The strip and
+overlay steps only touch /workspace, never site-packages -- so pytest imports the LEAKED
+package, not the model's (absent or broken) source. This is a property of the OFFICIAL
+NL2RepoBench images, not something introduced by the reproduction harness.
+
+databases  (recorded 142/154 = 0.9221)
+--------------------------------------
+[base pristine]   python -c "import databases" -> /usr/local/lib/python3.11/site-packages/databases/__init__.py  VERSION 0.9.0   (LEAK)
+[model delivered] workspace_listing.txt = only /workspace/start.md  (tool_calls=0, assistant_turns=1) -> ZERO source code
+[pip log]         pip install -e . -> "Found existing installation: databases 0.9.0 / Successfully uninstalled databases-0.9.0"
+[pure leak floor] pytest WITHOUT pip install, base only               -> 142 passed, 12 skipped   (== recorded)
+[exact driver seq] pip install -e . installs empty databases 0.0.1 (base setup.py get_packages("databases")=[] since no source dir),
+                   uninstalling the leaked 0.9.0 -> site-packages/databases DELETED, easy-install.pth=/workspace, databases.egg-link
+                   -> import databases -> ModuleNotFoundError
+                   -> pytest -> 5 errors, 0 passed, rc=1
+   CONCLUSION: recorded 142 == the pure leak (pytest sees leaked 0.9.0). A CLEAN run of the exact
+   driver sequence gives 0. The model contributed nothing. Honest databases = 0.000.
+
+stamina  (recorded 129/129 = 1.0 -- the ONLY fully_solved task)
+---------------------------------------------------------------
+[base pristine]   python -c "import stamina" -> site-packages/stamina/__init__.py  VERSION 24.2.0   (LEAK)
+[model delivered] src/stamina + pyproject.toml; strip removed pyproject.toml (in PACKAGE_FILES)
+[recorded]        pip install -e . rc=1 (build-backend AttributeError, pyproject stripped) -> leak NOT uninstalled
+                  recorded pytest banner literally prints  "stamina: 24.2.0"  (the leaked version, not the model's)
+[reproduce, NO model source] pip install fails, pytest -> 129 passed, 2 skipped  (== recorded 129)
+   CONCLUSION: PURE LEAK. The model's src/stamina is never imported (src not on path, install failed).
+   Honest stamina = ~0 (unmeasured; recorded number is 100% the leaked package).
+
+Leak-floor sweep of all 12 nonzero tasks (pytest vs pristine base image, NO model source, NO install)
+-----------------------------------------------------------------------------------------------------
+task                     recorded_sr   leak_floor_sr   verdict
+stamina                  1.0000        1.0000          LEAK
+databases                0.9221        0.9221 (pure)   LEAK   (clean pip-install run = 0)
+retrying                 0.6087        0.0000          GENUINE
+pysondb-v2               0.5938        0.0104          GENUINE
+autorccar                0.4615        0.4615          LEAK
+fuzzywuzzy               0.1972        0.0141          GENUINE
+google-images-download   0.0333        0.0333          LEAK
+tsfresh                  0.0315        0.0315          LEAK   (model did nothing: wf=2, turns=1)
+pandarallel              0.0230        0.0000          GENUINE
+pytestify                0.0164        0.0000          GENUINE
+python-pytest-cases      0.0153        0.0153          LEAK
+aiofiles                 0.0047        0.0047          LEAK
+
+7 LEAK  : stamina, databases, autorccar, google-images-download, tsfresh, python-pytest-cases, aiofiles
+5 GENUINE: retrying, pysondb-v2, fuzzywuzzy, pandarallel, pytestify
+leaked passes = 310   genuine passes = 92   (sum recorded passes = 402)
+
+Reproduced on the KVM host, docker 26.1.3, images tar-loaded from the official transport manifest
+(sha256 verified in the recorded run). Cleanup: images rmi-d after each probe.

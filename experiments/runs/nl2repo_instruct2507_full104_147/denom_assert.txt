@@ -1,0 +1,35 @@
+NL2RepoBench x Qwen3-30B-A3B-Instruct-2507 -- denominator & calibration assert (auditor A)
+========================================================================
+official tasks            : 104
+agent dirs                : 104
+scored (has summary.json) : 97
+no-summary (excluded)     : 7  -> more-Itertools, pytorch-grad-cam (empty/infra);
+                               pyquery, pytest-cov (rollout_timeout 2400s, no scoring);
+                               pythonprojecttemplate, pytz (install-fail, 1 turn, no summary);
+                               synthetic (degenerate/special task, no scoring)
+------------------------------------------------------------------------
+RAW macro (agg headline)  : 0.040285  (recompute sum/97=0.040285) MATCH
+RAW micro                 : 0.016640  (402/24158)
+RAW fully_solved          : 1  (stamina -- LEAK)
+------------------------------------------------------------------------
+LEAK tasks (7): recorded success_rate == base-image leak floor (model contrib ~0):
+   stamina                  recorded_sr=1.0000  passed=129
+   databases                recorded_sr=0.9221  passed=142
+   autorccar                recorded_sr=0.4615  passed=6
+   google-images-download   recorded_sr=0.0333  passed=1
+   tsfresh                  recorded_sr=0.0315  passed=10
+   python-pytest-cases      recorded_sr=0.0153  passed=21
+   aiofiles                 recorded_sr=0.0047  passed=1
+   leaked passes total     : 310
+GENUINE tasks (5): leak floor ~0, real model work:
+   retrying                 recorded_sr=0.6087  passed=14
+   pysondb-v2               recorded_sr=0.5938  passed=57
+   fuzzywuzzy               recorded_sr=0.1972  passed=14
+   pandarallel              recorded_sr=0.0230  passed=5
+   pytestify                recorded_sr=0.0164  passed=2
+   genuine passes total    : 92
+------------------------------------------------------------------------
+HONEST leak-corrected macro (zero 7 leak tasks, N=97) : 0.014836  = 1.48%
+HONEST leak-corrected micro (92 genuine passes/24158) : 0.003808  = 0.38%
+HONEST fully_solved                                   : 0
+anchor: Coder-30B dual-signed REAL macro 15.55%; databases-only correction would give 3.08%

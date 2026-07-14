@@ -1,0 +1,76 @@
+{
+  "task": "autorccar",
+  "mode": "agent",
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/autorccar:1.0",
+  "base_url": "http://100.100.104.147:30000/v1",
+  "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+  "test_case_count": 13,
+  "test_shell": [
+    "pip install -e .",
+    "pytest --continue-on-collection-errors test"
+  ],
+  "py_test_file_list": [
+    "test"
+  ],
+  "start_md_bytes": 36329,
+  "score_network": "none",
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_instruct_20260713T223930Z/autorccar_agent_20260713T223930Z",
+  "ts": "20260713T223930Z",
+  "image": {
+    "target_ref": "ghcr.io/multimodal-art-projection/nl2repobench/autorccar:1.0",
+    "recomputed_sha256": "8d93b062164e2d9a1fa9060a75716896171b52f78a2758bb479c37585c11311a",
+    "sha256_seconds": 1.1,
+    "sha256_verified": true,
+    "load_stdout": "Loaded image: ghcr.io/multimodal-art-projection/nl2repobench/autorccar:1.0",
+    "status": "loaded"
+  },
+  "agent": {
+    "agent_rc": 0,
+    "agent_seconds": 753.9,
+    "timed_out": false,
+    "workspace_files": 16,
+    "stream": {
+      "json_events": 36,
+      "assistant_turns": 23,
+      "tool_calls": 0,
+      "tool_results": 0,
+      "error_events": 0,
+      "first_event_types": [
+        "system",
+        "assistant",
+        "assistant",
+        "user",
+        "assistant",
+        "assistant"
+      ],
+      "has_real_interaction": true
+    },
+    "removed_package_files": [
+      "environment.yml"
+    ],
+    "removed_test_files": [],
+    "removed_metadata_dirs": [],
+    "network": "none",
+    "test_shell": [
+      "pip install -e .",
+      "pytest --continue-on-collection-errors test"
+    ],
+    "command_exit_codes": [
+      1,
+      1
+    ],
+    "command_seconds": [
+      0.4,
+      1.4
+    ],
+    "pytest_results": {
+      "passed": 6,
+      "failed": 6,
+      "errors": 2,
+      "total": 13,
+      "success_rate": 0.461538
+    },
+    "score": 6,
+    "success_rate": 0.461538
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "task": "pysondb-v2",
+  "mode": "agent",
+  "ghcr": "ghcr.io/multimodal-art-projection/nl2repobench/pysondb-v2:1.0",
+  "base_url": "http://100.100.104.147:30000/v1",
+  "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+  "test_case_count": 96,
+  "test_shell": [
+    "pip install -e .",
+    "pytest --continue-on-collection-errors tests"
+  ],
+  "py_test_file_list": [
+    "tests"
+  ],
+  "start_md_bytes": 38570,
+  "score_network": "none",
+  "run_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_instruct_20260713T223930Z/pysondb-v2_agent_20260714T013258Z",
+  "ts": "20260714T013258Z",
+  "image": {
+    "target_ref": "ghcr.io/multimodal-art-projection/nl2repobench/pysondb-v2:1.0",
+    "recomputed_sha256": "50e10648603ed6a69cccd4c32895aa5d54d03e524688e64ed65bd249eb4ab784",
+    "sha256_seconds": 0.8,
+    "sha256_verified": true,
+    "load_stdout": "Loaded image: ghcr.io/multimodal-art-projection/nl2repobench/pysondb-v2:1.0",
+    "status": "loaded"
+  },
+  "agent": {
+    "agent_rc": 0,
+    "agent_seconds": 692.3,
+    "timed_out": false,
+    "workspace_files": 9,
+    "stream": {
+      "json_events": 24,
+      "assistant_turns": 15,
+      "tool_calls": 0,
+      "tool_results": 0,
+      "error_events": 0,
+      "first_event_types": [
+        "system",
+        "assistant",
+        "assistant",
+        "user",
+        "assistant",
+        "assistant"
+      ],
+      "has_real_interaction": true
+    },
+    "removed_package_files": [],
+    "removed_test_files": [],
+    "removed_metadata_dirs": [],
+    "network": "none",
+    "test_shell": [
+      "pip install -e .",
+      "pytest --continue-on-collection-errors tests"
+    ],
+    "command_exit_codes": [
+      0,
+      1
+    ],
+    "command_seconds": [
+      1.1,
+      0.7
+    ],
+    "pytest_results": {
+      "passed": 57,
+      "failed": 24,
+      "errors": 14,
+      "total": 96,
+      "success_rate": 0.59375
+    },
+    "score": 57,
+    "success_rate": 0.59375
+  }
+}

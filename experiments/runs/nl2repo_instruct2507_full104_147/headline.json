@@ -1,0 +1,41 @@
+{
+  "bench": "NL2RepoBench",
+  "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+  "scaffold": "qwen-code native Path A",
+  "run_root": "nl2repo_pathA/runs/full104_instruct_20260713T223930Z",
+  "auditor": "A (Claude)",
+  "verdict": "REAL (major leak caveat)",
+  "raw": {
+    "macro_mean_success_rate": 0.040285,
+    "micro_pass_rate": 0.01664,
+    "fully_solved": 1,
+    "scored": 97,
+    "total_tasks": 104,
+    "total_passed": 402,
+    "total_cases": 24158
+  },
+  "honest_leak_corrected": {
+    "macro_mean_success_rate": 0.014836,
+    "micro_pass_rate": 0.003808,
+    "fully_solved": 0,
+    "genuine_passes": 92,
+    "leaked_passes": 310
+  },
+  "leak_tasks": [
+    "stamina",
+    "databases",
+    "autorccar",
+    "google-images-download",
+    "tsfresh",
+    "python-pytest-cases",
+    "aiofiles"
+  ],
+  "genuine_tasks": [
+    "retrying",
+    "pysondb-v2",
+    "fuzzywuzzy",
+    "pandarallel",
+    "pytestify"
+  ],
+  "anchor_coder_macro": 0.1555
+}

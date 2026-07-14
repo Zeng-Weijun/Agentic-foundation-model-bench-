@@ -1,0 +1,103 @@
+run_root=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/nl2repo_pathA/runs/full104_instruct_20260713T223930Z
+tasks_with_summary=97  scored=97  fully_solved(sr=1.0)=1
+macro_mean_success_rate=0.0403
+micro_pass_rate(sum passed/sum total)=0.0166  (402/24158)
+
+task                         pass/total    rate  turns      sec to
+stamina                         129/129   1.000     18   2400.1 Y
+databases                       142/154   0.922      1    485.7 
+retrying                          14/23   0.609     30   2400.0 Y
+pysondb-v2                        57/96   0.594     15    692.3 
+autorccar                          6/13   0.462     23    753.9 
+fuzzywuzzy                        14/71   0.197     43   1379.5 
+google-images-download             1/30   0.033     28   2400.1 Y
+tsfresh                          10/317   0.032      1    485.0 
+pandarallel                       5/217   0.023     11    712.8 
+pytestify                         2/122   0.016     25    963.1 
+python-pytest-cases             21/1372   0.015     18   2400.0 Y
+aiofiles                          1/211   0.005     33   1838.0 
+arguably                           0/70   0.000     17    850.9 
+arxiv-mcp-server                   0/23   0.000     41    825.2 
+asteval                           0/227   0.000     18   2365.9 
+autojump                           0/23   0.000     25    745.2 
+autopep8                          0/564   0.000      8   2400.1 Y
+binaryalert                        0/77   0.000     39    842.1 
+bleach                            0/448   0.000      8   2400.1 Y
+boltons                           0/423   0.000     26   2400.1 Y
+boto                             0/1014   0.000     34   2400.0 Y
+box                               0/147   0.000     12   2400.0 Y
+cachier                           0/180   0.000     33    994.4 
+cerberus                          0/249   0.000      1    485.6 
+cherry                             0/34   0.000      1    485.5 
+cookiecutter                      0/381   0.000      1    485.6 
+coverage_shield                    0/11   0.000      1    485.5 
+dbutils                           0/140   0.000      1    485.4 
+decouple                           0/67   0.000     27   1069.3 
+deepdiff                          0/970   0.000     18   2400.1 Y
+deslib                            0/532   0.000     19   1608.4 
+dictdatabase                      0/594   0.000      9   1546.8 
+docopt-ng                         0/614   0.000     16   2400.1 Y
+emoji                             0/102   0.000     18   2400.1 Y
+fastapi-users                     0/556   0.000     26   2400.1 Y
+flask-restful                     0/362   0.000     11    815.4 
+flasky                             0/34   0.000      1    485.3 
+freezegun                         0/133   0.000     17   2400.1 Y
+frontmatter                        0/55   0.000     17    938.0 
+ftfy                              0/336   0.000     20   2400.1 Y
+funcy                             0/203   0.000     35    813.6 
+gitingest                         0/133   0.000     23   1227.3 
+graphneuralnetwork                  0/4   0.000     27    324.8 
+humanize                          0/607   0.000     20   2400.1 Y
+icecream                           0/40   0.000     35   1853.9 
+ipytest                            0/74   0.000     20   2400.1 Y
+jinja                             0/911   0.000     16   2400.1 Y
+jsonlines                          0/27   0.000     32   1386.1 
+justext                            0/61   0.000     22   2400.1 Y
+markdownify                        0/83   0.000     12   1120.9 
+markupsafe                         0/39   0.000      1    485.4 
+math-verify                       0/192   0.000     11    917.4 
+mechanicalsoup                    0/121   0.000     24   2400.1 Y
+mootdx                             0/92   0.000     28   2400.0 Y
+paillier                          0/234   0.000     19   2400.1 Y
+parse                              0/96   0.000      1    485.0 
+pathlib2                          0/344   0.000      1    485.3 
+pdfplumber-stable                 0/171   0.000      1    485.1 
+plac                               0/28   0.000     16   2400.0 Y
+pss                                0/46   0.000     28   2210.2 
+pyautogui                          0/28   0.000     33   2055.5 
+pyjwt                             0/299   0.000     15    827.8 
+pylama                             0/34   0.000     25    782.3 
+pyperclip                           0/2   0.000     33   1127.1 
+pypinyin                          0/966   0.000     19   1094.5 
+python-dotenv                     0/209   0.000     15    886.9 
+python-fsutil                     0/153   0.000     53   1976.6 
+python-jose                       0/458   0.000     28   2400.0 Y
+python-pathspec                   0/119   0.000     12   2400.1 Y
+python-patterns                    0/68   0.000     18   2400.1 Y
+python-slugify                     0/82   0.000     21    995.6 
+records                            0/31   0.000      1    485.1 
+requests-html                      0/41   0.000      1    485.1 
+rich-click                        0/145   0.000     16   2400.1 Y
+schedule-master                    0/81   0.000     18   2400.1 Y
+schema                            0/118   0.000     14   2400.1 Y
+six                               0/200   0.000     24   1365.1 
+sklearn                            0/70   0.000     25    845.2 
+sortedcontainers                  0/296   0.000     14   2400.1 Y
+sqlparse                          0/461   0.000      1    485.5 
+stable-baselines3                 0/798   0.000      1    491.1 
+structlog                         0/828   0.000     37   2082.3 
+tablib                            0/172   0.000      1    485.3 
+tenacity                          0/124   0.000      1    491.4 
+tinydb                            0/204   0.000      1    491.5 
+tqdm                              0/139   0.000      1    485.6 
+trimming                           0/10   0.000      1    485.1 
+typing_extensions                 0/535   0.000     16   2400.1 Y
+uiautomator                       0/101   0.000     29   1714.9 
+unidecode                          0/65   0.000     39   1685.2 
+unittest-parametrize               0/26   0.000     17   2205.8 
+verifiers                         0/171   0.000     47   1440.8 
+voluptuous                        0/152   0.000     20   2400.1 Y
+wifiphisher                        0/43   0.000     20   2400.0 Y
+wsgidav                            0/36   0.000     16   2400.0 Y
+xlrd                               0/84   0.000      1    491.1 
+ydata-profiling                  0/2182   0.000      1    485.8 
