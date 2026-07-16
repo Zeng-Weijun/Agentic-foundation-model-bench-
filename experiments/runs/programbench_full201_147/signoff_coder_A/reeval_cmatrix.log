@@ -1,0 +1,24 @@
+blob dir listing (cmatrix?):
+abishekvashok__cmatrix.5c082c6
+blob dir count:
+202
+image inspect:
+  PRESENT
+submission sha256:
+4dd2104439fab1fba899d5ea9c035455857a8a995b9d984d5ac90626c1a6943d  /tmp/reeval_a_cmatrix/subs/abishekvashok__cmatrix.5c082c6/submission.tar.gz
+START EVAL 2026-07-16T15:13:17Z
+Evaluating:   0%|                                                             | 0/1 [00:00<?, ?it/s]Evaluating: 100%|████████████████████████████████████████████████████| 1/1 [05:13<00:00, 313.08s/it]                                                                                                    
+                 Evaluation Summary                 
+ Instance                        Score  Comment     
+ abishekvashok__cmatrix.5c082c6     82  506 tests   
+ Average                            82  1 instances 
+Note: A score of 100 does not mean solved (due to rounding). Only ✅ indicates a
+solved task.
+EVAL RC=0 2026-07-16T15:18:31Z
+=== RESULT ===
+REEVAL cmatrix: error_code=None status={'passed': 652, 'failure': 112, 'skipped': 5}
+REEVAL score=0.8182 (*100=81.8) SOLVED=False
+ORIGINAL recorded = 0.8182 (82). REEVAL executable_hash= 4cc57cf35464b6ca05b94e704b9745764241213bb1e6bc91cb3be493e6790fb0
+ORIGINAL executable_hash= 4cc57cf35464b6ca05b94e704b9745764241213bb1e6bc91cb3be493e6790fb0
+EXECUTABLE_HASH_MATCH= True
+DONE 2026-07-16T15:18:32Z

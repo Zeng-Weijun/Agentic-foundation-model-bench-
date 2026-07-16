@@ -1,0 +1,37 @@
+{
+ "bench": "ProgramBench (reconstruction; Meta ProgramBench)",
+ "model": "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+ "serving_port": 30001,
+ "serving_seed": 484925000,
+ "scaffold": "qwen-code (Path A)",
+ "image_tag": "task_cleanroom_v6",
+ "denom": 200,
+ "present_eval_json": 200,
+ "fixture_excluded": "testorg__calculator",
+ "headline_mean_score_display": 11,
+ "mean_fraction": 0.114193,
+ "sum_fractions": 22.838505,
+ "solved_score_eq_1": 0,
+ "nonzero": 138,
+ "zero": 62,
+ "scoring": "official programbench info: mean(score) over present eval.json; score=passed/kept after active-branch+ignored-test filter; SOLVED iff score==1.0",
+ "conservative_notes": {
+  "eval_results_read_failed_count": 1,
+  "eval_results_read_failed_tasks": [
+   "quinn-rs__quinn.bb359cc"
+  ],
+  "eval_failed_or_timeout_count": 6,
+  "per_branch_results_read_failed_task_count": 16,
+  "mean_display_if_harness_fails_excluded": 12,
+  "note": "harness-eval-failed tasks counted as 0 (conservative); excluding them does not change the rounded headline"
+ },
+ "error_code_distribution": {
+  "null": 139,
+  "compile_failed": 39,
+  "copy_executable_failed": 13,
+  "seed_git_failed": 1,
+  "eval_failed_or_timeout": 6,
+  "hash_executable_failed": 1,
+  "eval_results_read_failed": 1
+ }
+}

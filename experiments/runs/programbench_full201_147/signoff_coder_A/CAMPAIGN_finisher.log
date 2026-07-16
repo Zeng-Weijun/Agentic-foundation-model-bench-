@@ -1,0 +1,441 @@
+[2026-07-16T06:40:49Z] FINISHER START (waits for current Coder pass, then catch-up both lanes)
+[2026-07-16T14:29:21Z] current Coder pass ended. coder=200 instruct=190
+[2026-07-16T14:29:21Z] coder catch-up pass 1 start (scored=200)
+[2026-07-16T14:29:27Z] coder catch-up pass 1 end (scored=200)
+[2026-07-16T14:29:27Z] coder STABLE at scored=200
+[2026-07-16T14:29:27Z] instruct catch-up pass 1 start (scored=190)
+[2026-07-16T14:37:57Z] instruct catch-up pass 1 end (scored=200)
+[2026-07-16T14:37:57Z] instruct catch-up pass 2 start (scored=200)
+[2026-07-16T14:37:59Z] instruct catch-up pass 2 end (scored=200)
+[2026-07-16T14:37:59Z] instruct STABLE at scored=200
+[2026-07-16T14:37:59Z] === AGGREGATE ===
+[2026-07-16T14:37:59Z] CODER headline:
+                               Evaluation Summary                               
+ Instance                            Score  Comment                             
+ abishekvashok__cmatrix.5c082c6         82  506 tests                           
+ agourlay__zip-password-finder.704…     29  680 tests                           
+ ajeetdsouza__zoxide.67ca1bc            11  531 tests                           
+ alecthomas__chroma.8d04def              3  503 tests                           
+ alexpovel__srgn.89f943b                22  1852 tests                          
+ altdesktop__i3-style.f93821b           35  539 tests                           
+ ammarabouzor__tui-journal.2b4540d      35  1402 tests                          
+ anordal__shellharden.6a6ffd4            4  1095 tests                          
+ antonmedv__fx.86d0d34                  49  2044 tests                          
+ antonmedv__walk.bf802ef                 0  ERROR: compile_failed               
+ ariga__atlas.6d81150                   16  1318 tests                          
+ arq5x__bedtools2.dd57059                1  1053 tests                          
+ arthursonzogni__json-tui.17a22b6       35  755 tests                           
+ ast-grep__ast-grep.dde0fe0              0  877 tests                           
+ astaxie__bat.17d1080                   22  1091 tests                          
+ astro__deadnix.d590041                  6  ERRORS: BRANCH: 151142429bed:       
+                                            results_read_failed                 
+ axodotdev__oranda.27d60c7              19  767 tests                           
+ bellard__quickjs.d7ae12a                0  3034 tests                          
+ bensadeh__tailspin.6278437             30  614 tests                           
+ blacknon__hwatch.edfcb62                7  1016 tests                          
+ blake3-team__blake3.15e83a5             6  647 tests                           
+ bootandy__dust.62bf1e1                 15  ERRORS: BRANCH: d42ad55b3a4b:       
+                                            results_read_failed                 
+ boyter__scc.515f91c                     0  ERROR: compile_failed               
+ brocode__fblog.3b54330                  4  978 tests                           
+ burntsushi__ripgrep.3b7fd44            12  1992 tests                          
+ burntsushi__xsv.f430466                 7  1182 tests                          
+ byron__dua-cli.8570c15                 28  709 tests                           
+ canop__broot.d6c798e                   18  538 tests                           
+ canop__rhit.ae90bcb                    17  817 tests                           
+ cheat__cheat.b8098dc                    5  297 tests                           
+ chirlu__sox.42b3557                     2  1196 tests                          
+ chmln__handlr.90e78ba                  13  722 tests                           
+ chmln__sd.87d1ba5                       0  ERROR: compile_failed               
+ clog-tool__clog-cli.7066cba            31  575 tests                           
+ cmatsuoka__figlet.202a0a8              20  872 tests                           
+ codesnap-rs__codesnap.f81e4f3          36  571 tests                           
+ cordx56__rustowl.655bc5c                0  ERROR: compile_failed               
+ crowdagger__crowbook.ea214d7            9  807 tests                           
+ cslarsen__jp2a.61d205f                 19  631 tests                           
+ cweill__gotests.2a672c5                 0  ERROR: copy_executable_failed       
+ dalance__amber.69a0f52                 11  ERRORS: BRANCH: 72a39496391b:       
+                                            results_read_failed                 
+ dandavison__delta.acd758f              20  949 tests                           
+ danmar__cppcheck.0a5b103                5  ERRORS: BRANCH: 1d3bd4a2de11:       
+                                            results_read_failed                 
+ direnv__direnv.02040c7                  7  ERRORS: WARN: 1                     
+ doxygen__doxygen.966d98e               12  229 tests                           
+ drew-alleman__datasurgeon.d257cee      34  502 tests                           
+ ducaale__xh.4a6e44f                    18  1171 tests                          
+ duckdb__duckdb.bdb65ec                  4  5649 tests                          
+ dundee__gdu.ede21d2                    31  1161 tests                          
+ ecumene__rust-sloth.051c559             0  ERROR: compile_failed               
+ ekzhang__bore.8e059cd                  11  393 tests                           
+ eliukblau__pixterm.1a93fd5             13  430 tests                           
+ elkowar__pipr.fae0b17                   7  524 tests                           
+ epistates__treemd.825c6dd              15  1569 tests                          
+ eradman__entr.8e2e8b4                  13  586 tests                           
+ esubaalew__run.0fb9dec                 30  1212 tests                          
+ eudoxia0__hashcards.48aa136            17  1019 tests                          
+ facebook__zstd.1168da0                  8  2038 tests                          
+ facebookresearch__fasttext.1142dc4      0  ERROR: seed_git_failed              
+ ffmpeg__ffmpeg.360a402                  2  3041 tests                          
+ filosottile__age.706dfc1                0  ERRORS: BRANCH: df88744325cf:       
+                                            results_read_failed, 8ebac061b133:  
+                                            results_read_failed                 
+ foriequal0__git-trim.07c2f50            0  ERROR: compile_failed               
+ gabotechs__dep-tree.60a95a2            10  ERRORS: WARN: 1                     
+ ggreer__the_silver_searcher.a61f1…     16  ERRORS: BRANCH: 7c5468344bba:       
+                                            results_read_failed                 
+ git-bahn__git-graph.87b4473             0  ERROR: compile_failed               
+ go-critic__go-critic.9aea378            0  ERROR: copy_executable_failed       
+ google__brotli.b3dc9cc                 12  441 tests                           
+ gromacs__gromacs.665ea4c                2  1234 tests                          
+ guumaster__hostctl.d6d9699             18  1051 tests                          
+ hairyhenderson__gomplate.05eb3aa        0  ERROR: compile_failed               
+ halitechallenge__halite.822cfb6        37  275 tests                           
+ hatoo__oha.8dc6349                      0  ERROR: copy_executable_failed       
+ hooklift__gowsdl.2a06cec                0  ERROR: compile_failed               
+ hpjansson__chafa.dd4d4c1               46  1931 tests                          
+ htop-dev__htop.523600b                  0  ERROR: copy_executable_failed       
+ hush-shell__hush.560c33a                8  ERRORS: BRANCH: 10c7b30aafc4:       
+                                            results_read_failed                 
+ incu6us__goimports-reviser.81bd549      4  513 tests                           
+ ip7z__7zip.839151e                      6  1043 tests                          
+ ismaelgv__rnr.fc0733b                  12  683 tests                           
+ isona__dirble.e2dea9f                  23  715 tests                           
+ ivanceras__svgbob.6d00ad9              10  472 tests                           
+ jarun__nnn.cb2c535                     24  477 tests                           
+ jesseduffield__lazygit.1d0db51         17  855 tests                           
+ jgm__pandoc.5caad90                     0  ERROR: eval_failed_or_timeout       
+ jhspetersson__fselect.c3559ca           0  ERROR: compile_failed               
+ johanneskaufmann__html-to-markdow…     32  885 tests                           
+ johnkerl__miller.8d85b46                4  14637 tests                         
+ jonas__tig.8334123                     28  1586 tests                          
+ jqlang__jq.b33a763                      0  ERROR: compile_failed               
+ jrnxf__thokr.09375ef                    0  ERROR: compile_failed               
+ junegunn__fzf.b56d614                  51  1856 tests                          
+ kaushiksrini__parqeye.8072121          30  479 tests                           
+ kisielk__errcheck.dacab89               0  ERROR: compile_failed               
+ konradsz__igrep.aa75630                44  385 tests                           
+ ksxgithub__parallel-disk-usage.96…     17  531 tests                           
+ kyoh86__richgo.313114f                  0  ERROR: compile_failed               
+ kyoheiu__felix.95df390                 12  ERRORS: BRANCH: 30cdbea7de0a:       
+                                            results_read_failed, 6d8e5ae4ef8b:  
+                                            results_read_failed                 
+ lfos__calcurse.49180d5                  9  666 tests                           
+ lh3__seqtk.94e7070                      3  429 tests                           
+ lua__lua.c6b4848                       11  1338 tests                          
+ luajit__luajit.a553b3d                 21  2967 tests                          
+ lymphatus__caesium-clt.a529b2e         13  575 tests                           
+ lz4__lz4.1519f46                       28  1496 tests                          
+ madler__pigz.fe4894f                    5  831 tests                           
+ mfridman__tparse.2416b4b                0  ERROR: compile_failed               
+ mgdm__htmlq.6e31bc8                    71  1455 tests                          
+ mgechev__revive.201451e                10  727 tests                           
+ mibk__dupl.1bf052b                     29  373 tests                           
+ mikefarah__yq.602586d                   0  ERROR: copy_executable_failed       
+ miserlou__loop.209927c                  9  710 tests                           
+ mkj__dropbear.75f699b                  11  ERRORS: BRANCH: 33e8ee22886e:       
+                                            results_read_failed                 
+ mookid__diffr.2152742                  45  606 tests                           
+ multiprocessio__dsq.c3ae0ba             0  ERROR: copy_executable_failed       
+ nachoparker__dutree.44e877d            30  ERRORS: BRANCH: 674fd4666e90:       
+                                            results_read_failed                 
+ naggie__dstask.ff57396                  0  ERROR: copy_executable_failed       
+ nikoladucak__caps-log.2cf2d1e          17  ERRORS: BRANCH: c0e6b8d64108:       
+                                            results_read_failed                 
+ nikolassv__bartib.6b9b5ce              14  721 tests                           
+ ninja-build__ninja.cc60300              2  1438 tests                          
+ noborus__ov.b96c2ba                     0  ERROR: compile_failed               
+ noborus__trdsql.d8c5ff6                 4  1312 tests                          
+ nukesor__pueue.8b9d6fe                  1  ERRORS: BRANCH: 06dabfabaea7:       
+                                            results_read_failed                 
+ nuta__nsh.bdd0702                      28  1960 tests                          
+ o2sh__onefetch.e5958ce                  0  ERROR: hash_executable_failed       
+ ogham__dog.721440b                      0  ERROR: copy_executable_failed       
+ oppiliappan__eva.41ae245                4  913 tests                           
+ oppiliappan__statix.e9df54c             0  ERROR: compile_failed               
+ orf__gping.26eb5b9                     17  ERRORS: BRANCH: 98aa118a0d99:       
+                                            results_read_failed                 
+ osgeo__gdal.0847f12                     4  657 tests                           
+ osgeo__proj.75d455c                     0  5319 tests                          
+ paradigmxyz__solar.5190d0e             11  1978 tests                          
+ parcel-bundler__lightningcss.aa2e…     30  2828 tests                          
+ peco__peco.4e58dad                     19  1215 tests                          
+ pemistahl__grex.fa3e8ed                32  1312 tests                          
+ php__php-src.c891263                    4  ERRORS: BRANCH: 88234d477311:       
+                                            results_read_failed                 
+ pier-cli__pier.5e1bde9                  6  692 tests                           
+ pls-rs__pls.4e1ae50                     9  331 tests                           
+ psampaz__go-mod-outdated.bb79367       30  285 tests                           
+ quinn-rs__quinn.bb359cc                 0  ERROR: eval_results_read_failed     
+ raviqqe__muffet.a882908                22  292 tests                           
+ rbakbashev__elfcat.52f8cc7              0  ERROR: copy_executable_failed       
+ rcoh__angle-grinder.9c2fc88             3  1128 tests                          
+ rhysd__kiro-editor.4157485             11  ERRORS: WARN: 1                     
+ riquito__tuc.16fb471                   40  1196 tests                          
+ robertdavidgraham__masscan.b99d433     12  2549 tests                          
+ rochacbruno__marmite.7d4bc2d            6  668 tests                           
+ rs__curlie.5dfcbb1                     41  693 tests                           
+ rs__jplot.2a54bcc                       3  583 tests                           
+ rust-embedded__svd2rust.1760b5e         0  ERROR: copy_executable_failed       
+ rust-ethereum__ethabi.b1710ad           0  ERROR: compile_failed               
+ rust-lang__mdbook.37273ba               6  1114 tests                          
+ rvben__rumdl.2d75c4d                    0  ERROR: compile_failed               
+ samtools__samtools.aa823b5              2  1425 tests                          
+ sayanarijit__xplr.1751065              12  419 tests                           
+ sclevine__yj.8016400                   19  767 tests                           
+ segmentio__chamber.5f93f5f             13  1748 tests                          
+ sharkdp__bat.f822bd0                    0  ERROR: copy_executable_failed       
+ sharkdp__fd.40d8eb3                    12  1235 tests                          
+ sharkdp__hexyl.2e26437                  7  906 tests                           
+ sharkdp__hyperfine.327d5f4             10  291 tests                           
+ sharkdp__pastel.b60e899                 6  ERRORS: WARN: 1                     
+ shashwatah__jot.a92aad8                13  752 tests                           
+ sheepla__pingu.926d475                 50  378 tests                           
+ sibprogrammer__xq.b89f681              21  792 tests                           
+ sigoden__argc.04a08f1                   0  995 tests                           
+ simeg__eureka.df3796c                   6  344 tests                           
+ sirwart__ripsecrets.34c9e03             0  ERROR: copy_executable_failed       
+ sitkevij__hex.61ae69b                   0  ERROR: eval_failed_or_timeout       
+ skeema__skeema.6a76243                  0  ERROR: eval_failed_or_timeout       
+ sqlite__sqlite.839433d                  0  ERROR: eval_failed_or_timeout       
+ sstadick__hck.b66c751                  24  855 tests                           
+ stacked-git__stgit.430027d              8  ERRORS: WARN: 1                     
+ stathissideris__ditaa.f2286c4           1  609 tests                           
+ stranger6667__jsonschema.d52e881       14  2932 tests                          
+ svenstaro__genact.16f96e3               0  ERROR: compile_failed               
+ svenstaro__miniserve.8449e8b            0  ERROR: compile_failed               
+ tarka__xcp.5e5b448                      0  ERROR: eval_failed_or_timeout       
+ thezoraiz__ascii-image-converter.…      1  465 tests                           
+ tinycc__tinycc.9b8765d                  0  ERROR: copy_executable_failed       
+ tomarrell__wrapcheck.c058da1            0  ERROR: compile_failed               
+ tomnomnom__gron.88a6234                 1  224 tests                           
+ trasta298__keifu.3331426                0  ERROR: compile_failed               
+ tree-sitter__tree-sitter.5e23cca       14  1232 tests                          
+ tstack__lnav.ee34494                    8  989 tests                           
+ tukaani-project__xz.1007bf0             0  ERROR: eval_failed_or_timeout       
+ typst__typst.88356d0                    0  ERROR: compile_failed               
+ unhappychoice__gittype.34b72d0          0  ERROR: compile_failed               
+ universal-ctags__ctags.243595e          0  ERROR: compile_failed               
+ wfxr__code-minimap.0ddeea5              0  ERROR: compile_failed               
+ wfxr__csview.8ac4de0                    0  ERROR: compile_failed               
+ wgunderwood__tex-fmt.3f1aef6            0  ERROR: compile_failed               
+ wintermute-cell__ngrrram.8ea13c3        0  ERROR: compile_failed               
+ xampprocky__tokei.505d648               0  ERROR: compile_failed               
+ xorg62__tty-clock.f2f847c               0  ERROR: compile_failed               
+ y2z__monolith.8702e66                   0  ERROR: compile_failed               
+ yaa110__nomino.f892499                  0  ERROR: compile_failed               
+ yassinebridi__serpl.c48a9d7             0  ERROR: compile_failed               
+ yoav-lavi__melody.f4af9b4               0  ERROR: compile_failed               
+ ys-l__flamelens.0b4dc33                 0  ERROR: compile_failed               
+ zevv__duc.a58fa4e                       0  ERROR: compile_failed               
+ zk-org__zk.10d93d5                      0  ERROR: compile_failed               
+ Average                                11  200 instances                       
+Note: A score of 100 does not mean solved (due to rounding). Only ✅ indicates a
+solved task.
+[2026-07-16T14:38:04Z] INSTRUCT headline:
+                               Evaluation Summary                               
+ Instance                            Score  Comment                             
+ abishekvashok__cmatrix.5c082c6          0  ERROR: compile_failed               
+ agourlay__zip-password-finder.704…      0  ERROR: compile_failed               
+ ajeetdsouza__zoxide.67ca1bc             0  ERROR: compile_failed               
+ alecthomas__chroma.8d04def              0  ERROR: compile_failed               
+ alexpovel__srgn.89f943b                 0  ERROR: compile_failed               
+ altdesktop__i3-style.f93821b            0  ERROR: compile_failed               
+ ammarabouzor__tui-journal.2b4540d       0  ERROR: compile_failed               
+ anordal__shellharden.6a6ffd4            0  ERROR: compile_failed               
+ antonmedv__fx.86d0d34                   0  ERROR: compile_failed               
+ antonmedv__walk.bf802ef                 0  ERROR: compile_failed               
+ ariga__atlas.6d81150                    0  ERROR: compile_failed               
+ arq5x__bedtools2.dd57059                0  ERROR: compile_failed               
+ arthursonzogni__json-tui.17a22b6        0  ERROR: compile_failed               
+ ast-grep__ast-grep.dde0fe0              0  ERROR: compile_failed               
+ astaxie__bat.17d1080                    0  ERROR: compile_failed               
+ astro__deadnix.d590041                  0  ERROR: compile_failed               
+ axodotdev__oranda.27d60c7               0  ERROR: compile_failed               
+ bellard__quickjs.d7ae12a                0  ERROR: compile_failed               
+ bensadeh__tailspin.6278437              0  ERROR: compile_failed               
+ blacknon__hwatch.edfcb62                0  ERROR: compile_failed               
+ blake3-team__blake3.15e83a5             0  ERROR: compile_failed               
+ bootandy__dust.62bf1e1                  0  ERROR: compile_failed               
+ boyter__scc.515f91c                     0  ERROR: compile_failed               
+ brocode__fblog.3b54330                  0  ERROR: compile_failed               
+ burntsushi__ripgrep.3b7fd44             0  ERROR: compile_failed               
+ burntsushi__xsv.f430466                 6  ERRORS: BRANCH: 22169f6a3746:       
+                                            results_read_failed; WARN: 1        
+ byron__dua-cli.8570c15                  0  ERROR: compile_failed               
+ canop__broot.d6c798e                    0  ERROR: compile_failed               
+ canop__rhit.ae90bcb                     0  ERROR: compile_failed               
+ cheat__cheat.b8098dc                    0  ERROR: compile_failed               
+ chirlu__sox.42b3557                     0  ERROR: compile_failed               
+ chmln__handlr.90e78ba                   0  ERROR: compile_failed               
+ chmln__sd.87d1ba5                       0  ERROR: compile_failed               
+ clog-tool__clog-cli.7066cba             0  ERROR: compile_failed               
+ cmatsuoka__figlet.202a0a8               0  ERROR: compile_failed               
+ codesnap-rs__codesnap.f81e4f3           0  ERROR: compile_failed               
+ cordx56__rustowl.655bc5c                0  ERROR: compile_failed               
+ crowdagger__crowbook.ea214d7            0  ERROR: copy_executable_failed       
+ cslarsen__jp2a.61d205f                  0  ERROR: compile_failed               
+ cweill__gotests.2a672c5                 0  ERROR: compile_failed               
+ dalance__amber.69a0f52                  0  ERROR: compile_failed               
+ dandavison__delta.acd758f               0  ERROR: compile_failed               
+ danmar__cppcheck.0a5b103                0  ERROR: compile_failed               
+ direnv__direnv.02040c7                  0  ERROR: compile_failed               
+ doxygen__doxygen.966d98e                0  ERROR: compile_failed               
+ drew-alleman__datasurgeon.d257cee       0  ERROR: compile_failed               
+ ducaale__xh.4a6e44f                     0  ERROR: compile_failed               
+ duckdb__duckdb.bdb65ec                  0  ERROR: compile_failed               
+ dundee__gdu.ede21d2                     0  ERROR: compile_failed               
+ ecumene__rust-sloth.051c559             0  ERROR: compile_failed               
+ ekzhang__bore.8e059cd                   0  ERROR: compile_failed               
+ eliukblau__pixterm.1a93fd5              0  ERROR: compile_failed               
+ elkowar__pipr.fae0b17                   0  ERROR: compile_failed               
+ epistates__treemd.825c6dd               0  ERROR: compile_failed               
+ eradman__entr.8e2e8b4                   0  ERROR: compile_failed               
+ esubaalew__run.0fb9dec                  0  ERROR: compile_failed               
+ eudoxia0__hashcards.48aa136             0  ERROR: compile_failed               
+ facebook__zstd.1168da0                  0  ERROR: compile_failed               
+ facebookresearch__fasttext.1142dc4      0  ERROR: copy_executable_failed       
+ ffmpeg__ffmpeg.360a402                  0  ERROR: compile_failed               
+ filosottile__age.706dfc1                0  ERROR: compile_failed               
+ foriequal0__git-trim.07c2f50            0  ERROR: compile_failed               
+ gabotechs__dep-tree.60a95a2             0  ERROR: compile_failed               
+ ggreer__the_silver_searcher.a61f1…      0  ERROR: compile_failed               
+ git-bahn__git-graph.87b4473             0  ERROR: compile_failed               
+ go-critic__go-critic.9aea378            0  ERROR: compile_failed               
+ google__brotli.b3dc9cc                  0  ERROR: compile_failed               
+ gromacs__gromacs.665ea4c                0  ERROR: compile_failed               
+ guumaster__hostctl.d6d9699              0  ERROR: compile_failed               
+ hairyhenderson__gomplate.05eb3aa        0  ERROR: compile_failed               
+ halitechallenge__halite.822cfb6         0  ERROR: compile_failed               
+ hatoo__oha.8dc6349                      0  ERROR: compile_failed               
+ hooklift__gowsdl.2a06cec                0  ERROR: compile_failed               
+ hpjansson__chafa.dd4d4c1                0  ERROR: compile_failed               
+ htop-dev__htop.523600b                  0  ERROR: compile_failed               
+ hush-shell__hush.560c33a                0  ERROR: compile_failed               
+ incu6us__goimports-reviser.81bd549      0  ERROR: compile_failed               
+ ip7z__7zip.839151e                      0  ERROR: compile_failed               
+ ismaelgv__rnr.fc0733b                   0  ERROR: compile_failed               
+ isona__dirble.e2dea9f                   0  ERROR: copy_executable_failed       
+ ivanceras__svgbob.6d00ad9               0  ERROR: compile_failed               
+ jarun__nnn.cb2c535                      0  ERROR: compile_failed               
+ jesseduffield__lazygit.1d0db51          0  ERROR: compile_failed               
+ jgm__pandoc.5caad90                     0  ERROR: compile_failed               
+ jhspetersson__fselect.c3559ca           0  ERROR: compile_failed               
+ johanneskaufmann__html-to-markdow…      0  ERROR: compile_failed               
+ johnkerl__miller.8d85b46                0  ERROR: compile_failed               
+ jonas__tig.8334123                      0  ERROR: compile_failed               
+ jqlang__jq.b33a763                      0  ERROR: compile_failed               
+ jrnxf__thokr.09375ef                    0  ERROR: compile_failed               
+ junegunn__fzf.b56d614                   0  ERROR: compile_failed               
+ kaushiksrini__parqeye.8072121           0  ERROR: compile_failed               
+ kisielk__errcheck.dacab89               0  ERROR: compile_failed               
+ konradsz__igrep.aa75630                 0  ERROR: compile_failed               
+ ksxgithub__parallel-disk-usage.96…      0  ERROR: compile_failed               
+ kyoh86__richgo.313114f                  0  ERROR: compile_failed               
+ kyoheiu__felix.95df390                  0  ERROR: compile_failed               
+ lfos__calcurse.49180d5                  0  ERROR: compile_failed               
+ lh3__seqtk.94e7070                      0  ERROR: compile_failed               
+ lua__lua.c6b4848                        0  ERROR: compile_failed               
+ luajit__luajit.a553b3d                  0  ERROR: compile_failed               
+ lymphatus__caesium-clt.a529b2e          0  ERROR: compile_failed               
+ lz4__lz4.1519f46                        6  1496 tests                          
+ madler__pigz.fe4894f                    0  ERROR: compile_failed               
+ mfridman__tparse.2416b4b                0  ERROR: compile_failed               
+ mgdm__htmlq.6e31bc8                     0  ERROR: compile_failed               
+ mgechev__revive.201451e                 0  ERROR: compile_failed               
+ mibk__dupl.1bf052b                      0  ERROR: compile_failed               
+ mikefarah__yq.602586d                   0  ERROR: compile_failed               
+ miserlou__loop.209927c                  0  ERROR: compile_failed               
+ mkj__dropbear.75f699b                   0  ERROR: compile_failed               
+ mookid__diffr.2152742                   0  ERROR: compile_failed               
+ multiprocessio__dsq.c3ae0ba             0  ERROR: compile_failed               
+ nachoparker__dutree.44e877d             0  ERROR: compile_failed               
+ naggie__dstask.ff57396                  0  ERROR: compile_failed               
+ nikoladucak__caps-log.2cf2d1e           0  ERROR: compile_failed               
+ nikolassv__bartib.6b9b5ce               0  ERROR: compile_failed               
+ ninja-build__ninja.cc60300              0  ERROR: copy_executable_failed       
+ noborus__ov.b96c2ba                     0  ERROR: compile_failed               
+ noborus__trdsql.d8c5ff6                 0  ERROR: compile_failed               
+ nukesor__pueue.8b9d6fe                  0  ERROR: compile_failed               
+ nuta__nsh.bdd0702                       0  ERROR: compile_failed               
+ o2sh__onefetch.e5958ce                  0  ERROR: compile_failed               
+ ogham__dog.721440b                      0  ERROR: compile_failed               
+ oppiliappan__eva.41ae245                0  ERROR: compile_failed               
+ oppiliappan__statix.e9df54c             0  ERROR: compile_failed               
+ orf__gping.26eb5b9                      0  ERROR: compile_failed               
+ osgeo__gdal.0847f12                     0  ERROR: compile_failed               
+ osgeo__proj.75d455c                     0  ERROR: compile_failed               
+ paradigmxyz__solar.5190d0e              0  ERROR: compile_failed               
+ parcel-bundler__lightningcss.aa2e…      0  ERROR: compile_failed               
+ peco__peco.4e58dad                      0  ERROR: compile_failed               
+ pemistahl__grex.fa3e8ed                 0  ERROR: compile_failed               
+ php__php-src.c891263                    0  ERROR: compile_failed               
+ pier-cli__pier.5e1bde9                  0  ERROR: compile_failed               
+ pls-rs__pls.4e1ae50                     0  ERROR: compile_failed               
+ psampaz__go-mod-outdated.bb79367        0  ERROR: compile_failed               
+ quinn-rs__quinn.bb359cc                 0  ERROR: compile_failed               
+ raviqqe__muffet.a882908                 0  ERROR: compile_failed               
+ rbakbashev__elfcat.52f8cc7              0  ERROR: compile_failed               
+ rcoh__angle-grinder.9c2fc88             0  ERROR: compile_failed               
+ rhysd__kiro-editor.4157485              0  ERROR: compile_failed               
+ riquito__tuc.16fb471                    0  ERROR: compile_failed               
+ robertdavidgraham__masscan.b99d433      0  ERROR: compile_failed               
+ rochacbruno__marmite.7d4bc2d            0  ERROR: compile_failed               
+ rs__curlie.5dfcbb1                      0  ERROR: compile_failed               
+ rs__jplot.2a54bcc                       0  ERROR: compile_failed               
+ rust-embedded__svd2rust.1760b5e         0  ERROR: compile_failed               
+ rust-ethereum__ethabi.b1710ad           0  ERROR: compile_failed               
+ rust-lang__mdbook.37273ba               0  ERROR: compile_failed               
+ rvben__rumdl.2d75c4d                    0  ERROR: compile_failed               
+ samtools__samtools.aa823b5              0  ERROR: compile_failed               
+ sayanarijit__xplr.1751065               0  ERROR: compile_failed               
+ sclevine__yj.8016400                    0  ERROR: compile_failed               
+ segmentio__chamber.5f93f5f              0  ERROR: compile_failed               
+ sharkdp__bat.f822bd0                    0  ERROR: compile_failed               
+ sharkdp__fd.40d8eb3                     0  ERROR: compile_failed               
+ sharkdp__hexyl.2e26437                 15  906 tests                           
+ sharkdp__hyperfine.327d5f4              0  ERROR: compile_failed               
+ sharkdp__pastel.b60e899                 0  ERROR: compile_failed               
+ shashwatah__jot.a92aad8                 0  ERROR: compile_failed               
+ sheepla__pingu.926d475                  0  ERROR: compile_failed               
+ sibprogrammer__xq.b89f681               0  ERROR: compile_failed               
+ sigoden__argc.04a08f1                   0  ERROR: compile_failed               
+ simeg__eureka.df3796c                   0  ERROR: compile_failed               
+ sirwart__ripsecrets.34c9e03             0  ERROR: compile_failed               
+ sitkevij__hex.61ae69b                   0  ERROR: compile_failed               
+ skeema__skeema.6a76243                  0  ERROR: compile_failed               
+ sqlite__sqlite.839433d                  0  ERROR: compile_failed               
+ sstadick__hck.b66c751                   0  ERROR: compile_failed               
+ stacked-git__stgit.430027d              0  ERROR: compile_failed               
+ stathissideris__ditaa.f2286c4           0  ERROR: compile_failed               
+ stranger6667__jsonschema.d52e881        0  ERROR: compile_failed               
+ svenstaro__genact.16f96e3               0  ERROR: compile_failed               
+ svenstaro__miniserve.8449e8b            0  ERROR: compile_failed               
+ tarka__xcp.5e5b448                      0  ERROR: compile_failed               
+ thezoraiz__ascii-image-converter.…      0  ERROR: compile_failed               
+ tinycc__tinycc.9b8765d                  0  ERROR: copy_executable_failed       
+ tomarrell__wrapcheck.c058da1            0  ERROR: compile_failed               
+ tomnomnom__gron.88a6234                 0  ERROR: compile_failed               
+ trasta298__keifu.3331426                0  ERROR: compile_failed               
+ tree-sitter__tree-sitter.5e23cca        0  ERROR: compile_failed               
+ tstack__lnav.ee34494                    1  989 tests                           
+ tukaani-project__xz.1007bf0             0  ERROR: compile_failed               
+ typst__typst.88356d0                    1  1724 tests                          
+ unhappychoice__gittype.34b72d0          0  ERROR: compile_failed               
+ universal-ctags__ctags.243595e          0  ERROR: compile_failed               
+ wfxr__code-minimap.0ddeea5              0  ERROR: compile_failed               
+ wfxr__csview.8ac4de0                    0  ERROR: compile_failed               
+ wgunderwood__tex-fmt.3f1aef6            0  ERROR: compile_failed               
+ wintermute-cell__ngrrram.8ea13c3        0  ERROR: compile_failed               
+ xampprocky__tokei.505d648               0  ERROR: compile_failed               
+ xorg62__tty-clock.f2f847c               0  ERROR: compile_failed               
+ y2z__monolith.8702e66                   0  ERROR: compile_failed               
+ yaa110__nomino.f892499                  0  ERROR: compile_failed               
+ yassinebridi__serpl.c48a9d7             0  ERROR: compile_failed               
+ yoav-lavi__melody.f4af9b4               0  ERROR: compile_failed               
+ ys-l__flamelens.0b4dc33                 0  ERROR: compile_failed               
+ zevv__duc.a58fa4e                       0  ERROR: compile_failed               
+ zk-org__zk.10d93d5                      0  ERROR: compile_failed               
+ Average                                 0  200 instances                       
+Note: A score of 100 does not mean solved (due to rounding). Only ✅ indicates a
+solved task.
+[2026-07-16T14:38:06Z] FINISHER COMPLETE coder_scored=200 instruct_scored=200

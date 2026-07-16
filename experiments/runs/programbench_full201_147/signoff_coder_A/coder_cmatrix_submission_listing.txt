@@ -1,0 +1,11 @@
+./
+./cmatrix.1
+./src/
+./src/cmatrix.c
+./README.md
+./COPYING
+./compile.sh
+./data/
+./data/img/
+./data/img/capture_bold_font.png
+./data/img/capture_orig.gif

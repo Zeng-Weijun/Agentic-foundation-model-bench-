@@ -1,0 +1,31 @@
+{
+ "bench": "ProgramBench (reconstruction; Meta ProgramBench)",
+ "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+ "serving_port": 30000,
+ "serving_seed": 61643818,
+ "scaffold": "qwen-code (Path A)",
+ "image_tag": "task_cleanroom_v6",
+ "denom": 200,
+ "present_eval_json": 200,
+ "fixture_excluded": "testorg__calculator",
+ "headline_mean_score_display": 0,
+ "mean_fraction": 0.001511,
+ "sum_fractions": 0.302184,
+ "solved_score_eq_1": 0,
+ "nonzero": 5,
+ "zero": 195,
+ "scoring": "official programbench info: mean(score) over present eval.json; score=passed/kept after active-branch+ignored-test filter; SOLVED iff score==1.0",
+ "conservative_notes": {
+  "eval_results_read_failed_count": 0,
+  "eval_results_read_failed_tasks": [],
+  "eval_failed_or_timeout_count": 0,
+  "per_branch_results_read_failed_task_count": 15,
+  "mean_display_if_harness_fails_excluded": 0,
+  "note": "harness-eval-failed tasks counted as 0 (conservative); excluding them does not change the rounded headline"
+ },
+ "error_code_distribution": {
+  "compile_failed": 190,
+  "null": 5,
+  "copy_executable_failed": 5
+ }
+}

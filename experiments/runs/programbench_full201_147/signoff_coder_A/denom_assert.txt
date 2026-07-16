@@ -1,0 +1,7 @@
+DENOM ASSERT — ProgramBench coder lane
+benchmark_instances (fixture-excluded) = 200
+present eval.json dirs               = 200
+present-but-NOT-benchmark (fixture)  = []
+benchmark-but-MISSING                = 0 []
+fixture testorg__calculator in denom = False
+ASSERT present==denom==200 : True

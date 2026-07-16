@@ -1,0 +1,8 @@
+./
+./cmatrix.1
+./README.md
+./COPYING
+./data/
+./data/img/
+./data/img/capture_bold_font.png
+./data/img/capture_orig.gif
