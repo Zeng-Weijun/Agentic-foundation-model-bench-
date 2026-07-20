@@ -1,5 +1,7 @@
 # SWE-bench Verified — gpt-5.5 v2.1 终分报告
 
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG (2026-07-21).** Restored because §5 records independent review evidence. The original high-effort final/board-comparable language below is historical only, not a current relay-backed `gpt-5.5` + `medium` suite score.
+
 > 日期:2026-07-05 | 交付:85(复审)| 产出:V2.1 runner(post-harness-fix)| 双签:见 §5
 
 ## 1. 终分

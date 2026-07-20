@@ -107,16 +107,12 @@ scripts/run_terminal_bench_2_1_smoke.sh --dry-run
 
 Execution is fail-closed until the worker has a usable Terminal-Bench Python 3.13 environment and the selected `tb2-offline/fix-git:20260425` image is loaded into rootless Docker.
 
-Current local Qwen score anchor:
+## Current Local Score Policy
 
-- Benchmark: SWE-bench Verified
-- Model: `qwen3-coder-30b-a3b-instruct`
-- Serving: SGLang on `worker_rkn9p`, `http://100.103.11.77:8503/v1`
-- Agent scaffold: Qwen Code `0.15.6`
-- Score: `245/500 = 49.0%`
-- Source: `reports/qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
-
-Do not conflate this local 30B-A3B result with public Qwen3-Coder-Next 80A3 technical-report results.
+The former local Qwen score anchor was retracted from active publication on
+2026-07-21 because it was not sealed under the current evidence contract. Historical
+raw artifacts remain available for forensic use, but no local score is current until a
+relay-backed `gpt-5.5` + `medium` run is sealed and independently dual-signed.
 
 ## Planned Shared-Disk Root
 

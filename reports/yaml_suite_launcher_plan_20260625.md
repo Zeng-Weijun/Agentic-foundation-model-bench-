@@ -20,7 +20,6 @@ reports/
   agentic_bench_landscape_20260625.md
   agentic_bench_matrix_20260625.csv
   deployment_plan_20260625.md
-  qwen3_coder_swebench_qwen_code_retry_cases_20260529.md
   rootless_worker_research_20260625.md
   shared_disk_layout_research_20260625.md
   trace_manifest_template.yaml

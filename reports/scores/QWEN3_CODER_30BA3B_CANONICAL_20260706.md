@@ -1,5 +1,7 @@
 # Qwen3-Coder-30B-A3B-Instruct — Canonical Bench Scores（定稿）
 
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG (2026-07-21).** This dual-reviewed artifact is preserved as historical evidence. Its original canonical/final language below is no longer current-suite authority and must not be quoted as a current relay-backed `gpt-5.5` + `medium` result.
+
 > 定稿日期:2026-07-06 | 用户拍板 | 复审:surface:85(dual-sign)
 > 模型:`Qwen/Qwen3-Coder-30B-A3B-Instruct` | serving:vLLM(同 campaign)
 

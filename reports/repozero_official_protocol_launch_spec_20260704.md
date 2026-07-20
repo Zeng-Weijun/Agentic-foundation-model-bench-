@@ -1,5 +1,7 @@
 # RepoZero official-protocol run — pre-launch spec (Pod B, by-85, 2026-07-04)
 
+> **Status: RETRACTED / HISTORICAL_NON_CANONICAL_CONFIG.** This paused pre-launch spec and every internal aggregate mentioned below are historical evidence only. No number in this document is an active RepoZero score.
+
 **Purpose:** pre-launch spec for the RepoZero **official-protocol** run (official Mini-SWE-Agent scaffold + pass@1 single + official 5s per-case timeout + gpt-5.4-mini via bench relay 18540). Line = "官方协议 + 无锚存档" (official leaderboard has no GPT models → run their protocol, archive as no-anchor). **Read-only spec — NO run/model call executed; no Pod A/B runtime touched (full89 running Pod A c=89, full500 running Pod B).** Official repo pinned `@39308b1` (`/mnt/.../nips2026/repozero_eval/RepoZero`).
 
 **★ Run host = Pod B `env-kvm-57740737-bzw56`** (NOT dev). Correction: bench relay **18540 (100.96.122.22, dev tmux) is the POD-FACING relay** — pods hit it directly (Pod A's 89 containers + Pod B c=50 are using it now; 86 verified pod→18540 = 200). It is **not** the old SkillForge Tailscale dev-only relay. dev (8C/16G) hosts the relay body and must not carry the solver load. **Launch timing = AFTER full89 收官** — relay budget is 149/150 now (too full); after full89 finishes, ~50 (full500) + 8 (this) is comfortable. **Launch order awaits lead.**
@@ -55,7 +57,7 @@ to=[r['case'] for r in rows if r.get('codex_timeout')]
 print(len(to)); print(' '.join(to))"
 ```
 **✅ VERIFIED on shared FS: total=242, `codex_timeout`=73 == `codex_returncode==124`=73 — matches REPOZERO_LANE_HANDOFF §6 exactly.** No pg89q dependency.
-**Scope note:** the 73 are **our codex-line** residuals (c=25 latency casualties, not genuine fails). The **official-protocol run is a fresh independent full-400** with mini-swe-agent — the 73 list only matters if piloting/comparing on that subset; don't conflate (official-protocol archive vs our internal 260/400 codex number). Persist strict-scope caches to shared FS (`.../repozero_eval/scope/`), not pg89q /tmp; re-derive genuine-excluded over the original `summary.json` = `all_pass==False AND codex_returncode==0 AND NOT codex_timeout` (§5).
+**Scope note:** the 73 are residuals from a **RETRACTED historical codex-line artifact** (c=25 latency casualties, not genuine fails). The official-protocol run was planned as a fresh independent full-400 with mini-swe-agent; the 73 list matters only for historical pilot analysis. Do not conflate either path with a current RepoZero score. Persist strict-scope caches to shared FS (`.../repozero_eval/scope/`), not pg89q `/tmp`; re-derive genuine-excluded over the original `summary.json` = `all_pass==False AND codex_returncode==0 AND NOT codex_timeout` (§5).
 
 ---
 
@@ -93,7 +95,7 @@ Pure read-only spec + offline prep only. **No run / no model call executed.** No
 
 ## §7 — STATUS: PAUSED @ Gate4 (lead decision D, 2026-07-04)
 
-**Decision (lead):** PAUSE the official-protocol run. Keep the **codex-line 260/400 (65%)** as the RepoZero **primary number** (`reports/repozero_official_comparison_20260703.md`). **0 launched; ~6 tiny probe calls total; 0 full-run tokens.**
+**Current status (2026-07-21): RETRACTED.** The official-protocol run remained paused, and the former codex-line aggregate must not be kept as a RepoZero primary/current number. Raw historical evidence remains available; **0 launched; ~6 tiny probe calls total; 0 full-run tokens.**
 
 ### Gate outcomes
 - ✅ **Gate1** — pin `39308b1` pristine + worktree `rz_run_wt_20260704` + clean runner diff (below).
@@ -106,7 +108,7 @@ The official runner `run_py2js/run_all_loop_mini_openai.py` @39308b1 invokes `mi
 - `mini.yaml` (tool-calling) → `No tool calls found in the response` → 0 output;
 - `mini_textbased.yaml` (correct bash-in-``` format) → gpt-5.4-mini responses repeatedly fail the strict "exactly ONE bash code block" parser → `Format error` loop → timeout(124), 0 output (the smoke's 8× "succeeded" were empty — no `.mjs`).
 
-Faithful reproduction is **not achievable offline without the exact fork**. Per the offline-E2E charter this is a **reproducibility gap in the official RepoZero benchmark itself → archived upstream-not-fix**. Our internal codex harness (stricter, `260/400`) remains the credible internal number.
+Faithful reproduction is **not achievable offline without the exact fork**. Per the offline-E2E charter this remains a reproducibility gap in the official RepoZero benchmark and an archived upstream issue. The internal codex aggregate is a **RETRACTED historical artifact**, not a credible current/primary number.
 
 ### Resume start point (if this line is ever resumed) — all preserved, DO NOT DELETE
 - worktree (pin pristine + adapted runner): `repozero_eval/rz_run_wt_20260704/`

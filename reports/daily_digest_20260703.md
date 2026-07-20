@@ -1,22 +1,24 @@
 # 2026-07-03 日终战报
 
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** 本页是 2026-07-03 战役快照；其中未盖章模型分数及 FINAL/primary/current 语义已撤回，不得作为当前 relay-backed `gpt-5.5` + `medium` 套件入口。
+
 ## 总结
 
 今天的主线是**基础设施代际迁移 + 三本账收敛**:用户 19:00 直令 CHARTER v6——把整套离线 bench 从退役的 rootless-vfs-tmpfs 栈全面迁移到新的 **privileged rjob KVM worker**（Pod A=TB2.1 主场，Pod B=SWE-V full500 主场），并在新栈上把 TB2.1 与 SWE-V 两本账重新对齐、放量。中途吃了一次 upstream relay 502 长事故、一个 SWE-V 离线 eval 的外网暗雷、一个 c=2 挂载竞态，都定位并绕过/修复。
 
-**当前口径（权威数字均取 scores/ledger 文件，见证据源）:**
+**历史战役口径（下列“权威/收官”语义已于 2026-07-21 撤回，仅作取证）:**
 - **Terminal-Bench 2.1**:privileged 单轮 c=2 strict **76/89**（真数，payload 修复完全生效）；c=2 `/oracle` bind-mount 竞态把 6 例压成假红（@c1 可过）→ 真 canonical **≈82/89 待 c=1 定向补跑定榜**；旧 pending-baseline 的 **query-optimize + rstan-to-pystan 在新栈直接回收**；**5 例 oracle-ran 真回归候选**待 c=1 复核。
 - **SWE-bench Verified**:gold **487/500 offline-PASSED + 13 offline-induced + 0 upstream**（昨日 484→今日 +2 Pod-B 复验 +1 backfill）；离线 eval 外网依赖暗雷已修（离线 requirements/env cache）；**policy canary s008 4/4 resolved**；full500 **恢复放量中**。
-- **RepoZero**:收官 **260/400 strict（65%）**;我们 harness 比官方更严，官方最强 Py2JS 30–55%，无法声称"复现官方分"（模型/scaffold 不同），但内部数可信且更高。
+- **RepoZero — RETRACTED:** 历史账本曾记录 **260/400 strict（65%）**；该未盖章结论不再是 active/current score，也不得作为“可信且更高”的对榜结论。
 - **CHARTER v6 迁移**:pilot 四件套 → runbook → Pod A/B bootstrap → canary/confirm → payload 大坑+preflight 门 → full89 定榜进行时。
 
-## 三主 bench 权威数字
+## 三主 bench 历史快照（非当前权威）
 
 | bench | 今日权威口径 | 证据源 | 备注 |
 |---|---:|---|---|
 | Terminal-Bench 2.1 | **c=2 strict 76/89**;真 canonical **≈82/89 待 c=1** | `reports/scores/tb21_full89_poda_privileged_poda_full89_privileged_oracle_c2_r7_payloadfixed_20260703t1350z_summary.md`（total=89 clean_pass=76 resolved=76 unresolved=13 parse_error=0 infra_fail=0 timeout=0 external_network_marker=3 0token）；`_coordination/20260625_harbor_bench/reports/tb21_full89_payloadfixed_final_audit_20260704.md` | 76 是真数（逐行 `is_resolved`）；13 unresolved=7 c2 mount-race+5 回归候选+1 git-multibranch |
 | SWE-bench Verified | **gold 487 offline-PASSED + 13 offline-induced + 0 upstream = 500**;policy canary **4/4** | `swe/rootless/reports/swev_gold_disk_revalidate_20260702/V5_GOLD_LEDGER.md`（=432 native+52 disk-fixed+2 Pod-B+1 backfill）+ 仓内快照 `reports/V5_GOLD_LEDGER_20260703.md`;canary `swev_s008_eval_by85_20260704/gpt-5.4-mini.s008eval_by85.json` | 昨日 gold 432→今日 offline-PASSED 487;full500 恢复放量 |
-| RepoZero | **strict 260/400（65%）收官** | `reports/repozero_official_comparison_20260703.md` | 官方最强 Py2JS 54.70%、范围 30–55%;我们更严且更高;官方论文无 GPT 家族模型 |
+| RepoZero | **RETRACTED historical `gpt-5.4-mini` ledger claim: former strict 260/400（65%）** | [专用撤回侧车](scores/repozero_gpt54mini_full400_20260703.RETRACTED_NON_CANONICAL.md) | 未盖章且 full400 raw provenance 不完整；不得作为 current/primary RepoZero 分数 |
 
 ## relay 502 事故与恢复
 
@@ -55,10 +57,10 @@ RepoZero 已收官**不迁**;55 preheat 目标 pg89q→Pod A。
 - **policy canary s008 4/4（85 顶班）**:51 撞 Codex 同池限额,85 顶班对 s008 的 4 正常 pred + django-11138 no-patch 过官方 eval:**resolved 4/4**(django-11095/11099/11119/11133)、django-11138 empty_patch(合法模型失败,20 调用 19 正常返回无 5xx)、**rc 0 / 外网痕迹 0 命中 / 无 STOP** → RESUME-CLEARED。证据:`swev_s008_eval_by85_20260704/{eval.log,gpt-5.4-mini.s008eval_by85.json}`。
 - **full500 恢复放量**:00:54 限额解除后 51 full resume（Pod B 稳态并发,30min 报账,挂 tmux `swev_podb_full_resume_20260703T171014Z`）;账本实证移动 **done_chunks 8→9 / rows 32→36 / resolved 20→23 / STOP=F / s009 active**,~470 任务待跑（gpt-5.4-mini,通宵)。证据:`swev_full500_model_20260702_podb_canary_*/full500_results.jsonl` + monitor 报告。
 
-## RepoZero 收官 260/400
+## RepoZero 历史账本记录（RETRACTED；原 260/400 结论非当前分数）
 
-- 内部 strict **260/400（65%）** 收官（昨日 131/400 strict → rate-limited c=4 rerun 挽回 timeout 污染残余）。
-- 结论:**不能声称"复现官方分"**——官方最强 Py2JS 54.70%±2.55(Claude-4.6-Sonnet+Mini-SWE-Agent)、范围 30–55%,模型/scaffold 均不同;但我们的 harness 是官方口径的忠实(且略严)再实现,内部 65% 高于官方范围且可信。官方论文全文交叉核实**无任何 GPT 家族模型**。证据:`reports/repozero_official_comparison_20260703.md`。
+- 历史账本曾记录 `gpt-5.4-mini` strict **260/400（65%）**；其 active/final publication status 已撤回，且没有可核实的 sealed full400 raw/merge provenance。
+- **当前裁决:** 原“内部 65% 高于官方范围且可信”的主动结论已撤回；模型、scaffold、协议与证据合同均不足以支撑 current/primary 对榜。参见[专用撤回侧车](scores/repozero_gpt54mini_full400_20260703.RETRACTED_NON_CANONICAL.md)。
 
 ## handoff_docs 交付（两份外部使用说明)
 

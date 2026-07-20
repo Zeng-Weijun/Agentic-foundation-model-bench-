@@ -1,5 +1,7 @@
 # QwenCode SWE-V — Qwen 原生 scaffold 终分报告
 
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG (2026-07-21).** Restored as reviewed historical evidence. The original PASS/final/representative-score language below is not current-suite authority; this Qwen/old-harness result must not be quoted as a current score.
+
 > 日期:2026-07-06 | 复审:85 | 状态:**PASS,Qwen 代表分定稿**
 > 权威源:`runs/swev_qwencode_v21_20260705T190754Z/full500_c20/results.jsonl`(500 行,wc 亲验)
 

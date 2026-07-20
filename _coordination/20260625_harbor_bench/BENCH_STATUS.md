@@ -1,12 +1,14 @@
 # BENCH_STATUS — 唯一进度看板(每 tick 更新,漂移即可见)
 
+> **Status: HISTORICAL CAMPAIGN BOARD.** 这是 2026-07-04 的历史进度快照；表内 FINAL/CANONICAL/primary/current 模型分语义均不是当前套件发布权威。RepoZero 未盖章 aggregate 已明确 `RETRACTED`。
+
 Updated: 2026-07-04 06:10 lead=Claude (by-85 sync) | 章程: CHARTER + v2-v6 DELTA | DoD 四项缺一不算完成
 
 | # | Bench | ①oracle/gold 全量 | ②真模型 full(标准 scaffold) | ③P0 传输证据 | ④one-click 重跑 | 下一步 |
 |---|---|---|---|---|---|---|
 | 1 | TB2.1 (89) | ✅ ★CANONICAL 84/89★(privileged oracle,mount-corrected,86 全链核证);残余 5=3 privileged 回归 root-caused(feal+compcert /tests-rw 已证 reward0→1,git-webserver master/main;修完冲 87)+2 双栈持久 | 🔄 full89 c=89 xhigh 收官中(round-1 fd事故作废→ulimit65535 重发全绿 89/89,fd 2.0%,xhigh live,待 86 终核出分) | ✅ | ✅ | 86 终核 full89 出分;3 回归修复应用待 55 Pod A 清场(spec=tb21_regression_fix_poda_by85_20260704.md) |
 | 2 | SWE-V (500) | 🔶 gold 487+13+0 | 🔄 ★full500 放量中(Pod B c=50,s033 段,STOP=F)★;live 账本见 swev_full500_monitor_surface51_20260703.md;外网依赖已修(canary 4/4+0 外网痕迹实证) | ✅ | 🔶 | 51 盯放量到收尾;30min 报账 |
-| 3 | RepoZero (400) | ✅ FINAL strict 260/400 (65.00%) = 131 baseline + 129 rescued;27 真实模型失败按 bug-for-bug 保留 FAIL;报告+flow 表+scores YAML 已落 | ✅ 同①(限流 rerun 即真模型 run,c=25) | 🔶 P0+fallback 齐 | 🔶 | codex strict 260/400 维持主数;官方协议 run=D案 PAUSED@Gate4(mini-fork 复现缺口→upstream;73 rescue 可选)=repozero_official_protocol_launch_spec_20260704.md §7 |
+| 3 | RepoZero (400) | ⛔ RETRACTED `gpt-5.4-mini` historical ledger claim: former strict 260/400 (65.00%); no FINAL/current score | ⛔ unsealed model-run ledger; full400 raw provenance incomplete | 🔶 P0+fallback 齐 | 🔶 | 不得维持为 primary；见[专用撤回侧车](../../reports/scores/repozero_gpt54mini_full400_20260703.RETRACTED_NON_CANONICAL.md) |
 | 4 | tau3 | 🔄 51 建设启动(worktree tau3-enable:快照脚本/registry 行/runner 骨架/parser) | ⬜ | ⬜ | ⬜ | enable 契约实现 |
 | 5 | DeepSWE | 🔶 可行性报告落地 16:12(14KB 待审) | ⬜ | ⬜ | ⬜ | 审→enable 契约 |
 | 6 | SWE-Multilingual | 🔶 可行性报告落地 17:29(15.6KB 待审) | ⬜ | ⬜ | ⬜ | 审→enable 契约 |
@@ -91,7 +93,7 @@ Updated: 2026-07-04 06:10 lead=Claude (by-85 sync) | 章程: CHARTER + v2-v6 DEL
 
 - 2026-07-03 02:00: ★六 bench enable 层 MERGED+PUSHED(origin/main=f54153c,6 commit:tau3/DeepSWE/SWE-Multilingual/NL2Repo/ProgramBench/MCP-Atlas smoke)★+日终战报落地(repo/reports/daily_digest_20260702.md);51 同步本地 checkout 后待命;85 v5 甄别大跑(41.9k tokens);55 bake r4 近 2h;86 RepoZero waiter。
 
-- 2026-07-03 02:45: ★RepoZero 收官:260/400(131+129 救回,翻倍),bug-for-bug 口径下 27 真实差距保持★;86 写 lane handoff 后换血;85 应用 full500 补丁重启推进;55 bake r4 2.5h(vendor 化构建长跑);51 idle 待命。
+- 2026-07-03 02:45 HISTORICAL EVENT（publication RETRACTED 2026-07-21）: RepoZero 当时账本记录 260/400（131+129）及 27 个保留失败；该事件不再形成 active/final score。
 
 - 2026-07-03 03:40: ★归档审计 5/5 CHALLENGE——84+5 图作废,目标上修★:headless-terminal(打包丢官方 solution/,86 修验中)/chess-best-move(我方 repair 脚本 artifact)/install-windows-3.11(我方 staging)已证我方 bug 转修复;rstan+query-optimize unproven 交 85 baseline-online 官方对照;bake r4 push 11/11 完成(收尾 tar);TB2.1 infra-clean 新目标≈87-89/89(视对照结果)。审计机制价值实证:防止把我方 bug 甩锅官方。
 
@@ -112,7 +114,7 @@ Updated: 2026-07-04 06:10 lead=Claude (by-85 sync) | 章程: CHARTER + v2-v6 DEL
 - 2026-07-03 14:05: ★TB2.1=86/89(git-multibranch r7 翻绿)★;剩 3=reshard-c4-data(r7 后仍 False 最后一层)+rstan/query(baseline 判词);85 context 97% 换血中(handoff v2→clear→re-brief);86 消融后台;上游 502 仍持续。
 
 - 2026-07-03 14:35: ★★TB2.1 终图 v2=87/89, infra_unresolved=0——oracle 线 infra-clean 达成★★(reshard r7 uvfix 绿+git r7 绿+B7 全绿);剩 2=query-optimize/rstan pending baseline verdict;55 排干净 full89 oracle 终验(单次 run 复现 87,DoD① 存档证据);下一步=真模型 full89(等上游稳)。
-- 2026-07-03 17:40: 新主 agent 接管(编排断档 10:55→17:40);relay 502 事故结束(dev 401@0.14s,51 真 completions 3/3 200);full500 自驱恢复至 s005,51 复位盯收尾;gold V5 账=484+16+0(16 例待核是否已修);RepoZero FINAL 260/400 定稿;TB2.1 REAL 80/89(B7 三层链通);六 bench enable 已并 f54153c;新风险:jvm9z/pg89q 标 RETIRING→86 出 rjob 迁移 runbook(READ-ONLY 探查先行)。
+- 2026-07-03 17:40 HISTORICAL EVENT（RepoZero FINAL 语义 RETRACTED 2026-07-21）: 新主 agent 接管；relay 恢复、full500/gold/TB2.1 等当时状态照旧留档；RepoZero 当时的 260/400 定稿不再是 current/primary 分数。
 - 2026-07-03 18:10: TB2.1 账目修正 80→79/89(r5_final 核验,evidence 全齐);迁移 runbook 落地(Pod A 就绪/Pod B 待 bootstrap);lead 批准 Phase0 canary=8 docker-EOF 任务上 Pod A 重跑(TB2.1 收口+迁移金丝雀双重目的);gold-16 审计+scores commit/push 派 85。
 - 2026-07-03 19:05: ★CHARTER v6:用户直令全面迁移 rjob KVM worker★ W1=Pod B bootstrap(85) W2=full500 cutover(51) W3=Pod A TB2.1 主场(86/55);jvm9z/pg89q 只留回滚现场不铺新;s002 坏账已回滚(8/32/20,STOP=T)借停机窗口迁移;85 三 commit 已上 origin。
 - 2026-07-03 19:30: canary 判决=EOF 病根消灭(6/6);0-resolve 归因 smoke bootstrap=0 vs RO /tests;数据集 canonical 修正为 r7-final;55 接确认重跑(batched+privileged 适配),86 物化 2 缺镜像;handoff_docs 使用说明×2 交付用户。
@@ -127,4 +129,4 @@ Updated: 2026-07-04 06:10 lead=Claude (by-85 sync) | 章程: CHARTER + v2-v6 DEL
 - 2026-07-04 04:08: ⚠️事故+教训——relay 18540 误杀(lead 误判故障重启,已恢复,如实入账)。假死根因:dev 非交互 shell 探测 relay 经代理。★教训:localhost/relay 健康探测必须 --noproxy(或 NO_PROXY),否则代理拦截→假死→误杀★。
 - 2026-07-04 04:42: ⚠️事故+教训——full89 c=89 round-1 INVALID-INFRA(fd-exhaustion:launcher shell soft ulimit=1024→[Errno 24] Too many open files,仅 37/89 容器起)作废。★教训:真模型 launcher 进程必设 ulimit -n 65535★。
 - 2026-07-04 05:20: full89 c=89 ulimit65535 重发(terminus2_full89_gpt54mini_xhigh_c89_ulimit65535_r7_20260703t205031z)t+27min ALL GREEN:89/89 容器、fd 2.0%/65535、infra/docker/relay 错误 0、xhigh live everywhere(reasoning_tokens>0 max 7850)——待 86 终核出分。
-- 2026-07-04 06:00: RepoZero 官方协议 run PAUSED@Gate4(D案,lead)。codex strict 260/400 维持主数;官方 runner 依赖不可识别 mini-fork(stock 1.17.5/2.4.4 均无其 flags,无 vendor 无 pin)+stock scaffold↔gpt-5.4-mini 格式不兼容(tool-call/text 双失败)=复现缺口归档 upstream;Gate1-3 绿(xhigh 已证 reasoning_tokens=114-328),resume-ready 保留。spec §7=repozero_official_protocol_launch_spec_20260704.md。
+- 2026-07-04 06:00 HISTORICAL EVENT（RETRACTED 2026-07-21）: RepoZero 官方协议 run PAUSED@Gate4；原 codex aggregate 仅保留为历史 raw-derived 记录，不再维持主数；官方 fork/scaffold 复现缺口照旧归档。

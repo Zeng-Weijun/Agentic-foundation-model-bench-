@@ -847,11 +847,11 @@ Post-harness-fix re-run. **agent_status: 500 patch / 0 no_patch (was 212), 0 doc
 - sympy__sympy-13480: real patch 590c, in resolved_ids, not empty/error.
 (earlier patch_len=0 was my jq-path bug — patch is nested under the instance_id key; corrected.)
 
-**4) EXTERNAL口径 RECOMMENDATION (board-comparable, unlike the earlier django-skew orphan):**
-- REPORT AS: "SWE-bench Verified, mini-swe-agent v2.0.0 (bash-only), **gpt-5.5 high-effort, single-attempt pass@1 = 77.2% (386/500), 0 infra**." Same harness/口径 as the official gpt-5.2-high anchor (72.8%/500 pass@1) → our gpt-5.5 is **+4.4pp above the gpt-5.2 official baseline under identical conditions.**
+**4) HISTORICAL EXTERNAL RECOMMENDATION — RETRACTED 2026-07-21:**
+- **Do not report as current.** The original 2026-07-05 text recommended the historical 77.2% high-effort run as board-comparable; that publication guidance is withdrawn because the current suite requires relay-backed `gpt-5.5` + `medium` plus the current evidence contract.
 - CAVEATS to state: (a) SINGLE run (variance ~±3-4pp; not a multi-seed mean); (b) gpt-5.5 is NOT on the frozen official board (5.3/5.4/5.5 post-date the ~2026-02 freeze) → 77.2% is a NEW same-口径 baseline EXTENDING the gpt-5.2-high anchor, not itself an "official board score". Do not claim board membership; DO claim same-口径 reproduction + a +4.4pp delta over the official gpt-5.2-high anchor.
 
-**VERDICT: PASS.** v2.1 run valid (harness bug fixed, 0 infra, score matches prediction, per-repo recovered, new-resolved authentic). 77.2% is a legitimate same-口径, board-comparable number. Campaign bench-review chain CLOSED.
+**Historical verdict retained; publication authority withdrawn.** The underlying run audit remains evidence, but its high-effort aggregate is `HISTORICAL_NON_CANONICAL_CONFIG`, not a current score.
 
 ---
 ## 2026-07-05 12:49 CST — surface:55 — RepoZero option-b gpt-5.5 launch record
@@ -877,6 +877,8 @@ Post-harness-fix re-run. **agent_status: 500 patch / 0 no_patch (was 212), 0 doc
 **观察(交 85/报告,非账目错误)**: merged agent_status=**patch 441 / no_patch 59**,且 no_patch 行 eval_rc=0(eval 真跑)→ 这 59 是 **Qwen 真·未产出 patch(模型层),非 gpt-5.5-v2 那种 docker-125 infra**(已区分)。真模型信号:441 patch 里 117 resolved=**26.5% patch-resolve 率**。23.4% 对 30B-A3B 合理(锚:Qwen3-Coder-480B TB2.0=23.9%,不同 bench/更大模型,仅作量级参考)。
 
 ## 2026-07-05 — surface:85 REVIEW of Qwen3-Coder-30B-A3B SWE-V (117/500=23.4%) — PASS-run / REJECT-as-model-score (scaffold-compat depressed)
+
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** The active score recommendation in this historical decision block is retracted. Numeric evidence remains for forensic comparison only.
 Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via vLLM :30000. rows=500, resolved=117, eval_rc=0 ×500, 0 docker-125. agent_status: 441 patch / 59 no_patch.
 
 **COMPARABILITY: VALID.** Qwen 500-set == gpt-5.5 500-set (common=500, qwen-only=0; both django=231 — this SWE-V-500 variant is django-heavy but both models faced identical instances). So 23.4% vs 77.2% is same-set.
@@ -888,7 +890,7 @@ Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via
 
 **5 unresolved sampled:** astropy-13579 (no_patch, "Submitted" w/ empty patch — actions not applied), django-10097 & django-10554 (multibash rejections), astropy-12907 (patch 327c wrong), astropy-13033 (patch 2868c wrong). Mix of no-patch (friction lost the edit) + wrong-patch (model miss and/or compat-degraded action).
 
-**SCAFFOLD ATTRIBUTION (49% Qwen-Code → 23.4% mini = -25.6pt):** LARGELY the multi-tool-call vs single-block interaction-mode mismatch (100% prevalence, verified). Exact compat-vs-model split CANNOT be cleanly isolated from this run alone — needs an A/B (Qwen on a mini-variant that accepts multi-tool-calls). But 100% prevalence + the 25.6pt scaffold gap ⇒ mismatch is the dominant contributor, not raw model weakness.
+**HISTORICAL SCAFFOLD ATTRIBUTION (active 49% publication RETRACTED 2026-07-21):** the old comparison below is retained only to explain the interaction-mode hypothesis; it is not a current score recommendation.
 
 **47 infra_events:** transient (docker-repair per merge notes); repaired to 500 unique clean score rows → not masking the final result.
 
@@ -897,11 +899,11 @@ Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via
 |---|---|---|---|
 | gpt-5.5 high | mini-swe-agent v2.0.0 (single-block) | 77.2% | model↔scaffold natural fit |
 | Qwen3-Coder-30B-A3B | mini-swe-agent v2.0.0 (single-block) | **23.4%** | ★compat-DEPRESSED: 100% emit multi-tool-call vs mini's single-block |
-| Qwen3-Coder-30B-A3B | Qwen-Code (native multi-tool-call) | 49.0% | native fit → +25.6pt; representative Qwen capability |
+| Qwen3-Coder-30B-A3B | Qwen-Code (native multi-tool-call) | 49.0% historical | active publication retracted; trace comparison only |
 
 **VERDICT: run PASS (real, 0 infra, same set), but REJECT 23.4% as Qwen's SWE-V model-capability number.** It is a scaffold-compat-depressed measurement of "Qwen on a mismatched scaffold", not Qwen's capability.
 
 **对外口径 / 训练配比建议:**
-1. DO NOT quote 23.4% as Qwen's SWE-V ability. Use **49% (Qwen-Code, native)** as Qwen's representative number.
+1. **RETRACTED 2026-07-21:** neither 23.4% nor the former 49% Qwen-Code aggregate is a current representative score; retain both only as historical scaffold-comparison evidence.
 2. gpt-5.5 77.2% vs Qwen 23.4% on mini is CONFOUNDED by scaffold-fit — not a clean model-vs-model comparison.
 3. For self-built harness training mix: weight by the DEPLOY scaffold. If deploying mini-style single-block, either (a) fix the parser to accept/serialize Qwen's multi-tool-calls, or (b) SFT Qwen toward single-block-per-turn output. To measure the true compat cost, re-run Qwen on a multi-tool-call-tolerant mini variant (A/B).

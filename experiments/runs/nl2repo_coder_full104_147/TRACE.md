@@ -1,5 +1,7 @@
 # TRACE — NL2RepoBench × Qwen3-Coder-30B Path A (nl2repo_coder_full104_147)
 
+> **Status: RETRACTED_NON_CANONICAL (2026-07-21).** This trace is retained for provenance and debugging only. Any headline or aggregate described below is historical, was produced by a non-current Qwen/older-harness configuration, and must not be quoted as a current relay-backed `gpt-5.5` + `medium` suite result.
+
 Chronological investigation trace (KVM env-kvm-57740737-bzw56, serving :30001 pod .147), 2026-07-13.
 
 1. **Serving identity** — `GET :30001/get_model_info` → `Qwen3-Coder-30B-A3B-Instruct`

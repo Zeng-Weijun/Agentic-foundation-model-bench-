@@ -68,7 +68,7 @@ agent:
   qwen_code_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root
   qwen_code_executable: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/qwen
   qwen_code_node: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/shared_bench/qwen_native_swebench/.npm-root/node_modules/.bin/node
-  qwen_code_reproduction_pin_note: "Keep 0.15.6 for the completed 49.0% SWE-bench reproduction; 0.16.2 is installed separately for new-run smoke."
+  qwen_code_reproduction_pin_note: "Keep 0.15.6 only to reproduce the retained historical run artifact; its active score publication is retracted. 0.16.2 is installed separately for new-run smoke."
   qwen_code_latest_candidate:
     package: "@qwen-code/qwen-code"
     version: 0.16.2
@@ -158,9 +158,10 @@ experiment:
     serving_context_length: 262144
   completed_runs:
     full_20260528_181844:
+      publication_status: retracted_non_canonical
       run_name: qwen_code_qwen3_coder_30b_a3b_instruct_qwen3_coder_30b_a3b_instruct_swebench_qwen_code_full_262k_retag_20260528_181844_paper_n500
-      result_summary: "245/500 resolved = 49.0%; completed=486, errors=1, empty_patch=14."
-      note: "Original one-shot full run. Keep this as the raw pass@1 reproduction score."
+      result_summary: "retracted historical artifact; see repository score-retraction notices"
+      note: "Original one-shot full-run artifact retained for forensic reproduction; not an active or current-suite score."
   selective_retry_after_runner_fix:
     enabled_for_diagnostics: true
     score_policy: "If merged into a corrected score, report explicitly as full run plus selective retry, not as the raw one-shot pass@1 run."
@@ -192,9 +193,10 @@ experiment:
         sphinx-doc__sphinx-9591: "Original runner UnicodeDecodeError during patch collection; retry produced a 1002-byte patch and verifier ran, resolved=false."
         sphinx-doc__sphinx-11510: "Original qwen_returncode=124/agent timeout empty patch; retry qwen_returncode=0 but still empty_patch, resolved=false."
     corrected_reproduction_score:
-      score_kind: selective_retry_corrected
-      result_summary: "245/500 resolved = 49.0% after replacing these three original runtime/runner cases with selective retry outcomes; retry added 0 resolved cases."
-      raw_one_shot_reference: "245/500 resolved = 49.0%; completed=486, errors=1, empty_patch=14."
+      publication_status: retracted_non_canonical
+      score_kind: retracted_historical_selective_retry_artifact
+      result_summary: "retracted historical artifact; selective retry added 0 resolved cases; see repository score-retraction notices"
+      raw_one_shot_reference: "retracted historical artifact; raw run metadata remains at artifact_json"
       artifact_json: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites/qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916/swebench_verified_qwen_code/qwen_native_outputs/qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500/selective_retry_corrected_score.json
   commands:
     serve_on_worker: "./scripts/serve_qwen3_coder_30b_a3b_sglang.sh"

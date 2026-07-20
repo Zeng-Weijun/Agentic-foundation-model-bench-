@@ -1,5 +1,7 @@
 # 战役进度汇总 — bench KVM E2E（2026-07-04）
 
+> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** 本页保留 2026-07-04 战役的 high-effort、Qwen 和旧 harness 历史证据；这些分数不属于当前 relay-backed `gpt-5.5` + `medium` 套件，不得作为当前总分入口。RepoZero 188-case rescue-pool 的主动发布已标记 `RETRACTED`。
+
 > 整理:85(by-85)| 范围:tau3 / full500(SWE-V) / TB2.1 / V2 runner / 官方榜对照
 > 权威细节见:`_coordination/bench_kvm_e2e_20260704/{DECISIONS,HANDOFF}.md`、`reports/full500_midrun_audit_20260704.md`、`reports/tau3_transport_proof_20260704.log`、`reports/official_leaderboard_vs_relay_20260704.md`
 
@@ -119,7 +121,7 @@
 
 | 模型 | scaffold | 交互模式 | 分 | 状态 |
 |---|---|---|---|---|
-| Qwen3-Coder-30B | QwenCode 0.15.6 | 原生多-tool-call | **48.6%** | ✅ canonical Qwen 原生(取代未验证 49% README 锚) |
+| Qwen3-Coder-30B | QwenCode 0.15.6 | 原生多-tool-call | **48.6%** | 历史封样；当前口径非 canonical |
 | Qwen3-Coder-30B | mini-swe-agent | 单-bash-块 | 23.4% | ✗ scaffold 压低(100% 多-bash 拒绝) |
 | Qwen3-Coder-30B | terminus-2 | live tmux | 10.1% | ✗ scaffold 压低(churning avg 105.8 轮) |
 | gpt-5.5 | mini-swe-agent | 单-bash-块 | 77.2% | ✅ 模型-scaffold 契合 |
@@ -148,7 +150,7 @@
 ### ⛔ 禁引用数字清单（口径孤儿 / scaffold 压低 / 已报废）
 `23.4%`(Qwen mini)· `10.1%`(Qwen terminus-2)· `28.2%`/`67.0%`(RepoZero 磁盘)· `43.6%`(SWE-V v2 docker-125)· `23.4%`(QwenCode 6月降级)。
 
-### ✅ 可引用终分（带各自 caveat)
+### 历史战役数值（仅作取证，不是当前可引用总分）
 | bench | 模型·scaffold | 分 |
 |---|---|---|
 | SWE-bench Verified | gpt-5.5 · mini v2.0.0 | **77.2%** |
@@ -161,10 +163,10 @@
 **本战役 bench 复审链正式全收官。**
 
 ---
-## Canonical 定稿同步 2026-07-06（用户拍板）
-权威卡:`reports/scores/QWEN3_CODER_30BA3B_CANONICAL_20260706.md`
+## 历史定稿记录 2026-07-06（当前总分权威已撤回）
+历史封样卡（不可作为当前 `gpt-5.5` + `medium` 总分入口）:`reports/scores/QWEN3_CODER_30BA3B_CANONICAL_20260706.md`
 
-**Qwen3-Coder-30B-A3B canonical:**
+**Qwen3-Coder-30B-A3B 历史封样快照（当前口径非 canonical）:**
 | Bench | 分 | scaffold | caveat |
 |---|---|---|---|
 | SWE-bench Verified | **48.6%**（243/500) | QwenCode 0.15.6 原生 | 复现官方 ~51%(-2.4pt);mini 23.4% 兼容压低禁引 |

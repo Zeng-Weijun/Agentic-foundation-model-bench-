@@ -20,7 +20,6 @@ Inspected evidence:
 - `/tmp/agentic_tau2_proxy_smoke3/summary.json`
 - `/tmp/agentic_tau2_proxy_smoke3/logs/tau2_paper_core.log`
 - `reports/vitabench_repozero_worker_preflight_20260625.md`
-- `reports/qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
 - `reports/terminal_bench_2_1_smoke_plan_20260625.md`
 - `reports/all_bench_offline_gap_matrix_20260625.md`
 - `reports/agentic_bench_landscape_20260625.md`
@@ -488,12 +487,8 @@ Parser ID: one of:
 
 Observed sources:
 
-- Existing score report:
-  - corrected score `245/500 = 49.0%`
-  - `completed=486`
-  - `errors=1`
-  - `empty_patch=14`
-  - `selective_retry_corrected_score.json`
+- Synthetic score fixtures only. The former production-derived local score
+  example was retracted and must not be treated as an active score anchor.
 - README/native pointers:
   - `SWE-agent/trajectories/*__<suffix>/preds.json`
   - scaffold-specific trace roots.
@@ -687,8 +682,8 @@ fixtures before parser code:
    files. Expected average reward and per-domain cases.
 3. VitaBench synthetic simulation JSON with `termination_reason=max_steps`.
    Expected `failure_category=capped_steps`.
-4. SWE-bench synthetic corrected score JSON. Expected `245/500` style
-   normalization plus empty-patch count.
+4. SWE-bench synthetic corrected score JSON. Expected full-denominator
+   normalization plus empty-patch count; do not copy a historical production score.
 5. Terminal-Bench infra-blocked fixture. Expected `benchmark_status=infra_error`
    and no false task pass.
 6. DeepSWE partial-run fixture. Expected `benchmark_status=partial`,

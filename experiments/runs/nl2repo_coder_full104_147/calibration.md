@@ -1,5 +1,7 @@
 # NL2RepoBench × Qwen3-Coder-30B-A3B-Instruct — Path A calibration & credibility
 
+> **Status: RETRACTED_NON_CANONICAL (2026-07-21).** These calibration figures are preserved for forensic review, not as an active or current-suite NL2Repo score. See [RETRACTED_NON_CANONICAL.md](RETRACTED_NON_CANONICAL.md).
+
 **Scope:** NL2RepoBench (M-A-P) 104-task benchmark, native qwen-code Path A, on the KVM pod
 against sglang serving `:30001` (pod `.147`). Credibility point #9: what the headline means, the
 offline scoring口径, and the exact handling of false-zeros so they do not pollute

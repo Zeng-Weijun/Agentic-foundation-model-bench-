@@ -1,5 +1,7 @@
 # NL2RepoBench × Qwen3-Coder-30B-A3B-Instruct — native qwen-code Path A (104 tasks)
 
+> **Status: RETRACTED_NON_CANONICAL (2026-07-21).** The active headline is withdrawn. This Qwen/old-harness bundle remains audit evidence only and is not a current relay-backed `gpt-5.5` + `medium` NL2Repo score. See [RETRACTED_NON_CANONICAL.md](RETRACTED_NON_CANONICAL.md).
+
 **Run id:** `nl2repo_coder_full104_147` · **Date:** 2026-07-13 · KVM pod (env-kvm-57740737-bzw56)
 
 ## Headline

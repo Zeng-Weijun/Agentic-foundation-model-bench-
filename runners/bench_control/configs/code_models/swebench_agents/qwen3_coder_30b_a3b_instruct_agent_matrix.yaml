@@ -6,11 +6,12 @@ model:
 
 agents:
   qwen_code:
-    status: full_run_completed
+    publication_status: retracted_non_canonical
+    status: historical_run_artifact_retracted_non_canonical
     suite_yaml: ../qwen3_coder_30b_a3b_instruct_swebench_qwen_code.yaml
     run_script: ../../run_qwen3_coder_30b_a3b_swebench_qwen_code.sh
-    raw_full_score: "245/500 = 49.0%"
-    corrected_score_after_selective_retry: "245/500 = 49.0%"
+    raw_full_score: "retracted historical artifact; see repository score-retraction notices"
+    corrected_score_after_selective_retry: "retracted historical artifact; see repository score-retraction notices"
     prompt_policy: "Current runner now uses a minimal SWE-bench style issue prompt; prior completed score used the older custom Qwen Code prompt."
     budget_policy: "max_session_turns=-1, agent_timeout_s=28800, verifier_timeout_s=7200 for future runs."
     latest_trace_root: /mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/code_model_suites/qwen3_coder_30b_a3b_instruct_swebench_qwen_code_selective_retry3_20260529_123916/swebench_verified_qwen_code/qwen_native_outputs/qwen_code_qwen3_coder_30b_a3b_instruct_selective_retry3_20260529_123916_paper_n500
