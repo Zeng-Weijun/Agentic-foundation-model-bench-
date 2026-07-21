@@ -20,7 +20,7 @@
 
 | Bench | task 数 | 镜像命名 | registry | 拉取方式 | 判分机制 | 端到端验证状态(诚实) |
 |---|---|---|---|---|---|---|
-| **SWE-V** | 500 | `swebench/sweb.eval.x86_64.<inst>:latest`(`__`→`_1776_`) | Docker Hub `swebench/` + Harbor `swe-data-harness/swebench-verified-*`(500/500 digest) | 在线 `docker pull`(Hub 或 Harbor by-digest);离线 = 96 个 repo-chunk tar load 后 retag 到 base ref | `swebench.harness.run_evaluation` → `report.json` 的 `FAIL_TO_PASS`+`PASS_TO_PASS` 全过 ⇒ `resolved:true` | **gold-oracle 真验过**(astropy-12907 本 agent 2026-07-12 + 仓内 50/50 子集);**模型 full500 无 sealed 分**;transport 500/500 |
+| **SWE-V** | 500 | `swebench/sweb.eval.x86_64.<inst>:latest`(`__`→`_1776_`) | Docker Hub `swebench/` + Harbor `swe-data-harness/swebench-verified-*`(500/500 digest) | 在线 `docker pull`(Hub 或 Harbor by-digest);离线 = 96 个 repo-chunk tar load 后 retag 到 base ref | `swebench.harness.run_evaluation` → `report.json` 的 `FAIL_TO_PASS`+`PASS_TO_PASS` 全过 ⇒ `resolved:true` | **gold-oracle 真验过**(astropy-12907 本 agent 2026-07-12 + 仓内 50/50 子集);**模型 full500 无 sealed 分**(live coder ~48%);transport 500/500 |
 | **TB2.1** | 89 | 本地 `tb2-offline/<task>:20260425[-closure-rN]`;Harbor `terminal-bench-2-1-<task>` | Harbor `swe-data-harness/terminal-bench-2-1-*` | 在线 `docker pull <harbor>@<digest>`;离线 `docker load -i <tar>` | task 自带 `run-tests.sh` → `/logs/verifier/reward.txt`(0/1)+ `ctrf.json`;tb 原生 harness → `results.json` 的 `is_resolved` | **manual-oracle 本 agent 真验过**(log-summary-date-ranges,2026-07-12,reward=1);canonical oracle 84/89(jvm9z);模型 gpt-5.5-medium 70.8%(63/89) |
 
 ---
@@ -121,11 +121,11 @@ $B/conda_envs/swebench/bin/python <run_root>/eval_wrap.py \
   1. **本 agent 2026-07-12 真跑 1 个 instance**(`astropy__astropy-12907`,resolved:true,FAIL_TO_PASS 2/2 + PASS_TO_PASS 13/13)。证据 `$B/nips2026/agentic-foundation-model-bench/tmp/oracle_doc_verify_20260712T032125Z/`。
   2. 仓内既有 **50-task gold 子集**跑过、**50/50 resolved**(2026-06-29):`$BENCH/runs/swev_gold50_harness_nsss8_20260629T002855/`(top report `gold.swev_gold50_...json` total=50 resolved=50 error=0)。
   - ⚠️ **没有 full-500 的 gold run**(只有 50-task + 我这 1 个)。
-- **模型全量 500:** 当前没有可发布的 v5-sealed full-500 模型分。以下 run id 只用于定位历史 live、terminated 或 partial 诊断证据；其分子、分母和百分比都不是可发布分数:
-  - `swev_coder_full500_v5_147_20260711T165758Z` — 历史 live diagnostic run。
-  - `swev_coder_full500_v5_147_20260711T145108Z` — 历史 terminated diagnostic run。
-  - `swev_instruct2507_full500_v5_147_20260711T165758Z` — 历史 partial diagnostic run。
-  - 先前的 “48.6%” claim 在本路径没有 sealed 证据，现已从本操作文档撤回。
+- **模型全量 500**:⚠️ **没有任何 v5-SEALED 的 full-500 模型跑**(扫遍 `runs/swev_*` 无 `V5_SEAL_OK.txt`)。实况 partial(证据 = 各自 `results.jsonl`):
+  - `swev_coder_full500_v5_147_20260711T165758Z` — **LIVE 进行中**,~374/500(181 resolved ≈48.4%,调查期间从 337→374 在涨)。
+  - `swev_coder_full500_v5_147_20260711T145108Z` — 242/500(120 resolved),**已 Terminated rc=143**。
+  - `swev_instruct2507_full500_v5_147_20260711T165758Z` — 231/500(50 resolved),partial。
+  - ★ launcher header / 项目记忆里的 **"Coder full500 48.6%" 是 prior claim**,`runs/` 下**没找到对应的 sealed 500-row run**。
 - **封样机制**:v5 launcher 把 `report.json` 汇成 13 字段 `results.jsonl`(`instance_id,resolved,run_id,dataset,dataset_size,harbor_digest,reward,...`),带分母守卫 `len(results)==500`(`scored_runs/lib/scored_run_v5_lib.sh` `v5_seal`)。
 - 官方锚(非本仓复现):SWE-bench Verified bash-only gpt-5.2-high 72.8%。
 

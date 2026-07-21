@@ -1,7 +1,5 @@
 # `experiments/` — the artifacts behind each quoted score
 
-> **Status: HISTORICAL ARTIFACT INDEX.** Bundles below may contain signed, reviewed, or unsigned historical evidence. Appearance in this index does not make a result current; consult the explicit per-run status notice, and do not quote a score as current unless it satisfies the relay-backed `gpt-5.5` + `medium` publication contract.
-
 One directory per run. Everything here is either the exact file that ran, or a hash by which the file
 that ran can be checked.
 

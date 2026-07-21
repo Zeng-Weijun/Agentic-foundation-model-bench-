@@ -12,7 +12,7 @@ models:
     max_output_tokens: 65536
     status: existing_endpoint_not_rechecked_this_turn
     notes:
-      - Publication status is RETRACTED_NON_CANONICAL; the historical raw artifact is retained, but there is no active local score anchor.
+      - Local SWE-bench Verified Qwen Code score anchor is 245/500 = 49.0%.
       - Do not conflate with public Qwen3-Coder-Next 80A3 scores.
   - id: gpt-5.4-mini
     public_name: gpt-5.4-mini

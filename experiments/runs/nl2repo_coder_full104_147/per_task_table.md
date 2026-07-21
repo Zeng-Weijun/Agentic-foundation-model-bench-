@@ -1,5 +1,3 @@
-> **Status: RETRACTED_NON_CANONICAL (2026-07-21).** Per-task values are retained as raw-derived audit evidence; do not aggregate or quote them as an active current-suite score. See [RETRACTED_NON_CANONICAL.md](RETRACTED_NON_CANONICAL.md).
-
 | task | success_rate | passed/total | class | src |
 |---|---|---|---|---|
 | pythonprojecttemplate | 1.0000 | 36/36 | OK_nonzero | orig |

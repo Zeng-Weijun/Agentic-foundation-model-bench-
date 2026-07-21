@@ -1,7 +1,5 @@
 # SWE-bench Multilingual × gpt-5.5 — Dual-Number Final (2026-07-07)
 
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG (2026-07-21).** This dual-signed high-effort artifact is preserved as history. Neither number below is a current relay-backed `gpt-5.5` + `medium` suite score.
-
 ## Canonical numbers
 
 | 口径 | 分数 | 状态 |

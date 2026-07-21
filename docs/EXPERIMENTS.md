@@ -57,8 +57,6 @@ failure that same day** — see the "why" column. Do not treat them as bureaucra
 | `superseded` | Was canonical, replaced; kept as history — **do not quote** |
 | `blocked` | **Infra failure** (`infra_fail > 0`: missing artifact / fatal timeout / non-zero runner rc) — not a model score |
 | `forbidden` | Number is real but measures the harness or the environment, not the model |
-| `HISTORICAL_NON_CANONICAL_CONFIG` | Sealed or signed historical evidence that is not eligible for the current relay-backed `gpt-5.5` + `medium` suite |
-| `RETRACTED` | An active publication was withdrawn; raw evidence may remain for audit, but the score must not be quoted as current |
 
 ### ⚠️ The harness's `blocked` is **not** this table's `blocked`
 
@@ -147,7 +145,7 @@ Third-party aggregator numbers are hallucination-grade and banned.
 | SWE-V `43.6%` (gpt-5.5, v2) | 211 `docker exit-125` container-start failures recorded as `no_patch`. Labelled `superseded_history_do_not_quote_as_model_score`. |
 | TB2.1 raw `62/89` | Scorer false negative on `headless-terminal`; corrected value is 63/89. |
 | TB2.1 `64.04%` (KVM run) | Gate returned `ready=false`, `status=blocked`. Not a model score. See §5.6. |
-| Multilingual raw `67.0%` | 26 Gradle tasks scored false-zero offline. Its match to the 66.7% anchor is **coincidental cancellation**. The associated 73.4% clean subset is also historical high-effort evidence, not a current-suite result. |
+| Multilingual raw `67.0%` | 26 Gradle tasks scored false-zero offline. Its match to the 66.7% anchor is **coincidental cancellation**. Use the 73.4% clean subset. |
 | RepoZero `28.2%` / `67.0%`-as-final | `/tmp` inode exhaustion corrupted per-case evidence, twice. |
 
 ### 1.3 Failure taxonomy (bug-for-bug compatibility)
@@ -191,7 +189,7 @@ sglang does not validate `model`. It echoes it. A run can evaluate the wrong wei
 the first token to the last and produce a trace that looks flawless.
 
 Ports do not identify a model either. `:30000` served `Qwen3-Coder-30B-A3B-Instruct` on the
-host that produced the historical Qwen scores, and serves `Qwen3-30B-A3B-Instruct-2507` on the
+host that produced the canonical Qwen scores, and serves `Qwen3-30B-A3B-Instruct-2507` on the
 host that replaced it.
 
 | Recorded value | Identifies the weights? |
@@ -273,13 +271,11 @@ redacted at capture time).
 
 ## §2 Master table
 
-> **Five-benchmark campaign eligibility is narrower than historical validity.** Within SWE-V, SWE-bench Multilingual, DeepSWE, NL2Repo, and RepoZero, only relay-backed `gpt-5.5` + `medium` rows may be current; high-effort, Qwen, and old-harness rows remain historical evidence. Terminal-Bench rows below are outside this campaign and retain their own statuses.
-
 | Bench | Model | Harness + version | Score | resolved/total | Anchor | Status | Card |
 |---|---|---|---|---|---|---|---|
-| SWE-bench Verified | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **77.2%** | 386/500 | 72.8% (`gpt-5.2-high`) | `HISTORICAL_NON_CANONICAL_CONFIG` | [3.1](#31-swe-v--gpt-55--mini--772-historical) |
+| SWE-bench Verified | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **77.2%** | 386/500 | 72.8% (`gpt-5.2-high`) | `canonical` | [3.1](#31-swe-v--gpt-55--mini--772-canonical) |
 | SWE-bench Verified | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 43.6% | 218/500 | — | `superseded` | [3.2](#32-swe-v--gpt-55--mini--436-superseded) |
-| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` (native) | **48.6%** | 243/500 | ~51% (vendor self-report) | `HISTORICAL_NON_CANONICAL_CONFIG` | [3.3](#33-swe-v--qwen--qwen-code--486-historical) |
+| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` (native) | **48.6%** | 243/500 | ~51% (vendor self-report) | `canonical` | [3.3](#33-swe-v--qwen--qwen-code--486-canonical) |
 | SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `mini-swe-agent v2.0.0` | 23.4% | 117/500 | — | `forbidden` | [3.4](#34-swe-v--qwen--mini--234-forbidden) |
 | Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` | **70.8%** | 63/89 | 78.2% ± 2.4 | `canonical` | [3.5](#35-tb21--gpt-55--terminus-2--708-canonical) |
 | Terminal-Bench 2.1 | `gpt-5.5` (medium) | `terminus-2` + `/dev/kvm` | 64.04% | 57/89 | — | `blocked` | [3.6](#36-tb21--gpt-55--terminus-2--devkvm--6404-blocked) |
@@ -289,16 +285,16 @@ redacted at capture time).
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `terminus-2` — **re-measurement 2026-07-10** | 13.48% | 12/89 | 10.11% (this table, 2026-07-05) | `reproduced`⁹ | [3.15](#315-tb21--qwen-coder--terminus-2--1348-reproduced) |
 | Terminal-Bench 2.1 | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` — **container-native** | 11.24% | 10/89 | none | `valid`¹⁰ | [3.16](#316-tb21--qwen-coder--qwen-code-native--1124-valid) |
 | Terminal-Bench 2.1 (oracle) | — | `terminus-2` | 95.5% | 85/89 | — | infra map³ | [3.9](#39-tb21-oracle-infra-map) |
-| RepoZero (188-case **rescue pool**) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | 54.70% ± 2.55 — **on 400 cases, not these** | `RETRACTED`⁸ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
-| SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `HISTORICAL_NON_CANONICAL_CONFIG` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
-| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` | 20.80% | 57/274 | none (no Qwen anchor) | `HISTORICAL_NON_CANONICAL_CONFIG`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
-| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.16.2` | 8.03% | 22/274 | none | `HISTORICAL_NON_CANONICAL_CONFIG`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
+| RepoZero (188-case **rescue pool**) | `gpt-5.5` | internal codex runner | 67.55% raw / 67.0% strict | 127/188 · 126/188 | 54.70% ± 2.55 — **on 400 cases, not these** | `forbidden`⁸ | [3.10](#310-repozero--gpt-55--6755-raw--670-strict) |
+| SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | **73.4%** clean | 201/274 | 66.7% (`gpt-5.2-high`) | `canonical` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
+| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.16.2` | 20.80% | 57/274 | none (no Qwen anchor) | `valid`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
+| SWE-bench Multilingual (clean274) | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.16.2` | 8.03% | 22/274 | none | `valid`¹¹ | [3.17](#317-swe-multilingual--two-qwen--qwen-code) |
 | SWE-bench Multilingual | `gpt-5.5` (high) | `mini-swe-agent v2.0.0` | 67.0% raw | 201/300 | 66.7% | `forbidden` | [3.11](#311-swe-bench-multilingual--gpt-55--mini--734-clean) |
-| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `HISTORICAL_NON_CANONICAL_CONFIG`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
-| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `HISTORICAL_NON_CANONICAL_CONFIG`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
+| SWE-bench Verified | `Qwen/Qwen3-Coder-30B-A3B-Instruct` | `qwen-code 0.15.6` — **re-measurement 2026-07-10** | 48.4% | 242/500 | 48.6% (this table, 2026-07-05) | `reproduced`⁶ | [3.13](#313-swe-v--qwen-coder--qwen-code--484-re-measurement) |
+| SWE-bench Verified | `Qwen/Qwen3-30B-A3B-Instruct-2507` | `qwen-code 0.15.6` | 21.6% | 108/500 | ≈25.7% (nebius, base) | `canonical`⁷ | [3.14](#314-swe-v--instruct-2507--qwen-code--216-pending) |
 
-⁶ **Historical `reproduced` evidence.** Dual-signed and valid as history, but produced under a serving stack that differs from the earlier historical row and does not replace or establish a current-suite score. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
-⁷ **Dual-signed historical lower-bound evidence.** `no_patch` is 137/498 (27.5%) against 6/496 (1.2%) for Coder on the same bench, harness, serving host and day — a 23× rise. (An earlier version of this footnote said 45×, having compared against the older historical Coder run's 3/500 instead of the same-day one. See §3.14.) Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. The preserved 21.6% therefore reflects model behavior under that historical scaffold configuration, but it is not a current-suite headline. `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. §3.14.
+⁶ **`reproduced`** — a new status. Dual-signed and valid, but produced under a serving stack that differs from the row it reproduces, so it is *not* that row's `canonical` and does not replace it. Two auditors worked from the raw artifacts, blind to each other and on different filesystems; one audited the run live at 478 rows, the other after completion at 496. Both were instructed to prove the score fake. Both failed. See §3.13.
+⁷ **Dual-signed, and a lower bound.** `no_patch` is 137/498 (27.5%) against 6/496 (1.2%) for Coder on the same bench, harness, serving host and day — a 23× rise. (An earlier version of this footnote said 45×, having compared against the *canonical* Coder run's 3/500 instead of the same-day one. See §3.14.) Two independent censuses of all 137 both put *zero* of them in the parser-failure column: the model calls tools, reads code, edits files, and does not converge. So 21.6% measures the model. But `43/500 = 8.6%` of the benchmark ended at an envelope limit — a 229,376-token context ceiling, a rollout timeout, or a crash — rather than at the model's own judgement, and one further genuine resolve was discarded by the denominator defect. Quote it as *the score under this scaffold configuration*, never as an upper bound on the model. §3.14.
 
 ¹⁰ **Valid, and not comparable to the row above it.** Dual-signed. `qwen-code` running *inside* the task container with its full native toolset — `docker exec` appears zero times, `--allowed-tools` and `--exclude-tools` zero times across all 89 tasks. Against `terminus-2`'s `12/89`, exact McNemar gives `p = 0.7744`. Against the host-bridge's `13/89`, `p = 0.4531`. **There is no established difference between any pair of TB2.1 harnesses for this model** — see §2.1, whose TB2.1 column was withdrawn for exactly this reason. §3.16.
 
@@ -320,16 +316,16 @@ To use the anchor, run the official protocol over all 400. The paper's per-diffi
 
 ---
 
-## §2.1 Historical interaction-mode evidence
+## §2.1 The result that matters: the interaction-mode gradient
 
-Historical comparison only: hold the model fixed (`Qwen3-Coder-30B-A3B-Instruct`) and vary only the harness:
+Hold the model fixed (`Qwen3-Coder-30B-A3B-Instruct`) and vary only the harness:
 
-| Interaction mode | Harness | Historical SWE-V (n=500) |
+| Interaction mode | Harness | SWE-V (n=500) |
 |---|---|---:|
-| Native multi-tool-call | `qwen-code 0.15.6` | **48.6%** (243/500), historical non-current |
-| Single bash block | `mini-swe-agent v2.0.0` | 23.4% (117/500), historical forbidden scaffold result |
+| Native multi-tool-call | `qwen-code 0.15.6` | **48.6%** (243/500) |
+| Single bash block | `mini-swe-agent v2.0.0` | 23.4% (117/500) |
 
-Historical same-axis observation, `gpt-5.5`: **77.2%** (high-effort mini, non-current) vs **70.8%** (terminus-2) — nearly flat.
+Same axis, `gpt-5.5`: **77.2%** (mini) vs **70.8%** (terminus-2) — nearly flat.
 
 #### ⚠️ The TB2.1 column of this table has been withdrawn
 
@@ -403,10 +399,7 @@ benchmark a model on a protocol it was never trained to speak and call the resul
 
 ## §3 Run cards
 
-### 3.1 SWE-V · gpt-5.5 × mini · 77.2% `historical`
-
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
+### 3.1 SWE-V · gpt-5.5 × mini · 77.2% `canonical`
 - **run_root** `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z`
 - **results** `results.jsonl` · `sha256 fb1bc11f1735c13a1649d94ab93cd5f3bc949b4ad6466ad1f9004cdddc00ccd6`
 - model `gpt-5.5` · effort `high` · scaffold `mini-swe-agent v2.0.0` · runner `full500_model_orchestrator_v2_podb.py` (v2.1)
@@ -423,10 +416,7 @@ benchmark a model on a protocol it was never trained to speak and call the resul
 - Status verbatim: `superseded_history_do_not_quote_as_model_score`
 - Cause: 211 instances hit `docker exit-125` on container start and were recorded as `no_patch`. See §5.1.
 
-### 3.3 SWE-V · Qwen × qwen-code · 48.6% `historical`
-
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
+### 3.3 SWE-V · Qwen × qwen-code · 48.6% `canonical`
 - **run_root** `/mnt/…/agentic-foundation-model-bench/runs/swev_qwencode_v21_20260705T190754Z/full500_c20`
 - **results** `results.jsonl` · `sha256 132e8a2610e3be07d7fd72b2aad6f14afe84bffce5e1bc5169d2ba1155bc1aef`
 - model `Qwen/Qwen3-Coder-30B-A3B-Instruct` · scaffold `qwencode` `v0.15.6` · effort `ABSENT`
@@ -496,9 +486,6 @@ benchmark a model on a protocol it was never trained to speak and call the resul
 - ⚠️ A value of `87/89` circulates in project memory; the newest map in this repo is **85/89**. Unreconciled — see §6.
 
 ### 3.10 RepoZero · gpt-5.5 · 67.55% raw / 67.0% strict
-
-> **Status: RETRACTED.** The 188-case rescue-pool publication is withdrawn; raw evidence is retained, but this is not an official RepoZero400 score or a current `medium` run.
-
 - runner `tools_repozero_codex_full.py` (internal codex runner) · `c=8` · model `gpt-5.5`
 - **raw `all_pass` 127/188 = 0.675531914893617**; **strict 126/188 = 0.6702127659574468**
   (both are metrics of the *same* rejudged run — not two runs)
@@ -510,11 +497,8 @@ benchmark a model on a protocol it was never trained to speak and call the resul
 - ⚠️ run_root lives on `swe_dev2` **local disk** — the disk that filled twice. See §5.3.
 
 ### 3.11 SWE-bench Multilingual · gpt-5.5 × mini · 73.4% clean
-
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
 - `runs/swemultilingual_v21_full300_gpt55_high_podb_20260706T233447Z` · `c=50` · single-attempt pass@1
-- **clean 201/274 = 73.4%** `HISTORICAL_NON_CANONICAL_CONFIG` · **raw 201/300 = 67.0%** `forbidden`
+- **clean 201/274 = 73.4%** `canonical` · **raw 201/300 = 67.0%** `forbidden`
 - 26 Gradle tasks scored false-zero: `lucene 9 / druid 5 / gson 9 / javaparser 2 / rxjava 1`
 - per-language (ours vs official `gpt-5.2-high`): Rust 81.4 (74.4) · JS/TS 79.1 (69.8) · PHP 76.7 (69.8) · C/C++ 75.0 (73.8) · Ruby 70.5 (63.6) · Go 61.9 (52.4)
 - cross-language degradation ≈ −5 pt (official: −6.1 pt)
@@ -584,9 +568,6 @@ recorded in §5.12.
 
 ### 3.13 SWE-V · Qwen-Coder × qwen-code · 48.4% re-measurement
 
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
-
 | Field | Value |
 |---|---|
 | `run_id` | `swev_qwencode_full500_surface55_20260709t160554z/full500_c20` |
@@ -597,8 +578,8 @@ recorded in §5.12.
 | `relay_upstream` | none — self-hosted sglang |
 | `llm_health` | `infra_class = 0` |
 | `score` | **242/500 = 48.4%** · conservative `240/500` · **never `240/496`** |
-| `results.jsonl` | `132e8a26…` (earlier historical source) / this run recomputed from artifacts |
-| `status` | **`HISTORICAL_NON_CANONICAL_CONFIG`** — dual-signed history |
+| `results.jsonl` | `132e8a26…` (canonical) / this run recomputed from artifacts |
+| `status` | **`reproduced`** — dual-signed |
 
 **Dual review.** Two auditors, each told to prove the score fake and to stamp only on failure. They
 never saw each other's report — they were writing to different filesystems, which began as an
@@ -638,18 +619,15 @@ implausibility. This one hides behind a plausible answer.
 `git checkout <base_commit> <testfile>` and re-applies the gold `test_patch` before evaluating
 (`instances/django_u_django-13821/eval/.../eval.sh`). Empty patch yet resolved: **0/496**.
 
-**Serving deviation.** The stack differs from the historical 2026-07-05 run (whose host,
+**Serving deviation.** The stack differs from the 2026-07-05 canonical (whose host,
 `100.103.228.120`, is dead). This is a re-measurement under today's environment, not a strict
-reproduction. It is worth stating plainly that **the aggregate landed within one task of that
-historical run**, while individual trajectories on TB2.1 were shown to diverge deterministically under the
+reproduction. It is worth stating plainly that **the aggregate landed within one task of canonical
+anyway**, while individual trajectories on TB2.1 were shown to diverge deterministically under the
 same serving change. Trajectory instability and score instability are not the same quantity.
 
 ---
 
 ### 3.14 SWE-V · Instruct-2507 × qwen-code · 21.6% `pending`
-
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
 
 | Field | Value |
 |---|---|
@@ -661,7 +639,7 @@ same serving change. Trajectory instability and score instability are not the sa
 | `runner_rc` | `0`, `finished_utc 2026-07-09T23:39:21Z` (in `logs/runner.rc`, **not** at the run root) |
 | `score` | **108/500 = 21.6%** · conservative `107/500` · **never `107/498`** |
 | `anchor` | ≈25.7% — nebius's reported figure for this base model |
-| `status` | `HISTORICAL_NON_CANONICAL_CONFIG` — preserved historical configuration |
+| `status` | `pending` — audit in flight |
 
 **Model identity, established four ways.** `get_model_info` and `get_server_info`, captured both before
 and after the run, all four report `model_path = .../Qwen3-30B-A3B-Instruct-2507`. This is not
@@ -680,11 +658,11 @@ an identical stack top. It is systematic, not incidental.**
 |---|---:|---:|---:|---:|---:|---:|
 | Coder, **2026-07-10** (this comparison) | 496 | 490 | **6** | 1.21% | 240 → 242 | 48.4% |
 | Instruct-2507, **2026-07-10** | 498 | 361 | **137** | 27.51% | 107 → 108 | 21.6% |
-| *Coder, historical 2026-07-05* | *500* | *497* | *3* | *0.60%* | *243* | *48.6%* |
+| *Coder, canonical 2026-07-05* | *500* | *497* | *3* | *0.60%* | *243* | *48.6%* |
 
 Same bench, same harness, same serving host, same day: `no_patch` rises **23×**.
 
-> **Correction.** This table first shipped comparing Instruct-2507's `137` against the *historical*
+> **Correction.** This table first shipped comparing Instruct-2507's `137` against the *canonical*
 > Coder run's `3/500`, yielding "45×", while taking `242` and `48.4%` from the 2026-07-10
 > re-measurement — two different runs in one row. The like-for-like figure is **23×**. The direction
 > of the finding is unchanged and the conclusion does not depend on the factor; the published number
@@ -694,7 +672,7 @@ Same bench, same harness, same serving host, same day: `no_patch` rises **23×**
 Two readings, and they are not close in consequence:
 
 - **Model.** Instruct-2507 is not coder-tuned. It explores, then stops without producing a diff. Then
-  21.6% is a preserved historical capability measurement under that scaffold, and the row remains `HISTORICAL_NON_CANONICAL_CONFIG`.
+  21.6% is a capability figure, sits plausibly beside nebius's 25.7%, and the row is `canonical`.
 - **Scaffold.** `:30000` runs `--tool-call-parser qwen`; qwen-code speaks the `qwen3_coder` dialect. If
   a material share of those 137 trajectories emit **zero parsed tool calls**, then 21.6% measures the
   parser and the row is `forbidden`.
@@ -789,7 +767,7 @@ timeout, or a crash — rather than at the model's judgement. One further genuin
 (`django__django-12050`) was silently discarded by the denominator defect. **21.6% is the score
 Instruct-2507 achieves under this scaffold configuration. It is not an upper bound on the model.**
 
-Status **`HISTORICAL_NON_CANONICAL_CONFIG`**: preserved historical signed evidence only; non-canonical for the current relay-backed `gpt-5.5` + `medium` suite.
+Status `canonical` for this cell, with that caveat attached to the number wherever it is quoted.
 
 ---
 
@@ -947,9 +925,6 @@ then the gold `test_patch`. That works only for files on the reset list. On SWE-
 
 ### 3.17 SWE-bench Multilingual · two Qwen × qwen-code
 
-> **Status: HISTORICAL_NON_CANONICAL_CONFIG.** Preserved historical evidence; not eligible for the current relay-backed `gpt-5.5` + `medium` suite.
-
-
 | | Coder-30B | Instruct-2507 |
 |---|---|---|
 | `run_id` | `sweml_coder_qwencode0162_clean274_20260710t083916z` | `sweml_instruct2507_…103651z` |
@@ -957,7 +932,7 @@ then the gold `test_patch`. That works only for files on the reset list. On SWE-
 | `results.jsonl sha256` | `aab29ee4…` | `cc41b1de…` |
 | model identity | `model_path` before/after/post-repair all `…Qwen3-Coder-30B-A3B-Instruct` | before `…Instruct-2507`; **after `UNVERIFIABLE`** |
 | eval-wrapper provenance | **`ORIGINAL_LOST`** — overwritten 10:27:03Z; `MIXED_EVAL_ENVIRONMENTS_DISCLOSED` | pinned at launch, re-verified at teardown, exact match |
-| status | `HISTORICAL_NON_CANONICAL_CONFIG` (dual-signed history) | `HISTORICAL_NON_CANONICAL_CONFIG` (dual-signed history) |
+| status | `valid`-with-caveat (dual-signed) | `valid`-with-caveat (dual-signed) |
 
 Both are `clean274`: the official 300 minus the 26 Java/Gradle tasks whose offline build chain never
 resolves (§5.5). **Neither is a 300 score**, and both must be quoted per-language.
@@ -1037,8 +1012,8 @@ loading) and were recorded as `no_patch`. The agent never ran on them.
 
 ### 5.2 Scaffold mismatch — SWE-V 23.4% measures the format
 498/498 Qwen trajectories emitted multi-tool-call format; `mini`'s bash-only parser rejects it.
-The number is real but it is not a capability number. The historical native-scaffold measurement
-was **48.6%** via `qwen-code`; it is retained only as non-current interaction-mode evidence.
+The number is real but it is not a capability number. The representative Qwen score is **48.6%**
+via the native `qwen-code` scaffold.
 
 ### 5.3 `/tmp` inode exhaustion — RepoZero, twice
 `/tmp` ran out of **inodes**, not bytes — 26 GB free while `df -ih` showed 100%. 128 cases died

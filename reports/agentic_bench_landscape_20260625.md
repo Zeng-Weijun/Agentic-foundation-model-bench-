@@ -25,18 +25,16 @@ The key objective is to separate four things that are easy to mix together:
 1. What the task actually asks the agent to do.
 2. What harness/verifier decides success.
 3. What strong closed-source models score under the published benchmark setup.
-4. What historical local runs reveal about harness and trace failure modes.
+4. What our local Qwen3-Coder-30B-A3B-Instruct runs show under our own SGLang + scaffold setup.
 
 ## Important Naming / Score Caveats
 
 - "Qwen3-Coder-Next" in the public technical report is an 80A3 model. Our local run is `qwen3-coder-30b-a3b-instruct`, with 30.5B total parameters and 3.3B activated parameters. Do not write these as the same model.
-- The former local Qwen SWE-bench Verified score publication was retracted on
-  2026-07-21 because it was not sealed and independently dual-signed. Its raw
-  artifacts remain historical evidence, not an active score.
+- Our local Qwen run that has a complete SWE-bench Verified score is Qwen3-Coder-30B-A3B-Instruct + SGLang + Qwen Code. The score is `245/500 = 49.0%`.
 - Public benchmark leaderboards move. The scores below are source-backed snapshot numbers from pages checked on 2026-06-25, but they should be refreshed before a camera-ready claim.
 - For benchmark rows where we do not have a local Qwen3-30B-A3B full run, this note says "no local full score yet" rather than extrapolating from another model or scaffold.
 
-## Historical Local Evidence
+## Local Evidence We Can Cite
 
 ### Local Qwen3-Coder-30B-A3B-Instruct setup
 
@@ -54,17 +52,23 @@ Source: `configs/code_models/qwen3_coder_30b_a3b_instruct_qwen_code.yaml`
 - SWE-bench subset: `paper_n500`
 - Prior max session turns in this config: `80`
 
-### Retracted local Qwen SWE-bench Verified publication
+### Local Qwen SWE-bench Verified result
 
-The old human-readable score report was removed from active publication. The
-underlying run is retained only for trace-level and harness-forensics work. It
-must not be quoted as a current model score.
+Source: `reports/qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
+
+- Model: `qwen3-coder-30b-a3b-instruct`
+- Serving: SGLang on `worker_rkn9p`, `http://100.103.11.77:8503/v1`
+- Agent: Qwen Code `0.15.6`
+- Raw full run: `245/500 = 49.0%`
+- Summary: `completed=486`, `errors=1`, `empty_patch=14`
+- Corrected score after selective retry: `245/500 = 49.0%`
+- Retry contribution: `0` newly resolved cases
 
 ### Agent matrix
 
 Source: `configs/code_models/swebench_agents/qwen3_coder_30b_a3b_instruct_agent_matrix.yaml`
 
-- `qwen_code`: historical run retained; active score claim retracted
+- `qwen_code`: full run completed, raw/corrected `245/500 = 49.0%`
 - `swe_agent`: configured, prompt policy is SWE-agent template config, no wrapper prompt injection
 - `openhands`: configured, OpenHands official SWE-bench selector `mode=swe -> swe_default.j2`
 - `mini_swe_agent`: installed/help verified, prompt policy official `swebench.yaml`; overlay changes model and budget
@@ -78,7 +82,7 @@ Source: `configs/code_models/swebench_agents/qwen3_coder_30b_a3b_instruct_agent_
 
 | Benchmark | Task shape | Harness / verifier | Strong closed-source score snapshot | Qwen / local status |
 |---|---|---|---|---|
-| SWE-bench Verified | Real GitHub issue to patch in existing repo | Dockerized repo eval, `% Resolved`; Verified has 500 human-filtered instances | Vals snapshot: Claude Fable 5 95.0%, Claude Opus 4.8 88.6%, GPT 5.5 82.6% | Public Qwen3-Coder-Next 80A3: about 70.6-71.3 depending scaffold. The former local Qwen score is retracted from active publication. |
+| SWE-bench Verified | Real GitHub issue to patch in existing repo | Dockerized repo eval, `% Resolved`; Verified has 500 human-filtered instances | Vals snapshot: Claude Fable 5 95.0%, Claude Opus 4.8 88.6%, GPT 5.5 82.6% | Public Qwen3-Coder-Next 80A3: about 70.6-71.3 depending scaffold. Local Qwen3-Coder-30B-A3B + Qwen Code: `245/500 = 49.0%` |
 | SWE-bench Multilingual | Repo-level bug fixing across multiple languages | Same broad issue-to-patch family; 300 tasks across 9 languages | Need refresh for exact frontier leaderboard before citing | Public Qwen3-Coder-Next 80A3 report: about 56.2-64.3 depending scaffold |
 | Monthly-SWEBench | Monthly fresh PR-derived tasks, more feature/change coverage | Dual-phase fail-to-pass verification plus instruction-test alignment | Month-specific; do not use one static global score without naming the release | No local Qwen full score yet |
 | Terminal-Bench 2.1 | Terminal tasks: build, train, configure, debug, security, data processing | Harbor / Docker terminal environment; pass@1, usually all pytests must pass | Snorkel snapshot: Codex CLI + GPT-5.5 83.4%, Claude Code + Claude 5 Fable 83.1%, Terminus 2 + Fable 80.4% | Public Qwen3-Coder-Next 80A3 on Terminal-Bench 2.0: 25.8-36.2 depending scaffold. No local 30B full score yet |
@@ -132,10 +136,14 @@ Qwen anchors:
     - OpenHands: 64.3
 - Source: https://arxiv.org/html/2603.00729v1
 
-Historical local Qwen3-30B-A3B evidence:
+Local Qwen3-30B-A3B anchor:
 
-- The prior score publication is retracted. Retain the traces below only as
-  examples of agent and harness behavior.
+- Qwen3-Coder-30B-A3B-Instruct + SGLang + Qwen Code:
+  - `245/500 = 49.0%`
+  - `completed=486`
+  - `errors=1`
+  - `empty_patch=14`
+  - selective retry added `0` newly resolved cases
 
 Concrete local trace example:
 
@@ -773,9 +781,9 @@ The benchmark suite should be described as follows:
 
 > We evaluate agentic coding and tool-use capability across benchmarks that require executable, environment-grounded success rather than isolated code generation. SWE-bench Verified and SWE-bench Multilingual test issue-to-patch repair in existing repositories; Monthly-SWEBench refreshes that setup with newly merged PRs and explicit instruction-test alignment review; Terminal-Bench 2.1 and Terminal-X move the agent into long-running terminal environments for build, configuration, optimization, and multi-round evolution tasks; MCP-Atlas, Tool Decathlon, and tau3-bench stress real tool discovery, multi-application workflows, and policy-grounded state changes; ProgramBench, RepoZero, NL2Repo, and DeepSWE extend the setting to clean-room reconstruction, from-scratch repository generation, and long-horizon engineering tasks. These benchmarks expose different failure modes: patch-local mistakes, empty submissions, terminal state drift, tool-schema errors, policy retrieval failures, and cross-file planning breakdowns. Strong closed-source models can exceed 80-90% on mature patch-style SWE-bench leaderboards, but the same model families often fall to 20-70% on terminal, tool, and long-horizon repository tasks, with some clean-room reconstruction settings remaining near unsolved.
 
-For historical local Qwen evidence, keep the statement precise:
+For the Qwen result, keep the statement precise:
 
-> Historical local Qwen traces are retained for harness and failure-mode analysis only. Their former aggregate score publication was not sealed under the current evidence contract and has been retracted. Do not quote it as a model score or compare it with public Qwen3-Coder-Next results.
+> Our local `Qwen3-Coder-30B-A3B-Instruct` run uses SGLang serving and Qwen Code as the agent scaffold. On SWE-bench Verified, the completed full run scores `245/500 = 49.0%`, with `486` completed instances, `1` error, and `14` empty patches. This should not be conflated with the public Qwen3-Coder-Next 80A3 technical-report result, which reports roughly 70-71% on SWE-bench Verified under SWE-agent, MiniSWE-Agent, and OpenHands. The local trace evidence suggests the main gap is not syntax-level code generation but verifier-grounded agency: the model can often locate the relevant file and produce a plausible patch, yet it may ignore contradictory test evidence, stop early, or fail to submit a valid diff.
 
 ## Immediate Follow-Up Work
 

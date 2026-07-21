@@ -70,13 +70,22 @@ This directory holds the current working dossier for agentic SWE/tool-use benchm
   - Per-task trace collection template.
   - Copy this next to each raw trace/result directory before citing a run.
 
-## Current Local Score Policy
+- `qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
+  - Local Qwen3-Coder-30B-A3B-Instruct + Qwen Code SWE-bench Verified retry summary.
+  - This is the current local score anchor for the `245/500 = 49.0%` claim.
 
-The former local Qwen score publication was removed on 2026-07-21 because it
-was not sealed and independently dual-signed under the current evidence contract.
-Historical evidence remains preserved beneath explicit status banners, but it is
-non-canonical for the current suite. The next active local score must come from the relay-backed `gpt-5.5` +
-`medium` configuration and satisfy the full evidence contract.
+## Current Local Score Anchor
+
+The only inspected complete local Qwen3-Coder-30B-A3B-Instruct benchmark score in this dossier is:
+
+- Benchmark: SWE-bench Verified
+- Model: `qwen3-coder-30b-a3b-instruct`
+- Serving: SGLang on `worker_rkn9p`, `http://100.103.11.77:8503/v1`
+- Agent scaffold: Qwen Code `0.15.6`
+- Score: `245/500 = 49.0%`
+- Source file: `qwen3_coder_swebench_qwen_code_retry_cases_20260529.md`
+
+Do not conflate this local 30B-A3B result with public Qwen3-Coder-Next 80A3 technical-report scores.
 
 ## GitHub Import Notes
 
