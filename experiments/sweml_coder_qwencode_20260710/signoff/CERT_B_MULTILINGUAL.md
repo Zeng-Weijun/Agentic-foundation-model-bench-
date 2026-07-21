@@ -50,15 +50,14 @@ Uniform scan of harness `patch.diff` + `test_output.txt` + `report.json` under `
 |---|---|---|---|---|---|
 | A (Coder) | 16 (+1 in repairs) | **0** | 15 | 15 | 15 |
 | B (Instruct) | 17 | **0** | 17 | 17 | 17 |
-| **gpt-5.5** (`swemultilingual_v21_full300_gpt55_high_podb_20260706T233447Z`) | 17 | **14** | **0** | **0** | **0** |
 
-- Causal proof: Qwen (both scaffolded via qwen-code) rewrites `buildScripts/tests.ant.xml` → destroys the Ant `test.instance` target → `BUILD FAILED` → 0. gpt-5.5 (mini-swe-agent) touches it **0** times and resolves **14/17** ⇒ the lombok environment **works**. Lombok 0/17 is **model/scaffold self-harm**, identical for A and B (neutral to the comparison), categorically **distinct** from the 26 Gradle env false-zeros.
+- Qwen-side causal proof: both qwen-code runs rewrite `buildScripts/tests.ant.xml`, destroy the Ant `test.instance` target, and then hit `BUILD FAILED`. Lombok 0/17 is **model/scaffold self-harm**, identical for A and B (neutral to the comparison), categorically **distinct** from the 26 Gradle env false-zeros. The former local relay GPT control row and result were removed on 2026-07-21.
 - **Cheat scan CLEAN both runs** (all 57 / 22 resolved reports inspected): empty-patch-but-resolved = **0**; resolved-but-patch-not-applied = **0**; resolved-but-zero-FAIL_TO_PASS-success = **0**; resolved-but-tool_use==0 = **0**. Every resolved instance has a real applied patch, ≥1 genuinely-passing FAIL_TO_PASS test, and non-zero tool_use.
 
 ## Line 6 — per-language + denominator → **CONFIRMED (both)**
 
 - Independent per-language recompute (repo→language via official-harness rule, CPP/TS refinement per `scripts/full300_swemultilingual_orchestrator_v21.py:141`) reproduces **both** score_summaries exactly: A = C7/30, C++6/12, Go8/42, Java0/17, JS6/33, PHP4/43, Ruby9/44, Rust15/43, TS2/10 (Σ=57); B = C3,C++3,Go2,Java0,JS2,PHP1,Ruby6,Rust3,TS2 (Σ=22). Totals Σ=274, matching unit-test assertion `scripts/test_swemultilingual_qwencode_clean274.py:51`.
-- Denominator: `manifests/candidates/swemultilingual_clean274_contract_20260710.json` → full=300, clean=274, excluded=26 = druid 5 + lucene 9 + gson 9 + javaparser 2 + rxjava 1 (reason "Gradle build chain not closed under offline eval → false zeros"). Independent set-diff (gpt-5.5 full300 ∖ clean274) = **exactly 26**, same repo breakdown, clean274 ⊂ full300. Frozen dataset `data/test-00000-of-00001.parquet` sha256 `28b7f874…` matches contract.
+- Denominator: `manifests/candidates/swemultilingual_clean274_contract_20260710.json` → full=300, clean=274, excluded=26 = druid 5 + lucene 9 + gson 9 + javaparser 2 + rxjava 1 (reason "Gradle build chain not closed under offline eval → false zeros"). Contract set arithmetic gives exactly 26 with the same repo breakdown, and clean274 ⊂ full300. Frozen dataset `data/test-00000-of-00001.parquet` sha256 `28b7f874…` matches contract.
 - **Java 0/17 (lombok, Ant, model self-harm) ≠ the 26 excluded (Gradle, env false-zero).** Distinction verified. Scores stated on 274, never 300. Contract also discloses scaffold deviation qwen-code 0.16.2 vs earlier 0.15.6 (neutral to A-vs-B, both 0.16.2).
 
 ## Independence / anti-fabrication cross-check

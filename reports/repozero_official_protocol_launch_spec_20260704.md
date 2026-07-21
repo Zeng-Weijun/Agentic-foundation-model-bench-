@@ -45,7 +45,7 @@
 
 ⚠ pg89q `/tmp/rz_pilot/*` evaporated (tmpfs) — but the rerun `results.jsonl` is on **shared FS** (persistent):
 ```
-RES=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero/Py2JS/output_codex/gpt-5.4-mini_repozero_full_rerun_ratelimited_pg89q_20260702/results.jsonl
+RES=<former-local-gpt-result-root-removed-from-current-publication>
 ```
 242 rows; fields `case, all_pass, codex_returncode, codex_timeout, entry, …`. **Extract (run on dev, read-only):**
 ```bash
@@ -55,7 +55,7 @@ to=[r['case'] for r in rows if r.get('codex_timeout')]
 print(len(to)); print(' '.join(to))"
 ```
 **✅ VERIFIED on shared FS: total=242, `codex_timeout`=73 == `codex_returncode==124`=73 — matches REPOZERO_LANE_HANDOFF §6 exactly.** No pg89q dependency.
-**Scope note:** the 73 are **our codex-line** residuals (c=25 latency casualties, not genuine fails). The **official-protocol run is a fresh independent full-400** with mini-swe-agent — the 73 list only matters if piloting/comparing on that subset; don't conflate (official-protocol archive vs our internal 260/400 codex number). Persist strict-scope caches to shared FS (`.../repozero_eval/scope/`), not pg89q /tmp; re-derive genuine-excluded over the original `summary.json` = `all_pass==False AND codex_returncode==0 AND NOT codex_timeout` (§5).
+**Scope note:** the former internal codex-line result and its subset counts were removed from the current publication tree on 2026-07-21. The official-protocol run was planned as an independent full benchmark; do not recover a local GPT score from this pre-launch spec.
 
 ---
 
@@ -93,7 +93,7 @@ Pure read-only spec + offline prep only. **No run / no model call executed.** No
 
 ## §7 — STATUS: PAUSED @ Gate4 (lead decision D, 2026-07-04)
 
-**Decision (lead):** PAUSE the official-protocol run. Keep the **codex-line 260/400 (65%)** as the RepoZero **primary number** (`reports/repozero_official_comparison_20260703.md`). **0 launched; ~6 tiny probe calls total; 0 full-run tokens.**
+**Decision (lead):** PAUSE the official-protocol run. The former codex-line aggregate is not retained as a primary/current number. **0 official full runs launched.**
 
 ### Gate outcomes
 - ✅ **Gate1** — pin `39308b1` pristine + worktree `rz_run_wt_20260704` + clean runner diff (below).
@@ -106,7 +106,7 @@ The official runner `run_py2js/run_all_loop_mini_openai.py` @39308b1 invokes `mi
 - `mini.yaml` (tool-calling) → `No tool calls found in the response` → 0 output;
 - `mini_textbased.yaml` (correct bash-in-``` format) → gpt-5.4-mini responses repeatedly fail the strict "exactly ONE bash code block" parser → `Format error` loop → timeout(124), 0 output (the smoke's 8× "succeeded" were empty — no `.mjs`).
 
-Faithful reproduction is **not achievable offline without the exact fork**. Per the offline-E2E charter this is a **reproducibility gap in the official RepoZero benchmark itself → archived upstream-not-fix**. Our internal codex harness (stricter, `260/400`) remains the credible internal number.
+Faithful reproduction is **not achievable offline without the exact fork**. Per the offline-E2E charter this is a **reproducibility gap in the official RepoZero benchmark itself → archived upstream-not-fix**. No local GPT aggregate from the former codex harness is current or publishable.
 
 ### Resume start point (if this line is ever resumed) — all preserved, DO NOT DELETE
 - worktree (pin pristine + adapted runner): `repozero_eval/rz_run_wt_20260704/`

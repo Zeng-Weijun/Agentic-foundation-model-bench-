@@ -120,8 +120,8 @@ B  Multilingual × Qwen3-30B-A3B-Instruct-2507 × qwen-code 0.16.2
   Target "test.instance" does not exist in the project "lombok".
   ```
   ⇒ eval_rc=0 但**测试从未跑**(target 不存在)。
-- **判别性证据(最强)**: gpt-5.5 run `swemultilingual_v21_full300_gpt55_high_podb_20260706T233447Z`,**同 17 lombok = 14/17 resolved**(3 失败=3215/3052/3326);**17/17 patch 都不碰 tests.ant.xml**;同 instance `lombok-3042` 的 gpt-5.5 test_output = `ant test.instance → Tests run: 368, Failures: 0 → BUILD SUCCESSFUL`。
-- **⇒ 镜像可用(gpt-5.5 证)**;Qwen 改坏自己的评测构建文件 → 有效"未解决",**不是**像 26 Gradle 那样的环境假零(那 26 是环境对所有人都断)。**正确保留在 274 分母内**。
+- 旧本地 relay GPT control 的 run id、分数与逐题结果已于 2026-07-21 从当前发布面移除；不得从本证书重建。
+- **Qwen 自身证据链**:patch 改坏自己的评测构建文件，随后 `ant test.instance` 因 target 不存在而失败 → 有效"未解决",**不是**像 26 Gradle 那样的环境假零。**正确保留在 274 分母内**。
 - caveat: `LOMBOK_FAILURE_PATTERN_AUDIT.json` 自标 `causal_limit`(patch+score 证成同一可观测失败模式,不单独证内部机制)—— 措辞谨慎,认可。
 
 ---
@@ -159,7 +159,7 @@ B  Multilingual × Qwen3-30B-A3B-Instruct-2507 × qwen-code 0.16.2
 ### 补充: 我尝试证伪但失败的攻击(= 分数站得住的正面证据)
 - 想抓虚增分: resolved 纯从 harness report 重算 = 57/22(0 mismatch),3 个 A repair 全 resolved=false 且 57 分在 repair 前已存在。**证伪失败**。
 - 想抓作弊: 0 个 resolved 空 patch、0 个 resolved 零 tool_use(全量)。**证伪失败**。
-- 想抓 Lombok 环境假零(该剔除): gpt-5.5 同镜像 14/17 + 不碰 tests.ant.xml。**证伪失败(是 Qwen 自伤,该保留)**。
+- 想抓 Lombok 环境假零(该剔除):Qwen patch 与 test-output 的逐题因果链显示 target 被模型改坏。**证伪失败(是 Qwen 自伤,该保留)**；旧本地 GPT control 结果已移除。
 - 想抓分母污染: 两 run ids 精确 == clean274 manifest,dataset parquet sha 冻结匹配。**证伪失败**。
 - 想抓 run 后篡改证据: instances/+failed/ 零文件 mtime 晚于 run 结束。**证伪失败**。
 

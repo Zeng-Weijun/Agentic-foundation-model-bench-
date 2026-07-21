@@ -42,8 +42,8 @@
 |---|---|---|---|
 | Qwen3-Coder-30B | 原生(QwenCode 0.15.6 / host-bridge) | **48.6%** | **16.85%**（native-adapter 对照,非官方 harness) |
 | Qwen3-Coder-30B | 官方非原生(mini / terminus-2) | 23.4% ✗ | 10.1% ✗（canonical) |
-| gpt-5.5 | 官方(mini / terminus-2) | 77.2% | 70.8% |
+| gpt-5.5 | 官方(mini / terminus-2) | removed (five-target local GPT purge) | 70.8% (TB retained) |
 
-**pattern:** 两 bench 上 Qwen 原生 scaffold 都胜非原生官方 harness(SWE-V 48.6>23.4 = **+25.2pt**;TB2.1 16.85>10.1 = **+6.7pt**);gpt-5.5 在官方 harness 两边都稳(77.2/70.8)。→ **scaffold-fit 对 Qwen 是一阶因子,对 gpt-5.5 是二阶。**
+**pattern:** 两 bench 上 Qwen 原生 scaffold 都胜非原生官方 harness(SWE-V 48.6>23.4 = **+25.2pt**;TB2.1 16.85>10.1 = **+6.7pt**)。五个目标 benchmark 中的本地 GPT 对比分数已移除；TB2.1 不在本次清理范围内。
 
 **一句话:** Qwen3-Coder-30B 代表力 = SWE-V 原生 **48.6%**;TB2.1 canonical(官方 terminus-2)**10.1%**(交互压低 caveat 强制随行),native-adapter 对照 **16.85%**;`23.4%` scaffold-兼容压低分禁引。

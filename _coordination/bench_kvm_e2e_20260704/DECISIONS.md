@@ -105,7 +105,7 @@ Decision: tau3 spec/transport stage is closed as `spec-closed/execution-blocked`
 - **中转站** `OPENAI_BASE_URL=8.130.49.170/v1` = 10 模型;agent 相关 6:gpt-5.2/5.3-codex/5.3-codex-spark/5.4/5.4-mini/5.5（key 未落盘）。
 - **干净可复现锚只有 2 个**:① SWE-bench Verified bash-only(mini) **gpt-5.2-high=72.8%/500 pass@1**（=我们口径,首选验 harness）;② Terminal-Bench 2.1 terminus-2 **gpt-5.5=78.2%/89×5**。
 - **选型建议**:P0 先打 gpt-5.2-high→72.8% 作 harness 合格证;P1 gpt-5.5+terminus-2→78.2%;RepoZero 无 GPT 官方锚只能当新点。100 并发安全(并发不入官方口径,前证零压分)。
-- **口径修正/警示**:①TB2.1=**5 attempts 非×3**(发射器须改);②SWE-V 榜冻结~2026-02→5.3/5.4/5.5 不在榜;③三方站 "GPT-5.5 82.6%/Opus4.8 88.6%/Fable5 95%" 官方 0 命中**严禁引**;④RepoZero 官方**400 案非 188**、无 LLM judge;⑤**gpt-5.4-mini 三榜全无官方锚**→full500 不可直接对榜(佐证 70%=django 虚高)。
+- **口径修正/警示**:①TB2.1=**5 attempts 非×3**(发射器须改);②SWE-V 榜冻结~2026-02→5.3/5.4/5.5 不在榜;③三方站 "GPT-5.5 82.6%/Opus4.8 88.6%/Fable5 95%" 官方 0 命中**严禁引**;④RepoZero 官方**400 案非 188**、无 LLM judge;⑤**gpt-5.4-mini 三榜全无官方锚**;旧本地 partial 分数已移除。
 - TB2.0(勿混):GPT-5.3-Codex 64.7/GPT-5.2 54.0/**Qwen3-Coder-480B 23.9✓锚吻合**。
 
 ## 2026-07-04 23:54 CST — surface:55 — TB2.1 oracle closing canary on Pod A
@@ -353,13 +353,9 @@ Create a new runner file derived from the current Pod B script, without overwrit
 - A STOP/drain test proves no new instance starts after STOP while already running instances finish.
 
 ---
-## 2026-07-05 00:0x CST — surface:86 — full500 停止点快照审计(四查)
-**报告**: `bench/reports/full500_stoppoint_audit_20260705.md` · **冻结**: results.jsonl 252 行 sha`5a1230e7…` / done_chunks 52 sha`65caaca6…` / mtime 2026-07-04 23:37:35 +0800(静止~24min,停止点成立)
-- **①去重**: 252 行→**251 unique**(1 dup astropy-14995,两次都 true);resolved-dedup=**177**;独立重算=**177**(174 clean+3 genuine-suffixed),**0 mismatch**→对齐 51 的 251/177。
-- **②后缀收编**: **未执行**——3 个 resolved(django-11099/11119/11133)仍**只在** s002.{evalrc1,flap,dockerinstability} 后缀目录,clean s002 无;**0 unsupported**(3 个均真 eval)。风险:删后缀→177→174 且不可复现。★收官前须收编/落 manifest + 禁删后缀★。(来源不明的"收编"指令正确未执行,只读没碰。)
-- **③snapshot**: 冻结 sha 已钉,重算 177==账本 177==51,可复现;性质=**停止点 partial(251/500),非 final canonical**。
-- **④per-repo/对榜**: astropy 68.2%(15/22)+ django 70.7%(162/229)=**70.5%,仅 2 repo**;+ **56 更难实例 defer**(matplotlib34+xarray22,零泄漏进账本,排除干净)。→ 70.5% **双重不代表**(django 偏斜+主动 defer 硬 repo),**严禁对榜**;官方 mini 全 500 口径仅 56–60%,我们高 10–14pt 纯因组分。要真分须补 56 defer+~193 未跑 repo 或分层抽样。
-- **造假 sweep 全零**。净判:数值可签字,两动作(收编+对榜声明)未闭合。
+## 2026-07-21 — prior SWE-V GPT stop-point result removed
+
+The old partial-run counts, aggregate, per-repository values, and evidence pointers from this slot were removed from the current publication tree. The V2 harness design discussion above remains as implementation history.
 
 ## 2026-07-05 00:35 CST — surface:55 — TB2.1 symlink payload real-solution prelocation
 
@@ -565,16 +561,9 @@ CANONICAL MAP UPDATE PROPOSAL: **79/89 → 85/89**.
 - Status: staged only; waiting for orchestrator GO before any model/full run.
 
 ---
-## 2026-07-05 01:0x CST — surface:86 — 【验收】51 后缀收编 = ACCEPT ✓ (独立复核 26/26 PASS)
-独立 read-only 复核(不信 51 报告,亲核每条),全 PASS:
-- **①独立复算**: clean_verified **174→177**、suffixed_genuine **0**、recompute **177**、mismatch **0** → **177 现全部可从 clean shard 复现**(0 后缀-only 遗留);无新增跨-clean-shard dup(仅既存 astropy-14995)。
-- **②真copy非伪造**: 3 个 dest eval 目录在 clean s002、`diff -rq` 源字节全等、report.json resolved=true、在 clean glob 路径。
-- **③manifest**: 3 条齐;11099/11119 patch_matches_ledger=true;**11133 标 provenance EXCEPTION(选项A,patch 2069≠ledger 1768,verdict 4 独立 eval 佐证)**。
-- **④账本未动**: results/predictions/done_chunks 三 sha 全冻结未变(收编未碰会计)。
-- **⑤后缀未删**: 6 个 s002 变体 + 源变体在(溯源依赖保全)。
+## 2026-07-21 — prior SWE-V GPT reconciliation result removed
 
-**收编后 canonical 态**: 251 unique / **177 resolved**,provenance 闭合(全 clean 可复现)。**★引用 177 处须附脚注:1 例 provenance 例外(django-11133,选项A)★**。
-**残留(非收编 scope,收官前处理)**: (a) astropy-14995 跨-shard dup(252 行/251 unique)待去重;(b) per-repo 仍 astropy+django only + 56 matplotlib/xarray deferred → **70.5% 仍严禁对榜**。
+The old partial-run accounting, aggregate reconciliation, and score evidence pointers from this slot were removed from the current publication tree.
 
 ---
 ## 2026-07-05 01:2x CST — surface:86 — 【relay 入口切换】GATE 暂缓 + 全量侦察就绪(等 GO)
@@ -675,193 +664,9 @@ tmux send-keys -t 60cpu-1 'python3 '"$R"' --bind 0.0.0.0 --port 18540 --upstream
 **VERDICT: PASS** (run valid: rc=0, infra=0, score consistent, failures authentic) **with the headless-terminal correction (→63/89) + attribution refinement mandatory before this number is quoted anywhere.** Do NOT quote 69.7 as a board number: single-sample + medium-effort + no-KVM ceiling ≠ official 78.2 5-run口径.
 
 ---
-## 2026-07-05 08:10 CST — surface:51 — SWE-V V2 full500 gpt-5.5/high final freeze
+## 2026-07-21 — five-target GPT result purge
 
-**Run**: `v2_full500_c100_gpt55_20260704T211853Z`
-
-**Contract**: SWE-bench Verified full500, mini-swe-agent `v2.0.0`, `SWEV_MODEL=gpt-5.5`, `SWEV_REASONING_EFFORT=high`, V2 per-instance pipeline: image ready → agent → immediate official eval → atomic score row. Initial c100 exceeded infra gate and drained; c50 resume completed; repair mode reran the 16 c100 infra-error instances. No worker/rootless stack was used for this final score; it ran on privileged Pod B with internal dev relay `http://100.96.122.22:18540/v1`.
-
-**Final frozen score**: `218/500 = 0.436000`.
-
-**Freeze evidence**:
-- results: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/results.jsonl`
-- rows: `500 raw / 500 unique / 0 duplicates`
-- sha256: `a9c184aae704885296c1ac90b1a3906cebb16bb618d9ff37cc88ee8bcefde7e0`
-- mtime UTC: `2026-07-05T00:05:23.139392Z`
-- freeze UTC: `2026-07-05T00:10:34.479467Z`
-
-**Canonical score artifacts**:
-- JSON: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v2_20260705T000927Z.json`
-- YAML: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v2_20260705T000927Z.yaml`
-- MD: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v2_20260705T000927Z.md`
-- run snapshot: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/final/swev_full500_gpt55_high_v2_final_snapshot_20260705T000927Z.json`
-- per-repo detail: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/final/swev_full500_gpt55_high_v2_per_repo_20260705T000927Z.json`
-
-**Per-repo split**:
-
-| repo | resolved | total | score |
-|---|---:|---:|---:|
-| astropy__astropy | 12 | 22 | 0.545455 |
-| django__django | 135 | 231 | 0.584416 |
-| matplotlib__matplotlib | 10 | 34 | 0.294118 |
-| mwaskom__seaborn | 1 | 2 | 0.500000 |
-| pallets__flask | 0 | 1 | 0.000000 |
-| psf__requests | 4 | 8 | 0.500000 |
-| pydata__xarray | 9 | 22 | 0.409091 |
-| pylint-dev__pylint | 2 | 10 | 0.200000 |
-| pytest-dev__pytest | 9 | 19 | 0.473684 |
-| scikit-learn__scikit-learn | 10 | 32 | 0.312500 |
-| sphinx-doc__sphinx | 3 | 44 | 0.068182 |
-| sympy__sympy | 23 | 75 | 0.306667 |
-
-**Repair closure**:
-- c100 generated `16` infra-error events; repair mode reran all 16 IDs against the same run root.
-- repair rc: `0`
-- repaired IDs now all have score rows, including late `sympy__sympy-22456` (`resolved=True`).
-- final missing score rows: `0`
-
-**Bridge from old stop point**: the earlier graceful-stop partial asset remains `177/251` dedup. It is retained as history only; this V2 frozen full500 `218/500` snapshot is the canonical score口径 for this run.
-
-**Next review gates**:
-- surface:86: verify frozen rows/sha/per-repo split and no duplicate rows.
-- surface:85: sample low-score repos and classify the 43.6% score into model-real failure vs prompt/scaffold/parser compatibility vs relay degradation. The run itself is infra-closed after repair.
-
----
-## 2026-07-05 10:38 CST — surface:51 — SWE-V V2.1 repaired final freeze
-
-**Status update**: surface:85 rejected the V2 `218/500 = 43.6%` artifact as a harness-bug score, not a model score. Root cause was stale empty-patch rows: `211` rows had mini-swe-agent docker container start failure (`docker run` exit 125) and were incorrectly written as `agent_status=no_patch`; one additional empty-patch row (`django__django-12663`) was a `LimitsExceeded` model-run row but was included in the replace-all-empty-patch directive. The old V2 `43.6%` artifacts remain as historical evidence only and must not be quoted as model performance.
-
-**V2.1 runner fixes applied in the live Pod B runner**:
-- Per-instance image preflight is enforced before agent start.
-- Pre-run target image warmup was executed for all `212` replacement instances: `PREHEAT_DONE ok=212 errors=0`.
-- Agent docker run now includes `--pull=never`; missing images fail fast instead of doing a slow offline pull.
-- Docker/container-start failure markers are classified as retryable infra, not `no_patch`.
-- Replace mode filtered the `212` stale rows from `results.jsonl`, retained `288` valid rows, and then appended new score rows atomically.
-- New replacement-run infra (`5` eval infra rows) was repaired in a second small repair run; final repair rc was `0`.
-
-**Final V2.1 score**: `386/500 = 0.772000`.
-
-**Freeze evidence**:
-- results: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/results.jsonl`
-- rows: `500 raw / 500 unique / 0 duplicates`
-- `agent_status=no_patch` rows: `0`
-- sha256: `fb1bc11f1735c13a1649d94ab93cd5f3bc949b4ad6466ad1f9004cdddc00ccd6`
-- mtime UTC: `2026-07-05T02:31:51.056416Z`
-- freeze UTC: `2026-07-05T02:38:21.824493Z`
-
-**Canonical V2.1 score artifacts**:
-- JSON: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v21_20260705T0220Z.json`
-- YAML: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v21_20260705T0220Z.yaml`
-- MD: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/agentic-foundation-model-bench/repo/reports/scores/swev_full500_gpt55_high_v21_20260705T0220Z.md`
-- run snapshot: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/final/swev_full500_gpt55_high_v21_final_snapshot_20260705T0220Z.json`
-- per-repo detail: `/mnt/shared-storage-user/mineru2-shared/zengweijun/swe/rootless/reports/swev_full500_model_20260702/v2_full500_c100_gpt55_20260704T211853Z/final/swev_full500_gpt55_high_v21_per_repo_20260705T0220Z.json`
-
-**Per-repo split**:
-
-| repo | resolved | total | score |
-|---|---:|---:|---:|
-| astropy__astropy | 12 | 22 | 0.545455 |
-| django__django | 197 | 231 | 0.852814 |
-| matplotlib__matplotlib | 26 | 34 | 0.764706 |
-| mwaskom__seaborn | 1 | 2 | 0.500000 |
-| pallets__flask | 1 | 1 | 1.000000 |
-| psf__requests | 4 | 8 | 0.500000 |
-| pydata__xarray | 19 | 22 | 0.863636 |
-| pylint-dev__pylint | 3 | 10 | 0.300000 |
-| pytest-dev__pytest | 16 | 19 | 0.842105 |
-| scikit-learn__scikit-learn | 27 | 32 | 0.843750 |
-| sphinx-doc__sphinx | 28 | 44 | 0.636364 |
-| sympy__sympy | 52 | 75 | 0.693333 |
-
-**Review gates**:
-- surface:86: re-verify V2.1 row count, sha, no duplicates, per-repo split, and that V2 `43.6%` is superseded.
-- surface:85: review the V2.1 score as a model/scaffold result, with special note that `django__django-12663` was rerun despite being `LimitsExceeded` rather than docker-125 because the approved repair directive was replace-all-empty-patch.
-
----
-## 2026-07-05 03:4x CST — surface:86 — 【对账】SWE-V v2 gpt-5.5/high 218/500 = ACCEPT ✓ (15/15 PASS)
-独立 read-only 对账(不信 51 记录,全部从 results.jsonl 重算):
-- **①冻结 rows/sha**: 500 行 ✓ · sha256 `a9c184aa…` **完全一致** ✓ · mtime 2026-07-05T00:05:23Z 一致 → 冻结快照未变、可复现。
-- **②per-repo 加总==总分**: 12 个 repo 的 (resolved,total) **逐一精确匹配** 51 记录;Σ=(218,500) ✓;直接 resolved 计数=218 ✓。
-- **③无双写链**: 500 raw==500 unique,**0 重复 instance_id** ✓。
-- **④repair 16 ID**: 16 个全有 score row、**无双写**;late `sympy-22456`=resolved:True ✓(16 中 13 True/3 False[django-14034/16667、sphinx-8595]——repair=重跑拿分非必过,正常)。
-- **对抗完整性**: deferred 空(真 500/500 无丢)· 每个 resolved=True 都有存在的 report_path 且 eval_rc==0(无假 resolve)· eval_rc 全 500=0。
-
-**★账目结论**: 218/500=43.6% **accounting 完全干净可签字**(sha 冻结/per-repo 精确/0 双写/16 repair 闭合/500 全评/无假 resolve)。
-
-**★关键观察(移交 85,非账目错误)**: `agent_status` = **no_patch 212 / patch 288**。即 **42% 实例 agent 根本没产出 patch** → 产出 patch 的 288 个里 218 resolved(75.7% patch-resolve 率不低)。**43.6% 的低分主因是 no_patch 率高,不是 patch 质量差** → 强烈指向 scaffold/harness/relay(mini-swe-agent+gpt-5.5+relay 大量 no_patch:context/timeout/tool-format/relay 截断?),非纯模型能力。85 分类 model-vs-scaffold-vs-relay 时应以 212 no_patch 为首要线索。我方 reconcile 只证账目,归因归 85。
-
-## 2026-07-05 — surface:85 REVIEW of SWE-V V2 c100 gpt-5.5 (218/500=43.6%) — REJECT as model score (HARNESS BUG)
-Run: v2_full500_c100_gpt55_20260704T211853Z. rows=500, resolved=218, eval_rc=0 for all 500.
-
-**ROOT CAUSE (definitive, not the 3-way): the 43.6% is a HARNESS-BUG score, NOT model / NOT parser-compat / NOT relay.**
-- agent_status: 288 `patch`, 212 `no_patch`. Of 282 unresolved: 212 no_patch + 70 wrong-patch.
-- **211 of 212 `no_patch` = `docker run ... returned non-zero exit status 125`** — the mini-swe-agent CONTAINER FAILED TO START. Spans ALL repos incl. easy django (django-13158/13195/13212/... all 125) → NOT sphinx/model-specific.
-- Mechanism: docker run fires with image NOT locally present → ~16s → docker attempts offline pull (`docker.io/swebench/sweb.eval.x86_64.<inst>:latest`) → `--network=none` pod can't reach docker.io → exit 125 → agent never runs → empty patch (patch_len=0) → eval of empty patch → unresolved.
-- 55's "infra closed-loop" (eval_rc=0 ×500) MISSED it: eval_rc is the EVAL step; the AGENT-rollout docker-125 is upstream and uncounted.
-
-**THREE-WAY QUALIFICATION:**
-- model真实失败: the 70 wrong-patch (agent ran, patch wrong) + spot-checked schemelike-analog — REAL but small.
-- prompt/scaffold/parser兼容 (gpt-5.5 vs mini v2.0.0): NOT the cause — 0 format/parse-error signals; failures are pre-agent docker-start, model output never reached the parser.
-- relay降级: NOT the cause — 0 truncation/empty/APIError/ratelimit signals; relay never invoked for the 211 (container never started).
-- **NEW 4th (dominant): harness infra — agent-container docker-run 125 (image not preflighted before run @ c100).** 211/500 = 42.2%.
-
-**TRUE MODEL SIGNAL:** among the 288 where the agent actually ran, resolved = 218/288 = **75.7%** (70 wrong-patch = real model fail). This ~75.7% is the model's real SWE-V neighborhood; 43.6% is deflated by the harness bug. sphinx 6.8% is NOT a model collapse — sphinx had 35/44 docker-125 (agent never ran); real sphinx model perf unknown.
-
-**FIX DIRECTION (this determines it's a harness-bug score → must re-run):**
-1. Per-instance image PREFLIGHT gate before agent docker-run: `docker image inspect <exact agent ref>`; if absent → load/retag from P0/tar + retry. Add `--pull=never` to the agent docker run so it fails-fast (retryable) instead of a 16s offline-pull → 125.
-2. Ensure the agent's ref (`docker.io/swebench/sweb.eval.x86_64.<inst>:latest`) is tagged locally to match the map local_ref exactly.
-3. Concurrency: c100 outran image availability → PREHEAT all 500 images before the run (like TB2.1), or stagger load-ahead-of-run, or lower concurrency.
-4. Classify agent docker-run 125 as INFRA (auto-retry), NOT no_patch/unresolved.
-5. RE-RUN after fix; expect true score ~70-76% neighborhood.
-
-**VERDICT: REJECT 43.6% as a model score (dominated by a harness image-preflight/concurrency bug). Run evidence is authentic (real docker-125, verifiable) but INVALID as a model measurement. DO NOT quote 43.6% (or sphinx 6.8%) anywhere as gpt-5.5 SWE-V performance. Re-run required after the image-preflight fix; 218/288=75.7% is the interim real-signal estimate, not a final number.**
-
----
-## 2026-07-05 04:0x CST — surface:86 — 【终局对账·战役最后一道账】SWE-V v2.1 386/500 = ACCEPT ✓ (19/19 PASS)
-独立 read-only 终核(全部从 results.jsonl 重算 + 对 v2 pre-replace `.bak` 交叉验证):
-- **①冻结**: 500 行 · sha256 `fb1bc11f…` **完全一致** · mtime 2026-07-05T02:31:51Z 一致 → 快照冻结可复现。
-- **②per-repo 加总==386**: 12 repo (resolved,total) **逐一精确匹配** 51 记录;Σ=**(386,500)**;直算 resolved=386。
-- **③无双写**: 500 raw==500 unique,**0 重复**。
-- **⑤0 infra / 无 docker-125 残留**: agent_status **全 500=patch(no_patch==0)**;eval_rc **全 500=0** → docker-125 空 patch 行清零、0 infra 确认。
-- **④212 replace 行溯源(对 `.bak` 交叉验证,硬核)**: `.bak` sha==`a9c184aa`(真 v2 pre-replace)✓;v2 基线=212 no_patch + 288 patch;**212 个全部在 v2.1 被替换**(全 present、无一仍 no_patch、**全部 ts 晚于 v2=来自 v2.1 修复 run**);**288 个 v2 有效 patch 行原样保留**(ts 未变);django-12663(LimitsExceeded)确在 212 替换集内。replaced=212/212,retained=288/288。
-- **对抗**: deferred 空(真 500/500)· resolved=True 全有存在 report_path。
-- **supersede**: v2 218(43.6%)→ v2.1 386(77.2%),Δ=+168,全部来自 docker-125 修复(非模型变化)。
-
-**★终局账目结论**: SWE-V v2.1 **386/500 = 77.2% accounting 完全干净、可签字、可复现**(sha 冻结/per-repo 精确/0 双写/212 替换全溯源自 v2.1/288 保留不变/0 no_patch/0 infra/0 deferred)。v2 43.6% 正式**作废超越**(harness docker-125 bug,历史证据留存不得引为模型分)。**战役最后一道账 = PASS。**
-
-**口径提醒(非账目,交 85/报告)**: 77.2% 是 gpt-5.5+high·mini-swe-agent bash-only·**单次 run**·本 relay 口径;SWE-V 官方榜冻结~2026-02 **无 gpt-5.5 锚**,官方 gpt-5.2-high=72.8、前沿~76.8;引用须带"单run/effort=high/无官方 gpt-5.5 锚"声明,勿裸对榜。per-repo 已无塌方(sphinx 63.6/sympy 69.3/django 85.3),佐证 docker-125 修复生效。
-
-## 2026-07-05 — surface:85 FINAL REVIEW of SWE-V v2.1 (386/500=77.2%) — PASS (campaign's last review)
-Post-harness-fix re-run. **agent_status: 500 patch / 0 no_patch (was 212), 0 docker-125, eval_rc=0 ×500.** The image-preflight fix worked — every agent container now starts.
-
-**1) 77.2% vs my predicted 70-76% neighborhood: REASONABLE, VALIDATES the harness-bug diagnosis.** My interim estimate was 218/288=75.7% (agent-ran subset of the broken run); full clean 500 gives 386/500=77.2% (+1.5pp, expected — the 288 broken-run subset was a random/slightly-harder cut, and sphinx which was ~80% docker-125 before now contributes at 64%). The 43.6%→77.2% jump = exactly the docker-125 harness bug being removed.
-
-**2) Per-repo recovery (was collapsed by the bug):**
-- sphinx-doc 6.8% → **64%** (28/44) — the "collapse" was 100% harness bug; real sphinx perf is normal.
-- matplotlib 29.4% → 76% (26/34); sympy 30.7% → 69% (52/75).
-- Residual anomaly (non-blocking): **pylint-dev 3/10=30%** — only repo <40%; plausibly a genuinely hard repo (n=10, real patches), but flag for a spot-check next cycle.
-
-**3) 3 new-resolved (were docker-125) authenticity: VERIFIED real.**
-- sphinx-doc__sphinx-10466: real patch 493c (diff sphinx/builders/gettext.py), in resolved_ids, not empty/error, fresh rollout 09:21 post-fix.
-- django__django-13158: real patch 738c, in resolved_ids, not empty/error.
-- sympy__sympy-13480: real patch 590c, in resolved_ids, not empty/error.
-(earlier patch_len=0 was my jq-path bug — patch is nested under the instance_id key; corrected.)
-
-**4) EXTERNAL口径 RECOMMENDATION (board-comparable, unlike the earlier django-skew orphan):**
-- REPORT AS: "SWE-bench Verified, mini-swe-agent v2.0.0 (bash-only), **gpt-5.5 high-effort, single-attempt pass@1 = 77.2% (386/500), 0 infra**." Same harness/口径 as the official gpt-5.2-high anchor (72.8%/500 pass@1) → our gpt-5.5 is **+4.4pp above the gpt-5.2 official baseline under identical conditions.**
-- CAVEATS to state: (a) SINGLE run (variance ~±3-4pp; not a multi-seed mean); (b) gpt-5.5 is NOT on the frozen official board (5.3/5.4/5.5 post-date the ~2026-02 freeze) → 77.2% is a NEW same-口径 baseline EXTENDING the gpt-5.2-high anchor, not itself an "official board score". Do not claim board membership; DO claim same-口径 reproduction + a +4.4pp delta over the official gpt-5.2-high anchor.
-
-**VERDICT: PASS.** v2.1 run valid (harness bug fixed, 0 infra, score matches prediction, per-repo recovered, new-resolved authentic). 77.2% is a legitimate same-口径, board-comparable number. Campaign bench-review chain CLOSED.
-
----
-## 2026-07-05 12:49 CST — surface:55 — RepoZero option-b gpt-5.5 launch record
-
-- Host choice: `swe_dev2` (`zwj3-image`) for execution. It has `codex-cli 0.134.0`, Docker overlay2, shared RepoZero checkout, and current `api_config.env` (`OPENAI_BASE_URL=http://176.122.167.162:2053/v1`). Pod A has Docker but no `codex` in PATH; dev has codex but only 8C/16GB and hosts control/relay duties.
-- Input contract: generated 188-case artifact at `repo/_coordination/bench_kvm_e2e_20260704/repozero_optionb_gpt55_20260705T043835Z/188_cases.txt`. It mechanically reproduces 85 strict audit: strict_pass=131, demoted_raw_pass=54, genuine_clean_test_fail=27, infra_all_pass_false=188 = entry_missing 131 + timeout_partial 49 + nonzero_partial 8.
-- Smoke v1 failed correctly as config failure: `model_providers.packyapi: provider name must not be empty`. Fix was run-scoped only: dedicated `CODEX_HOME/config.toml` with `[model_providers.packyapi] name="packyapi"`, no production runner edit.
-- Smoke v2 PASS: run `gpt-5.5_repozero_optionb_smoke2_20260705T043835Z`, 4/4 strict clean, 169/169 tests, rc=0, no timeout. Cases: `base58/test1.py`, `bencoder/test1.py`, `bech32/test1.py`, `fractions/test1.py`.
-- Full launch: tmux `rz55_full188_c8_20260705T044800Z`, run `gpt-5.5_repozero_optionb_188_c8_20260705T044800Z`, model `gpt-5.5`, effort `xhigh`, workers=8, timeout_s=2400, codex_attempts=1, image `ghcr.io/jessezzzzz/repoarena-new:latest` backed by P0 digest `repozero-repoarena-new@sha256:b3ced2dc...`.
-- Initial live status: runner started; no other RepoZero process before launch; first progress check shows 8 active RepoZero containers and no sampled 429/ConcurrencyLimit/5xx terms in Codex logs. Full result pending.
+The local relay-produced SWE-V and RepoZero score blocks that previously occupied this range were removed from the current publication tree. Qwen and Terminal-Bench entries are preserved.
 
 ---
 ## 2026-07-05 05:1x CST — surface:86 — 【对账】Qwen3-Coder-30B-A3B SWE-V 117/500=23.4% = ACCEPT ✓ (16/16 PASS)
@@ -879,7 +684,7 @@ Post-harness-fix re-run. **agent_status: 500 patch / 0 no_patch (was 212), 0 doc
 ## 2026-07-05 — surface:85 REVIEW of Qwen3-Coder-30B-A3B SWE-V (117/500=23.4%) — PASS-run / REJECT-as-model-score (scaffold-compat depressed)
 Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via vLLM :30000. rows=500, resolved=117, eval_rc=0 ×500, 0 docker-125. agent_status: 441 patch / 59 no_patch.
 
-**COMPARABILITY: VALID.** Qwen 500-set == gpt-5.5 500-set (common=500, qwen-only=0; both django=231 — this SWE-V-500 variant is django-heavy but both models faced identical instances). So 23.4% vs 77.2% is same-set.
+**Qwen set accounting:** the Qwen run covers the declared benchmark set. The former local GPT comparator and score were removed from the current publication tree.
 
 **★ FORMAT-COMPAT = the dominant driver (quantified + verified NOT a false positive):**
 - **100% (498/498 trajs) hit the mini "multiple bash tool calls" rejection.** Disambiguated by role: 0 in system-prompt, present in USER/TOOL observations with literal content `[Makes multiple bash tool calls: {"command":"ls -la"},{"command":"find ..."}]`.
@@ -892,10 +697,9 @@ Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via
 
 **47 infra_events:** transient (docker-repair per merge notes); repaired to 500 unique clean score rows → not masking the final result.
 
-**3-SCAFFOLD 对照 (same SWE-V-500 instances):**
+**Qwen scaffold comparison (former local GPT comparator removed):**
 | model | scaffold | score | interpretation |
 |---|---|---|---|
-| gpt-5.5 high | mini-swe-agent v2.0.0 (single-block) | 77.2% | model↔scaffold natural fit |
 | Qwen3-Coder-30B-A3B | mini-swe-agent v2.0.0 (single-block) | **23.4%** | ★compat-DEPRESSED: 100% emit multi-tool-call vs mini's single-block |
 | Qwen3-Coder-30B-A3B | Qwen-Code (native multi-tool-call) | 49.0% | native fit → +25.6pt; representative Qwen capability |
 
@@ -903,5 +707,5 @@ Run: v2_1_qwen30ba3b_merged_full500. Model Qwen/Qwen3-Coder-30B-A3B-Instruct via
 
 **对外口径 / 训练配比建议:**
 1. DO NOT quote 23.4% as Qwen's SWE-V ability. Use **49% (Qwen-Code, native)** as Qwen's representative number.
-2. gpt-5.5 77.2% vs Qwen 23.4% on mini is CONFOUNDED by scaffold-fit — not a clean model-vs-model comparison.
+2. The former local GPT comparator was removed; do not reconstruct a model-vs-model comparison from this Qwen audit.
 3. For self-built harness training mix: weight by the DEPLOY scaffold. If deploying mini-style single-block, either (a) fix the parser to accept/serialize Qwen's multi-tool-calls, or (b) SFT Qwen toward single-block-per-turn output. To measure the true compat cost, re-run Qwen on a multi-tool-call-tolerant mini variant (A/B).

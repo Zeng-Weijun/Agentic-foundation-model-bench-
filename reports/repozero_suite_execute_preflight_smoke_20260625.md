@@ -87,30 +87,10 @@ python tools_repozero_codex_full.py \
   --cases base58/test1.py
 ```
 
-The adapter completed and returned `0`, but the benchmark case itself did not
-pass:
-
-```text
-case: base58/test1.py
-passed: 0
-total: 60
-all_pass: false
-codex_returncode: 1
-codex_timeout: false
-fail_example: missing generated entry file
-```
-
-RepoZero summary:
-
-```text
-ALL_PASS_CASES 0 / 1
-TESTS 0 / 60
-artifact=/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero/Py2JS/output_codex/gpt-5.4-mini_dev_worker_smoke_dryrun_smoke
-```
-
-Interpretation: this is an infrastructure pass, not a benchmark-score pass. The
-new image preflight and worker/model plumbing worked; the one selected RepoZero
-task failed at generation/evaluation quality.
+The suite-level image preflight and adapter plumbing completed. The model-backed
+case outcome and its numeric result were removed from the current publication
+tree on 2026-07-21; this report is retained only as infrastructure-preflight
+evidence and is not a benchmark score source.
 
 ## Follow-Up
 

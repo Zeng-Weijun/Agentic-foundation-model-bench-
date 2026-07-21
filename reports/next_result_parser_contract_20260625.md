@@ -6,8 +6,9 @@ Report-only design lane. No code, manifests, benchmark state, Docker state, or
 remote artifacts were modified.
 
 Goal: define the next normalized result-parser contract for `suite --execute`
-outputs, starting from the RepoZero smoke where the suite wrapper returned
-`pass` while the selected benchmark case scored `0/60`.
+outputs, starting from a RepoZero smoke where the suite wrapper process status
+and the native benchmark outcome disagreed. The old model-backed numeric outcome
+was removed from the current publication tree on 2026-07-21.
 
 Inspected evidence:
 
@@ -48,15 +49,10 @@ The current suite controller records adapter execution, not benchmark semantics.
 }
 ```
 
-That is true at the adapter/process layer. It is false as a benchmark success
-claim for the just-recorded RepoZero smoke:
-
-```text
-ALL_PASS_CASES 0 / 1
-TESTS 0 / 60
-case=base58/test1.py all_pass=false codex_returncode=1
-fail_example=missing generated entry file
-```
+That can be true at the adapter/process layer while being false as a benchmark
+success claim. The former RepoZero smoke's model-backed case result and numeric
+outcome were removed from this document; only the contract distinction is
+retained.
 
 The next contract must make this split first-class:
 
@@ -98,62 +94,62 @@ Suggested schema:
 ```json
 {
   "schema_version": "agentic_bench.result.v1",
-  "suite_id": "dev_worker_smoke_dryrun",
-  "run_id": "dev_worker_smoke_dryrun__repozero_py2js_smoke__dev_proxy_gpt54mini_8130",
-  "bench_id": "repozero_py2js_smoke",
-  "benchmark": "repozero_py2js",
-  "adapter": "repozero_py2js",
+  "suite_id": "<suite-id>",
+  "run_id": "<run-id>",
+  "bench_id": "<bench-id>",
+  "benchmark": "<benchmark>",
+  "adapter": "<adapter>",
   "parser": {
-    "id": "repozero_py2js",
-    "version": "2026-06-25",
+    "id": "<parser-id>",
+    "version": "<parser-version>",
     "status": "parsed",
-    "parsed_at": "2026-06-25T15:22:00Z",
+    "parsed_at": "<timestamp>",
     "warnings": []
   },
   "source": {
-    "controller_summary_path": "/tmp/agentic_repozero_exec_74640d5/summary.json",
-    "controller_log_path": "/tmp/agentic_repozero_exec_74640d5/logs/repozero_py2js_smoke.log",
-    "run_manifest_path": "/tmp/agentic_repozero_exec_74640d5/run_manifest.json",
-    "native_artifact_root": "/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/repozero_eval/RepoZero/Py2JS/output_codex/gpt-5.4-mini_dev_worker_smoke_dryrun_smoke",
+    "controller_summary_path": "<summary-path>",
+    "controller_log_path": "<log-path>",
+    "run_manifest_path": "<manifest-path>",
+    "native_artifact_root": "<native-artifact-root>",
     "native_artifacts": []
   },
   "execution": {
-    "suite_process_status": "pass",
-    "adapter_exit_code": 0,
-    "adapter_status": "pass",
-    "image_preflight_status": "present",
-    "started_at": "2026-06-25T15:21:40Z",
-    "ended_at": "2026-06-25T15:21:49Z",
-    "duration_s": 9.0
+    "suite_process_status": "<process-status>",
+    "adapter_exit_code": null,
+    "adapter_status": "<adapter-status>",
+    "image_preflight_status": "<preflight-status>",
+    "started_at": "<timestamp>",
+    "ended_at": "<timestamp>",
+    "duration_s": null
   },
   "benchmark_result": {
-    "status": "fail",
-    "completed": true,
-    "metric": "tests_passed",
-    "primary_score": 0.0,
-    "score_unit": "fraction",
-    "passed": false,
-    "resolved": false,
-    "numerator": 0,
-    "denominator": 60,
-    "tasks_passed": 0,
-    "tasks_total": 1,
-    "tests_passed": 0,
-    "tests_total": 60,
+    "status": "<benchmark-status>",
+    "completed": null,
+    "metric": "<metric-name>",
+    "primary_score": null,
+    "score_unit": "<score-unit>",
+    "passed": null,
+    "resolved": null,
+    "numerator": null,
+    "denominator": null,
+    "tasks_passed": null,
+    "tasks_total": null,
+    "tests_passed": null,
+    "tests_total": null,
     "reward_avg": null
   },
   "score_claim": {
-    "valid_for_leaderboard": false,
-    "scope": "smoke_subset",
-    "reason": "single_case_smoke",
-    "selected_task_ids": ["base58/test1.py"],
+    "valid_for_leaderboard": null,
+    "scope": "<scope>",
+    "reason": "<reason>",
+    "selected_task_ids": ["<task-id>"],
     "full_split_total": null
   },
   "failure": {
-    "infra_error": false,
-    "timeout": false,
-    "failure_category": "agent_generation_failed",
-    "short_failure_note": "RepoZero case failed all tests; generated entry file missing."
+    "infra_error": null,
+    "timeout": null,
+    "failure_category": null,
+    "short_failure_note": null
   },
   "cases": []
 }
@@ -182,17 +178,17 @@ and semantic status:
 
 ```json
 {
-  "bench_id": "repozero_py2js_smoke",
-  "status": "pass",
-  "exit_code": 0,
-  "log_path": "/tmp/agentic_repozero_exec_74640d5/logs/repozero_py2js_smoke.log",
-  "result_path": "/tmp/agentic_repozero_exec_74640d5/results/repozero_py2js_smoke.result.json",
-  "execution_status": "pass",
-  "benchmark_status": "fail",
-  "score_claim_valid": false,
-  "primary_score": 0.0,
-  "primary_score_unit": "fraction",
-  "failure_category": "agent_generation_failed"
+  "bench_id": "<bench-id>",
+  "status": "<process-status>",
+  "exit_code": null,
+  "log_path": "<log-path>",
+  "result_path": "<result-path>",
+  "execution_status": "<execution-status>",
+  "benchmark_status": "<benchmark-status>",
+  "score_claim_valid": null,
+  "primary_score": null,
+  "primary_score_unit": "<score-unit>",
+  "failure_category": null
 }
 ```
 
@@ -200,22 +196,22 @@ Recommended suite-level aggregates:
 
 ```json
 {
-  "status": 0,
-  "execution_status": "pass",
-  "benchmark_status": "fail",
-  "score_claim_valid": false,
+  "status": "<process-status>",
+  "execution_status": "<execution-status>",
+  "benchmark_status": "<benchmark-status>",
+  "score_claim_valid": null,
   "counts": {
-    "runs": 1,
-    "execution_pass": 1,
-    "benchmark_pass": 0,
-    "benchmark_fail": 1,
-    "infra_error": 0,
-    "parse_error": 0
+    "runs": null,
+    "execution_pass": null,
+    "benchmark_pass": null,
+    "benchmark_fail": null,
+    "infra_error": null,
+    "parse_error": null
   }
 }
 ```
 
-This preserves the current `status: 0` behavior while preventing downstream
+This preserves the current process-status behavior while preventing downstream
 consumers from treating adapter pass as benchmark pass. A future explicit gate
 such as `--require-benchmark-pass` can choose to return nonzero when
 `benchmark_status != pass`.
@@ -340,38 +336,38 @@ Observed sources:
   - `TESTS <passed> / <total>`
   - `artifact=<path>`
 
-Normalized fields:
+Normalized field template (values are schema placeholders, not a preserved run result):
 
 ```json
 {
   "benchmark_result": {
-    "status": "fail",
+    "status": "pending",
     "metric": "tests_passed",
-    "primary_score": 0.0,
-    "numerator": 0,
-    "denominator": 60,
-    "tasks_passed": 0,
-    "tasks_total": 1,
-    "tests_passed": 0,
-    "tests_total": 60,
-    "passed": false
+    "primary_score": null,
+    "numerator": null,
+    "denominator": null,
+    "tasks_passed": null,
+    "tasks_total": null,
+    "tests_passed": null,
+    "tests_total": null,
+    "passed": null
   },
   "cases": [
     {
-      "case_id": "base58/test1.py",
-      "passed": false,
-      "tests_passed": 0,
-      "tests_total": 60,
-      "agent_returncode": 1,
-      "agent_timeout": false,
-      "attempts": 1,
-      "duration_s": 5.03,
-      "failure_category": "agent_generation_failed",
-      "short_failure_note": "missing generated entry file",
+      "case_id": "<case-id>",
+      "passed": null,
+      "tests_passed": null,
+      "tests_total": null,
+      "agent_returncode": null,
+      "agent_timeout": null,
+      "attempts": null,
+      "duration_s": null,
+      "failure_category": null,
+      "short_failure_note": null,
       "artifacts": {
         "prompt_path": ".../prompt.txt",
         "agent_log_path": ".../codex.log",
-        "output_dir": ".../test1_pkg"
+        "output_dir": ".../<case-output>"
       }
     }
   ]
@@ -381,14 +377,7 @@ Normalized fields:
 Pass condition: every selected case has `all_pass=true`; equivalently
 `ALL_PASS_CASES == total_cases` and `TESTS passed == total`.
 
-For the current smoke, normalized status must be:
-
-- `execution_status=pass`
-- `benchmark_status=fail`
-- `score_claim.valid_for_leaderboard=false`
-- `score_claim.reason=smoke_subset`
-- `failure.infra_error=false`
-- `failure.failure_category=agent_generation_failed`
+For any smoke, the parser must preserve execution status separately from benchmark status and set `score_claim.valid_for_leaderboard=false` with `score_claim.reason=smoke_subset`.
 
 ### tau2
 
@@ -601,14 +590,7 @@ Parser ID: `deepswe`
 
 Observed sources:
 
-- Existing local GPT-5.4-mini report records:
-  - `n_completed_trials=11`
-  - `n_errored_trials=11`
-  - `n_running_trials=10`
-  - `n_pending_trials=92`
-  - all completed rewards `0.0`
-  - exceptions: `AgentTimeoutError`, `NonZeroAgentExitCodeError`
-  - cost about `$46.55`
+- The former local GPT run counters were removed from the current publication tree on 2026-07-21.
 - Suite row uses `DEEPSWE_MODE=smoke` and `DEEPSWE_MAX_TASKS=1`.
 
 Parser source expectations:
@@ -678,10 +660,10 @@ read remote `/mnt/...` paths.
 No tests were changed in this report-only lane. When implementation starts, add
 fixtures before parser code:
 
-1. RepoZero log fixture from the current smoke. Expected:
+1. Synthetic RepoZero log fixture. Expected:
    - adapter execution pass.
    - benchmark fail.
-   - `tests_passed=0`, `tests_total=60`.
+   - parsed test counts agree with the synthetic fixture.
    - `score_claim.valid_for_leaderboard=false`.
 2. tau2 log fixture with three `artifact=` lines and synthetic `results.json`
    files. Expected average reward and per-domain cases.
@@ -696,19 +678,9 @@ fixtures before parser code:
 
 ## Immediate Recommendation
 
-Implement RepoZero first because the current smoke has an unambiguous adapter-pass
-and benchmark-fail case. The first parser should be able to consume only
-`/tmp/agentic_repozero_exec_74640d5/logs/repozero_py2js_smoke.log` and produce a
-normalized result showing:
-
-```text
-execution_status=pass
-benchmark_status=fail
-tests=0/60
-tasks=0/1
-score_claim.valid_for_leaderboard=false
-failure_category=agent_generation_failed
-```
+Implement RepoZero first because its adapter/process status and benchmark status
+must be represented independently. Use a synthetic fixture for implementation;
+the former model-backed smoke path and numeric result are not retained here.
 
 After that, wire tau2 and VitaBench because both already have successful harness
 smokes with reward `0.0` and native simulation paths. SWE-bench, Terminal-Bench,

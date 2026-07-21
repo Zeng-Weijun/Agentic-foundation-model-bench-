@@ -27,8 +27,8 @@ from this pack alone — no shared-disk trace needed.
 - Official SWE-bench Multilingual publishes **per-language** cells. Compare THIS run's
   per-language resolved/total (below) against the official per-language numbers; do **not**
   compare a single overall percentage.
-- The historical overall **73.4%** figure was produced by a **different model (frozen gpt-5.5)**,
-  NOT `Qwen/Qwen3-Coder-30B-A3B-Instruct`. It is **not a comparable anchor** for this Qwen3 run and must not be used as one.
+- The former local relay GPT overall comparator was removed from the current publication tree on
+  2026-07-21. It was not a comparable anchor for this Qwen3 run and must not be reconstructed here.
 - Denominator = **full 300** (complete SWE-bench Multilingual test set), including the **26 Java tasks
   served from offline-ised p0 images** (`--network=none`). No subset, no exclusion — NOT a clean-274 run.
   Per-language resolved/total below.

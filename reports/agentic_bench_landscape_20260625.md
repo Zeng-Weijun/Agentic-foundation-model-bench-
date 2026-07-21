@@ -93,7 +93,7 @@ Source: `configs/code_models/swebench_agents/qwen3_coder_30b_a3b_instruct_agent_
 | ProgramBench | Rebuild a program from compiled binary plus docs | Agent gets executable/docs, no source/tests; hidden behavioral tests check reconstructed program | Paper conclusion: no model fully resolves any task; partial progress only | No local Qwen full score yet |
 | RepoZero | Generate a repository from scratch by reimplementing APIs | Black-box output equivalence, cross-language constraints, sandboxed eval | Paper: strongest agents limited, about 30%-55%; conclusion says advanced scaffolds around 40% | Local README has RepoZero Py2JS wrapper and historical smoke support; no Qwen3-30B full score in inspected evidence |
 | NL2Repo | Generate a complete installable Python repo from NL requirements and empty workspace | Upstream pytest suites; long-horizon repo generation | Paper: Claude Sonnet 4.5 about 39.6 pass / 40.2 avg score; all agents struggle | No local Qwen3-30B full score; paper failure modes are relevant to Qwen attribution |
-| DeepSWE | Original long-horizon engineering tasks across real repos | mini-swe-agent consistency harness, behavior verifiers | 2026-06-24 leaderboard: Claude Fable 5 70%, GPT-5.5 67%, Claude Opus 4.8 59%, GPT-5.4 52% | Local GPT-5.4-mini + mini-swe-agent run is incomplete/invalid as a full score: 11 completed trials, all reward 0, mostly timeouts |
+| DeepSWE | Original long-horizon engineering tasks across real repos | mini-swe-agent consistency harness, behavior verifiers | 2026-06-24 leaderboard: Claude Fable 5 70%, GPT-5.5 67%, Claude Opus 4.8 59%, GPT-5.4 52% | No current local GPT score; the prior relay-run result publication was removed on 2026-07-21 |
 
 ## Detailed Benchmark Notes
 
@@ -602,44 +602,10 @@ Published score anchors:
   - Claude Sonnet 4.6 high: 30% +/- 4
   - Gemini 3.1 Pro high: 12% +/- 2
 
-Local GPT + mini-swe-agent trace:
+Local GPT result policy:
 
-- Run root:
-  - `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/runs/deepswe/gpt-5.4-mini_official-mswea-xh_20260615_141320_official_mswea_xh_full`
-- Job config:
-  - agent: `mini-swe-agent`
-  - model: `openai/gpt-5.4-mini`
-  - reasoning effort: `xhigh`
-  - n concurrent trials: `10`
-  - dataset path: `/mnt/shared-storage-user/mineru2-shared/zengweijun/nips2026/bench/deep-swe/tasks`
-- This is not a valid full benchmark score:
-  - `n_completed_trials=11`
-  - `n_errored_trials=11`
-  - `n_running_trials=10`
-  - `n_pending_trials=92`
-  - all 11 completed trial rewards were `0.0`
-  - exceptions: 10 `AgentTimeoutError`, 1 `NonZeroAgentExitCodeError`
-  - markers: `bad_gateway=9`, `context_window=1`, `response_incomplete=1`, `max_output_tokens=1`
-  - cost at stop: about `$46.55`
-- One inspected task:
-  - `datacurve/clack-async-autocomplete-options`
-  - agent: mini-swe-agent `2.4.1`
-  - model: `gpt-5.4-mini`
-  - result: reward `0.0`
-  - exception: `AgentTimeoutError` after 5400 seconds
-  - n agent steps: 35
-  - peak context tokens: 89560
-  - prompt asks to add async search-as-you-type support to Clack's AutocompletePrompt, including thenable detection, first-fetch reuse, AbortSignal handling, loading state, stale-result suppression, cache, stale-while-revalidate, debounce, retries, fallback options, loadingMinDuration, and minSearchLength behavior.
-- mini-swe-agent system prompt / workflow shape:
-  - system: "You are a helpful assistant that can interact with a computer."
-  - instance template begins with "Please solve this issue: {{task}}"
-  - workflow: analyze codebase, create reproduction script, edit code, verify fix, test edge cases, submit with `echo COMPLETE_TASK_AND_SUBMIT_FINAL_OUTPUT`
-  - each response must include reasoning text and at least one bash tool call.
-
-How to use it:
-
-- Do not cite the local GPT-5.4-mini run as a model score.
-- Do cite it as an example of the failure modes that long-horizon harnesses expose: timeout, gateway/relay instability, context pressure, huge token use, and failure to reach a clean submit.
+- The previous relay-run result summary and task-level outcome excerpt were removed from the current tree on 2026-07-21.
+- Raw traces may still be used privately for harness debugging, but they do not establish or publish a DeepSWE score.
 
 Local Qwen status:
 

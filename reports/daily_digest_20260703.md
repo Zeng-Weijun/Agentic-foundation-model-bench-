@@ -6,8 +6,8 @@
 
 **当前口径（权威数字均取 scores/ledger 文件，见证据源）:**
 - **Terminal-Bench 2.1**:privileged 单轮 c=2 strict **76/89**（真数，payload 修复完全生效）；c=2 `/oracle` bind-mount 竞态把 6 例压成假红（@c1 可过）→ 真 canonical **≈82/89 待 c=1 定向补跑定榜**；旧 pending-baseline 的 **query-optimize + rstan-to-pystan 在新栈直接回收**；**5 例 oracle-ran 真回归候选**待 c=1 复核。
-- **SWE-bench Verified**:gold **487/500 offline-PASSED + 13 offline-induced + 0 upstream**（昨日 484→今日 +2 Pod-B 复验 +1 backfill）；离线 eval 外网依赖暗雷已修（离线 requirements/env cache）；**policy canary s008 4/4 resolved**；full500 **恢复放量中**。
-- **RepoZero**:收官 **260/400 strict（65%）**;我们 harness 比官方更严，官方最强 Py2JS 30–55%，无法声称"复现官方分"（模型/scaffold 不同），但内部数可信且更高。
+- **SWE-bench Verified**:gold **487/500 offline-PASSED + 13 offline-induced + 0 upstream**（昨日 484→今日 +2 Pod-B 复验 +1 backfill）；离线 eval 外网依赖暗雷已修（离线 requirements/env cache）。旧 GPT relay canary/full-run 数字已从当前发布面移除。
+- **RepoZero**:旧 GPT relay 结果及其“终分”语义已于 2026-07-21 从当前发布面移除；本页不再提供 RepoZero 本地 GPT 分数。
 - **CHARTER v6 迁移**:pilot 四件套 → runbook → Pod A/B bootstrap → canary/confirm → payload 大坑+preflight 门 → full89 定榜进行时。
 
 ## 三主 bench 权威数字
@@ -15,8 +15,8 @@
 | bench | 今日权威口径 | 证据源 | 备注 |
 |---|---:|---|---|
 | Terminal-Bench 2.1 | **c=2 strict 76/89**;真 canonical **≈82/89 待 c=1** | `reports/scores/tb21_full89_poda_privileged_poda_full89_privileged_oracle_c2_r7_payloadfixed_20260703t1350z_summary.md`（total=89 clean_pass=76 resolved=76 unresolved=13 parse_error=0 infra_fail=0 timeout=0 external_network_marker=3 0token）；`_coordination/20260625_harbor_bench/reports/tb21_full89_payloadfixed_final_audit_20260704.md` | 76 是真数（逐行 `is_resolved`）；13 unresolved=7 c2 mount-race+5 回归候选+1 git-multibranch |
-| SWE-bench Verified | **gold 487 offline-PASSED + 13 offline-induced + 0 upstream = 500**;policy canary **4/4** | `swe/rootless/reports/swev_gold_disk_revalidate_20260702/V5_GOLD_LEDGER.md`（=432 native+52 disk-fixed+2 Pod-B+1 backfill）+ 仓内快照 `reports/V5_GOLD_LEDGER_20260703.md`;canary `swev_s008_eval_by85_20260704/gpt-5.4-mini.s008eval_by85.json` | 昨日 gold 432→今日 offline-PASSED 487;full500 恢复放量 |
-| RepoZero | **strict 260/400（65%）收官** | `reports/repozero_official_comparison_20260703.md` | 官方最强 Py2JS 54.70%、范围 30–55%;我们更严且更高;官方论文无 GPT 家族模型 |
+| SWE-bench Verified | **gold 487 offline-PASSED + 13 offline-induced + 0 upstream = 500** | `swe/rootless/reports/swev_gold_disk_revalidate_20260702/V5_GOLD_LEDGER.md`（=432 native+52 disk-fixed+2 Pod-B+1 backfill）+ 仓内快照 `reports/V5_GOLD_LEDGER_20260703.md` | 仅保留 gold/oracle 口径；旧 GPT model-run 数字已移除 |
+| RepoZero | **本地 GPT 分数已移除** | `docs/GPT_RELAY_SCORE_PURGE_20260721.md` | 公开协议信息可保留，不再发布本地 GPT aggregate |
 
 ## relay 502 事故与恢复
 
@@ -37,7 +37,7 @@
 | **W3 Pod A=TB2.1 主场** | 86 canary→full89 payloadfixed oracle rerun（c=2, r7）→终核定榜进行时 | `tb21_full89_..._c2_r7_payloadfixed_*` |
 | **payload 大坑 + preflight 门** | c=2 早期 3 parse_error（bn-fit-modify/mteb-leaderboard/circuit-fibsqrt）疑 payload 缺口 → payload 修复后 r7 **parse_error=0** 完全生效;preflight 门（preheat present=89/missing=0）进 DoD | 同上 summary（parse_error=0） |
 
-RepoZero 已收官**不迁**;55 preheat 目标 pg89q→Pod A。
+RepoZero 旧 run 当时未迁；其 GPT score publication 已于 2026-07-21 移除。55 preheat 目标 pg89q→Pod A。
 
 ## Terminal-Bench 2.1 账目演进（80→79→c2 76→真值≈82）
 
@@ -48,17 +48,16 @@ RepoZero 已收官**不迁**;55 preheat 目标 pg89q→Pod A。
 - **5 回归候选（oracle-ran 真败,旧绿新红,须 c=1 复核）**:`compile-compcert`（ran 212s,compcert_valid 败）、`install-windows-3.11`（ran 66s,win-311-core-files 败）、`feal-differential-cryptanalysis`（attack test 败）、`configure-git-webserver`（hello_html 败,no output）、`headless-terminal`。
 - **净迁移效应 vs 旧栈**:+8 回收 / −5 回归候选（未证）/ 2 持久。真 canonical 定榜等 55 的 c=1 定向补跑 13 任务 + runner c=2 mount-race 修复（fail-closed 挂载验证 + 单测）。**TB2.1 线全程 0 token。**
 
-## SWE-bench Verified（gold 484→487 + 13、暗雷修复、canary 4/4、full500 放量）
+## SWE-bench Verified（gold 484→487 + 13、暗雷修复）
 
 - **gold 账本 484→487**:昨日 offline-PASSED 484（432 native + 52 disk-fixed);今日 Pod-B privileged 复验 16 例 offline-induced,**2 回收**（`psf__requests-2931`+`5414`）→ 486;pip-mirror bake backfill **+1**（`pylint-dev__pylint-4661`,appdirs 从内网镜像装通）→ **487**。剩余 **13 offline-induced**(8 网络类需本地 httpbin/linkcheck mock=vendor 类 HELD + 5 环境类)、**0 upstream**。证据:`V5_GOLD_LEDGER.md` + `reports/{swev_gold16_podb_revalidate,swev_gold13_backfill_fix_spec,swev_gold_offline_induced_16_audit_backfill}_20260703.md`。
-- **外网依赖暗雷修复**:51 Pod B canary 抓到 swebench eval 的 `requests.get(MAP_REPO_TO_REQS_PATHS / MAP_REPO_TO_ENV_YML_PATHS)` 外网依赖（raw.githubusercontent)——离线 pod 上 eval 必炸。修法=dev 预取全 500 实例 requirements/env yml 建离线 cache（`swe/bench/swe-bench-verified/offline_eval_req_env_cache_20260703`）+ harness offline patch（additive/可回退,`swev_offline_eval_cache_patch.py`,经 `eval_wrap.py` 继承）。证据:`swev_full500_monitor_surface51_20260703.md`。
-- **policy canary s008 4/4（85 顶班）**:51 撞 Codex 同池限额,85 顶班对 s008 的 4 正常 pred + django-11138 no-patch 过官方 eval:**resolved 4/4**(django-11095/11099/11119/11133)、django-11138 empty_patch(合法模型失败,20 调用 19 正常返回无 5xx)、**rc 0 / 外网痕迹 0 命中 / 无 STOP** → RESUME-CLEARED。证据:`swev_s008_eval_by85_20260704/{eval.log,gpt-5.4-mini.s008eval_by85.json}`。
-- **full500 恢复放量**:00:54 限额解除后 51 full resume（Pod B 稳态并发,30min 报账,挂 tmux `swev_podb_full_resume_20260703T171014Z`）;账本实证移动 **done_chunks 8→9 / rows 32→36 / resolved 20→23 / STOP=F / s009 active**,~470 任务待跑（gpt-5.4-mini,通宵)。证据:`swev_full500_model_20260702_podb_canary_*/full500_results.jsonl` + monitor 报告。
+- **外网依赖暗雷修复**:51 Pod B canary 抓到 swebench eval 的 `requests.get(MAP_REPO_TO_REQS_PATHS / MAP_REPO_TO_ENV_YML_PATHS)` 外网依赖（raw.githubusercontent)——离线 pod 上 eval 必炸。修法=dev 预取全 500 实例 requirements/env yml 建离线 cache（`swe/bench/swe-bench-verified/offline_eval_req_env_cache_20260703`）+ harness offline patch（additive/可回退,`swev_offline_eval_cache_patch.py`,经 `eval_wrap.py` 继承）。旧 GPT monitor 已按 purge 规则删除。
+- **旧 GPT model-run 状态**:canary、partial/full 进度计数和结果路径已于 2026-07-21 从当前发布面移除；离线 eval cache 与网络隔离修复本身保留。
 
-## RepoZero 收官 260/400
+## RepoZero 本地 GPT 结果移除
 
-- 内部 strict **260/400（65%）** 收官（昨日 131/400 strict → rate-limited c=4 rerun 挽回 timeout 污染残余）。
-- 结论:**不能声称"复现官方分"**——官方最强 Py2JS 54.70%±2.55(Claude-4.6-Sonnet+Mini-SWE-Agent)、范围 30–55%,模型/scaffold 均不同;但我们的 harness 是官方口径的忠实(且略严)再实现,内部 65% 高于官方范围且可信。官方论文全文交叉核实**无任何 GPT 家族模型**。证据:`reports/repozero_official_comparison_20260703.md`。
+- 旧 GPT relay aggregate、重判数字和“收官/主数”结论均已从当前发布面移除。
+- RepoZero 公开协议与外部模型锚可继续引用，但不能借本页恢复任何本地 GPT 分数。
 
 ## handoff_docs 交付（两份外部使用说明)
 
